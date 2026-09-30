@@ -21,6 +21,8 @@
   
   <!-- pdf.js for importing/parsing local PDFs in browser -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- LINE LIFF SDK -->
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
 
@@ -45,6 +47,10 @@
 
     <div class="header-actions">
       <span class="standalone-badge"><i class="fa-solid fa-bolt"></i> Standalone Mode</span>
+      <div id="lineUserBadge" class="line-user-badge hidden">
+        <img id="lineUserAvatar" src="" class="line-user-avatar" alt="LINE Avatar">
+        <span id="lineUserName" class="line-user-name">LINE User</span>
+      </div>
 
       <!-- Actions container specifically shown in Studio Mode -->
       <div id="studioHeaderActions" class="studio-header-actions hidden" style="display: inline-flex; gap: 8px;">
@@ -763,6 +769,9 @@
           <div class="toolbar-right">
             <button class="btn btn-secondary-sm" id="toggleFlipCardsBtn">
               <i class="fa-solid fa-eye"></i> พลิกเปิด/คว่ำไพ่ทั้งหมด
+            </button>
+            <button class="btn btn-line-share hidden" id="shareToLineBtn" title="แชร์ผลทำนายลงแชท LINE">
+              <i class="fa-brands fa-line"></i> แชร์ลง LINE
             </button>
             <button class="btn btn-secondary-sm" id="copyResultTextBtn">
               <i class="fa-solid fa-copy"></i> คัดลอกคำทำนาย

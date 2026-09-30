@@ -2166,3 +2166,60 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
+
+
+/* ============================================================
+   LINE LIFF INTEGRATION STYLES
+   ============================================================ */
+.line-user-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(6, 199, 85, 0.15);
+  border: 1px solid rgba(6, 199, 85, 0.4);
+  padding: 4px 12px 4px 6px;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  animation: modernFadeIn 0.4s ease;
+}
+
+.line-user-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid #06c755;
+}
+
+.line-user-name {
+  font-family: 'Prompt', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #a7f3d0;
+}
+
+.btn-line-share {
+  background: linear-gradient(135deg, #06c755, #05b04b) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+  font-family: 'Prompt', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 16px rgba(6, 199, 85, 0.4) !important;
+  transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.btn-line-share:hover {
+  transform: translateY(-2px) scale(1.03) !important;
+  box-shadow: 0 6px 22px rgba(6, 199, 85, 0.6) !important;
+}
+
+.btn-line-share i {
+  font-size: 16px;
+}

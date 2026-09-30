@@ -1661,3 +1661,116 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set default view to Tarot Reading App
   setStep(1);
 });
+
+
+  // --------------------------------------------------------------------------
+  // LINE LIFF INTEGRATION (LINE Official Account)
+  // --------------------------------------------------------------------------
+  const LIFF_ID = '2011798499-hm8dJi7C';
+  let lineUserProfile = null;
+
+  async function initLineLiff() {
+    if (typeof liff === 'undefined') {
+      console.log('LIFF SDK not loaded or offline');
+      return;
+    }
+
+    try {
+      await liff.init({ liffId: LIFF_ID });
+      console.log('LIFF initialized successfully');
+
+      if (liff.isLoggedIn()) {
+        lineUserProfile = await liff.getProfile();
+        applyLineUserProfile(lineUserProfile);
+      } else if (liff.isInClient()) {
+        lineUserProfile = await liff.getProfile();
+        applyLineUserProfile(lineUserProfile);
+      }
+
+      // Show Line Share button
+      const shareBtn = document.getElementById('shareToLineBtn');
+      if (shareBtn) {
+        shareBtn.classList.remove('hidden');
+      }
+    } catch (err) {
+      console.log('LIFF init info:', err);
+    }
+  }
+
+  function applyLineUserProfile(profile) {
+    if (!profile) return;
+    const badgeEl = document.getElementById('lineUserBadge');
+    const avatarEl = document.getElementById('lineUserAvatar');
+    const nameEl = document.getElementById('lineUserName');
+
+    if (badgeEl && nameEl) {
+      nameEl.textContent = profile.displayName || 'LINE User';
+      if (avatarEl && profile.pictureUrl) {
+        avatarEl.src = profile.pictureUrl;
+      }
+      badgeEl.classList.remove('hidden');
+    }
+
+    // Friendly greeting on question step
+    const step1Title = document.querySelector('.step1-title');
+    if (step1Title && profile.displayName) {
+      step1Title.innerHTML = `สวัสดีคุณ ${profile.displayName} ✨ จักรวาลพร้อมตอบ 🔮`;
+    }
+  }
+
+  const shareToLineBtn = document.getElementById('shareToLineBtn');
+  if (shareToLineBtn) {
+    shareToLineBtn.addEventListener('click', shareResultToLine);
+  }
+
+  async function shareResultToLine() {
+    const question = fortuneState.question || 'คำถามดวงชะตา';
+    const isJiuTian = fortuneState.deckId === 'jiutian';
+    const deckName = isJiuTian ? 'JiuTian Arcana (ไพ่เทพจีน)' : 'Bumji & The Gang (แก๊งบุ๋มจิ)';
+    const cards = fortuneState.drawnCards;
+    
+    const card1Name = cards[0] ? cards[0].name : '';
+    const card2Name = cards[1] ? cards[1].name : '';
+    const card3Name = cards[2] ? cards[2].name : '';
+
+    const shareText = `🔮 ผลทำนายไพ่: ${deckName}
+💬 คำถาม: "${question}"
+
+1️⃣ ปัจจุบัน: ${card1Name}
+2️⃣ กลยุทธ์/ทางออก: ${card2Name}
+3️⃣ บทสรุป: ${card3Name}
+
+✨ เปิดไพ่ดูดวงด้วยตัวเองได้ที่:
+https://liff.line.me/2011798499-hm8dJi7C`;
+
+    if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+      try {
+        if (liff.isApiAvailable('shareTargetPicker')) {
+          const res = await liff.shareTargetPicker([
+            { type: 'text', text: shareText }
+          ]);
+          if (res) {
+            alert('แชร์ผลทำนายเรียบร้อยแล้วครับ! 💬✨');
+          }
+          return;
+        } else if (liff.isInClient()) {
+          await liff.sendMessages([
+            { type: 'text', text: shareText }
+          ]);
+          alert('ส่งผลทำนายเข้าห้องแชท LINE เรียบร้อยแล้วครับ! 💬✨');
+          return;
+        }
+      } catch (err) {
+        console.log('LINE share error:', err);
+      }
+    }
+
+    // Fallback: Copy to clipboard
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(shareText);
+      alert('คัดลอกข้อความผลทำนายแล้ว สามารถกดวาง (Paste) ส่งให้เพื่อนใน LINE ได้เลยครับ! 💬✨');
+    }
+  }
+
+  // Auto initialize LIFF on startup
+  setTimeout(initLineLiff, 500);
