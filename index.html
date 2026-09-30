@@ -13,8 +13,13 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- CSS Styles -->
-  <link rel="stylesheet" href="styles.css">
+  <!-- Cache control for mobile / LINE in-app browser -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- CSS Styles with cache busting -->
+  <link rel="stylesheet" href="styles.css?v=20260930_mobile1">
   
   <!-- html2pdf.js for exporting HTML to high-quality protected PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -861,10 +866,10 @@
   <div id="pdfPrintBuffer" class="pdf-buffer-hidden"></div>
 
   <!-- Load default cards data (JiuTian Arcana) -->
-  <script src="data/default-cards.js"></script>
+  <script src="data/default-cards.js?v=20260930_mobile1"></script>
   <!-- Load Bumji cards data (Bumji & The Gang) -->
-  <script src="data/bumji-cards.js"></script>
+  <script src="data/bumji-cards.js?v=20260930_mobile1"></script>
   <!-- Load App scripts -->
-  <script src="app.js"></script>
+  <script src="app.js?v=20260930_mobile1"></script>
 </body>
 </html>
