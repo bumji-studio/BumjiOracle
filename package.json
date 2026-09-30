@@ -1,0 +1,16 @@
+{
+  "name": "jiutian-guidebook-generator",
+  "version": "1.0.0",
+  "description": "Generator for a 94-page A4 card guidebook with copy-protection",
+  "main": "scripts/build-pdf.js",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-pdf.js",
+    "protect": "node scripts/protect-pdf.js",
+    "generate": "node scripts/build-pdf.js && node scripts/protect-pdf.js"
+  },
+  "dependencies": {
+    "puppeteer": "^22.12.1",
+    "pdf-lib": "^1.17.1"
+  }
+}

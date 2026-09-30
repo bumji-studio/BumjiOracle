@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DESTINY ARCANA - ระบบดูดวงด้วยไพ่ออนไลน์ (Standalone)</title>
+  
+  <!-- Google Fonts for premium Thai & English typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Outfit:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- CSS Styles -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- html2pdf.js for exporting HTML to high-quality protected PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
+  <!-- pdf.js for importing/parsing local PDFs in browser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-logo">
+      <i class="fa-solid fa-wand-magic-sparkles logo-icon"></i>
+      <div>
+        <h1>DESTINY ARCANA</h1>
+        <span class="subtitle">✨ ดูดวงไพ่ทาโรต์ x แก๊งเหมียวนุ่มฟู • สไตล์โมเดิร์นวัยรุ่น</span>
+      </div>
+    </div>
+    <!-- Mode Navigation Tabs -->
+    <div class="header-nav-tabs">
+      <button class="nav-tab active" id="tabReadingBtn">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> ระบบทำนายไพ่ (Tarot Reading)
+      </button>
+      <button class="nav-tab" id="tabStudioBtn">
+        <i class="fa-solid fa-book-open"></i> สตูดิโอคู่มือ A4 (Guidebook Studio)
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <span class="standalone-badge"><i class="fa-solid fa-bolt"></i> Standalone Mode</span>
+
+      <!-- Actions container specifically shown in Studio Mode -->
+      <div id="studioHeaderActions" class="studio-header-actions hidden" style="display: inline-flex; gap: 8px;">
+        <span class="save-status" id="saveStatus"><i class="fa-solid fa-circle-check"></i> บันทึกข้อมูลแล้ว (Local)</span>
+        <button class="btn btn-secondary" id="importPdfBtn"><i class="fa-solid fa-file-import"></i> นำเข้าตัวอย่าง PDF</button>
+        <input type="file" id="pdfFileInput" accept="application/pdf" style="display: none;">
+        
+        <button class="btn btn-secondary" id="backupJsonBtn" title="สำรองข้อมูลเป็นไฟล์ JSON"><i class="fa-solid fa-download"></i> สำรองไฟล์ JSON</button>
+        <button class="btn btn-secondary" id="restoreJsonBtn" title="โหลดไฟล์สำรอง JSON เข้ามาแก้งานต่อ"><i class="fa-solid fa-upload"></i> โหลดไฟล์ JSON</button>
+        <input type="file" id="jsonFileInput" accept="application/json" style="display: none;">
+
+        <button class="btn btn-secondary" id="resetDataBtn"><i class="fa-solid fa-rotate-left"></i> รีเซ็ต</button>
+        <button class="btn btn-primary" id="exportPdfBtn"><i class="fa-solid fa-file-pdf"></i> ออกรายงาน PDF (94 หน้า)</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- VIEW 1: STUDIO APP VIEW (Guidebook Studio) -->
+  <div id="studioAppView" class="view-container hidden">
+    <main class="app-workspace">
+    
+    <!-- Sidebar: Card List -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h3><i class="fa-solid fa-list"></i> รายชื่อไพ่ทั้งหมด</h3>
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="searchCards" placeholder="ค้นหาไพ่...">
+        </div>
+        <div class="filter-box">
+          <select id="filterElement">
+            <option value="all">ทั้งหมด (ทุกธาตุ)</option>
+            <option value="ธาตุทอง">ธาตุทอง (Metal)</option>
+            <option value="ธาตุไม้">ธาตุไม้ (Wood)</option>
+            <option value="ธาตุน้ำ">ธาตุน้ำ (Water)</option>
+            <option value="ธาตุไฟ">ธาตุไฟ (Fire)</option>
+            <option value="ธาตุดิน">ธาตุดิน (Earth)</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-list-wrapper" id="cardList">
+        <!-- Dynamically filled with JS -->
+      </div>
+    </aside>
+
+    <!-- Editor Panel -->
+    <section class="editor-panel">
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-pen-to-square"></i> แก้ไขเนื้อหาไพ่</h2>
+        <span class="active-card-indicator" id="activeCardIndicator">ไพ่ใบที่ 1</span>
+      </div>
+      <div class="editor-form" id="editorForm">
+        <input type="hidden" id="editCardId">
+        
+        <!-- SECTION 1: MAIN CARD INFO (PAGE A) -->
+        <div class="editor-section-title"><i class="fa-solid fa-star"></i> ข้อมูลหน้าหลักไพ่ (หน้าแรก)</div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCardNameEn">ชื่อไพ่ (อังกฤษ)</label>
+            <input type="text" id="editCardNameEn" placeholder="เช่น The Magician">
+          </div>
+          <div class="form-group">
+            <label for="editCardNameTh">ชื่อไพ่ (ไทย)</label>
+            <input type="text" id="editCardNameTh" placeholder="เช่น จี้กง">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCardNameZh">ชื่อไพ่ (จีน/อื่น ๆ)</label>
+            <input type="text" id="editCardNameZh" placeholder="เช่น (濟公)">
+          </div>
+          <div class="form-group">
+            <label for="editCardDeitySubtitle">ฉายา/คำโปรยใต้ชื่อ</label>
+            <input type="text" id="editCardDeitySubtitle" placeholder="เช่น ผู้สำแดงเดช ผู้แปรสรรพสิ่งด้วยปัญญา">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editCardMainQuote">ข้อความคำคมประจำไพ่ (คำคมเด่นกลางหน้า)</label>
+          <input type="text" id="editCardMainQuote" placeholder="เช่น “ผู้ที่เข้าใจกฎของจักรวาล...”">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCardElement">ธาตุ (Element)</label>
+            <input type="text" id="editCardElement" placeholder="เช่น ไฟ (火)">
+          </div>
+          <div class="form-group">
+            <label for="editCardCoreEnergy">พลังหลัก (Core Energy)</label>
+            <input type="text" id="editCardCoreEnergy" placeholder="เช่น ปัญญาและการสร้างสรรค์">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editCardDeity">เทพประจำไพ่ (Deity)</label>
+            <input type="text" id="editCardDeity" placeholder="เช่น ไท่ซ่างเหล่าจวิน (太上老君)">
+          </div>
+          <div class="form-group">
+            <label for="editCardCategory">หมวดไพ่ (Category)</label>
+            <input type="text" id="editCardCategory" placeholder="เช่น Major Arcana">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="editCardKeywords">คีย์เวิร์ดหน้าแรก (คั่นด้วยจุลภาค ,)</label>
+          <input type="text" id="editCardKeywords" placeholder="การสร้างสรรค์, การทำให้เป็นจริง, ความเชี่ยวชาญ">
+        </div>
+
+        <div class="form-group">
+          <label for="editCardImage">ลิงก์รูปภาพไพ่ (หรือใช้ภาพจากกล้อง/คลังภาพ)</label>
+          <div class="image-input-container">
+            <input type="text" id="editCardImage" placeholder="เช่น link รูปภาพ หรือ กดเลือกไฟล์ด้านขวา">
+            <div class="file-upload-btn">
+              <input type="file" id="localImageFile" accept="image/*" style="display: none;">
+              <button type="button" class="btn btn-secondary-sm" onclick="document.getElementById('localImageFile').click()"><i class="fa-solid fa-image"></i> เลือกไฟล์ภาพ</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: DETAILS (PAGE B) -->
+        <div class="editor-section-title"><i class="fa-solid fa-book-open"></i> ตำนานและบุคลิกภาพ (หน้าสอง)</div>
+
+        <div class="form-group">
+          <label for="editCardMythology">ตำนานและที่มาของไพ่</label>
+          <textarea id="editCardMythology" rows="4" placeholder="ระบุตำนานที่มาและประวัติอย่างย่อ..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editCardPersonality">บุคลิกของคนที่เป็นตัวแทนไพ่</label>
+          <textarea id="editCardPersonality" rows="4" placeholder="ระบุตัวตน บุคลิก ลักษณะเฉพาะตัว..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editCardCareers">อาชีพที่เหมาะสม (คั่นด้วยจุลภาค ,)</label>
+          <input type="text" id="editCardCareers" placeholder="วิศวกร, โปรแกรมเมอร์, นักวิจัย, สถาปนิก">
+        </div>
+
+        <!-- SECTION 3: DIVINE STRATEGY (PAGE B) -->
+        <div class="editor-section-title"><i class="fa-solid fa-dharmachakra"></i> กลยุทธ์จากเทพ 4 ข้อ (หน้าสอง)</div>
+
+        <div class="strategy-form-grid">
+          <div class="strategy-edit-box">
+            <label>ข้อ 1: หัวข้อ & คำอธิบาย</label>
+            <input type="text" id="editStr1Title" placeholder="หัวข้อกลยุทธ์ 1">
+            <textarea id="editStr1Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          </div>
+          <div class="strategy-edit-box">
+            <label>ข้อ 2: หัวข้อ & คำอธิบาย</label>
+            <input type="text" id="editStr2Title" placeholder="หัวข้อกลยุทธ์ 2">
+            <textarea id="editStr2Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          </div>
+          <div class="strategy-edit-box">
+            <label>ข้อ 3: หัวข้อ & คำอธิบาย</label>
+            <input type="text" id="editStr3Title" placeholder="หัวข้อกลยุทธ์ 3">
+            <textarea id="editStr3Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          </div>
+          <div class="strategy-edit-box">
+            <label>ข้อ 4: หัวข้อ & คำอธิบาย</label>
+            <input type="text" id="editStr4Title" placeholder="หัวข้อกลยุทธ์ 4">
+            <textarea id="editStr4Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 4: LOWER CONTENT (PAGE B) -->
+        <div class="editor-section-title"><i class="fa-solid fa-envelope-open-text"></i> สรุปข้อความและคีย์เวิร์ดหลัง (หน้าสอง)</div>
+
+        <div class="form-group">
+          <label for="editCardIfDrawn">หากคุณได้รับไพ่ใบนี้ (คำทำนายสรุป)</label>
+          <textarea id="editCardIfDrawn" rows="3" placeholder="ระบุการตีความการงาน การเงิน ความรักเชิงปฏิบัติ..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editCardDeityMessage">ข้อความจากเทพ (กรอบทองแดงเด่นกลางล่าง)</label>
+          <textarea id="editCardDeityMessage" rows="2" placeholder="ระบุประโยคข้อคิดเตือนใจศักดิ์สิทธิ์..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="editCardStrategyKeywords">คีย์เวิร์ดหน้าสอง (คั่นด้วยจุลภาค ,)</label>
+          <input type="text" id="editCardStrategyKeywords" placeholder="Creation, Manifestation, Mastery">
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Live Preview Panel (A4 Sheet representation) -->
+    <section class="preview-panel">
+      <div class="panel-header">
+        <h2><i class="fa-solid fa-eye"></i> พรีวิวคู่มือ A4 แนวนอน (1 ไพ่ต่อ 2 หน้า)</h2>
+        <div class="preview-settings">
+          <label for="borderStyleSelect">สไตล์กรอบ:</label>
+          <select id="borderStyleSelect">
+            <option value="border-gold-ornate">กรอบทองหรูหรา (Ornate Gold)</option>
+            <option value="border-modern-minimal">ขอบเรียบหรู (Modern Gold)</option>
+            <option value="border-mystic-dark">กรอบโบราณมนตรา (Mystic Dark)</option>
+            <option value="border-none">ไม่มีกรอบ (No Border)</option>
+          </select>
+        </div>
+      </div>
+      <div class="preview-container landscape-scroll">
+        
+        <!-- PAGE A: ESSENCE PAGE -->
+        <div class="a4-page border-gold-ornate A4-landscape" id="a4PreviewPageA">
+          <!-- Decorative Corners -->
+          <div class="corner corner-tl"></div>
+          <div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div>
+          <div class="corner corner-br"></div>
+          
+          <!-- Running Header -->
+          <header class="page-header-print">
+            <span class="header-left"><i class="fa-solid fa-seedling"></i> JIU TIAN ARCANA</span>
+            <span class="header-center">WISDOM OF THE HEAVENS • GUIDANCE FOR THE SOUL</span>
+            <span class="header-right"><i class="fa-solid fa-yin-yang"></i></span>
+          </header>
+
+          <!-- Essence Layout -->
+          <div class="page-content-essence">
+            <!-- Left col: titles & quotes -->
+            <div class="essence-left-col">
+              <div class="card-num-badge">
+                <span class="badge-title">ไพ่หมายเลข</span>
+                <span class="badge-val" id="previewCardIdBadge">I</span>
+              </div>
+              <div class="card-titles">
+                <h1 id="previewCardNameEn" class="title-en">The Magician</h1>
+                <h2 id="previewCardNameTh" class="title-th">จี้กง</h2>
+                <h3 id="previewCardNameZh" class="title-zh">(濟公)</h3>
+                <p id="previewCardDeitySubtitle" class="deity-subtitle">ผู้สำแดงเดช ผู้แปรสรรพสิ่งด้วยปัญญา</p>
+              </div>
+              <div class="card-quote">
+                <p id="previewCardMainQuote">“ผู้ที่เข้าใจกฎของจักรวาล มิได้สร้างปาฏิหาริย์ แต่ทำให้สิ่งที่เป็นไปได้ กลายเป็นความจริง”</p>
+              </div>
+            </div>
+
+            <!-- Center col: card art -->
+            <div class="essence-center-col">
+              <div class="card-image-frame">
+                <div class="card-image-inner" id="previewCardArt">
+                  <i class="fa-solid fa-bahai art-icon"></i>
+                  <span>รูปภาพไพ่</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right col: essence table -->
+            <div class="essence-right-col">
+              <div class="essence-table-panel">
+                <div class="essence-panel-header">ESSENCE OF THE CARD</div>
+                <div class="essence-table-content">
+                  <div class="essence-row">
+                    <div class="essence-icon"><i class="fa-solid fa-yin-yang"></i></div>
+                    <div class="essence-label-val">
+                      <span class="label">ธาตุ (Element)</span>
+                      <span class="val" id="previewCardElement">ไฟ (火)</span>
+                    </div>
+                  </div>
+                  <div class="essence-row">
+                    <div class="essence-icon"><i class="fa-solid fa-bahai"></i></div>
+                    <div class="essence-label-val">
+                      <span class="label">พลังหลัก (Core Energy)</span>
+                      <span class="val" id="previewCardCoreEnergy">ปัญญาและการสร้างสรรค์</span>
+                    </div>
+                  </div>
+                  <div class="essence-row">
+                    <div class="essence-icon"><i class="fa-solid fa-crown"></i></div>
+                    <div class="essence-label-val">
+                      <span class="label">เทพประจำไพ่ (Deity)</span>
+                      <span class="val" id="previewCardDeity">ไท่ซ่างเหล่าจวิน (太上老君)</span>
+                    </div>
+                  </div>
+                  <div class="essence-row">
+                    <div class="essence-icon"><i class="fa-solid fa-book"></i></div>
+                    <div class="essence-label-val">
+                      <span class="label">หมวดไพ่ (Category)</span>
+                      <span class="val" id="previewCardCategory">Major Arcana</span>
+                    </div>
+                  </div>
+                  <div class="essence-row">
+                    <div class="essence-icon"><i class="fa-solid fa-key"></i></div>
+                    <div class="essence-label-val">
+                      <span class="label">คีย์เวิร์ดหลัก (Keywords)</span>
+                      <span class="val" id="previewCardKeywords">การสร้างสรรค์ • การทำให้เป็นจริง</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Running Footer -->
+          <footer class="page-footer-print">
+            <span class="footer-left">ลิขสิทธิ์เฉพาะและสงวนสิทธิ์คำทำนายตามกฎหมาย</span>
+            <span class="footer-page-num" id="previewPageNumA">หน้า 2</span>
+          </footer>
+        </div>
+
+        <!-- PAGE B: DETAIL & STRATEGY PAGE -->
+        <div class="a4-page border-gold-ornate A4-landscape" id="a4PreviewPageB">
+          <!-- Decorative Corners -->
+          <div class="corner corner-tl"></div>
+          <div class="corner corner-tr"></div>
+          <div class="corner corner-bl"></div>
+          <div class="corner corner-br"></div>
+          
+          <!-- Running Header -->
+          <header class="page-header-print">
+            <span class="header-left"><i class="fa-solid fa-seedling"></i> JIU TIAN ARCANA</span>
+            <span class="header-center">WISDOM OF THE HEAVENS • GUIDANCE FOR THE SOUL</span>
+            <span class="header-right"><i class="fa-solid fa-yin-yang"></i></span>
+          </header>
+
+          <!-- Detail Layout -->
+          <div class="page-content-details">
+            <!-- Top part: 3 columns -->
+            <div class="details-top-row">
+              <div class="details-col col-mythology">
+                <h4><i class="fa-solid fa-book-open icon-gold"></i> ตำนานและที่มาของไพ่</h4>
+                <p id="previewCardMythology">รายละเอียดตำนานและที่มาของไพ่...</p>
+              </div>
+              <div class="details-col col-personality">
+                <h4><i class="fa-solid fa-user-astronaut icon-gold"></i> บุคลิกของคนที่เป็นตัวแทนไพ่</h4>
+                <p id="previewCardPersonality">รายละเอียดลักษณะนิสัยและบุคคล...</p>
+              </div>
+              <div class="details-col col-careers">
+                <h4><i class="fa-solid fa-briefcase icon-gold"></i> อาชีพที่เหมาะสม</h4>
+                <ul id="previewCardCareers">
+                  <li>อาชีพ 1</li>
+                  <li>อาชีพ 2</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Bottom part: Divine Strategy -->
+            <div class="details-bottom-row">
+              <div class="strategy-section-header">
+                <span class="flourish">❖</span> DIVINE STRATEGY : กลยุทธ์จากเทพ <span class="flourish">❖</span>
+              </div>
+              
+              <!-- 4 columns of strategies -->
+              <div class="strategies-grid">
+                <div class="strategy-card">
+                  <div class="strategy-num">1</div>
+                  <h5 id="previewStr1Title">หัวข้อกลยุทธ์ 1</h5>
+                  <p id="previewStr1Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 1...</p>
+                </div>
+                <div class="strategy-card">
+                  <div class="strategy-num">2</div>
+                  <h5 id="previewStr2Title">หัวข้อกลยุทธ์ 2</h5>
+                  <p id="previewStr2Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 2...</p>
+                </div>
+                <div class="strategy-card">
+                  <div class="strategy-num">3</div>
+                  <h5 id="previewStr3Title">หัวข้อกลยุทธ์ 3</h5>
+                  <p id="previewStr3Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 3...</p>
+                </div>
+                <div class="strategy-card">
+                  <div class="strategy-num">4</div>
+                  <h5 id="previewStr4Title">หัวข้อกลยุทธ์ 4</h5>
+                  <p id="previewStr4Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 4...</p>
+                </div>
+              </div>
+
+              <!-- Lower row -->
+              <div class="strategy-lower-row">
+                <div class="lower-col if-drawn-col">
+                  <h6>หากคุณได้รับไพ่ใบนี้</h6>
+                  <p id="previewCardIfDrawn">บทวิเคราะห์เมื่อจับได้ไพ่ใบนี้...</p>
+                </div>
+                <div class="lower-col message-col">
+                  <div class="message-card-inner">
+                    <div class="message-title">ข้อความจากเทพ</div>
+                    <p id="previewCardDeityMessage">“ข้อคิดสัจธรรมศักดิ์สิทธิ์ประจำไพ่...”</p>
+                  </div>
+                </div>
+                <div class="lower-col keywords-col">
+                  <h6>KEYWORDS</h6>
+                  <div class="strategy-keywords-list" id="previewStrategyKeywords">
+                    <span>Keyword 1</span>
+                    <span>Keyword 2</span>
+                  </div>
+                  <div class="gold-star-flourish"><i class="fa-solid fa-bahai"></i></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Running Footer -->
+          <footer class="page-footer-print">
+            <span class="footer-left">ลิขสิทธิ์เฉพาะและสงวนสิทธิ์คำทำนายตามกฎหมาย</span>
+            <span class="footer-page-num" id="previewPageNumB">หน้า 3</span>
+          </footer>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+  </div>
+
+  <!-- VIEW 2: TAROT READING APP VIEW -->
+  <div id="readingAppView" class="view-container">
+    <div class="reading-app-container">
+      
+      <!-- STEPPER PROGRESS BAR -->
+      <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง">
+        <div class="stepper-track">
+          <div class="stepper-fill" id="stepperFill" style="width: 15%;"></div>
+        </div>
+        <div class="stepper-step active" id="stepIndicator1" data-step="1">
+          <div class="step-num"><i class="fa-solid fa-pen-nib"></i></div>
+          <span class="step-label">1. กรอกคำถาม</span>
+        </div>
+        <div class="stepper-step" id="stepIndicator2" data-step="2">
+          <div class="step-num"><i class="fa-solid fa-layer-group"></i></div>
+          <span class="step-label">2. เลือกชุดไพ่</span>
+        </div>
+        <div class="stepper-step" id="stepIndicator3" data-step="3">
+          <div class="step-num"><i class="fa-solid fa-hand-sparkles"></i></div>
+          <span class="step-label">3. เลือกไพ่ 3 ใบ</span>
+        </div>
+        <div class="stepper-step" id="stepIndicator4" data-step="4">
+          <div class="step-num"><i class="fa-solid fa-star"></i></div>
+          <span class="step-label">4. แสดงคำตอบ</span>
+        </div>
+      </nav>
+
+      <!-- PINNED CONTEXT BAR (Active in Step 2, 3, 4) -->
+      <div id="pinnedContextBar" class="pinned-context-bar hidden">
+        <div class="context-item context-question">
+          <i class="fa-solid fa-circle-question icon-gold"></i>
+          <div class="context-text">
+            <span class="context-label">คำถามของคุณ:</span>
+            <strong id="pinnedQuestionText" class="context-val">-</strong>
+          </div>
+        </div>
+        <div class="context-item context-deck hidden" id="pinnedDeckItem">
+          <i class="fa-solid fa-layer-group icon-gold"></i>
+          <div class="context-text">
+            <span class="context-label">ชุดไพ่ที่เลือก:</span>
+            <strong id="pinnedDeckText" class="context-val">-</strong>
+          </div>
+        </div>
+        <button class="btn btn-secondary-sm" id="editQuestionQuickBtn" title="แก้ไขคำถาม">
+          <i class="fa-solid fa-pen"></i> แก้ไขคำถาม
+        </button>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- STEP 1: QUESTION INPUT -->
+      <!-- ============================================================ -->
+      <section id="readingStep1" class="reading-step-card animate-fade-in">
+        <div class="step1-hero">
+          <div class="sparkle-orbit">
+            <i class="fa-solid fa-wand-magic-sparkles step1-main-icon"></i>
+          </div>
+          <h2 class="step1-title">ถามอะไรก็ได้... จักรวาลพร้อมตอบ 🔮✨</h2>
+          <p class="step1-desc">
+            พิมพ์เรื่องที่อยากรู้ในใจ หรือแตะเลือกหัวข้อยอดฮิตด้านล่างได้เลย ไพ่พร้อมเปิดชะตาให้แล้ว!
+          </p>
+        </div>
+
+        <div class="question-input-box-wrapper">
+          <div class="question-textarea-container">
+            <textarea id="userQuestionInput" class="question-textarea" rows="3" placeholder="พิมพ์คำถามที่อยากรู้ เช่น คนคุยคนนี้คิดยังไงกับเรา? / สัมภาษณ์งานรอบนี้จะผ่านไหม? / ปีนี้จะมีโชคมีเงินเปย์ตัวเองรัวๆ ไหม..."></textarea>
+            <div class="textarea-actions">
+              <button class="btn-clear-text" id="clearQuestionBtn" type="button" title="ล้างข้อความ">
+                <i class="fa-solid fa-xmark"></i> ล้าง
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Suggestion Topic Chips -->
+          <div class="suggestion-chips-area">
+            <span class="chips-label"><i class="fa-solid fa-fire text-pink"></i> หัวข้อฮิตวัยรุ่น อยากรู้เรื่องไหนจิ้มเลย:</span>
+            <div class="chips-grid">
+              <button type="button" class="chip-btn chip-pink" data-question="ความสัมพันธ์และความรักตอนนี้ เค้าคิดยังไงกับเรา? มีแนวโน้มพัฒนาไหม?">
+                <i class="fa-solid fa-heart"></i> 💖 เรื่องรัก &amp; คนคุย
+              </button>
+              <button type="button" class="chip-btn chip-purple" data-question="ทิศทางการงาน โปรเจกต์ หรือการสัมภาษณ์งานรอบนี้ จะปังไหม?">
+                <i class="fa-solid fa-bolt"></i> 💼 งาน &amp; โปรเจกต์ใหม่
+              </button>
+              <button type="button" class="chip-btn chip-cyan" data-question="การเงินและโชคลาภช่วงนี้ จะมีเงินเข้ามาเปย์ตัวเองรัวๆ ไหม?">
+                <i class="fa-solid fa-coins"></i> 💸 การเงิน &amp; โชคลาภ
+              </button>
+              <button type="button" class="chip-btn chip-amber" data-question="สภาพจิตใจและเอเนอร์จี้ช่วงนี้ มีคำแนะนำอะไรให้สดชื่นขึ้นบ้าง?">
+                <i class="fa-solid fa-cat"></i> 🐱 พักใจ &amp; บูสต์พลังบวก
+              </button>
+              <button type="button" class="chip-btn chip-green" data-question="ทางแก้และกลยุทธ์ที่ดีที่สุดในการผ่านอุปสรรคช่วงนี้ไปให้ได้">
+                <i class="fa-solid fa-compass"></i> ⚡ ทางออก &amp; กลยุทธ์
+              </button>
+              <button type="button" class="chip-btn chip-blue" data-question="ภาพรวมโชคชะตาและเรื่องดีๆ ที่กำลังจะวิ่งเข้ามาหาเรา">
+                <i class="fa-solid fa-sparkles"></i> 🚀 สรุปภาพรวมชะตา
+              </button>
+            </div>
+          </div>
+
+          <div class="step1-action-row">
+            <button class="btn btn-primary btn-lg pulse-glow" id="proceedToStep2Btn">
+              ไปเลือกสำรับไพ่กันเลย ✨ <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- STEP 2: COLLECTION SELECTION (JiuTian vs Bumji) -->
+      <!-- ============================================================ -->
+      <section id="readingStep2" class="reading-step-card hidden animate-fade-in">
+        <div class="step-header-with-back">
+          <button class="btn btn-secondary-sm" id="backToStep1Btn">
+            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปแก้ไขคำถาม
+          </button>
+          <div class="step-title-group">
+            <h2 class="step-title"><i class="fa-solid fa-layer-group"></i> เลือกสำรับที่ใช่สำหรับคำถามนี้</h2>
+            <p class="step-desc">ชอบสไตล์ไหนเลือกได้เลย: ไพ่เทพจีนสายกลยุทธ์คมชัด หรือ แก๊งแมวนุ่มฟูฮีลใจอบอุ่น</p>
+          </div>
+        </div>
+
+        <div class="collection-selection-grid">
+          
+          <!-- Collection 1: JiuTian Arcana (ไพ่เทพจีน) -->
+          <article class="collection-card deck-jiutian" data-deck-id="jiutian">
+            <div class="collection-badge badge-jiutian">
+              <i class="fa-solid fa-dragon"></i> ชุดที่ 1: JiuTian Arcana
+            </div>
+
+            <div class="collection-card-body">
+              <div class="collection-media-box">
+                <img src="assets/deck_jiutian_box.jpg" alt="JiuTian Arcana Tarot Deck" class="collection-box-img">
+                <div class="deck-count-badge">สำรับ 96 ใบ</div>
+              </div>
+
+              <div class="collection-info">
+                <h3 class="collection-name">JiuTian Arcana (ไพ่เทพจีน)</h3>
+                <p class="collection-tagline">มหาสำรับเทพเจ้าจีน ปรัชญาเต๋า และเบญจธาตุพลังจักรวาล</p>
+
+                <!-- แนวคำตอบ -->
+                <div class="collection-style-box style-jiutian">
+                  <div class="style-header">
+                    <i class="fa-solid fa-compass-drafting"></i> <strong>แนวคำตอบ:</strong> ชี้แนะแนวทาง &amp; กลยุทธ์เฉียบคม
+                  </div>
+                  <p class="style-desc">
+                    เน้นการวิเคราะห์เชิงลึก สะท้อนสมดุลเบญจธาตุ (ทอง ไม้ น้ำ ไฟ ดิน) และกลยุทธ์ตามคติธรรมเต๋า มอบโอวาทคำสอนจากทวยเทพจีนโบราณ เหมาะสำหรับคำถามที่ต้องการทางออก การวางแผนชีวิต และการตัดสินใจครั้งสำคัญ
+                  </p>
+                </div>
+
+                <ul class="collection-features">
+                  <li><i class="fa-solid fa-circle-check text-gold"></i> ไพ่เทพจีนและขุนพลสวรรค์ 96 ใบพร้อมภาพศิลปะงดงาม</li>
+                  <li><i class="fa-solid fa-circle-check text-gold"></i> ชี้แนะจังหวะชีวิต วิเคราะห์ทั้งธาตุเกื้อหนุนและธาตุข่ม</li>
+                  <li><i class="fa-solid fa-circle-check text-gold"></i> เหมาะกับการวางกลยุทธ์ การงาน ธุรกิจ และทางแก้ปัญหา</li>
+                </ul>
+
+                <button class="btn btn-primary btn-block select-deck-btn" data-deck-id="jiutian">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> เลือกชุด JiuTian Arcana
+                </button>
+              </div>
+            </div>
+          </article>
+
+          <!-- Collection 2: Bumji & The Gang (บุ๋มจิแอนด์เดอะแก๊งค์) -->
+          <article class="collection-card deck-bumji" data-deck-id="bumji">
+            <div class="collection-badge badge-bumji">
+              <i class="fa-solid fa-paw"></i> ชุดที่ 2: Bumji &amp; The Gang
+            </div>
+
+            <div class="collection-card-body">
+              <div class="collection-media-box">
+                <img src="assets/deck_bumji_box.jpg" alt="Bumji & The Gang Cat Tarot Deck" class="collection-box-img">
+                <div class="deck-count-badge badge-cat">สำรับแก๊งบุ๋มจิ</div>
+              </div>
+
+              <div class="collection-info">
+                <h3 class="collection-name">Bumji &amp; The Gang (บุ๋มจิแอนด์เดอะแก๊งค์)</h3>
+                <p class="collection-tagline">สำรับแก๊งเหมียวบุ๋มจิ อบอุ่น สบายใจ และเปี่ยมด้วยรอยยิ้ม</p>
+
+                <!-- แนวคำตอบ -->
+                <div class="collection-style-box style-bumji">
+                  <div class="style-header">
+                    <i class="fa-solid fa-cat"></i> <strong>แนวคำตอบ:</strong> ตีความง่ายๆ สบายใจ ด้วยพฤติกรรมแมว
+                  </div>
+                  <p class="style-desc">
+                    เน้นการถอดรหัสพฤติกรรมและความน่ารักของน้องแมว (เช่น ท่านอนก้อนขนมปัง, ซุกกล่องปลอดภัย, วิ่งซนตีสาม, เลียขนมฟิน) ภาษาเข้าใจง่าย อบอุ่น สบายใจ ปลอบประโลมจิตใจ และเติมพลังบวกในชีวิตประจำวัน
+                  </p>
+                </div>
+
+                <ul class="collection-features">
+                  <li><i class="fa-solid fa-circle-check text-paw"></i> ลายเส้นและตัวละครน้องแมวในแก๊งค์สุดน่ารัก นุ่มฟู</li>
+                  <li><i class="fa-solid fa-circle-check text-paw"></i> ตีความจากพฤติกรรมแมวสู่ข้อคิดเตือนใจ (Cat Wisdom)</li>
+                  <li><i class="fa-solid fa-circle-check text-paw"></i> เหมาะกับวันที่ต้องการกำลังใจ ผ่อนคลาย ไม่เครียด</li>
+                </ul>
+
+                <button class="btn btn-cat btn-block select-deck-btn" data-deck-id="bumji">
+                  <i class="fa-solid fa-paw"></i> เลือกชุด Bumji &amp; The Gang
+                </button>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- STEP 3: PICK 3 CARDS -->
+      <!-- ============================================================ -->
+      <section id="readingStep3" class="reading-step-card hidden animate-fade-in">
+        <div class="step-header-with-back">
+          <button class="btn btn-secondary-sm" id="backToStep2Btn">
+            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปเลือกชุดไพ่
+          </button>
+          <div class="step-title-group">
+            <h2 class="step-title"><i class="fa-solid fa-hand-sparkles"></i> เลือกไพ่ 3 ใบเพื่อค้นหาคำตอบ</h2>
+            <p class="step-desc" id="pickStepDesc">ตั้งจิตอธิษฐานถึงเรื่องที่ถาม แล้วคลิกเลือกไพ่ทีละใบจากสำรับ หรือกดสุ่มเปิดอัตโนมัติ</p>
+          </div>
+        </div>
+
+        <!-- 3 Target Slots Row -->
+        <div class="pick-slots-container">
+          <!-- Slot 1 -->
+          <div class="pick-target-slot" id="slotCard0" data-slot="0">
+            <div class="slot-pos-badge"><span class="badge-num">1</span> สถานการณ์ปัจจุบัน</div>
+            <div class="slot-card-holder" id="slotHolder0">
+              <div class="slot-placeholder">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>คลิกเลือกไพ่ใบที่ 1</span>
+              </div>
+            </div>
+            <div class="slot-desc-text">สะท้อนต้นเหตุ พลังงาน และสถานการณ์ที่กำลังเผชิญ</div>
+          </div>
+
+          <!-- Slot 2 -->
+          <div class="pick-target-slot" id="slotCard1" data-slot="1">
+            <div class="slot-pos-badge"><span class="badge-num">2</span> กลยุทธ์ / สิ่งที่ควรทำ</div>
+            <div class="slot-card-holder" id="slotHolder1">
+              <div class="slot-placeholder">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>คลิกเลือกไพ่ใบที่ 2</span>
+              </div>
+            </div>
+            <div class="slot-desc-text">แนวทางปฏิบัติ มุมมองที่ควรปรับ หรือสิ่งที่ควรโฟกัส</div>
+          </div>
+
+          <!-- Slot 3 -->
+          <div class="pick-target-slot" id="slotCard2" data-slot="2">
+            <div class="slot-pos-badge"><span class="badge-num">3</span> ผลลัพธ์ / บทสรุปอนาคต</div>
+            <div class="slot-card-holder" id="slotHolder2">
+              <div class="slot-placeholder">
+                <i class="fa-solid fa-circle-plus"></i>
+                <span>คลิกเลือกไพ่ใบที่ 3</span>
+              </div>
+            </div>
+            <div class="slot-desc-text">แนวโน้มผลลัพธ์ที่จะเกิดขึ้น และบทเรียนสรุป</div>
+          </div>
+        </div>
+
+        <!-- Pick Controls Bar -->
+        <div class="pick-controls-bar">
+          <div class="pick-current-instruction" id="pickCurrentInstruction">
+            <i class="fa-solid fa-arrow-down-long text-gold animate-bounce"></i> 
+            <span>คลิกเลือกไพ่จากสำรับด้านล่างสำหรับ <strong>ใบที่ 1: สถานการณ์ปัจจุบัน</strong></span>
+          </div>
+
+          <div class="pick-quick-actions">
+            <button class="btn btn-secondary-sm" id="autoDraw3CardsBtn" title="ให้ระบบสุ่มเลือก 3 ใบอัตโนมัติ">
+              <i class="fa-solid fa-bolt-lightning"></i> สุ่มเปิด 3 ใบอัตโนมัติ
+            </button>
+            <button class="btn btn-secondary-sm" id="shuffleDeckCardsBtn" title="สับไพ่ใหม่อีกรอบ">
+              <i class="fa-solid fa-arrows-rotate"></i> สับไพ่ใหม่
+            </button>
+            <button class="btn btn-secondary-sm" id="openManualPickerBtn" title="ค้นหาและเลือกไพ่ตามเลขหรือชื่อ">
+              <i class="fa-solid fa-magnifying-glass"></i> ค้นหาชื่อไพ่
+            </button>
+          </div>
+        </div>
+
+        <!-- Interactive Deck Card Fan -->
+        <div class="deck-fan-stage">
+          <div class="deck-fan-wrapper" id="deckFanWrapper">
+            <!-- Dynamically populated with cards in JS -->
+          </div>
+        </div>
+
+        <!-- Reveal Divination Trigger Banner (Shows when 3 cards are picked) -->
+        <div id="revealTriggerBanner" class="reveal-trigger-banner hidden animate-bounce-soft">
+          <div class="banner-content">
+            <i class="fa-solid fa-wand-magic-sparkles banner-icon"></i>
+            <div>
+              <h3>เลือกไพ่ครบ 3 ใบเรียบร้อยแล้ว!</h3>
+              <p>ตั้งจิตส่งพลังถึงไพ่ทั้งสามใบ แล้วกดปุ่มเพื่อเริ่มประมวลผลและเปิดเผยคำทำนาย</p>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-xl pulse-glow" id="revealDivinationBtn">
+            <i class="fa-solid fa-star"></i> กดทำนายผลดวงชะตา (Reveal Oracle) ✨
+          </button>
+        </div>
+      </section>
+
+      <!-- ============================================================ -->
+      <!-- STEP 4: DIVINATION RESULTS & SYNTHESIS -->
+      <!-- ============================================================ -->
+      <section id="readingStep4" class="reading-step-card hidden animate-fade-in">
+        
+        <!-- Result Header Toolbar -->
+        <div class="result-header-toolbar">
+          <div class="toolbar-left">
+            <button class="btn btn-secondary-sm" id="newReadingBtn">
+              <i class="fa-solid fa-rotate-left"></i> เริ่มดูดวงใหม่
+            </button>
+            <button class="btn btn-secondary-sm" id="redrawCurrentCardsBtn">
+              <i class="fa-solid fa-arrows-rotate"></i> เปิดไพ่ชุดนี้ใหม่อีกครั้ง
+            </button>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-secondary-sm" id="toggleFlipCardsBtn">
+              <i class="fa-solid fa-eye"></i> พลิกเปิด/คว่ำไพ่ทั้งหมด
+            </button>
+            <button class="btn btn-secondary-sm" id="copyResultTextBtn">
+              <i class="fa-solid fa-copy"></i> คัดลอกคำทำนาย
+            </button>
+            <button class="btn btn-primary-sm" id="printResultReportBtn">
+              <i class="fa-solid fa-print"></i> พิมพ์คำทำนาย
+            </button>
+          </div>
+        </div>
+
+        <!-- Question Summary Banner -->
+        <div class="result-question-banner" id="resultQuestionBanner">
+          <div class="banner-badge-group">
+            <span class="badge-deck" id="resultDeckBadge">JiuTian Arcana</span>
+            <span class="badge-spread">3-Card Trinity Spread</span>
+            <span class="badge-date" id="resultDateBadge">วันนี้</span>
+          </div>
+          <h2 class="result-question-title" id="resultQuestionTitle">คำถาม: ...</h2>
+        </div>
+
+        <!-- 3 Cards Visual Board -->
+        <div class="result-cards-board" id="resultCardsBoard">
+          <!-- Dynamically filled with 3 revealed cards in JS -->
+        </div>
+
+        <!-- Holistic Synthesis Section -->
+        <div class="result-synthesis-container" id="resultSynthesisContainer">
+          <!-- Dynamically filled with deep synthesis in JS -->
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <!-- MODAL: MANUAL CARD SELECTOR FOR PHYSICAL DECK -->
+  <div class="modal-overlay hidden" id="cardSelectModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังไพ่ 96 ใบ - เลือกตำแหน่ง: <span id="modalPositionName">ตำแหน่ง 1</span></h3>
+        <button class="modal-close" id="closeCardModalBtn">&times;</button>
+      </div>
+      
+      <!-- Filter Bar -->
+      <div class="modal-filter-tabs" id="modalFilterTabs">
+        <button class="modal-tab active" data-filter="all">ทั้งหมด (96 ใบ)</button>
+        <button class="modal-tab" data-filter="Major Arcana">Major Arcana</button>
+        <button class="modal-tab" data-filter="ธาตุทอง">ธาตุทอง</button>
+        <button class="modal-tab" data-filter="ธาตุไม้">ธาตุไม้</button>
+        <button class="modal-tab" data-filter="ธาตุน้ำ">ธาตุน้ำ</button>
+        <button class="modal-tab" data-filter="ธาตุไฟ">ธาตุไฟ</button>
+        <button class="modal-tab" data-filter="ธาตุดิน">ธาตุดิน</button>
+      </div>
+
+      <div class="modal-search-bar">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="modalCardSearchInput" placeholder="พิมพ์เลขไพ่ (1-96) หรือ ค้นหาชื่อไพ่...">
+      </div>
+      <div class="modal-cards-grid" id="modalCardsGrid">
+        <!-- Dynamically rendered card list for picking -->
+      </div>
+    </div>
+  </div>
+
+  <!-- PDF Rendering Progress Overlay -->
+  <div class="progress-overlay" id="progressOverlay">
+    <div class="progress-card">
+      <h3 id="progressTitle">กำลังจัดเตรียมไฟล์ PDF...</h3>
+      <p id="progressSubtitle">กรุณาอย่าปิดหน้านี้ ระบบกำลังสแกนและล็อกรหัสความปลอดภัยของหน้ากระดาษ A4 ทั้ง 94 หน้าเพื่อป้องกันการคัดลอก</p>
+      
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+      </div>
+      
+      <div class="progress-stats">
+        <span id="progressPercent">0%</span>
+        <span id="progressPageCount">0 / 94 หน้า</span>
+      </div>
+
+      <div class="rendering-tips">
+        <p><i class="fa-solid fa-shield-halved"></i> <strong>ระบบรักษาความปลอดภัย:</strong> ข้อความทั้งหมดในคู่มือจะถูกแปลงให้อยู่ในรูปแบบ Raster Image ความละเอียดสูง เพื่อให้เปิดดูและสั่งพิมพ์งานได้คมชัดที่สุด แต่จะไม่สามารถลากคลุมเพื่อก๊อปปี้คัดลอกข้อความไปใช้งานต่อได้โดยง่าย</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offscreen buffer for compiling PDF pages -->
+  <div id="pdfPrintBuffer" class="pdf-buffer-hidden"></div>
+
+  <!-- Load default cards data (JiuTian Arcana) -->
+  <script src="data/default-cards.js"></script>
+  <!-- Load Bumji cards data (Bumji & The Gang) -->
+  <script src="data/bumji-cards.js"></script>
+  <!-- Load App scripts -->
+  <script src="app.js"></script>
+</body>
+</html>

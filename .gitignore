@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+Thumbs.db
+*.exe
+scratch/
+pdf_previews/
+scripts/*.exe
