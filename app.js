@@ -1148,10 +1148,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!deckFanWrapper) return;
     deckFanWrapper.innerHTML = '';
 
+    const isMobile = window.innerWidth <= 640;
     const backImg = getDeckBackImage();
-    const cardCount = 26; // Number of cards in fan arc
-    const angleStep = 46 / cardCount; // Angle spread
-    const startAngle = -23;
+    
+    // Responsive card count & spread for mobile vs desktop
+    const cardCount = isMobile ? 18 : 26;
+    const spreadStep = isMobile ? 13 : 22;
+    const angleRange = isMobile ? 42 : 46;
+    const angleStep = angleRange / cardCount;
+    const startAngle = -(angleRange / 2);
 
     for (let i = 0; i < cardCount; i++) {
       const cardEl = document.createElement('div');
@@ -1160,8 +1165,8 @@ document.addEventListener('DOMContentLoaded', () => {
       cardEl.setAttribute('data-fan-index', i);
 
       const angle = Math.round((startAngle + i * angleStep) * 10) / 10;
-      const xOffset = Math.round((i - cardCount / 2) * 22);
-      const yOffset = Math.round(Math.abs(angle) * 1.5);
+      const xOffset = Math.round((i - cardCount / 2) * spreadStep);
+      const yOffset = Math.round(Math.abs(angle) * (isMobile ? 0.9 : 1.5));
 
       // Set CSS Custom Properties for silky-smooth hardware-accelerated transforms
       cardEl.style.setProperty('--card-x', `${xOffset}px`);
@@ -1774,3 +1779,14 @@ https://liff.line.me/2011798499-hm8dJi7C`;
 
   // Auto initialize LIFF on startup
   setTimeout(initLineLiff, 500);
+
+  // Responsive fan deck re-render on orientation change or window resize
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (fortuneState.step === 3) {
+        renderFanDeck();
+      }
+    }, 250);
+  });
