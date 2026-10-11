@@ -1253,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getDeckBackImage() {
-    return 'assets/card_back_bumji.jpg';
+    return 'Cat61/62.png';
   }
 
   function renderFanDeck() {
@@ -1340,11 +1340,6 @@ document.addEventListener('DOMContentLoaded', () => {
         holderEl.innerHTML = `
           <div class="slot-card-wrapper cat-card-frame" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden;">
             <img src="${card.image || getDeckBackImage()}" class="slot-filled-card-img" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
-            <div class="card-front-overlay">
-              <div class="overlay-card-num">No. ${card.id}</div>
-              <div class="overlay-card-name-en">${card.name_en || ''}</div>
-              <div class="overlay-card-name-th">${card.name_th || ''}</div>
-            </div>
           </div>
         `;
       } else {
@@ -1597,11 +1592,6 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="result-card-media cat-card-frame">
             <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
-            <div class="card-front-overlay">
-              <div class="overlay-card-num">No. ${card.id}</div>
-              <div class="overlay-card-name-en">${card.name_en || ''}</div>
-              <div class="overlay-card-name-th">${card.name_th || ''}</div>
-            </div>
           </div>
           <div class="result-card-details">
             <h4 class="result-card-name">${card.id}. ${card.name_en} (${card.name_th})</h4>
