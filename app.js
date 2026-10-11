@@ -935,7 +935,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function setActiveAppMode(mode) {
+  function setActiveAppMode(mode, updateHash = true) {
     // Close mobile menu if open
     toggleMobileMenu(true);
 
@@ -950,6 +950,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tongShuAppView) tongShuAppView.classList.toggle('hidden', mode !== 'tongshu');
     if (qiMenAppView) qiMenAppView.classList.toggle('hidden', mode !== 'qimen');
     if (baziAppView) baziAppView.classList.toggle('hidden', mode !== 'bazi');
+
+    // Sync URL hash seamlessly without page jumping
+    if (updateHash) {
+      try {
+        if (window.location.hash.replace('#', '').toLowerCase() !== mode) {
+          history.replaceState(null, '', '#' + mode);
+        }
+      } catch (e) {}
+    }
 
     // Trigger TongShu live update when activated
     if (mode === 'tongshu' && window.TongShuApp) {
@@ -978,16 +987,47 @@ document.addEventListener('DOMContentLoaded', () => {
     tabBaziBtn.addEventListener('click', () => setActiveAppMode('bazi'));
   }
 
-  // Support initial tab via URL parameter (e.g. ?tab=bazi) or hash (#bazi)
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const initialTab = urlParams.get('tab') || window.location.hash.replace('#', '');
-    if (['reading', 'tongshu', 'qimen', 'bazi'].includes(initialTab)) {
-      setActiveAppMode(initialTab);
+  // Aliases mapping for external direct links (e.g. ?tab=bazi or #bazi)
+  const TAB_ALIASES = {
+    'reading': 'reading',
+    'tarot': 'reading',
+    'card': 'reading',
+    'cards': 'reading',
+    'tongshu': 'tongshu',
+    'calendar': 'tongshu',
+    'almanac': 'tongshu',
+    'qimen': 'qimen',
+    'qimendunjia': 'qimen',
+    'dunjia': 'qimen',
+    'bazi': 'bazi',
+    'fourpillars': 'bazi',
+    'destiny': 'bazi'
+  };
+
+  function parseTargetTabFromUrl() {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const rawParam = (urlParams.get('tab') || '').toLowerCase().trim();
+      const rawHash = (window.location.hash.replace('#', '') || '').toLowerCase().trim();
+      return TAB_ALIASES[rawParam] || TAB_ALIASES[rawHash] || null;
+    } catch (e) {
+      return null;
     }
-  } catch (e) {
-    console.warn('Initial tab parse error:', e);
   }
+
+  // Parse initial tab on page load
+  const initialTab = parseTargetTabFromUrl();
+  if (initialTab) {
+    setActiveAppMode(initialTab, false);
+  }
+
+  // Listen for dynamic hash changes (external links or browser back/forward)
+  window.addEventListener('hashchange', () => {
+    const targetTab = parseTargetTabFromUrl();
+    if (targetTab) {
+      setActiveAppMode(targetTab, false);
+    }
+  });
 
   // Stepper Elements
   const stepperFill = document.getElementById('stepperFill');
