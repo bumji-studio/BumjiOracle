@@ -1253,7 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getDeckBackImage() {
-    return 'Cat61/62.png';
+    return 'Cat61/64.png';
   }
 
   function renderFanDeck() {

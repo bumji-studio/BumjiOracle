@@ -1717,9 +1717,9 @@ body {
   margin-bottom: 14px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  background: rgba(18, 24, 46, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  background: #f8fafc;
+  border: 1.5px dashed #cbd5e1;
 }
 
 .slot-placeholder {
@@ -1758,7 +1758,7 @@ body {
   object-fit: cover;
   border-radius: 14px;
   animation: cardSlotLand 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1);
 }
 
 .slot-desc-text {
@@ -1774,18 +1774,18 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  background: rgba(11, 15, 30, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   padding: 15px 22px;
   margin-bottom: 28px;
-  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
 }
 
 .pick-current-instruction {
   font-family: 'Prompt', sans-serif;
   font-size: 15px;
-  color: #ffffff;
+  color: #1e293b;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1798,9 +1798,9 @@ body {
 }
 
 .pick-quick-actions .btn-secondary-sm {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: #f8fafc !important;
+  color: #475569 !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 12px !important;
   padding: 8px 16px !important;
   font-family: 'Prompt', sans-serif !important;
@@ -1809,24 +1809,25 @@ body {
 }
 
 .pick-quick-actions .btn-secondary-sm:hover {
-  background: rgba(255, 255, 255, 0.16) !important;
-  border-color: #ec4899 !important;
-  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3) !important;
+  background: #fdf2f8 !important;
+  color: #db2777 !important;
+  border-color: #f472b6 !important;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15) !important;
   transform: translateY(-2px);
 }
 
 /* Interactive Fan Stage - Silky Smooth 60fps */
 .deck-fan-stage {
   position: relative;
-  height: 300px;
+  height: 310px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   overflow: hidden;
   padding-bottom: 24px;
-  background: radial-gradient(ellipse at center bottom, rgba(236, 72, 153, 0.18) 0%, transparent 72%);
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #f1f5f9;
 }
 
 .deck-fan-wrapper {
@@ -1848,19 +1849,19 @@ body {
   background-size: cover;
   background-position: center;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
   transform-origin: 50% 130%;
   transform: translateX(var(--card-x, 0px)) translateY(var(--card-y, 0px)) rotate(var(--card-rot, 0deg));
   transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease, border-color 0.25s ease, opacity 0.35s ease;
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   will-change: transform;
 }
 
-/* Silky smooth hover that preserves the natural fan angle & trajectory */
+/* Silky smooth hover with soft, airy elevation */
 .fan-card-item:hover {
-  transform: translateX(var(--card-x, 0px)) translateY(calc(var(--card-y, 0px) - 36px)) rotate(var(--card-rot, 0deg)) scale(1.08) !important;
+  transform: translateX(var(--card-x, 0px)) translateY(calc(var(--card-y, 0px) - 28px)) rotate(var(--card-rot, 0deg)) scale(1.05) !important;
   z-index: 999 !important;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7), 0 0 30px rgba(236, 72, 153, 0.7);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12), 0 2px 10px rgba(244, 114, 182, 0.2);
   border-color: #f472b6;
 }
 
@@ -2830,7 +2831,7 @@ body {
   }
 
   .fan-card-item:hover {
-    transform: translateX(var(--card-x, 0px)) translateY(calc(var(--card-y, 0px) - 24px)) rotate(var(--card-rot, 0deg)) scale(1.1) !important;
+    transform: translateX(var(--card-x, 0px)) translateY(calc(var(--card-y, 0px) - 18px)) rotate(var(--card-rot, 0deg)) scale(1.06) !important;
   }
 
   /* Reveal Trigger Banner on Mobile */
