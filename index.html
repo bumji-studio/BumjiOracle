@@ -36,13 +36,13 @@
       <i class="fa-solid fa-wand-magic-sparkles logo-icon"></i>
       <div>
         <h1>DESTINY ARCANA</h1>
-        <span class="subtitle">✨ ดูดวงไพ่ทาโรต์ x แก๊งเหมียวนุ่มฟู • สไตล์โมเดิร์นวัยรุ่น</span>
+        <span class="subtitle">✨ ดูดวงไพ่ออราเคิล My Cat &amp; I (61 ใบ) • สไตล์โมเดิร์นฮีลใจ</span>
       </div>
     </div>
     <!-- Mode Navigation Tabs -->
     <div class="header-nav-tabs" id="headerNavTabs">
       <button class="nav-tab active" id="tabReadingBtn">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> ระบบทำนายไพ่ (Tarot Reading)
+        <i class="fa-solid fa-wand-magic-sparkles"></i> ระบบทำนายไพ่ (My Cat &amp; I)
       </button>
       <button class="nav-tab" id="tabTongShuBtn">
         <i class="fa-solid fa-calendar-days"></i> ฤกษ์ยาม TongShu (通書)
@@ -537,26 +537,22 @@
   <div id="readingAppView" class="view-container">
     <div class="reading-app-container">
       
-      <!-- STEPPER PROGRESS BAR -->
+      <!-- STEPPER PROGRESS BAR (3 STEPS) -->
       <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง">
         <div class="stepper-track">
-          <div class="stepper-fill" id="stepperFill" style="width: 15%;"></div>
+          <div class="stepper-fill" id="stepperFill" style="width: 0%;"></div>
         </div>
         <div class="stepper-step active" id="stepIndicator1" data-step="1">
           <div class="step-num"><i class="fa-solid fa-pen-nib"></i></div>
           <span class="step-label">1. กรอกคำถาม</span>
         </div>
         <div class="stepper-step" id="stepIndicator2" data-step="2">
-          <div class="step-num"><i class="fa-solid fa-layer-group"></i></div>
-          <span class="step-label">2. เลือกชุดไพ่</span>
+          <div class="step-num"><i class="fa-solid fa-hand-sparkles"></i></div>
+          <span class="step-label">2. เลือกไพ่ 3 ใบ</span>
         </div>
         <div class="stepper-step" id="stepIndicator3" data-step="3">
-          <div class="step-num"><i class="fa-solid fa-hand-sparkles"></i></div>
-          <span class="step-label">3. เลือกไพ่ 3 ใบ</span>
-        </div>
-        <div class="stepper-step" id="stepIndicator4" data-step="4">
           <div class="step-num"><i class="fa-solid fa-star"></i></div>
-          <span class="step-label">4. แสดงคำตอบ</span>
+          <span class="step-label">3. แสดงคำตอบ</span>
         </div>
       </nav>
 
@@ -589,9 +585,9 @@
           <div class="sparkle-orbit">
             <i class="fa-solid fa-wand-magic-sparkles step1-main-icon"></i>
           </div>
-          <h2 class="step1-title">ถามอะไรก็ได้... จักรวาลพร้อมตอบ 🔮✨</h2>
+          <h2 class="step1-title">ถามอะไรก็ได้... ไพ่ My Cat &amp; I พร้อมตอบ 🔮✨</h2>
           <p class="step1-desc">
-            แตะเลือกหัวข้อยอดฮิตด้านบน หรือพิมพ์เรื่องที่อยากรู้ในใจได้เลย ไพ่พร้อมเปิดชะตาให้แล้ว!
+            แตะเลือกหัวข้อยอดฮิตด้านบน หรือพิมพ์เรื่องที่อยากรู้ในใจได้เลย สำรับ My Cat &amp; I (61 ใบ) พร้อมเปิดชะตาให้แล้ว!
           </p>
         </div>
 
@@ -633,16 +629,14 @@
 
           <div class="step1-action-row">
             <button class="btn btn-primary btn-lg pulse-glow" id="proceedToStep2Btn">
-              ไปเลือกสำรับไพ่กันเลย ✨ <i class="fa-solid fa-arrow-right"></i>
+              ไปเลือกไพ่ 3 ใบกันเลย ✨ <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>
       </section>
 
-      <!-- ============================================================ -->
-      <!-- STEP 2: COLLECTION SELECTION (JiuTian vs Bumji) -->
-      <!-- ============================================================ -->
-      <section id="readingStep2" class="reading-step-card hidden animate-fade-in">
+      <!-- STEP 2 (LEGACY DECK SELECTION - HIDDEN FOR SINGLE DECK MODE) -->
+      <section id="readingStep2" class="reading-step-card hidden animate-fade-in" style="display: none !important;">
         <div class="step-header-with-back">
           <button class="btn btn-secondary-sm" id="backToStep1Btn">
             <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปแก้ไขคำถาม
@@ -737,16 +731,16 @@
       </section>
 
       <!-- ============================================================ -->
-      <!-- STEP 3: PICK 3 CARDS -->
+      <!-- STEP 2: PICK 3 CARDS (MY CAT & I 61 CARDS) -->
       <!-- ============================================================ -->
       <section id="readingStep3" class="reading-step-card hidden animate-fade-in">
         <div class="step-header-with-back">
           <button class="btn btn-secondary-sm" id="backToStep2Btn">
-            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปเลือกชุดไพ่
+            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปแก้ไขคำถาม
           </button>
           <div class="step-title-group">
-            <h2 class="step-title"><i class="fa-solid fa-hand-sparkles"></i> เลือกไพ่ 3 ใบเพื่อค้นหาคำตอบ</h2>
-            <p class="step-desc" id="pickStepDesc">ตั้งจิตอธิษฐานถึงเรื่องที่ถาม แล้วคลิกเลือกไพ่ทีละใบจากสำรับ หรือกดสุ่มเปิดอัตโนมัติ</p>
+            <h2 class="step-title"><i class="fa-solid fa-hand-sparkles"></i> เลือกไพ่ 3 ใบจากสำรับ My Cat &amp; I</h2>
+            <p class="step-desc" id="pickStepDesc">ตั้งจิตอธิษฐานถึงเรื่องที่ถาม แล้วคลิกเลือกไพ่ทีละใบจากสำรับ 61 ใบ หรือกดสุ่มเปิดอัตโนมัติ</p>
           </div>
         </div>
 
@@ -1281,24 +1275,21 @@
   <div class="modal-overlay hidden" id="cardSelectModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังไพ่ 96 ใบ - เลือกตำแหน่ง: <span id="modalPositionName">ตำแหน่ง 1</span></h3>
+        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังไพ่ My Cat &amp; I (61 ใบ) - เลือกตำแหน่ง: <span id="modalPositionName">ตำแหน่ง 1</span></h3>
         <button class="modal-close" id="closeCardModalBtn">&times;</button>
       </div>
       
       <!-- Filter Bar -->
       <div class="modal-filter-tabs" id="modalFilterTabs">
-        <button class="modal-tab active" data-filter="all">ทั้งหมด (96 ใบ)</button>
-        <button class="modal-tab" data-filter="Major Arcana">Major Arcana</button>
-        <button class="modal-tab" data-filter="ธาตุทอง">ธาตุทอง</button>
-        <button class="modal-tab" data-filter="ธาตุไม้">ธาตุไม้</button>
-        <button class="modal-tab" data-filter="ธาตุน้ำ">ธาตุน้ำ</button>
-        <button class="modal-tab" data-filter="ธาตุไฟ">ธาตุไฟ</button>
-        <button class="modal-tab" data-filter="ธาตุดิน">ธาตุดิน</button>
+        <button class="modal-tab active" data-filter="all">ทั้งหมด (61 ใบ)</button>
+        <button class="modal-tab" data-filter="light">แสงสว่าง (Light)</button>
+        <button class="modal-tab" data-filter="shadow">ด้านเงา (Shadow)</button>
+        <button class="modal-tab" data-filter="advice">คำแนะนำ (Advice)</button>
       </div>
 
       <div class="modal-search-bar">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="modalCardSearchInput" placeholder="พิมพ์เลขไพ่ (1-96) หรือ ค้นหาชื่อไพ่...">
+        <input type="text" id="modalCardSearchInput" placeholder="พิมพ์เลขไพ่ (1-61) หรือ ค้นหาชื่อไพ่ / คำสำคัญ...">
       </div>
       <div class="modal-cards-grid" id="modalCardsGrid">
         <!-- Dynamically rendered card list for picking -->
@@ -1351,12 +1342,12 @@
   <!-- Offscreen buffer for compiling PDF pages -->
   <div id="pdfPrintBuffer" class="pdf-buffer-hidden"></div>
 
-  <!-- Load default cards data (JiuTian Arcana) -->
-  <script src="data/default-cards.js?v=20261010_tongshu"></script>
-  <!-- Load Bumji cards data (Bumji & The Gang) -->
-  <script src="data/bumji-cards.js?v=20261010_tongshu"></script>
+  <!-- Load My Cat & I cards data (61 cards from คู่มือไพ่CAT61.xlsx) -->
+  <script src="data/my-cat-cards.js?v=20261011_cat61"></script>
+  <!-- Load Bumji cards data (Alias compatibility) -->
+  <script src="data/bumji-cards.js?v=20261011_cat61"></script>
   <!-- Load App scripts -->
-  <script src="app.js?v=20261011_app_v7"></script>
+  <script src="app.js?v=20261011_app_v8"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261011_qimen_v4"></script>

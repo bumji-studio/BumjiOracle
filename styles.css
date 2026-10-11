@@ -7521,3 +7521,63 @@ body {
   white-space: nowrap;
   letter-spacing: 0.3px;
 }
+
+/* ==========================================================================
+   MY CAT & I ORACLE ENHANCEMENTS
+   ========================================================================== */
+.cat-card-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.card-front-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.82) 42%, rgba(15, 23, 42, 0.96) 100%);
+  padding: 16px 8px 10px;
+  text-align: center;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.overlay-card-num {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #fbbf24;
+  margin-bottom: 2px;
+}
+
+.overlay-card-name-en {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.overlay-card-name-th {
+  font-family: 'Prompt', sans-serif;
+  font-size: 11.5px;
+  color: #f1f5f9;
+  margin-top: 2px;
+}
+
+.modal-card-num-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(15, 23, 42, 0.88);
+  color: #fbbf24;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}

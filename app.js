@@ -993,6 +993,8 @@ document.addEventListener('DOMContentLoaded', () => {
     'tarot': 'reading',
     'card': 'reading',
     'cards': 'reading',
+    'cat': 'reading',
+    'mycat': 'reading',
     'tongshu': 'tongshu',
     'calendar': 'tongshu',
     'almanac': 'tongshu',
@@ -1029,13 +1031,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Stepper Elements
+  // ==========================================================================
+  // MY CAT & I ORACLE DIVINATION APP MODULE (3-STEP INTUITIVE FLOW)
+  // Single Deck: "My Cat & I" (61 Cards from คู่มือไพ่CAT61.xlsx)
+  // ==========================================================================
+
+  // Stepper Elements (3 Steps)
   const stepperFill = document.getElementById('stepperFill');
   const stepIndicators = [
     document.getElementById('stepIndicator1'),
     document.getElementById('stepIndicator2'),
-    document.getElementById('stepIndicator3'),
-    document.getElementById('stepIndicator4')
+    document.getElementById('stepIndicator3')
   ];
 
   // Pinned Context Bar
@@ -1047,9 +1053,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Step Sections
   const readingStep1 = document.getElementById('readingStep1');
-  const readingStep2 = document.getElementById('readingStep2');
-  const readingStep3 = document.getElementById('readingStep3');
-  const readingStep4 = document.getElementById('readingStep4');
+  const readingStep2 = document.getElementById('readingStep2'); // Legacy 2-deck screen (hidden)
+  const readingStep3 = document.getElementById('readingStep3'); // Step 2: Pick 3 Cards
+  const readingStep4 = document.getElementById('readingStep4'); // Step 3: Divination Results
 
   // Step 1: Question Elements
   const userQuestionInput = document.getElementById('userQuestionInput');
@@ -1057,12 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const proceedToStep2Btn = document.getElementById('proceedToStep2Btn');
   const chipButtons = document.querySelectorAll('.chip-btn');
 
-  // Step 2: Collection Elements
-  const backToStep1Btn = document.getElementById('backToStep1Btn');
-  const selectDeckBtns = document.querySelectorAll('.select-deck-btn');
-  const collectionCards = document.querySelectorAll('.collection-card');
-
-  // Step 3: Pick 3 Cards Elements
+  // Step 2: Pick 3 Cards Elements
   const backToStep2Btn = document.getElementById('backToStep2Btn');
   const pickStepDesc = document.getElementById('pickStepDesc');
   const pickCurrentInstruction = document.getElementById('pickCurrentInstruction');
@@ -1073,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const revealTriggerBanner = document.getElementById('revealTriggerBanner');
   const revealDivinationBtn = document.getElementById('revealDivinationBtn');
 
-  // Step 4: Results Elements
+  // Step 3: Results Elements
   const newReadingBtn = document.getElementById('newReadingBtn');
   const redrawCurrentCardsBtn = document.getElementById('redrawCurrentCardsBtn');
   const toggleFlipCardsBtn = document.getElementById('toggleFlipCardsBtn');
@@ -1091,6 +1092,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalPositionName = document.getElementById('modalPositionName');
   const modalCardSearchInput = document.getElementById('modalCardSearchInput');
   const modalCardsGrid = document.getElementById('modalCardsGrid');
+  const modalFilterTabs = document.getElementById('modalFilterTabs');
+  let currentModalFilter = 'all';
 
   // Spread Position Metadata (3-Card Trinity Spread)
   const POSITIONS = [
@@ -1114,29 +1117,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  function getActiveCardsPool() {
+    if (typeof myCatCards !== 'undefined' && Array.isArray(myCatCards) && myCatCards.length > 0) {
+      return myCatCards;
+    }
+    if (typeof bumjiCards !== 'undefined' && Array.isArray(bumjiCards) && bumjiCards.length > 0) {
+      return bumjiCards;
+    }
+    return [];
+  }
+
   // App State for Fortune Telling
   const fortuneState = {
     step: 1,
     question: '',
-    deckId: 'jiutian', // 'jiutian' | 'bumji'
-    activeCardsPool: [],
+    deckId: 'mycat',
+    activeCardsPool: getActiveCardsPool(),
     drawnCards: [null, null, null],
     currentPickSlot: 0,
     modalTargetSlot: 0
   };
 
   // --------------------------------------------------------------------------
-  // STEPPER & NAVIGATION CONTROLLER
+  // STEPPER & NAVIGATION CONTROLLER (3-STEP SYSTEM)
+  // 1: Question Input -> 2: Pick 3 Cards -> 3: Divination Results
   // --------------------------------------------------------------------------
   function setStep(targetStep) {
     fortuneState.step = targetStep;
 
-    // Update Stepper Visuals
-    const fillPercents = [15, 38, 68, 100];
+    // Ensure pool is loaded
+    if (!fortuneState.activeCardsPool || fortuneState.activeCardsPool.length === 0) {
+      fortuneState.activeCardsPool = getActiveCardsPool();
+    }
+
+    // Update Stepper Progress Bar (0%, 50%, 100%)
+    const fillPercents = [0, 50, 100];
     if (stepperFill) {
       stepperFill.style.width = `${fillPercents[targetStep - 1]}%`;
     }
 
+    // Update Stepper Step Badges
     stepIndicators.forEach((indicator, idx) => {
       if (!indicator) return;
       const stepNum = idx + 1;
@@ -1149,15 +1169,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Toggle Step Containers
-    [readingStep1, readingStep2, readingStep3, readingStep4].forEach((el, idx) => {
-      if (!el) return;
-      if (idx + 1 === targetStep) {
-        el.classList.remove('hidden');
-        el.classList.add('animate-fade-in');
-      } else {
-        el.classList.add('hidden');
-      }
-    });
+    if (readingStep1) readingStep1.classList.toggle('hidden', targetStep !== 1);
+    if (readingStep2) readingStep2.classList.add('hidden'); // Legacy screen hidden
+    if (readingStep3) readingStep3.classList.toggle('hidden', targetStep !== 2);
+    if (readingStep4) readingStep4.classList.toggle('hidden', targetStep !== 3);
 
     // Pinned Context Bar visibility
     if (pinnedContextBar) {
@@ -1166,20 +1181,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pinnedQuestionText) {
           pinnedQuestionText.textContent = fortuneState.question || 'ภาพรวมดวงชะตาและพลังงานชีวิต';
         }
-        if (targetStep >= 3 && pinnedDeckItem && pinnedDeckText) {
+        if (pinnedDeckItem && pinnedDeckText) {
           pinnedDeckItem.classList.remove('hidden');
-          pinnedDeckText.textContent = fortuneState.deckId === 'jiutian' 
-            ? 'JiuTian Arcana (ไพ่เทพจีน 96 ใบ)' 
-            : 'Bumji & The Gang (บุ๋มจิแอนด์เดอะแก๊งค์)';
-        } else if (pinnedDeckItem) {
-          pinnedDeckItem.classList.add('hidden');
+          pinnedDeckText.textContent = 'My Cat & I (61 ใบ)';
         }
       } else {
         pinnedContextBar.classList.add('hidden');
       }
     }
 
-    // Scroll to top of app view smoothly
+    // Smooth scroll to top
     if (readingAppView) {
       readingAppView.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -1206,11 +1217,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Step 1 Proceed Button -> Direct to Step 2 (Pick 3 Cards)
   if (proceedToStep2Btn && userQuestionInput) {
     proceedToStep2Btn.addEventListener('click', () => {
       const q = userQuestionInput.value.trim();
       fortuneState.question = q || 'ภาพรวมดวงชะตา พลังงานชีวิต และคำแนะนำในปัจจุบัน';
+      fortuneState.activeCardsPool = getActiveCardsPool();
+      resetPicks();
       setStep(2);
+      renderFanDeck();
+      updateSlotVisuals();
     });
   }
 
@@ -1222,57 +1238,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // STEP 2: COLLECTION SELECTION LOGIC
-  // --------------------------------------------------------------------------
-  if (backToStep1Btn) {
-    backToStep1Btn.addEventListener('click', () => {
-      setStep(1);
-    });
-  }
-
-  function selectCollection(deckId) {
-    fortuneState.deckId = deckId;
-
-    if (deckId === 'jiutian') {
-      // Use cards from defaultCards / local storage (96 cards)
-      fortuneState.activeCardsPool = (typeof cards !== 'undefined' && cards.length > 0) 
-        ? cards 
-        : (typeof defaultCards !== 'undefined' ? defaultCards : []);
-    } else {
-      // Use Bumji cards
-      fortuneState.activeCardsPool = (typeof bumjiCards !== 'undefined' && bumjiCards.length > 0)
-        ? bumjiCards
-        : [];
-    }
-
-    // Reset drawn cards for new selection
-    resetPicks();
-    setStep(3);
-    renderFanDeck();
-    updateSlotVisuals();
-  }
-
-  selectDeckBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const deckId = btn.getAttribute('data-deck-id');
-      selectCollection(deckId);
-    });
-  });
-
-  collectionCards.forEach(cardEl => {
-    cardEl.addEventListener('click', (e) => {
-      if (e.target.closest('button')) return; // handled by button
-      const deckId = cardEl.getAttribute('data-deck-id');
-      selectCollection(deckId);
-    });
-  });
-
-  // --------------------------------------------------------------------------
-  // STEP 3: PICK 3 CARDS LOGIC
+  // STEP 2: PICK 3 CARDS LOGIC
   // --------------------------------------------------------------------------
   if (backToStep2Btn) {
     backToStep2Btn.addEventListener('click', () => {
-      setStep(2);
+      setStep(1);
     });
   }
 
@@ -1283,9 +1253,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getDeckBackImage() {
-    return fortuneState.deckId === 'jiutian' 
-      ? 'assets/card_back_jiutian.jpg' 
-      : 'assets/card_back_bumji.jpg';
+    return 'assets/card_back_bumji.jpg';
   }
 
   function renderFanDeck() {
@@ -1312,7 +1280,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const xOffset = Math.round((i - cardCount / 2) * spreadStep);
       const yOffset = Math.round(Math.abs(angle) * (isMobile ? 0.9 : 1.5));
 
-      // Set CSS Custom Properties for silky-smooth hardware-accelerated transforms
       cardEl.style.setProperty('--card-x', `${xOffset}px`);
       cardEl.style.setProperty('--card-y', `${yOffset}px`);
       cardEl.style.setProperty('--card-rot', `${angle}deg`);
@@ -1330,10 +1297,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fortuneState.currentPickSlot >= 3) return;
     if (cardEl.classList.contains('card-picked')) return;
 
-    // Smoothly float the clicked card upwards and fade out
     cardEl.classList.add('card-picked');
 
-    // Pick random unpicked card from pool
+    // Pick random unpicked card from pool of 61 cards
     const pool = fortuneState.activeCardsPool;
     const available = pool.filter(c => !fortuneState.drawnCards.some(dc => dc && dc.id === c.id));
     const randomCard = available.length > 0 
@@ -1372,7 +1338,14 @@ document.addEventListener('DOMContentLoaded', () => {
         slotEl.classList.add('slot-filled');
         slotEl.classList.remove('active-pick');
         holderEl.innerHTML = `
-          <img src="${card.image || getDeckBackImage()}" class="slot-filled-card-img" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
+          <div class="slot-card-wrapper cat-card-frame" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden;">
+            <img src="${card.image || getDeckBackImage()}" class="slot-filled-card-img" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
+            <div class="card-front-overlay">
+              <div class="overlay-card-num">No. ${card.id}</div>
+              <div class="overlay-card-name-en">${card.name_en || ''}</div>
+              <div class="overlay-card-name-th">${card.name_th || ''}</div>
+            </div>
+          </div>
         `;
       } else {
         slotEl.classList.remove('slot-filled');
@@ -1401,7 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         pickCurrentInstruction.innerHTML = `
           <i class="fa-solid fa-circle-check text-gold"></i> 
-          <span>เลือกไพ่ครบทั้ง 3 ใบเรียบร้อยแล้ว! กดปุ่มทำนายด้านล่างได้เลย</span>
+          <span>เลือกไพ่ครบทั้ง 3 ใบเรียบร้อยแล้ว! กดปุ่มทำนายด้านล่างได้เลย ✨</span>
         `;
       }
     }
@@ -1416,20 +1389,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const fanCards = deckFanWrapper ? Array.from(deckFanWrapper.querySelectorAll('.fan-card-item:not(.card-picked)')) : [];
       const shuffled = [...pool].sort(() => 0.5 - Math.random());
       
-      // Sequentially pick for each unfilled slot with 180ms stagger
       let delay = 0;
-      for (let s = 0; s < 3; s++) {
-        const slotIdx = s;
-        setTimeout(() => {
-          if (fanCards.length > slotIdx) {
-            const randomFan = fanCards[Math.floor(Math.random() * fanCards.length)];
-            if (randomFan) randomFan.classList.add('card-picked');
-          }
-          assignCardToSlot(slotIdx, shuffled[slotIdx]);
-          fortuneState.currentPickSlot = slotIdx < 2 ? slotIdx + 1 : 3;
-          updateSlotVisuals();
-        }, delay);
-        delay += 180;
+      for (let i = 0; i < 3; i++) {
+        if (fortuneState.drawnCards[i] === null) {
+          setTimeout(() => {
+            const avail = shuffled.filter(c => !fortuneState.drawnCards.some(dc => dc && dc.id === c.id));
+            if (avail.length > 0) {
+              const pickCard = avail[0];
+              assignCardToSlot(i, pickCard);
+              if (fanCards.length > i) {
+                fanCards[i].classList.add('card-picked');
+              }
+            }
+            const nextSlot = fortuneState.drawnCards.findIndex(c => c === null);
+            fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : 3;
+            updateSlotVisuals();
+          }, delay);
+          delay += 180;
+        }
       }
     });
   }
@@ -1441,11 +1418,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Manual Search/Picker Modal
+  // Manual Card Selector Modal
   if (openManualPickerBtn) {
     openManualPickerBtn.addEventListener('click', () => {
       openCardSelectModal(fortuneState.currentPickSlot < 3 ? fortuneState.currentPickSlot : 0);
     });
+  }
+
+  // Target Slot Click to replace or select
+  for (let i = 0; i < 3; i++) {
+    const slotEl = document.getElementById(`slotCard${i}`);
+    if (slotEl) {
+      slotEl.addEventListener('click', () => {
+        fortuneState.currentPickSlot = i;
+        updateSlotVisuals();
+      });
+    }
   }
 
   function openCardSelectModal(slotIndex) {
@@ -1454,6 +1442,12 @@ document.addEventListener('DOMContentLoaded', () => {
       modalPositionName.textContent = POSITIONS[slotIndex].title;
     }
     if (modalCardSearchInput) modalCardSearchInput.value = '';
+    currentModalFilter = 'all';
+    if (modalFilterTabs) {
+      modalFilterTabs.querySelectorAll('.modal-tab').forEach(t => {
+        t.classList.toggle('active', t.getAttribute('data-filter') === 'all');
+      });
+    }
     renderModalCardGrid('');
     if (cardSelectModal) cardSelectModal.classList.remove('hidden');
   }
@@ -1461,6 +1455,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeCardModalBtn && cardSelectModal) {
     closeCardModalBtn.addEventListener('click', () => {
       cardSelectModal.classList.add('hidden');
+    });
+  }
+
+  if (modalFilterTabs) {
+    modalFilterTabs.querySelectorAll('.modal-tab').forEach(tabBtn => {
+      tabBtn.addEventListener('click', () => {
+        modalFilterTabs.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+        tabBtn.classList.add('active');
+        currentModalFilter = tabBtn.getAttribute('data-filter') || 'all';
+        const q = modalCardSearchInput ? modalCardSearchInput.value.trim().toLowerCase() : '';
+        renderModalCardGrid(q);
+      });
     });
   }
 
@@ -1476,24 +1482,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const pool = fortuneState.activeCardsPool;
     const filtered = pool.filter(c => {
-      if (!query) return true;
-      const matchName = c.name && c.name.toLowerCase().includes(query);
-      const matchId = String(c.id) === query;
-      const matchElement = c.element && c.element.toLowerCase().includes(query);
-      const matchChar = c.character && c.character.toLowerCase().includes(query);
-      return matchName || matchId || matchElement || matchChar;
+      // Query filter
+      if (query) {
+        const matchName = c.name && c.name.toLowerCase().includes(query);
+        const matchNameEn = c.name_en && c.name_en.toLowerCase().includes(query);
+        const matchNameTh = c.name_th && c.name_th.toLowerCase().includes(query);
+        const matchId = String(c.id) === query;
+        const matchKeywords = c.keywords && c.keywords.some(k => k.toLowerCase().includes(query));
+        const matchCore = c.core_meaning && c.core_meaning.toLowerCase().includes(query);
+        if (!(matchName || matchNameEn || matchNameTh || matchId || matchKeywords || matchCore)) {
+          return false;
+        }
+      }
+      return true;
     });
 
     filtered.forEach(card => {
       const itemEl = document.createElement('div');
       itemEl.className = 'modal-card-item';
       itemEl.innerHTML = `
-        <div class="modal-card-thumb">
+        <div class="modal-card-thumb" style="position: relative;">
           <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
+          <span class="modal-card-num-badge">#${card.id}</span>
         </div>
         <div class="modal-card-meta">
-          <strong>#${card.id} - ${card.name}</strong>
-          <span>${card.element || card.character || ''}</span>
+          <strong style="font-size: 13.5px; color: #1e293b;">${card.id}. ${card.name_en} (${card.name_th})</strong>
+          <span style="font-size: 11.5px; color: #059669; margin-top: 3px;">☀️ ${card.light}</span>
+          <span style="font-size: 11px; color: #d97706; margin-top: 2px;">🌙 ${card.shadow}</span>
+          <span style="font-size: 11px; color: #64748b; margin-top: 2px;">🏷️ ${card.keywords_th ? card.keywords_th.slice(0, 3).join(', ') : ''}</span>
         </div>
       `;
 
@@ -1509,7 +1525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Reveal Divination Button -> Go to Step 4
+  // Reveal Divination Button -> Go to Step 3 (Results)
   if (revealDivinationBtn) {
     revealDivinationBtn.addEventListener('click', () => {
       const allFilled = fortuneState.drawnCards.every(c => c !== null);
@@ -1518,15 +1534,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       renderDivinationResults();
-      setStep(4);
+      setStep(3);
     });
   }
 
   // --------------------------------------------------------------------------
-  // STEP 4: DIVINATION RESULTS & SYNTHESIS LOGIC
+  // STEP 3: DIVINATION RESULTS & SYNTHESIS LOGIC (MY CAT & I ORACLE)
   // --------------------------------------------------------------------------
   function renderDivinationResults() {
-    const isJiuTian = fortuneState.deckId === 'jiutian';
     const drawn = fortuneState.drawnCards;
 
     // Header info
@@ -1534,8 +1549,8 @@ document.addEventListener('DOMContentLoaded', () => {
       resultQuestionTitle.textContent = `“${fortuneState.question}”`;
     }
     if (resultDeckBadge) {
-      resultDeckBadge.textContent = isJiuTian ? 'JiuTian Arcana (ไพ่เทพจีน)' : 'Bumji & The Gang (แก๊งบุ๋มจิ)';
-      resultDeckBadge.className = isJiuTian ? 'badge-deck' : 'badge-deck deck-cat';
+      resultDeckBadge.textContent = 'My Cat & I Oracle (61 ใบ)';
+      resultDeckBadge.className = 'badge-deck deck-cat';
     }
     if (resultDateBadge) {
       const now = new Date();
@@ -1553,59 +1568,53 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardEl = document.createElement('article');
         cardEl.className = 'result-card-item';
 
-        // Position interpretation text tailored for this slot
         let positionMeaning = '';
-        let quoteText = '';
+        let quoteText = card.advice || 'จงเริ่มต้นด้วยใจที่เปิดกว้างและมีสติ';
 
-        if (isJiuTian) {
-          if (idx === 0) {
-            positionMeaning = `<strong>สภาวะปัจจุบัน:</strong> ${card.general_meaning || 'พลังงานเปิดกว้างสะท้อนถึงจุดเริ่มต้นและการตระหนักรู้ในตนเอง'} สื่อถึงสถานการณ์ที่กำลังก่อตัวขึ้นรอบตัวคุณ`;
-            quoteText = card.advice || 'ผู้ที่มีสติและรู้จักรอ ย่อมมองเห็นสัจธรรม';
-          } else if (idx === 1) {
-            positionMeaning = `<strong>กลยุทธ์ & แนวทางปฏิบัติ:</strong> ${card.work_meaning || 'จงใช้ความสุขุม ความละเอียดรอบคอบ และจัดสรรกำลังให้สมดุล'} เป็นกุญแจสำคัญในการคลี่คลายอุปสรรค`;
-            quoteText = card.advice || 'ไม่ฝืนกระแสธรรมชาติ แต่รู้จักโอนอ่อนผ่อนตามอย่างมีปัญญา';
-          } else {
-            positionMeaning = `<strong>บทสรุป & ผลลัพธ์:</strong> ${card.love_meaning || 'ชัยชนะและความสำเร็จจะเกิดขึ้นจากรากฐานที่มั่นคง'} พลังของเทพประจำไพ่ชี้ว่าผลลัพธ์จะนำมาซึ่งความเจริญก้าวหน้า`;
-            quoteText = card.advice || 'เมื่อปัญญาและวาสนามาบรรจบ ผลลัพธ์ย่อมงดงามเสมอ';
-          }
+        if (idx === 0) {
+          positionMeaning = `
+            <p><strong>สภาวะปัจจุบัน:</strong> ${card.core_meaning}</p>
+            <p style="margin-top: 6px; color: #059669;"><strong><i class="fa-solid fa-sun"></i> พลังแสงสว่าง (Light):</strong> ${card.light}</p>
+            <p style="margin-top: 4px; color: #d97706;"><strong><i class="fa-solid fa-moon"></i> จุดควรระวัง (Shadow):</strong> ${card.shadow}</p>
+          `;
+        } else if (idx === 1) {
+          positionMeaning = `
+            <p><strong>คำแนะนำสำคัญ (Advice):</strong> ${card.advice}</p>
+            <p style="margin-top: 6px; color: #059669;"><strong><i class="fa-solid fa-bolt"></i> พลังเกื้อหนุน (Light):</strong> ${card.light}</p>
+            <p style="margin-top: 4px; color: #d97706;"><strong><i class="fa-solid fa-shield-halved"></i> สิ่งที่ต้องเลี่ยง (Shadow):</strong> ${card.shadow}</p>
+          `;
         } else {
-          // Bumji Deck
-          if (idx === 0) {
-            positionMeaning = `<strong>พฤติกรรมสะท้อนปัจจุบัน:</strong> ${card.behavior || 'นอนนิ่งสังเกตการณ์'} — ${card.general_meaning || 'พักใจสบายๆ ไม่ต้องเร่งรีบ'}`;
-            quoteText = card.cat_wisdom || 'ความสุขไม่ต้องซับซ้อน ได้งีบสักตื่นโลกก็น่ารักขึ้นแล้ว!';
-          } else if (idx === 1) {
-            positionMeaning = `<strong>คำแนะนำฉบับแมวๆ:</strong> ${card.work_meaning || 'โฟกัสสิ่งที่ถนัดและเซฟโซนของตัวเอง'} ${card.behavior ? `(ทำตัวเหมือนตอน ${card.behavior})` : ''}`;
-            quoteText = card.cat_wisdom || 'ถ้าโลกวุ่นวายนัก ก็นอนขดเป็นก้อนขนมปังแล้วรอจังหวะใหม่';
-          } else {
-            positionMeaning = `<strong>บทสรุปนุ่มฟู:</strong> ${card.love_meaning || 'ความสัมพันธ์และเรื่องราวจะลงเอยอย่างอบอุ่นใจ'} คุณจะได้รับรอยยิ้มและความสบายใจกลับคืนมา`;
-            quoteText = card.cat_wisdom || 'ยิ้มเข้าไว้ มีขนมแมวเลีย มีคนที่รักเรา แค่นี้ก็ชนะแล้ว!';
-          }
+          positionMeaning = `
+            <p><strong>แนวโน้มผลลัพธ์:</strong> เมื่อนำคำแนะนำของไพ่ไปปรับใช้ สถานการณ์จะพัฒนาไปสู่ความสำเร็จ <em>“${card.light}”</em></p>
+            <p style="margin-top: 6px;"><strong>แก่นสาระสำคัญ:</strong> ${card.core_meaning}</p>
+          `;
         }
-
-        const tagText = isJiuTian 
-          ? (card.element || 'พลังจักรวาล') 
-          : (card.character || 'น้องแมวแก๊งบุ๋มจิ');
 
         cardEl.innerHTML = `
           <div class="result-pos-header">
             <span class="badge-num">${idx + 1}</span>
             <h3 class="result-pos-title">${pos.title}</h3>
           </div>
-          <div class="result-card-media">
+          <div class="result-card-media cat-card-frame">
             <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
+            <div class="card-front-overlay">
+              <div class="overlay-card-num">No. ${card.id}</div>
+              <div class="overlay-card-name-en">${card.name_en || ''}</div>
+              <div class="overlay-card-name-th">${card.name_th || ''}</div>
+            </div>
           </div>
           <div class="result-card-details">
-            <h4 class="result-card-name">${card.name}</h4>
+            <h4 class="result-card-name">${card.id}. ${card.name_en} (${card.name_th})</h4>
             <div class="result-tag-row">
-              <span class="result-tag"><i class="fa-solid fa-tag"></i> ${tagText}</span>
-              ${card.keywords ? card.keywords.slice(0, 2).map(kw => `<span class="result-tag">${kw}</span>`).join('') : ''}
+              <span class="result-tag"><i class="fa-solid fa-cat"></i> My Cat &amp; I</span>
+              ${card.keywords_th ? card.keywords_th.slice(0, 3).map(kw => `<span class="result-tag">${kw}</span>`).join('') : ''}
             </div>
             <div class="result-pos-meaning">
               ${positionMeaning}
             </div>
             <div class="result-card-quote">
               <i class="fa-solid fa-quote-left"></i>
-              <span>${quoteText}</span>
+              <span>“${quoteText}”</span>
             </div>
           </div>
         `;
@@ -1616,68 +1625,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render Synthesis Section
     if (resultSynthesisContainer) {
-      if (isJiuTian) {
-        renderJiuTianSynthesis(drawn);
-      } else {
-        renderBumjiSynthesis(drawn);
-      }
+      renderMyCatSynthesis(drawn);
     }
   }
 
-  function renderJiuTianSynthesis(drawn) {
-    const card1 = drawn[0];
-    const card2 = drawn[1];
-    const card3 = drawn[2];
-
-    const elementsList = drawn.map(c => c.element || 'พลังธรรมชาติ').join(' &rarr; ');
-
-    resultSynthesisContainer.innerHTML = `
-      <div class="synthesis-header-block">
-        <div class="synthesis-header-icon">
-          <i class="fa-solid fa-dragon"></i>
-        </div>
-        <div>
-          <h3 class="synthesis-title">บทสังเคราะห์คำทำนายและกลยุทธ์เต๋า (JiuTian Arcana Synthesis)</h3>
-          <p class="synthesis-sub">ประมวลผลความสัมพันธ์ของไพ่เทพเจ้าจีนทั้ง 3 องค์ สู่ข้อคิดและยุทธศาสตร์รับมือคำถามของคุณ</p>
-        </div>
-      </div>
-
-      <div class="synthesis-cards-grid">
-        <!-- Box 1: Elements Equilibrium -->
-        <div class="synthesis-card-box">
-          <h4 class="synthesis-box-title"><i class="fa-solid fa-yin-yang"></i> การหมุนเวียนของพลังเบญจธาตุ</h4>
-          <div class="synthesis-box-body">
-            <p style="margin-bottom: 8px;"><strong>สายธารพลังงาน:</strong> ${elementsList}</p>
-            <p>
-              การผสานพลังของ <strong>${card1.name}</strong> สู่ <strong>${card2.name}</strong> และสิ้นสุดที่ <strong>${card3.name}</strong> บ่งบอกถึงจังหวะชีวิตที่กำลังเปลี่ยนผ่านจากสภาวะแห่งการตื่นรู้ สู่การลงมือปฏิบัติด้วยปัญญาเต๋า ธาตุของไพ่ชุดนี้ส่งเสริมให้คุณใช้ความนิ่งสยบความเคลื่อนไหว และมองทะลุภาพลวงตาตรงหน้า
-            </p>
-          </div>
-        </div>
-
-        <!-- Box 2: Strategic Action -->
-        <div class="synthesis-card-box">
-          <h4 class="synthesis-box-title"><i class="fa-solid fa-chess-knight"></i> กลยุทธ์พิชัยยุทธ์เพื่อความสำเร็จ</h4>
-          <div class="synthesis-box-body">
-            <p>
-              คำตอบสำหรับคำถามของคุณคือ <strong>“อย่าเร่งรัดผลลัพธ์ แต่จงวางโครงสร้างให้แข็งแกร่ง”</strong> ในจุดที่เป็นกลยุทธ์ (${card2.name}) แนะนำให้คุณจัดลำดับความสำคัญ รักษาความสัมพันธ์ที่ดีกับคนรอบตัว และไม่ประมาทกับรายละเอียดเล็กๆ ชัยชนะที่ยั่งยืนเกิดจากคุณธรรมและความอดทน
-            </p>
-          </div>
-        </div>
-
-        <!-- Box 3: Divine Deities Blessings -->
-        <div class="synthesis-card-box" style="grid-column: 1 / -1;">
-          <h4 class="synthesis-box-title"><i class="fa-solid fa-scroll"></i> โอวาทและพรอันประเสริฐจากทวยเทพทั้งสามองค์</h4>
-          <ul style="margin: 8px 0 0 18px; font-size: 13.5px; line-height: 1.8; color: var(--color-text);">
-            <li><strong>${card1.name}:</strong> “${card1.advice || 'จงเริ่มต้นด้วยใจที่บริสุทธิ์และปราศจากอคติ'}”</li>
-            <li><strong>${card2.name}:</strong> “${card2.advice || 'ปัญญาที่แท้จริงคือการรู้ว่าเมื่อใดควรเดินหน้าและเมื่อใดควรหยุดยั้ง'}”</li>
-            <li><strong>${card3.name}:</strong> “${card3.advice || 'ความสำเร็จอันยิ่งใหญ่ย่อมเป็นของผู้อดทนและยึดมั่นในสัจจะ'}”</li>
-          </ul>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderBumjiSynthesis(drawn) {
+  function renderMyCatSynthesis(drawn) {
     const card1 = drawn[0];
     const card2 = drawn[1];
     const card3 = drawn[2];
@@ -1685,64 +1637,56 @@ document.addEventListener('DOMContentLoaded', () => {
     resultSynthesisContainer.innerHTML = `
       <div class="synthesis-header-block">
         <div class="synthesis-header-icon cat-theme">
-          <i class="fa-solid fa-paw"></i>
+          <i class="fa-solid fa-cat"></i>
         </div>
         <div>
-          <h3 class="synthesis-title">บทสังเคราะห์ความสุขฉบับแก๊งบุ๋มจิ (Bumji Feline Wisdom)</h3>
-          <p class="synthesis-sub">ถอดรหัสพฤติกรรมเจ้าเหมียวทั้ง 3 ท่า สู่ความสบายใจ ผ่อนคลาย และรอยยิ้มประจำวัน</p>
+          <h3 class="synthesis-title">🐱 บทสังเคราะห์คำทำนาย My Cat &amp; I Oracle (61 Cards)</h3>
+          <p class="synthesis-sub">ร้อยเรียงแก่นความหมาย แสงสว่าง (Light) ด้านเงา (Shadow) และคำแนะนำ (Advice) เพื่อคำตอบที่ชัดเจนและนำไปใช้ได้จริง</p>
         </div>
       </div>
 
       <div class="synthesis-cards-grid">
-        <!-- Box 1: Cat Behavior Insight -->
+        <!-- Box 1: Energy Journey -->
         <div class="synthesis-card-box theme-cat">
-          <h4 class="synthesis-box-title text-cat"><i class="fa-solid fa-cat"></i> พฤติกรรมแมวสะท้อนเรื่องราวของคุณ</h4>
+          <h4 class="synthesis-box-title text-cat"><i class="fa-solid fa-route"></i> เส้นทางพลังงานชีวิต (Energy Journey)</h4>
           <div class="synthesis-box-body">
-            <p>
-              แก๊งแมวบุ๋มจิบอกว่า สถานการณ์ที่คุณกำลังเจอนั้นเหมือนแมวที่กำลัง <em>${card1.behavior || 'นอนสังเกตการณ์'}</em> แล้วค่อยๆ ขยับตัวไป <em>${card2.behavior || 'หามุมสบายใจ'}</em> จนสุดท้ายได้ <em>${card3.behavior || 'กินขนมอย่างมีความสุข'}</em> 
+            <p style="margin-bottom: 8px;">
+              <strong>การเชื่อมโยง:</strong> 
+              <span class="badge-cat" style="font-size: 11px; padding: 2px 8px; border-radius: 10px;">${card1.name_th}</span> &rarr; 
+              <span class="badge-cat" style="font-size: 11px; padding: 2px 8px; border-radius: 10px;">${card2.name_th}</span> &rarr; 
+              <span class="badge-cat" style="font-size: 11px; padding: 2px 8px; border-radius: 10px;">${card3.name_th}</span>
             </p>
-            <p style="margin-top: 6px;">
-              เรื่องราวไม่ได้ยากเกินไปเลย แค่ปล่อยใจให้เบาเหมือนปุยขนแมว ทำทีละอย่าง เดี๋ยวทางออกก็จะโผล่มาเอง!
+            <p>
+              จากสถานการณ์ปัจจุบันที่สะท้อนถึง <em>“${card1.core_meaning}”</em> เมื่อคุณปรับกลยุทธ์ตามคำแนะนำ <em>“${card2.advice}”</em> จะช่วยปลดล็อกพลังงานด้านบวกและนำพาชีวิตไปสู่ <em>“${card3.light}”</em> ได้อย่างราบรื่น
             </p>
           </div>
         </div>
 
-        <!-- Box 2: Cat Wisdom -->
+        <!-- Box 2: Key Breakthrough -->
         <div class="synthesis-card-box theme-cat">
-          <h4 class="synthesis-box-title text-cat"><i class="fa-solid fa-heart"></i> ปรัชญาเหมียวสะกิดใจ (Cat Wisdom)</h4>
+          <h4 class="synthesis-box-title text-cat"><i class="fa-solid fa-key"></i> กุญแจสำคัญสู่การปลดล็อก (Key Breakthrough)</h4>
           <div class="synthesis-box-body">
-            <p style="font-style: italic; color: #e11d48; margin-bottom: 8px;">
-              “แมวไม่เคยกังวลถึงเรื่องเมื่อวาน และไม่เคยเครียดกับชามข้าวของวันพรุ่งนี้... สุขกับกล่องตรงหน้า และขนมในมื้อนี้เถอะนะ!”
-            </p>
             <p>
-              คำแนะนำจาก <strong>${card2.name}</strong> คือให้คุณรักตัวเอง ดูแลความรู้สึกตัวเองเป็นที่ตั้ง อย่ายอมให้ใครมาแย่งความสุขสงบในใจไปได้
+              หัวใจสำคัญในการรับมือกับเรื่องนี้อยู่ที่ไพ่ใบที่ 2 <strong>${card2.name}</strong>: 
+              ให้มุ่งเน้น <strong>“${card2.advice}”</strong> พร้อมระวังกับดักด้านเงาคือ <em>“${card2.shadow}”</em> อย่าด่วนตัดสินใจด้วยความกังวล
             </p>
           </div>
         </div>
 
-        <!-- Box 3: Daily Healing Quest -->
+        <!-- Box 3: Oracle Wisdom & 3 Blessings -->
         <div class="synthesis-card-box theme-cat" style="grid-column: 1 / -1;">
-          <h4 class="synthesis-box-title text-cat"><i class="fa-solid fa-wand-sparkles"></i> ภารกิจฮีลใจประจำวันจากแก๊งบุ๋มจิ (Daily Comfort Quest)</h4>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 10px;">
-            <div style="background: #ffffff; padding: 12px; border-radius: 10px; border: 1px dashed #f472b6;">
-              <strong style="color: #e11d48;"><i class="fa-solid fa-cookie-bite"></i> 1. ให้รางวัลตัวเอง</strong>
-              <p style="font-size: 12px; color: #475569; margin-top: 4px;">กินของอร่อยหรือชานมแก้วโปรด เหมือนน้องแมวได้เลียซอง Churu</p>
-            </div>
-            <div style="background: #ffffff; padding: 12px; border-radius: 10px; border: 1px dashed #f472b6;">
-              <strong style="color: #e11d48;"><i class="fa-solid fa-bed"></i> 2. งีบพักชาร์จแบต</strong>
-              <p style="font-size: 12px; color: #475569; margin-top: 4px;">พักสายตา 15 นาที ทำตัวเป็นก้อนขนมปังนิ่งๆ วางมือถือลงสักครู่</p>
-            </div>
-            <div style="background: #ffffff; padding: 12px; border-radius: 10px; border: 1px dashed #f472b6;">
-              <strong style="color: #e11d48;"><i class="fa-solid fa-face-smile"></i> 3. กอดตัวเองแล้วยิ้ม</strong>
-              <p style="font-size: 12px; color: #475569; margin-top: 4px;">บอกตัวเองหน้ากระจกว่า 'วันนี้เก่งมากแล้ว พรุ่งนี้ค่อยลุยใหม่นะ'</p>
-            </div>
-          </div>
+          <h4 class="synthesis-box-title text-cat"><i class="fa-solid fa-heart"></i> โอวาทและข้อคิดเตือนใจ (My Cat &amp; I Wisdom)</h4>
+          <ul style="margin: 8px 0 0 18px; font-size: 13.5px; line-height: 1.8; color: var(--color-text);">
+            <li><strong>${card1.name_en} (${card1.name_th}):</strong> “${card1.advice}” — น้อมรับความจริงและพลังเกื้อหนุน: ${card1.light}</li>
+            <li><strong>${card2.name_en} (${card2.name_th}):</strong> “${card2.advice}” — วางแผนรอบคอบ หลีกเลี่ยง: ${card2.shadow}</li>
+            <li><strong>${card3.name_en} (${card3.name_th}):</strong> “${card3.advice}” — ผลลัพธ์แห่งความสำเร็จและความสุข: ${card3.light}</li>
+          </ul>
         </div>
       </div>
     `;
   }
 
-  // Toolbar Actions in Step 4
+  // Results Action Buttons
   if (newReadingBtn) {
     newReadingBtn.addEventListener('click', () => {
       resetPicks();
@@ -1754,7 +1698,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (redrawCurrentCardsBtn) {
     redrawCurrentCardsBtn.addEventListener('click', () => {
       resetPicks();
-      setStep(3);
+      setStep(2);
       renderFanDeck();
       updateSlotVisuals();
     });
@@ -1771,25 +1715,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (copyResultTextBtn) {
     copyResultTextBtn.addEventListener('click', () => {
-      const isJiuTian = fortuneState.deckId === 'jiutian';
-      const deckName = isJiuTian ? 'JiuTian Arcana (ไพ่เทพจีน)' : 'Bumji & The Gang (บุ๋มจิแอนด์เดอะแก๊งค์)';
       const drawn = fortuneState.drawnCards;
-
-      let text = `🔮 === คำทำนายไพ่ศักดิ์สิทธิ์: ${deckName} ===\n`;
+      let text = `🔮 === ผลคำทำนายไพ่: My Cat & I Oracle (61 ใบ) ===\n`;
       text += `❓ คำถาม: ${fortuneState.question}\n`;
       text += `📅 วันที่ทำนาย: ${new Date().toLocaleDateString('th-TH')}\n\n`;
 
       drawn.forEach((c, idx) => {
         const pos = POSITIONS[idx];
         text += `[${pos.title}]\n`;
-        text += `ไพ่: ${c.name} (${c.element || c.character || ''})\n`;
-        text += `ความหมาย: ${c.general_meaning || ''}\n`;
-        if (c.advice) text += `คำสอน/คำแนะนำ: ${c.advice}\n`;
-        if (c.cat_wisdom) text += `ข้อคิดแมวๆ: ${c.cat_wisdom}\n`;
+        text += `ไพ่: No. ${c.id} - ${c.name_en} (${c.name_th})\n`;
+        text += `แก่นความหมาย: ${c.core_meaning || ''}\n`;
+        if (c.light) text += `แสงสว่าง (Light): ${c.light}\n`;
+        if (c.shadow) text += `ด้านเงา (Shadow): ${c.shadow}\n`;
+        if (c.advice) text += `คำแนะนำ (Advice): ${c.advice}\n`;
         text += `\n`;
       });
 
-      text += `✨ ขอให้ดวงชะตาและพลังงานแห่งความสุขโอบกอดคุณเสมอ! ✨\n`;
+      text += `✨ ขอให้พลังแห่งความสุขและคำแนะนำของไพ่นำทางให้คุณสมหวังในทุกสิ่ง! ✨\n`;
 
       navigator.clipboard.writeText(text).then(() => {
         alert('คัดลอกข้อความคำทำนายลง Clipboard เรียบร้อยแล้ว!');
@@ -1865,7 +1807,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Friendly greeting on question step
     const step1Title = document.querySelector('.step1-title');
     if (step1Title && profile.displayName) {
-      step1Title.innerHTML = `สวัสดีคุณ ${profile.displayName} ✨ จักรวาลพร้อมตอบ 🔮`;
+      step1Title.innerHTML = `สวัสดีคุณ ${profile.displayName} ✨ ไพ่ My Cat & I พร้อมตอบ 🔮`;
     }
   }
 
@@ -1876,8 +1818,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function shareResultToLine() {
     const question = fortuneState.question || 'คำถามดวงชะตา';
-    const isJiuTian = fortuneState.deckId === 'jiutian';
-    const deckName = isJiuTian ? 'JiuTian Arcana (ไพ่เทพจีน)' : 'Bumji & The Gang (แก๊งบุ๋มจิ)';
+    const deckName = 'My Cat & I Oracle (61 ใบ)';
     const cards = fortuneState.drawnCards;
     
     const card1Name = cards[0] ? cards[0].name : '';
@@ -1931,7 +1872,7 @@ https://liff.line.me/2011798499-hm8dJi7C`;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      if (fortuneState.step === 3) {
+      if (fortuneState.step === 2) {
         renderFanDeck();
       }
     }, 250);
