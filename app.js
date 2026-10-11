@@ -1263,12 +1263,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMobile = window.innerWidth <= 640;
     const backImg = getDeckBackImage();
     
-    // Responsive card count & spread for mobile vs desktop
-    const cardCount = isMobile ? 18 : 26;
-    const spreadStep = isMobile ? 13 : 22;
-    const angleRange = isMobile ? 42 : 46;
-    const angleStep = angleRange / cardCount;
-    const startAngle = -(angleRange / 2);
+    // Straight line horizontal arrangement (แนวตรง ไม่กรีดโค้ง)
+    const cardCount = isMobile ? 18 : 24;
+    const cardWidth = isMobile ? 68 : 116;
+    
+    // Calculate spread step so cards fit gracefully within container
+    const containerWidth = deckFanWrapper.clientWidth || window.innerWidth;
+    const maxSpan = Math.max(containerWidth - cardWidth - (isMobile ? 24 : 48), 240);
+    const targetStep = isMobile ? 14 : 26;
+    const spreadStep = Math.min(targetStep, Math.floor(maxSpan / (cardCount - 1)));
 
     for (let i = 0; i < cardCount; i++) {
       const cardEl = document.createElement('div');
@@ -1276,13 +1279,11 @@ document.addEventListener('DOMContentLoaded', () => {
       cardEl.style.backgroundImage = `url("${backImg}")`;
       cardEl.setAttribute('data-fan-index', i);
 
-      const angle = Math.round((startAngle + i * angleStep) * 10) / 10;
-      const xOffset = Math.round((i - cardCount / 2) * spreadStep);
-      const yOffset = Math.round(Math.abs(angle) * (isMobile ? 0.9 : 1.5));
+      const xOffset = Math.round((i - (cardCount - 1) / 2) * spreadStep);
 
       cardEl.style.setProperty('--card-x', `${xOffset}px`);
-      cardEl.style.setProperty('--card-y', `${yOffset}px`);
-      cardEl.style.setProperty('--card-rot', `${angle}deg`);
+      cardEl.style.setProperty('--card-y', '0px');
+      cardEl.style.setProperty('--card-rot', '0deg');
       cardEl.style.zIndex = i + 1;
 
       cardEl.addEventListener('click', () => {
