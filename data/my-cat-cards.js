@@ -11,7 +11,7 @@ const myCatCards = [
     "name_en": "Wish",
     "name_th": "ความปรารถนา",
     "character": "My Cat & I",
-    "image": "Cat61/1.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "ความหวัง",
       "ความตั้งใจ",
@@ -45,7 +45,7 @@ const myCatCards = [
     "name_en": "Strategy",
     "name_th": "การวางแผน",
     "character": "My Cat & I",
-    "image": "Cat61/2.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "การวางแผน",
       "กลยุทธ์",
@@ -79,7 +79,7 @@ const myCatCards = [
     "name_en": "Breakthrough",
     "name_th": "การทะลุข้อจำกัด",
     "character": "My Cat & I",
-    "image": "Cat61/3.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "ทะลุข้อจำกัด",
       "ความก้าวหน้า",
@@ -113,7 +113,7 @@ const myCatCards = [
     "name_en": "Decision",
     "name_th": "การตัดสินใจ",
     "character": "My Cat & I",
-    "image": "Cat61/4.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "ทางเลือก",
       "ความเด็ดขาด",
@@ -147,7 +147,7 @@ const myCatCards = [
     "name_en": "Willpower",
     "name_th": "ความมุ่งมั่น",
     "character": "My Cat & I",
-    "image": "Cat61/5.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "ความตั้งใจ",
       "ความพากเพียร",
@@ -181,7 +181,7 @@ const myCatCards = [
     "name_en": "Leadership",
     "name_th": "ภาวะผู้นำ",
     "character": "My Cat & I",
-    "image": "Cat61/6.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "การนำ",
       "ความรับผิดชอบ",
@@ -215,7 +215,7 @@ const myCatCards = [
     "name_en": "Communication",
     "name_th": "การสื่อสาร",
     "character": "My Cat & I",
-    "image": "Cat61/7.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "การแสดงออก",
       "รับฟัง",
@@ -249,7 +249,7 @@ const myCatCards = [
     "name_en": "Adaptability",
     "name_th": "การปรับตัว",
     "character": "My Cat & I",
-    "image": "Cat61/8.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "ความยืดหยุ่น",
       "ปรับเปลี่ยน",
@@ -283,7 +283,7 @@ const myCatCards = [
     "name_en": "Defiance",
     "name_th": "การขัดขืน",
     "character": "My Cat & I",
-    "image": "Cat61/9.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "การขัดขืน",
       "ไม่ยอมตาม",
@@ -317,7 +317,7 @@ const myCatCards = [
     "name_en": "Victory",
     "name_th": "ชัยชนะ",
     "character": "My Cat & I",
-    "image": "Cat61/10.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "ชัยชนะ",
       "เหนือคู่แข่ง",
@@ -351,7 +351,7 @@ const myCatCards = [
     "name_en": "Standstill",
     "name_th": "การหยุดชะงัก",
     "character": "My Cat & I",
-    "image": "Cat61/11.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "ติดขัด",
       "หยุดชะงัก",
@@ -385,7 +385,7 @@ const myCatCards = [
     "name_en": "Love",
     "name_th": "ความรัก",
     "character": "My Cat & I",
-    "image": "Cat61/12.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "ความรัก",
       "ความผูกพัน",
@@ -419,7 +419,7 @@ const myCatCards = [
     "name_en": "Lust",
     "name_th": "แรงปรารถนา",
     "character": "My Cat & I",
-    "image": "Cat61/13.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "ความปรารถนา",
       "ความเร่าร้อน",
@@ -453,7 +453,7 @@ const myCatCards = [
     "name_en": "Exchange",
     "name_th": "การแลกเปลี่ยน",
     "character": "My Cat & I",
-    "image": "Cat61/14.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "ให้และรับ",
       "ตอบแทน",
@@ -487,7 +487,7 @@ const myCatCards = [
     "name_en": "Addiction",
     "name_th": "การเสพติด",
     "character": "My Cat & I",
-    "image": "Cat61/15.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "การพึ่งพา",
       "หยุดยาก",
@@ -521,7 +521,7 @@ const myCatCards = [
     "name_en": "Betrayal",
     "name_th": "การทรยศ",
     "character": "My Cat & I",
-    "image": "Cat61/16.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "ทรยศ",
       "หลอกลวง",
@@ -555,7 +555,7 @@ const myCatCards = [
     "name_en": "Indecision",
     "name_th": "ความลังเล",
     "character": "My Cat & I",
-    "image": "Cat61/17.png",
+    "image": "assets/bumji_card_loaf.jpg",
     "keywords": [
       "ลังเล",
       "ไม่แน่ใจ",
@@ -589,7 +589,7 @@ const myCatCards = [
     "name_en": "Ego",
     "name_th": "อัตตา",
     "character": "My Cat & I",
-    "image": "Cat61/18.png",
+    "image": "assets/bumji_card_loaf.jpg",
     "keywords": [
       "ความทะนง",
       "ภาพลักษณ์ตนเอง",
@@ -623,7 +623,7 @@ const myCatCards = [
     "name_en": "Boundary",
     "name_th": "ขอบเขต",
     "character": "My Cat & I",
-    "image": "Cat61/19.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "ขอบเขต",
       "ความเคารพ",
@@ -657,7 +657,7 @@ const myCatCards = [
     "name_en": "Harmony",
     "name_th": "ความกลมเกลียว",
     "character": "My Cat & I",
-    "image": "Cat61/20.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "ความปรองดอง",
       "ร่วมมือ",
@@ -691,7 +691,7 @@ const myCatCards = [
     "name_en": "Apathy",
     "name_th": "ความเฉยชา",
     "character": "My Cat & I",
-    "image": "Cat61/21.png",
+    "image": "assets/bumji_card_loaf.jpg",
     "keywords": [
       "ไม่แยแส",
       "หมดความสนใจ",
@@ -725,7 +725,7 @@ const myCatCards = [
     "name_en": "Recognition",
     "name_th": "การได้รับการยอมรับ",
     "character": "My Cat & I",
-    "image": "Cat61/22.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "การยอมรับ",
       "เห็นคุณค่า",
@@ -759,7 +759,7 @@ const myCatCards = [
     "name_en": "Closure",
     "name_th": "การปิดบท",
     "character": "My Cat & I",
-    "image": "Cat61/23.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "จบเรื่อง",
       "คลี่คลาย",
@@ -793,7 +793,7 @@ const myCatCards = [
     "name_en": "Prosperity",
     "name_th": "ความมั่งคั่ง",
     "character": "My Cat & I",
-    "image": "Cat61/24.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "ทรัพย์สิน",
       "ความรุ่งเรือง",
@@ -827,7 +827,7 @@ const myCatCards = [
     "name_en": "Abundance",
     "name_th": "ความอุดมสมบูรณ์",
     "character": "My Cat & I",
-    "image": "Cat61/25.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "มากมาย",
       "ทรัพยากร",
@@ -861,7 +861,7 @@ const myCatCards = [
     "name_en": "Stability",
     "name_th": "ความมั่นคง",
     "character": "My Cat & I",
-    "image": "Cat61/26.png",
+    "image": "assets/bumji_card_loaf.jpg",
     "keywords": [
       "ปลอดภัย",
       "สม่ำเสมอ",
@@ -895,7 +895,7 @@ const myCatCards = [
     "name_en": "Opportunity",
     "name_th": "โอกาส",
     "character": "My Cat & I",
-    "image": "Cat61/27.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "โอกาส",
       "ความเป็นไปได้",
@@ -929,7 +929,7 @@ const myCatCards = [
     "name_en": "Hardship",
     "name_th": "ความยากลำบาก",
     "character": "My Cat & I",
-    "image": "Cat61/28.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "ความลำบาก",
       "ขาดแคลน",
@@ -963,7 +963,7 @@ const myCatCards = [
     "name_en": "Jealousy",
     "name_th": "ความหึงหวง",
     "character": "My Cat & I",
-    "image": "Cat61/29.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "หึงหวง",
       "อิจฉา",
@@ -997,7 +997,7 @@ const myCatCards = [
     "name_en": "Generosity",
     "name_th": "ความเอื้อเฟื้อ",
     "character": "My Cat & I",
-    "image": "Cat61/30.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "การให้",
       "เมตตา",
@@ -1031,7 +1031,7 @@ const myCatCards = [
     "name_en": "Independence",
     "name_th": "ความเป็นอิสระ",
     "character": "My Cat & I",
-    "image": "Cat61/31.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "อิสระ",
       "พึ่งพาตนเอง",
@@ -1065,7 +1065,7 @@ const myCatCards = [
     "name_en": "Experts",
     "name_th": "ผู้เชี่ยวชาญ",
     "character": "My Cat & I",
-    "image": "Cat61/32.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "ความชำนาญ",
       "คำปรึกษา",
@@ -1099,7 +1099,7 @@ const myCatCards = [
     "name_en": "Legacy",
     "name_th": "สิ่งที่ส่งต่อ",
     "character": "My Cat & I",
-    "image": "Cat61/33.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "มรดก",
       "สิ่งสืบทอด",
@@ -1133,7 +1133,7 @@ const myCatCards = [
     "name_en": "Achievement",
     "name_th": "ความสำเร็จ",
     "character": "My Cat & I",
-    "image": "Cat61/34.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "สำเร็จ",
       "บรรลุเป้าหมาย",
@@ -1167,7 +1167,7 @@ const myCatCards = [
     "name_en": "Foundation",
     "name_th": "รากฐาน",
     "character": "My Cat & I",
-    "image": "Cat61/35.png",
+    "image": "assets/bumji_card_loaf.jpg",
     "keywords": [
       "รากฐาน",
       "การรองรับ",
@@ -1201,7 +1201,7 @@ const myCatCards = [
     "name_en": "Blind Spot",
     "name_th": "จุดบอด",
     "character": "My Cat & I",
-    "image": "Cat61/36.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "จุดบอด",
       "มองข้าม",
@@ -1235,7 +1235,7 @@ const myCatCards = [
     "name_en": "Burden",
     "name_th": "ภาระ",
     "character": "My Cat & I",
-    "image": "Cat61/37.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "ภาระ",
       "ความรับผิดชอบ",
@@ -1269,7 +1269,7 @@ const myCatCards = [
     "name_en": "Exhaustion",
     "name_th": "ความเหนื่อยล้า",
     "character": "My Cat & I",
-    "image": "Cat61/38.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "อ่อนล้า",
       "หมดแรง",
@@ -1303,7 +1303,7 @@ const myCatCards = [
     "name_en": "Collapse",
     "name_th": "การพังทลาย",
     "character": "My Cat & I",
-    "image": "Cat61/39.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "พังทลาย",
       "ล้มเหลว",
@@ -1337,7 +1337,7 @@ const myCatCards = [
     "name_en": "Trapped",
     "name_th": "การติดกับ",
     "character": "My Cat & I",
-    "image": "Cat61/40.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "ถูกจำกัด",
       "ออกไม่ได้",
@@ -1371,7 +1371,7 @@ const myCatCards = [
     "name_en": "Torment",
     "name_th": "ความทุกข์ทรมาน",
     "character": "My Cat & I",
-    "image": "Cat61/41.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "ทรมานใจ",
       "ความทุกข์",
@@ -1405,7 +1405,7 @@ const myCatCards = [
     "name_en": "Defeat",
     "name_th": "ความพ่ายแพ้",
     "character": "My Cat & I",
-    "image": "Cat61/42.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "พ่ายแพ้",
       "ถอยหนี",
@@ -1439,7 +1439,7 @@ const myCatCards = [
     "name_en": "Competition",
     "name_th": "การแข่งขัน",
     "character": "My Cat & I",
-    "image": "Cat61/43.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "แข่งขัน",
       "ชิงเป้าหมาย",
@@ -1473,7 +1473,7 @@ const myCatCards = [
     "name_en": "Verdict",
     "name_th": "คำตัดสิน",
     "character": "My Cat & I",
-    "image": "Cat61/44.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "คำตัดสิน",
       "ผลชี้ขาด",
@@ -1507,7 +1507,7 @@ const myCatCards = [
     "name_en": "Fate",
     "name_th": "โชคชะตา",
     "character": "My Cat & I",
-    "image": "Cat61/45.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "พรหมลิขิต",
       "เหตุบังเอิญมีความหมาย",
@@ -1541,7 +1541,7 @@ const myCatCards = [
     "name_en": "Perspective",
     "name_th": "มุมมอง",
     "character": "My Cat & I",
-    "image": "Cat61/46.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "มุมมอง",
       "คิดใหม่",
@@ -1575,7 +1575,7 @@ const myCatCards = [
     "name_en": "Moving On",
     "name_th": "การก้าวต่อ",
     "character": "My Cat & I",
-    "image": "Cat61/47.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "เดินหน้าต่อ",
       "ปล่อยวาง",
@@ -1609,7 +1609,7 @@ const myCatCards = [
     "name_en": "Unclear",
     "name_th": "ความไม่ชัดเจน",
     "character": "My Cat & I",
-    "image": "Cat61/48.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "ไม่ชัด",
       "คลุมเครือ",
@@ -1643,7 +1643,7 @@ const myCatCards = [
     "name_en": "Fear",
     "name_th": "ความกลัว",
     "character": "My Cat & I",
-    "image": "Cat61/49.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "หวาดกลัว",
       "กังวล",
@@ -1677,7 +1677,7 @@ const myCatCards = [
     "name_en": "Hidden",
     "name_th": "สิ่งที่ซ่อนอยู่",
     "character": "My Cat & I",
-    "image": "Cat61/50.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "ความลับ",
       "ปกปิด",
@@ -1711,7 +1711,7 @@ const myCatCards = [
     "name_en": "Resistance",
     "name_th": "การต่อต้าน",
     "character": "My Cat & I",
-    "image": "Cat61/51.png",
+    "image": "assets/bumji_card_box.jpg",
     "keywords": [
       "ต้านทาน",
       "หลีกเลี่ยง",
@@ -1745,7 +1745,7 @@ const myCatCards = [
     "name_en": "Healing",
     "name_th": "การเยียวยา",
     "character": "My Cat & I",
-    "image": "Cat61/52.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "เยียวยา",
       "ฟื้นตัว",
@@ -1779,7 +1779,7 @@ const myCatCards = [
     "name_en": "Patience",
     "name_th": "ความอดทนรอคอย",
     "character": "My Cat & I",
-    "image": "Cat61/53.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "อดทน",
       "รอจังหวะ",
@@ -1813,7 +1813,7 @@ const myCatCards = [
     "name_en": "Trust",
     "name_th": "ความไว้วางใจ",
     "character": "My Cat & I",
-    "image": "Cat61/54.png",
+    "image": "assets/bumji_card_harmony.jpg",
     "keywords": [
       "เชื่อใจ",
       "ปลอดภัย",
@@ -1847,7 +1847,7 @@ const myCatCards = [
     "name_en": "Joy",
     "name_th": "ความสุข",
     "character": "My Cat & I",
-    "image": "Cat61/55.png",
+    "image": "assets/bumji_card_churu.jpg",
     "keywords": [
       "สุขใจ",
       "สนุกสนาน",
@@ -1881,7 +1881,7 @@ const myCatCards = [
     "name_en": "Acceptance",
     "name_th": "การยอมรับ",
     "character": "My Cat & I",
-    "image": "Cat61/56.png",
+    "image": "assets/bumji_card_healing.jpg",
     "keywords": [
       "ยอมรับ",
       "โอบรับความต่าง",
@@ -1915,7 +1915,7 @@ const myCatCards = [
     "name_en": "Curiosity",
     "name_th": "ความอยากรู้อยากเห็น",
     "character": "My Cat & I",
-    "image": "Cat61/57.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "ใคร่รู้",
       "ตั้งคำถาม",
@@ -1949,7 +1949,7 @@ const myCatCards = [
     "name_en": "Beginning",
     "name_th": "การเริ่มต้น",
     "character": "My Cat & I",
-    "image": "Cat61/58.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "เริ่มต้น",
       "กำเนิด",
@@ -1983,7 +1983,7 @@ const myCatCards = [
     "name_en": "Timing",
     "name_th": "จังหวะเวลา",
     "character": "My Cat & I",
-    "image": "Cat61/59.png",
+    "image": "assets/bumji_card_curiosity.jpg",
     "keywords": [
       "เวลาเหมาะสม",
       "ความพร้อม",
@@ -2017,7 +2017,7 @@ const myCatCards = [
     "name_en": "Mastery",
     "name_th": "ความชำนาญ",
     "character": "My Cat & I",
-    "image": "Cat61/60.png",
+    "image": "assets/bumji_card_loaf.jpg",
     "keywords": [
       "เชี่ยวชาญ",
       "ทักษะ",
@@ -2051,7 +2051,7 @@ const myCatCards = [
     "name_en": "Explorer",
     "name_th": "การออกสำรวจ",
     "character": "My Cat & I",
-    "image": "Cat61/61.png",
+    "image": "assets/bumji_card_wish.jpg",
     "keywords": [
       "ผจญภัย",
       "สำรวจ",
