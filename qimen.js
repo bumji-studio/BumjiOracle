@@ -289,7 +289,9 @@
       const now = dateObj instanceof Date ? dateObj : new Date();
       const min = minute !== null ? minute : now.getMinutes();
       const hIdx = hourIndex !== null ? hourIndex : Math.floor((now.getHours() + 1) % 24 / 2);
-      const hourDisplay = `${String(now.getHours()).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+      const hourHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
+      const displayH = (hourIndex !== null) ? hourHours[hIdx] : now.getHours();
+      const hourDisplay = `${String(displayH).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
 
       // 4 Pillars BaZi calculation
       const stemsList = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
@@ -667,20 +669,30 @@
       }
 
       if (this.el.datePicker) {
-        this.el.datePicker.addEventListener('change', (e) => {
+        const onDateChange = (e) => {
           if (e.target.value) {
             const parts = e.target.value.split('-');
-            self.currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), self.currentDate.getHours(), self.currentDate.getMinutes());
+            const prevH = self.currentDate ? self.currentDate.getHours() : 12;
+            const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
+            self.currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), prevH, prevM);
             self.render();
           }
-        });
+        };
+        this.el.datePicker.addEventListener('change', onDateChange);
+        this.el.datePicker.addEventListener('input', onDateChange);
       }
 
       if (this.el.hourSelect) {
-        this.el.hourSelect.addEventListener('change', (e) => {
+        const onHourChange = (e) => {
           self.currentHourIdx = parseInt(e.target.value, 10);
+          const hHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
+          if (self.currentDate) {
+            self.currentDate.setHours(hHours[self.currentHourIdx] || 12, 30, 0, 0);
+          }
           self.render();
-        });
+        };
+        this.el.hourSelect.addEventListener('change', onHourChange);
+        this.el.hourSelect.addEventListener('input', onHourChange);
       }
     },
 
