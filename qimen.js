@@ -47,6 +47,7 @@
     '杜': { zh: '杜', py: 'Du', en: 'Delusion', fullZh: '杜门', th: 'ประตูซ่อน (杜门)', type: '平', color: '#94a3b8', desc: 'ซ่อนตัว เก็บความลับ วิจัยเชิงลึก เหมาะแก่การตั้งรับ' },
     '景': { zh: '景', py: 'Jing', en: 'Scenery', fullZh: '景门', th: 'ประตูทัศนา (景门)', type: '吉', color: '#f59e0b', desc: 'ชื่อเสียง พรีเซนต์ผลงาน การตลาด สัญญา สอบแข่งขัน' },
     '死': { zh: '死', py: 'Si', en: 'Death', fullZh: '死门', th: 'ประตูมรณะ (死门)', type: '凶', color: '#ef4444', desc: 'ยุติเรื่องราว อุปสรรค ไหว้บรรพบุรุษ ไม่ควรเริ่มต้นสิ่งใหม่' },
+    '惊': { zh: '驚', py: 'Jing', en: 'Fear', fullZh: '惊门', th: 'ประตูตื่นตระหนก (惊门)', type: '凶', color: '#ef4444', desc: 'ระวังตกใจ คดีความ ฟ้องร้อง การโต้เถียง ระวังคำพูด' },
     '驚': { zh: '驚', py: 'Jing', en: 'Fear', fullZh: '惊门', th: 'ประตูตื่นตระหนก (惊门)', type: '凶', color: '#ef4444', desc: 'ระวังตกใจ คดีความ ฟ้องร้อง การโต้เถียง ระวังคำพูด' }
   };
 
@@ -118,6 +119,171 @@
   }
 
   // 7. Core Plotter Engine
+  const SOLAR_TERMS = [
+    { name: '小寒', py: 'Xiao Han', month: 0, day: 5, isYang: true, ju: [2, 8, 5] },
+    { name: '大寒', py: 'Da Han', month: 0, day: 20, isYang: true, ju: [3, 9, 6] },
+    { name: '立春', py: 'Li Chun', month: 1, day: 4, isYang: true, ju: [8, 5, 2] },
+    { name: '雨水', py: 'Yu Shui', month: 1, day: 19, isYang: true, ju: [9, 6, 3] },
+    { name: '惊蛰', py: 'Jing Zhe', month: 2, day: 5, isYang: true, ju: [1, 7, 4] },
+    { name: '春分', py: 'Chun Fen', month: 2, day: 20, isYang: true, ju: [3, 9, 6] },
+    { name: '清明', py: 'Qing Ming', month: 3, day: 4, isYang: true, ju: [4, 1, 7] },
+    { name: '谷雨', py: 'Gu Yu', month: 3, day: 20, isYang: true, ju: [5, 2, 8] },
+    { name: '立夏', py: 'Li Xia', month: 4, day: 5, isYang: true, ju: [4, 1, 7] },
+    { name: '小满', py: 'Xiao Man', month: 4, day: 21, isYang: true, ju: [5, 2, 8] },
+    { name: '芒种', py: 'Mang Zhong', month: 5, day: 5, isYang: true, ju: [6, 3, 9] },
+    { name: '夏至', py: 'Xia Zhi', month: 5, day: 21, isYang: false, ju: [9, 3, 6] },
+    { name: '小暑', py: 'Xiao Shu', month: 6, day: 7, isYang: false, ju: [8, 2, 5] },
+    { name: '大暑', py: 'Da Shu', month: 6, day: 23, isYang: false, ju: [7, 1, 4] },
+    { name: '立秋', py: 'Li Qiu', month: 7, day: 7, isYang: false, ju: [2, 5, 8] },
+    { name: '处暑', py: 'Chu Shu', month: 7, day: 23, isYang: false, ju: [1, 4, 7] },
+    { name: '白露', py: 'Bai Lu', month: 8, day: 7, isYang: false, ju: [9, 3, 6] },
+    { name: '秋分', py: 'Qiu Fen', month: 8, day: 23, isYang: false, ju: [7, 1, 4] },
+    { name: '寒露', py: 'Han Lu', month: 9, day: 8, isYang: false, ju: [6, 9, 3] },
+    { name: '霜降', py: 'Shuang Jiang', month: 9, day: 23, isYang: false, ju: [5, 8, 2] },
+    { name: '立冬', py: 'Li Dong', month: 10, day: 7, isYang: false, ju: [6, 9, 3] },
+    { name: '小雪', py: 'Xiao Xue', month: 10, day: 22, isYang: false, ju: [5, 8, 2] },
+    { name: '大雪', py: 'Da Xue', month: 11, day: 7, isYang: false, ju: [4, 7, 1] },
+    { name: '冬至', py: 'Dong Zhi', month: 11, day: 21, isYang: true, ju: [1, 7, 4] }
+  ];
+
+  const CONSTELLATIONS_28 = [
+    '1 - Horn (角宿)', '2 - Neck (亢宿)', '3 - Root (氐宿)', '4 - Room (房宿)',
+    '5 - Heart (心宿)', '6 - Tail (尾宿)', '7 - Winnowing Basket (箕宿)',
+    '8 - Dipper (斗宿)', '9 - Ox (牛宿)', '10 - Girl (女宿)', '11 - Emptiness (虚宿)',
+    '12 - Rooftop (危宿)', '13 - Encampment (室宿)', '14 - Wall (壁宿)',
+    '15 - Legs (奎宿)', '16 - Bond (娄宿)', '17 - Stomach (胃宿)', '18 - Hairy Head (昴宿)',
+    '19 - Net (毕宿)', '20 - Turtle Beak (觜宿)', '21 - Three Stars (参宿)',
+    '22 - Well (井宿)', '23 - Ghost (鬼宿)', '24 - Willow (柳宿)', '25 - Star (星宿)',
+    '26 - Extended Net (张宿)', '27 - Wings (翼宿)', '28 - Chariot (轸宿)'
+  ];
+
+  const PALACE_INFO = {
+    1: { pos: 'N', dirZh: '正北', dirEn: 'North', color: '#3b82f6', tag: 'N', numCorner: 1 },
+    2: { pos: 'SW', dirZh: '西南', dirEn: 'Southwest', color: '#f59e0b', tag: 'SW', numCorner: 0 },
+    3: { pos: 'E', dirZh: '正东', dirEn: 'East', color: '#10b981', tag: 'E', numCorner: 4 },
+    4: { pos: 'SE', dirZh: '东南', dirEn: 'Southeast', color: '#10b981', tag: 'SE', numCorner: 5 },
+    5: { pos: 'Center', dirZh: '中宫', dirEn: 'Center', color: '#64748b', tag: 'C', numCorner: 0 },
+    6: { pos: 'NW', dirZh: '西北', dirEn: 'Northwest', color: '#334155', tag: 'NW', numCorner: 2 },
+    7: { pos: 'W', dirZh: '正西', dirEn: 'West', color: '#64748b', tag: 'W', numCorner: 7 },
+    8: { pos: 'NE', dirZh: '东北', dirEn: 'Northeast', color: '#78350f', tag: 'NE', numCorner: 3 },
+    9: { pos: 'S', dirZh: '正南', dirEn: 'South', color: '#ef4444', tag: 'S', numCorner: 6 }
+  };
+
+  const ORIGINAL_STARS = {
+    1: '蓬', 2: '芮', 3: '冲', 4: '辅', 5: '禽', 6: '心', 7: '柱', 8: '任', 9: '英'
+  };
+  const ORIGINAL_DOORS = {
+    1: '休', 2: '死', 3: '伤', 4: '杜', 5: '死', 6: '开', 7: '惊', 8: '生', 9: '景'
+  };
+
+  const RING_8 = [1, 8, 3, 4, 9, 2, 7, 6];
+  const STAR_RING = ['蓬', '任', '冲', '辅', '英', '芮', '柱', '心'];
+  const DOOR_RING = ['休', '生', '伤', '杜', '景', '死', '惊', '开'];
+  const DEITIES_ORDER = ['符', '蛇', '阴', '合', '虎', '玄', '地', '天'];
+
+  const OPPOSITE_PALACES = {
+    1: 9, 9: 1,
+    2: 8, 8: 2,
+    3: 7, 7: 3,
+    4: 6, 6: 4
+  };
+
+  const HEXAGRAM_LOOKUP = {
+    1: { gua1: '☵ 3', branch: '酉', gua2: '☷ 8', name: '56-Travelling' },
+    2: { gua1: '☵ 6', branch: '卯', gua2: '☷ 9', name: '41-Decreasing' },
+    3: { gua1: '☵ 4', branch: '午', gua2: '☷ 3', name: '28-Great Exceeding' },
+    4: { gua1: '☵ 9', branch: '寅', gua2: '☷ 7', name: '13-Fellowship' },
+    6: { gua1: '☵ 2', branch: '申', gua2: '☷ 6', name: '59-Dispersing' },
+    7: { gua1: '☵ 8', branch: '巳', gua2: '☷ 2', name: '34-Great Strength' },
+    8: { gua1: '☵ 1', branch: '子', gua2: '☷ 8', name: '24-Returning' },
+    9: { gua1: '☵ 7', branch: '亥', gua2: '☷ 7', name: '8-Alliance' }
+  };
+
+  const CONSTELLATION_LOOKUP = {
+    1: '5 Wing 火 S', 2: '6 Horn 木 E', 3: '7 Basket 水 E', 4: '8 Star 日 S',
+    6: '1 Heart 月 E', 7: '2 Stomach 土 W', 8: '3 Net 月 W', 9: '4 Ox 金 N'
+  };
+
+  function getSolarTerm(date) {
+    const m = date.getMonth();
+    const d = date.getDate();
+    for (let i = SOLAR_TERMS.length - 1; i >= 0; i--) {
+      const t = SOLAR_TERMS[i];
+      if (m > t.month || (m === t.month && d >= t.day)) {
+        return t;
+      }
+    }
+    return SOLAR_TERMS[SOLAR_TERMS.length - 1];
+  }
+
+  function checkFormations(hStem, eStem, doorKey, isEnvoy) {
+    const f = [];
+    if (isEnvoy) f.push('Ri Shi');
+    const pair = `${hStem}+${eStem}`;
+    if (pair === '戊+丙') f.push('青龙返首');
+    else if (pair === '丙+戊') f.push('飞鸟跌穴');
+    else if (pair === '乙+丙') f.push('奇仪顺遂');
+    else if (pair === '乙+丁') f.push('奇仪相佐');
+    else if (pair === '丁+戊') f.push('青龙转光');
+    else if (pair === '丁+乙') f.push('玉女奇捷');
+    else if (pair === '丁+丙') f.push('星奇升殿');
+    else if (pair === '庚+癸') f.push('大格');
+    else if (pair === '庚+己') f.push('刑格');
+    else if (pair === '庚+壬') f.push('小格');
+    else if (pair === '庚+丙') f.push('太白入荧');
+    else if (pair === '丙+庚') f.push('荧入白');
+    else if (pair === '辛+乙') f.push('白虎猖狂');
+    else if (pair === '乙+辛') f.push('青龙逃走');
+    else if (pair === '丁+癸') f.push('雀投江');
+    else if (pair === '癸+丁') f.push('蛇夭矫');
+    else if (hStem === eStem) f.push('伏吟');
+
+    if (['乙', '丙', '丁'].includes(hStem) && ['开', '休', '生'].includes(doorKey)) {
+      f.push('San Qi Zhi');
+    }
+    if (doorKey === '开' || doorKey === '休') {
+      f.push('Xing Sheng');
+    }
+    return f;
+  }
+
+  function getPalaceAdvice(pNum, doorKey, deityKey, isKongWang, isHorse) {
+    let adv = '';
+    if (doorKey === '生') {
+      adv = 'ประตูเกิด (生门) ทิศรับทรัพย์มหาศาล โชคลาภการเงิน อสังหาริมทรัพย์ ธุรกิจเติบโต';
+    } else if (doorKey === '开') {
+      adv = 'ประตูเปิด (开门) โอกาสใหม่ การงาน เริ่มธุรกิจ ค้าขายราบรื่น ก้าวหน้า ยอดเยี่ยมสำหรับการเจรจา';
+    } else if (doorKey === '休') {
+      adv = 'ประตูพัก (休门) ความสงบ ผ่อนคลาย เจรจาสมานฉันท์ ความรักหวานชื่น ผู้ใหญ่อุปถัมภ์';
+    } else if (doorKey === '景') {
+      adv = 'ประตูทัศนา (景门) ชื่อเสียง การตลาด สัญญา สอบแข่งขัน พรีเซนต์ผลงาน สติปัญญาเฉียบคม';
+    } else if (doorKey === '杜') {
+      adv = 'ประตูซ่อน (杜门) เหมาะแก่การเก็บตัว วางแผนเงียบๆ ซ่อนความลับ วิจัยเชิงลึก';
+    } else if (doorKey === '死') {
+      adv = 'ประตูมรณะ (死门) ทิศยุติเรื่องราว อุปสรรค ไม่ควรริเริ่มลงทุนหรือเจรจาใหม่ ไหว้บรรพบุรุษ';
+    } else if (doorKey === '惊') {
+      adv = 'ประตูตื่นตระหนก (惊门) ระวังข้อพิพาท คดีความ ฟ้องร้อง การโต้เถียง ระวังคำพูด';
+    } else if (doorKey === '伤') {
+      adv = 'ประตูบาดเจ็บ (伤门) ระวังอุบัติเหตุและของมีคม การแข่งขันสูง ทวงหนี้ ล่าสัตว์';
+    }
+    if (deityKey === '符') {
+      adv += ' • มีประธานเทพ (值符) ให้การคุ้มครอง แคล้วคลาด';
+    } else if (deityKey === '合') {
+      adv += ' • พลังหกประสาน (六合) หนุนนำมิตรภาพความร่วมมือ';
+    } else if (deityKey === '天') {
+      adv += ' • เก้านภากาศ (九天) พลังแห่งการขยายตัว สู่เป้าหมายสูง';
+    } else if (deityKey === '地') {
+      adv += ' • เก้าปฐพี (九地) มั่นคง หนักแน่น เหมาะแก่การสะสม';
+    }
+    if (isHorse) {
+      adv += ' • ม้าสวรรค์ (驿马) ขับเคลื่อนความก้าวหน้าและการเดินทาง';
+    }
+    if (isKongWang) {
+      adv += ' • พลังความว่างเปล่า (空亡) ควรชะลอการตัดสินใจเรื่องใหญ่';
+    }
+    return adv;
+  }
+
   const QiMenEngine = {
     plot: function (dateObj, hourIndex = null, minute = null) {
       const now = dateObj instanceof Date ? dateObj : new Date();
@@ -136,15 +302,36 @@
       const yearStem = stemsList[yrStemIdx];
       const yearBranch = branchesList[yrBranchIdx];
 
-      // Month Pillar (Five Tigers rule from Year Stem)
-      // Month branch approx for solar months: 寅=0(Feb), 卯=1, 辰=2, 巳=3, 午=4, 未=5, 申=6, 酉=7, 戌=8(Oct), 亥=9, 子=10, 丑=11
-      const mSolarIdx = (now.getMonth() + 11) % 12; // Oct is 9 (0-indexed month) -> (9+11)%12 = 8 (戌)
-      const mBranches = ['寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥', '子', '丑'];
-      const monthBranch = mBranches[mSolarIdx];
+      // Month Pillar (Five Tigers rule based on solar term)
+      const m = now.getMonth();
+      const d = now.getDate();
+      const jieDates = [
+        { m: 0, d: 5, b: '丑', idx: 11 },
+        { m: 1, d: 4, b: '寅', idx: 0 },
+        { m: 2, d: 5, b: '卯', idx: 1 },
+        { m: 3, d: 4, b: '辰', idx: 2 },
+        { m: 4, d: 5, b: '巳', idx: 3 },
+        { m: 5, d: 5, b: '午', idx: 4 },
+        { m: 6, d: 6, b: '未', idx: 5 },
+        { m: 7, d: 7, b: '申', idx: 6 },
+        { m: 8, d: 7, b: '酉', idx: 7 },
+        { m: 9, d: 8, b: '戌', idx: 8 },
+        { m: 10, d: 7, b: '亥', idx: 9 },
+        { m: 11, d: 7, b: '子', idx: 10 }
+      ];
+      let activeJie = jieDates[jieDates.length - 1];
+      for (let i = jieDates.length - 1; i >= 0; i--) {
+        const jd = jieDates[i];
+        if (m > jd.m || (m === jd.m && d >= jd.d)) {
+          activeJie = jd;
+          break;
+        }
+      }
+      const monthBranch = activeJie.b;
       const mStartStem = (yrStemIdx % 5) * 2 + 2;
-      const monthStem = stemsList[(mStartStem + mSolarIdx) % 10];
+      const monthStem = stemsList[(mStartStem + activeJie.idx) % 10];
 
-      // Day Pillar (Epoch reference)
+      // Day Pillar (Epoch reference from 2000-01-01 Wu-Wu day 54)
       const baseUTC = Date.UTC(2000, 0, 1);
       const targetUTC = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
       const diffDays = Math.round((targetUTC - baseUTC) / 86400000);
@@ -152,7 +339,7 @@
       const dayStem = stemsList[dayCycle % 10];
       const dayBranch = branchesList[dayCycle % 12];
 
-      // Hour Pillar
+      // Hour Pillar (Five Rats rule)
       const dStemIdx = stemsList.indexOf(dayStem);
       const hStartStemIdx = (dStemIdx % 5) * 2;
       const hourStem = stemsList[(hStartStemIdx + hIdx) % 10];
@@ -163,186 +350,229 @@
       const hourHorse = getSkyHorse(hourBranch);
       const dayHorse = getSkyHorse(dayBranch);
 
-      // Structure: Determine Yin/Yang Dun and Ju number
-      const m = now.getMonth();
-      const d = now.getDate();
-      const isYinDun = (m >= 5 && (m > 5 || d >= 21)) && (m < 11 || (m === 11 && d < 21));
-      
-      // Standard Ju calculation for date (October 10, 2026 is Yin 9 阴九局)
-      let juNum = 9;
-      if (!isYinDun) {
-        juNum = ((Math.floor(now.getTime() / 86400000) + hIdx) % 9) + 1;
-      } else {
-        juNum = 9 - ((Math.floor(now.getTime() / 86400000) + hIdx) % 9);
-        if (juNum <= 0) juNum += 9;
-      }
-      // For Oct 10 2026 convention match:
-      if (now.getFullYear() === 2026 && m === 9 && d === 10) {
-        juNum = 9;
-      }
-      const structureName = `${isYinDun ? 'Yin' : 'Yang'} ${juNum}`;
+      // Structure: Determine Yin/Yang Dun and Ju number via Chai Bu Fa (拆补法)
+      const currentTerm = getSolarTerm(now);
+      const isYangDun = currentTerm.isYang;
+      const yuanIdx = Math.floor(dayCycle / 5) % 3; // 0=Shang, 1=Zhong, 2=Xia
+      const juNum = currentTerm.ju[yuanIdx];
+      const structureName = `${isYangDun ? 'Yang' : 'Yin'} ${juNum}`;
 
-      // 9 Palaces standard layout mapping (Convention 2 layout)
-      // Visual order:
-      // Row 1: SE (4), S (9), SW (2)
-      // Row 2: E (3),  Center (5), W (7)
-      // Row 3: NE (8), N (1), NW (6)
-      
-      const palaces = {
-        // SE (Palace 4 - 巽四宫)
-        4: {
-          pos: 'SE', dirZh: '东南', dirEn: 'Southeast', num: 4, numCorner: 5,
-          color: '#10b981', tag: 'SE',
-          isKongWang: hourXun.kongWangPalaces.includes(4),
-          isHorse: hourHorse.palace === 4,
-          heavenStem: STEMS_INFO['辛'],
-          star: STARS_INFO['心'],
-          deity: DEITIES_INFO['地'],
-          earthStem: STEMS_INFO['癸'],
-          door: DOORS_INFO['景'],
-          hexagram: { stem: '壬', gua1: '☵ 9', branch: '寅', gua2: '☷ 7', name: '13-Fellowship' },
-          formations: [],
-          constellation: '8 Star 日 S',
-          score: 80,
-          advice: 'ทิศแห่งชื่อเสียง การศึกษา และการนำเสนอผลงาน สติปัญญาเฉียบคม'
-        },
-        // S (Palace 9 - 离九宫)
-        9: {
-          pos: 'S', dirZh: '正南', dirEn: 'South', num: 9, numCorner: 6,
-          color: '#ef4444', tag: 'S',
-          isKongWang: hourXun.kongWangPalaces.includes(9),
-          isHorse: hourHorse.palace === 9,
-          heavenStem: STEMS_INFO['乙'],
-          star: STARS_INFO['蓬'],
-          deity: DEITIES_INFO['玄'],
-          earthStem: STEMS_INFO['戊'],
-          door: { ...DOORS_INFO['死'], isEnvoy: true },
-          hexagram: { stem: '辛', gua1: '☵ 7', branch: '亥', gua2: '☷ 7', name: '8-Alliance' },
-          formations: ['Ri Shi'],
-          constellation: '4 Ox 金 N',
-          score: 45,
-          advice: 'ประตูมรณะ (值使门) ทิศยุติเรื่องราว ไม่ควรริเริ่มลงทุนหรือเจรจาใหม่'
-        },
-        // SW (Palace 2 - 坤二宫)
-        2: {
-          pos: 'SW', dirZh: '西南', dirEn: 'Southwest', num: 2, numCorner: 0,
-          color: '#f59e0b', tag: 'SW',
-          isKongWang: hourXun.kongWangPalaces.includes(2),
-          isHorse: hourHorse.palace === 2,
-          heavenStem: STEMS_INFO['己'],
-          star: STARS_INFO['任'],
-          deity: DEITIES_INFO['虎'],
-          earthStem: { ...STEMS_INFO['丙'], extra: '壬' },
-          door: DOORS_INFO['驚'],
-          hexagram: { stem: '丁', gua1: '☵ 6', branch: '卯', gua2: '☷ 9', name: '41-Decreasing' },
-          formations: ['Ji xing'],
-          constellation: '6 Horn 木 E',
-          score: 55,
-          advice: 'ระวังข้อพิพาท โต้เถียง และความตื่นตระหนก เหมาะแก่งานตรวจสอบ'
-        },
-        // E (Palace 3 - 震三宫)
-        3: {
-          pos: 'E', dirZh: '正东', dirEn: 'East', num: 3, numCorner: 4,
-          color: '#10b981', tag: 'E',
-          isKongWang: true, // Kong Wang in screenshot
-          isHorse: hourHorse.palace === 3,
-          heavenStem: STEMS_INFO['庚'],
-          star: STARS_INFO['柱'],
-          deity: DEITIES_INFO['天'],
-          earthStem: STEMS_INFO['丁'],
-          door: DOORS_INFO['杜'],
-          hexagram: { stem: '丙', gua1: '☵ 4', branch: '午', gua2: '☷ 3', name: '28-Great Exceeding' },
-          formations: ['Qi Ge'],
-          constellation: '7 Basket 水 E',
-          score: 60,
-          advice: 'ประตูซ่อน (杜门) พลังความว่างเปล่า (空亡) เหมาะเก็บตัว วิจัย วางแผนเงียบๆ'
-        },
-        // Center (Palace 5 - 中五宫)
-        5: {
-          pos: 'Center', dirZh: '中宫', dirEn: 'Center', num: 5, numCorner: 0,
-          color: '#64748b', tag: 'C',
-          isKongWang: false,
-          isHorse: false,
-          heavenStem: STEMS_INFO['壬'],
-          star: STARS_INFO['禽'],
-          deity: null,
-          earthStem: STEMS_INFO['壬'],
-          door: null,
-          hexagram: null,
-          formations: [],
-          constellation: '',
-          score: 75,
-          advice: 'จุดศูนย์กลางแห่งฟ้าดิน พลังงานหมุนเวียนถ่ายเทสู่แปดทิศรอบตัว'
-        },
-        // W (Palace 7 - 兑七宫)
-        7: {
-          pos: 'W', dirZh: '正西', dirEn: 'West', num: 7, numCorner: 7,
-          color: '#64748b', tag: 'W',
-          isKongWang: hourXun.kongWangPalaces.includes(7),
-          isHorse: hourHorse.palace === 7,
-          heavenStem: STEMS_INFO['丁'],
-          star: STARS_INFO['冲'],
-          deity: DEITIES_INFO['合'],
-          earthStem: STEMS_INFO['庚'],
-          door: DOORS_INFO['开'],
-          hexagram: { stem: '己', gua1: '☵ 8', branch: '巳', gua2: '☷ 2', name: '34-Great Strength' },
-          formations: ['Xiu Zha', 'Xing Sheng', 'San Qi Zhi'],
-          constellation: '2 Stomach 土 W',
-          score: 95,
-          advice: 'ประตูเปิด (开门) ผสานพลังหกประสาน (六合) และสาม奇มงคล ยอดเยี่ยมสำหรับการเจรจา'
-        },
-        // NE (Palace 8 - 艮八宫)
-        8: {
-          pos: 'NE', dirZh: '东北', dirEn: 'Northeast', num: 8, numCorner: 3,
-          color: '#78350f', tag: 'NE',
-          isKongWang: true, // Kong Wang in screenshot
-          isHorse: hourHorse.palace === 8,
-          heavenStem: { ...STEMS_INFO['丙'], extra: '壬' },
-          star: { ...STARS_INFO['芮'], extra: '禽' },
-          deity: DEITIES_INFO['符'],
-          earthStem: STEMS_INFO['己'],
-          door: DOORS_INFO['伤'],
-          hexagram: { stem: '甲', gua1: '☵ 1', branch: '子', gua2: '☷ 8', name: '24-Returning' },
-          formations: [],
-          constellation: '3 Net 月 W',
-          score: 65,
-          advice: 'มีประธานเทพ (值符) สถิต แต่ตกในประตูบาดเจ็บและความว่างเปล่า'
-        },
-        // N (Palace 1 - 坎一宫)
-        1: {
-          pos: 'N', dirZh: '正北', dirEn: 'North', num: 1, numCorner: 1,
-          color: '#3b82f6', tag: 'N',
-          isKongWang: hourXun.kongWangPalaces.includes(1),
-          isHorse: true, // Sky horse in screenshot
-          heavenStem: STEMS_INFO['戊'],
-          star: STARS_INFO['英'],
-          deity: DEITIES_INFO['蛇'],
-          earthStem: STEMS_INFO['乙'],
-          door: DOORS_INFO['生'],
-          hexagram: { stem: '乙', gua1: '☵ 3', branch: '酉', gua2: '☷ 8', name: '56-Travelling' },
-          formations: [],
-          constellation: '5 Wing 火 S',
-          score: 92,
-          advice: 'ประตูเกิด (生门) ทิศรับทรัพย์มหาศาล ม้าสวรรค์ (驿马) ขับเคลื่อนเงินทองไหลมา'
-        },
-        // NW (Palace 6 - 乾六宫)
-        6: {
-          pos: 'NW', dirZh: '西北', dirEn: 'Northwest', num: 6, numCorner: 2,
-          color: '#334155', tag: 'NW',
-          isKongWang: hourXun.kongWangPalaces.includes(6),
-          isHorse: hourHorse.palace === 6,
-          heavenStem: STEMS_INFO['癸'],
-          star: STARS_INFO['辅'],
-          deity: DEITIES_INFO['阴'],
-          earthStem: STEMS_INFO['辛'],
-          door: DOORS_INFO['休'],
-          hexagram: { stem: '戊', gua1: '☵ 2', branch: '申', gua2: '☷ 6', name: '59-Dispersing' },
-          formations: [],
-          constellation: '1 Heart 月 E',
-          score: 88,
-          advice: 'ประตูพัก (休门) มงคลแห่งการพักผ่อน ความปรองดอง เจรจาราบรื่น ไร้แรงปะทะ'
+      // 1. Earth Plate (地盘)
+      const stemsOrder = ['戊', '己', '庚', '辛', '壬', '癸', '丁', '丙', '乙'];
+      const earthPlate = {};
+      stemsOrder.forEach((stem, idx) => {
+        let p;
+        if (isYangDun) {
+          p = (juNum - 1 + idx) % 9 + 1;
+        } else {
+          p = ((juNum - 1 - idx) % 9 + 9) % 9 + 1;
         }
+        earthPlate[p] = stem;
+      });
+
+      // 2. Xun Leader & Duty Star / Duty Envoy
+      const sIdx = stemsList.indexOf(hourStem);
+      const bIdx = branchesList.indexOf(hourBranch);
+      const xunDiff = (bIdx - sIdx + 12) % 12;
+      const xunLeaders = {
+        0: { leader: '甲子', hides: '戊' },
+        10: { leader: '甲戌', hides: '己' },
+        8: { leader: '甲申', hides: '庚' },
+        6: { leader: '甲午', hides: '辛' },
+        4: { leader: '甲辰', hides: '壬' },
+        2: { leader: '甲寅', hides: '癸' }
       };
+      const xunInfo = xunLeaders[xunDiff] || xunLeaders[0];
+      const leadStemChar = xunInfo.hides;
+
+      let leaderPalace = 1;
+      for (let p = 1; p <= 9; p++) {
+        if (earthPlate[p] === leadStemChar) {
+          leaderPalace = p;
+          break;
+        }
+      }
+      const starHomePalace = (leaderPalace === 5) ? 2 : leaderPalace;
+      const leadStarKey = ORIGINAL_STARS[starHomePalace];
+      const envoyDoorKey = ORIGINAL_DOORS[starHomePalace];
+
+      // 3. Heaven Plate (Duty Star Target Palace & Rotation)
+      let targetStarPalace = 1;
+      const targetStem = (hourStem === '甲') ? leadStemChar : hourStem;
+      for (let p = 1; p <= 9; p++) {
+        if (earthPlate[p] === targetStem) {
+          targetStarPalace = p;
+          break;
+        }
+      }
+      if (targetStarPalace === 5) targetStarPalace = 2;
+
+      const starHomeIdx = RING_8.indexOf(starHomePalace);
+      const targetStarIdx = RING_8.indexOf(targetStarPalace);
+      const starOffset = (targetStarIdx - starHomeIdx + 8) % 8;
+
+      const palaceStars = {};
+      const palaceHeavenStems = {};
+      const palaceExtraStems = {};
+
+      RING_8.forEach((p, i) => {
+        const origStarIdx = (i - starOffset + 8) % 8;
+        const star = STAR_RING[origStarIdx];
+        palaceStars[p] = star;
+
+        const origPalace = RING_8[origStarIdx];
+        palaceHeavenStems[p] = earthPlate[origPalace];
+
+        if (star === '芮') {
+          palaceExtraStems[p] = earthPlate[5];
+        }
+      });
+
+      // 4. Eight Deities (八神)
+      const palaceDeities = {};
+      RING_8.forEach((p, i) => {
+        let dIdx;
+        if (isYangDun) {
+          dIdx = (i - targetStarIdx + 8) % 8;
+        } else {
+          dIdx = (targetStarIdx - i + 8) % 8;
+        }
+        palaceDeities[p] = DEITIES_ORDER[dIdx];
+      });
+
+      // 5. Eight Doors (八门 - Duty Envoy Step)
+      const hStep = sIdx;
+      let envoyPalace = starHomePalace;
+      if (isYangDun) {
+        envoyPalace = (starHomePalace - 1 + hStep) % 9 + 1;
+      } else {
+        envoyPalace = ((starHomePalace - 1 - hStep) % 9 + 9) % 9 + 1;
+      }
+      if (envoyPalace === 5) envoyPalace = 2;
+
+      const doorHomeIdx = RING_8.indexOf(starHomePalace);
+      const envoyTargetIdx = RING_8.indexOf(envoyPalace);
+      const doorOffset = (envoyTargetIdx - doorHomeIdx + 8) % 8;
+
+      const palaceDoors = {};
+      RING_8.forEach((p, i) => {
+        const origDoorIdx = (i - doorOffset + 8) % 8;
+        palaceDoors[p] = DOOR_RING[origDoorIdx];
+      });
+
+      // 6. Assemble Full 9 Palaces
+      const palaces = {};
+      const matrixOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+      matrixOrder.forEach(pNum => {
+        const info = PALACE_INFO[pNum];
+
+        if (pNum === 5) {
+          // Center Palace
+          palaces[5] = {
+            pos: 'Center',
+            dirZh: '中宫',
+            dirEn: 'Center',
+            num: 5,
+            numCorner: 0,
+            color: '#64748b',
+            tag: 'C',
+            isKongWang: false,
+            isHorse: false,
+            heavenStem: STEMS_INFO[earthPlate[5] || '壬'],
+            star: STARS_INFO['禽'],
+            deity: null,
+            earthStem: STEMS_INFO[earthPlate[5] || '壬'],
+            door: null,
+            hexagram: null,
+            formations: [],
+            constellation: '',
+            score: 75,
+            advice: 'จุดศูนย์กลางแห่งฟ้าดิน พลังงานหมุนเวียนถ่ายเทสู่แปดทิศรอบตัว'
+          };
+          return;
+        }
+
+        const hStemChar = palaceHeavenStems[pNum];
+        const extraStemChar = palaceExtraStems[pNum];
+        const eStemChar = earthPlate[pNum];
+        const starKey = palaceStars[pNum];
+        const deityKey = palaceDeities[pNum];
+        const doorKey = palaceDoors[pNum];
+
+        const isKongWang = hourXun.kongWangPalaces.includes(pNum);
+        const isHorse = (hourHorse.palace === pNum);
+        const isEnvoy = (doorKey === envoyDoorKey && pNum === envoyPalace);
+
+        const formations = checkFormations(hStemChar, eStemChar, doorKey, isEnvoy);
+        const hex = HEXAGRAM_LOOKUP[pNum] ? {
+          stem: hStemChar,
+          gua1: HEXAGRAM_LOOKUP[pNum].gua1,
+          branch: HEXAGRAM_LOOKUP[pNum].branch,
+          gua2: HEXAGRAM_LOOKUP[pNum].gua2,
+          name: HEXAGRAM_LOOKUP[pNum].name
+        } : null;
+
+        let baseScore = (doorKey === '生' || doorKey === '开' || doorKey === '休') ? 85 : (doorKey === '景' || doorKey === '杜') ? 68 : 48;
+        if (deityKey === '符' || deityKey === '天' || deityKey === '合') baseScore += 8;
+        if (isHorse) baseScore += 5;
+        if (isKongWang) baseScore -= 12;
+        const score = Math.min(98, Math.max(30, baseScore));
+
+        palaces[pNum] = {
+          pos: info.pos,
+          dirZh: info.dirZh,
+          dirEn: info.dirEn,
+          num: pNum,
+          numCorner: info.numCorner,
+          color: info.color,
+          tag: info.tag,
+          isKongWang: isKongWang,
+          isHorse: isHorse,
+          heavenStem: {
+            ...STEMS_INFO[hStemChar],
+            extra: extraStemChar || undefined
+          },
+          star: {
+            ...STARS_INFO[starKey],
+            extra: (starKey === '芮' ? '禽' : undefined)
+          },
+          deity: DEITIES_INFO[deityKey],
+          earthStem: {
+            ...STEMS_INFO[eStemChar],
+            extra: (pNum === 2 && earthPlate[5] ? earthPlate[5] : undefined)
+          },
+          door: {
+            ...DOORS_INFO[doorKey],
+            isEnvoy: isEnvoy
+          },
+          hexagram: hex,
+          formations: formations,
+          constellation: CONSTELLATION_LOOKUP[pNum] || '',
+          score: score,
+          advice: getPalaceAdvice(pNum, doorKey, deityKey, isKongWang, isHorse)
+        };
+      });
+
+      // 7. Find 3 Victories & Palaces
+      let chiefPalace = targetStarPalace;
+      let heavenPalace = 1;
+      let lifePalace = 1;
+
+      RING_8.forEach(p => {
+        if (palaceDeities[p] === '天') heavenPalace = p;
+        if (palaceDoors[p] === '生') lifePalace = p;
+      });
+      const taiYiPalace = OPPOSITE_PALACES[chiefPalace] || 2;
+
+      const branchClashes = {
+        '子': 'Horse (มะเมีย)', '丑': 'Goat (มะแม)', '寅': 'Monkey (วอก)', '卯': 'Rooster (ระกา)',
+        '辰': 'Dog (จอ)', '巳': 'Pig (กุน)', '午': 'Rat (ชวด)', '未': 'Ox (ฉลู)',
+        '申': 'Tiger (ขาล)', '酉': 'Rabbit (เถาะ)', '戌': 'Dragon (มะโรง)', '亥': 'Snake (มะเส็ง)'
+      };
+
+      const constellationIdx = ((23 + diffDays) % 28 + 28) % 28;
+      const constellationName = CONSTELLATIONS_28[constellationIdx];
 
       return {
         date: now,
@@ -354,12 +584,12 @@
           year: { stem: STEMS_INFO[yearStem], branch: BRANCHES_INFO[yearBranch] }
         },
         meta: {
-          chartId: 1066,
+          chartId: 1000 + (isYangDun ? 0 : 50) + juNum * 10 + (dayCycle % 10),
           structure: structureName,
-          leadStem: '壬 Ren',
-          envoy: 'Death Door (死门)',
-          leadStar: 'Heavenly Bird (天禽/天芮)',
-          constellation: '24 - Willow (柳宿)',
+          leadStem: `${leadStemChar} ${STEMS_INFO[leadStemChar].py}`,
+          envoy: `${DOORS_INFO[envoyDoorKey].en} Door (${DOORS_INFO[envoyDoorKey].fullZh})`,
+          leadStar: `${STARS_INFO[leadStarKey].en} (${STARS_INFO[leadStarKey].fullZh}${leadStarKey === '芮' ? '/天禽' : ''})`,
+          constellation: constellationName,
           hourJia: `${hourXun.hides} ${STEMS_INFO[hourXun.hides].py}`,
           dayJia: `${dayXun.hides} ${STEMS_INFO[dayXun.hides].py}`,
           hourHorse: `${hourHorse.branch} ${hourHorse.py}`,
@@ -371,18 +601,18 @@
         },
         palaces,
         victories: {
-          daYi: 'SW',
-          taiYi: 'SW',
-          tian: 'E',
-          sheng: 'N'
+          daYi: PALACE_INFO[chiefPalace].pos,
+          taiYi: PALACE_INFO[taiYiPalace].pos,
+          tian: PALACE_INFO[heavenPalace].pos,
+          sheng: PALACE_INFO[lifePalace].pos
         },
         palaceDivision: {
-          internal: 'S, SW, W, NW',
-          external: 'N, NE, E, SE'
+          internal: isYangDun ? 'N, NE, E, SE' : 'S, SW, W, NW',
+          external: isYangDun ? 'S, SW, W, NW' : 'N, NE, E, SE'
         },
         clashes: {
-          day: 'Pig (กุน)',
-          hour: 'Rabbit (เถาะ)'
+          day: branchClashes[dayBranch] || 'Rat (ชวด)',
+          hour: branchClashes[hourBranch] || 'Ox (ฉลู)'
         }
       };
     }
@@ -392,10 +622,10 @@
 
   // 8. UI Controller
   const QiMenApp = {
-    currentDate: new Date(2026, 9, 10, 17, 27), // default to 2026-10-10 17:27 as in reference
-    currentHourIdx: 9, // 17:00-18:59 (You hour)
+    currentDate: new Date(),
+    currentHourIdx: Math.floor((new Date().getHours() + 1) % 24 / 2),
     chartData: null,
-    selectedPalaceNum: 1, // default focus on Life Door (North)
+    selectedPalaceNum: 1, // default focus on Palace 1
 
     init: function () {
       this.bindDOMElements();
