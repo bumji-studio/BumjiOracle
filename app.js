@@ -6,8 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeCardId = 1;
   const borderStyleKey = 'jiutian_border_style';
 
-  // DOM Elements
-  const cardList = document.getElementById('cardList');
+  function initLegacyStudio() {
+    // DOM Elements
+    const cardList = document.getElementById('cardList');
+    if (!cardList) return;
   const searchCards = document.getElementById('searchCards');
   const filterElement = document.getElementById('filterElement');
   const borderStyleSelect = document.getElementById('borderStyleSelect');
@@ -854,35 +856,73 @@ document.addEventListener('DOMContentLoaded', () => {
       reader.readAsText(file);
     });
   }
+  } // end initLegacyStudio
+  initLegacyStudio();
 
   // ==========================================================================
   // 15. FORTUNE TELLING APP MODULE (4-STEP TAROT DIVINATION)
   // Collections: JiuTian Arcana (96 Chinese Deity Cards) & Bumji & The Gang (Cute Cat Cards)
   // ==========================================================================
 
-  // Tab Switcher DOM
+  // Tab Switcher DOM (Tarot Reading, TongShu Auspicious Timing, Qi Men Dun Jia, BaZi Destiny)
   const tabReadingBtn = document.getElementById('tabReadingBtn');
-  const tabStudioBtn = document.getElementById('tabStudioBtn');
-  const studioAppView = document.getElementById('studioAppView');
+  const tabTongShuBtn = document.getElementById('tabTongShuBtn');
+  const tabQiMenBtn = document.getElementById('tabQiMenBtn');
+  const tabBaziBtn = document.getElementById('tabBaziBtn');
   const readingAppView = document.getElementById('readingAppView');
-  const studioHeaderActions = document.getElementById('studioHeaderActions');
+  const tongShuAppView = document.getElementById('tongShuAppView');
+  const qiMenAppView = document.getElementById('qiMenAppView');
+  const baziAppView = document.getElementById('baziAppView');
 
-  if (tabReadingBtn && tabStudioBtn) {
-    tabReadingBtn.addEventListener('click', () => {
-      tabReadingBtn.classList.add('active');
-      tabStudioBtn.classList.remove('active');
-      readingAppView.classList.remove('hidden');
-      studioAppView.classList.add('hidden');
-      if (studioHeaderActions) studioHeaderActions.classList.add('hidden');
-    });
+  function setActiveAppMode(mode) {
+    // Nav tab active state
+    if (tabReadingBtn) tabReadingBtn.classList.toggle('active', mode === 'reading');
+    if (tabTongShuBtn) tabTongShuBtn.classList.toggle('active', mode === 'tongshu');
+    if (tabQiMenBtn) tabQiMenBtn.classList.toggle('active', mode === 'qimen');
+    if (tabBaziBtn) tabBaziBtn.classList.toggle('active', mode === 'bazi');
 
-    tabStudioBtn.addEventListener('click', () => {
-      tabStudioBtn.classList.add('active');
-      tabReadingBtn.classList.remove('active');
-      studioAppView.classList.remove('hidden');
-      readingAppView.classList.add('hidden');
-      if (studioHeaderActions) studioHeaderActions.classList.remove('hidden');
-    });
+    // View containers visibility
+    if (readingAppView) readingAppView.classList.toggle('hidden', mode !== 'reading');
+    if (tongShuAppView) tongShuAppView.classList.toggle('hidden', mode !== 'tongshu');
+    if (qiMenAppView) qiMenAppView.classList.toggle('hidden', mode !== 'qimen');
+    if (baziAppView) baziAppView.classList.toggle('hidden', mode !== 'bazi');
+
+    // Trigger TongShu live update when activated
+    if (mode === 'tongshu' && window.TongShuApp) {
+      window.TongShuApp.onTabShow();
+    }
+    // Trigger Qi Men Dun Jia live update when activated
+    if (mode === 'qimen' && window.QiMenApp) {
+      window.QiMenApp.onTabShow();
+    }
+    // Trigger BaZi live update when activated
+    if (mode === 'bazi' && window.BaziApp) {
+      window.BaziApp.onTabShow();
+    }
+  }
+
+  if (tabReadingBtn) {
+    tabReadingBtn.addEventListener('click', () => setActiveAppMode('reading'));
+  }
+  if (tabTongShuBtn) {
+    tabTongShuBtn.addEventListener('click', () => setActiveAppMode('tongshu'));
+  }
+  if (tabQiMenBtn) {
+    tabQiMenBtn.addEventListener('click', () => setActiveAppMode('qimen'));
+  }
+  if (tabBaziBtn) {
+    tabBaziBtn.addEventListener('click', () => setActiveAppMode('bazi'));
+  }
+
+  // Support initial tab via URL parameter (e.g. ?tab=bazi) or hash (#bazi)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get('tab') || window.location.hash.replace('#', '');
+    if (['reading', 'tongshu', 'qimen', 'bazi'].includes(initialTab)) {
+      setActiveAppMode(initialTab);
+    }
+  } catch (e) {
+    console.warn('Initial tab parse error:', e);
   }
 
   // Stepper Elements
@@ -1662,7 +1702,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Initialize App
-  initApp();
+  if (document.getElementById('cardList')) {
+    initApp();
+  }
   // Set default view to Tarot Reading App
   setStep(1);
 });

@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node scripts/build-pdf.js",
     "protect": "node scripts/protect-pdf.js",
-    "generate": "node scripts/build-pdf.js && node scripts/protect-pdf.js"
+    "generate": "node scripts/build-pdf.js && node scripts/protect-pdf.js",
+    "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create_shortcut.ps1"
   },
   "dependencies": {
     "puppeteer": "^22.12.1",

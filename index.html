@@ -8,7 +8,7 @@
   <!-- Google Fonts for premium Thai & English typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Outfit:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Outfit:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
   
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,8 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <!-- CSS Styles with cache busting -->
-  <link rel="stylesheet" href="styles.css?v=20260930_mobile1">
+  <link rel="stylesheet" href="styles.css?v=20261011_bazi_v16">
   
   <!-- html2pdf.js for exporting HTML to high-quality protected PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -45,8 +44,14 @@
       <button class="nav-tab active" id="tabReadingBtn">
         <i class="fa-solid fa-wand-magic-sparkles"></i> ระบบทำนายไพ่ (Tarot Reading)
       </button>
-      <button class="nav-tab" id="tabStudioBtn">
-        <i class="fa-solid fa-book-open"></i> สตูดิโอคู่มือ A4 (Guidebook Studio)
+      <button class="nav-tab" id="tabTongShuBtn">
+        <i class="fa-solid fa-calendar-days"></i> ฤกษ์ยาม TongShu (通書)
+      </button>
+      <button class="nav-tab" id="tabQiMenBtn">
+        <i class="fa-solid fa-compass"></i> ทำนาย Qi Men Dun Jia (奇門遁甲)
+      </button>
+      <button class="nav-tab" id="tabBaziBtn">
+        <i class="fa-solid fa-yin-yang"></i> ดูดวง Bazi (八字)
       </button>
     </div>
 
@@ -56,407 +61,470 @@
         <img id="lineUserAvatar" src="" class="line-user-avatar" alt="LINE Avatar">
         <span id="lineUserName" class="line-user-name">LINE User</span>
       </div>
-
-      <!-- Actions container specifically shown in Studio Mode -->
-      <div id="studioHeaderActions" class="studio-header-actions hidden" style="display: inline-flex; gap: 8px;">
-        <span class="save-status" id="saveStatus"><i class="fa-solid fa-circle-check"></i> บันทึกข้อมูลแล้ว (Local)</span>
-        <button class="btn btn-secondary" id="importPdfBtn"><i class="fa-solid fa-file-import"></i> นำเข้าตัวอย่าง PDF</button>
-        <input type="file" id="pdfFileInput" accept="application/pdf" style="display: none;">
-        
-        <button class="btn btn-secondary" id="backupJsonBtn" title="สำรองข้อมูลเป็นไฟล์ JSON"><i class="fa-solid fa-download"></i> สำรองไฟล์ JSON</button>
-        <button class="btn btn-secondary" id="restoreJsonBtn" title="โหลดไฟล์สำรอง JSON เข้ามาแก้งานต่อ"><i class="fa-solid fa-upload"></i> โหลดไฟล์ JSON</button>
-        <input type="file" id="jsonFileInput" accept="application/json" style="display: none;">
-
-        <button class="btn btn-secondary" id="resetDataBtn"><i class="fa-solid fa-rotate-left"></i> รีเซ็ต</button>
-        <button class="btn btn-primary" id="exportPdfBtn"><i class="fa-solid fa-file-pdf"></i> ออกรายงาน PDF (94 หน้า)</button>
-      </div>
     </div>
   </header>
 
-  <!-- VIEW 1: STUDIO APP VIEW (Guidebook Studio) -->
-  <div id="studioAppView" class="view-container hidden">
-    <main class="app-workspace">
-    
-    <!-- Sidebar: Card List -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h3><i class="fa-solid fa-list"></i> รายชื่อไพ่ทั้งหมด</h3>
-        <div class="search-box">
-          <i class="fa-solid fa-magnifying-glass search-icon"></i>
-          <input type="text" id="searchCards" placeholder="ค้นหาไพ่...">
-        </div>
-        <div class="filter-box">
-          <select id="filterElement">
-            <option value="all">ทั้งหมด (ทุกธาตุ)</option>
-            <option value="ธาตุทอง">ธาตุทอง (Metal)</option>
-            <option value="ธาตุไม้">ธาตุไม้ (Wood)</option>
-            <option value="ธาตุน้ำ">ธาตุน้ำ (Water)</option>
-            <option value="ธาตุไฟ">ธาตุไฟ (Fire)</option>
-            <option value="ธาตุดิน">ธาตุดิน (Earth)</option>
-          </select>
-        </div>
-      </div>
-      <div class="card-list-wrapper" id="cardList">
-        <!-- Dynamically filled with JS -->
-      </div>
-    </aside>
-
-    <!-- Editor Panel -->
-    <section class="editor-panel">
-      <div class="panel-header">
-        <h2><i class="fa-solid fa-pen-to-square"></i> แก้ไขเนื้อหาไพ่</h2>
-        <span class="active-card-indicator" id="activeCardIndicator">ไพ่ใบที่ 1</span>
-      </div>
-      <div class="editor-form" id="editorForm">
-        <input type="hidden" id="editCardId">
-        
-        <!-- SECTION 1: MAIN CARD INFO (PAGE A) -->
-        <div class="editor-section-title"><i class="fa-solid fa-star"></i> ข้อมูลหน้าหลักไพ่ (หน้าแรก)</div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCardNameEn">ชื่อไพ่ (อังกฤษ)</label>
-            <input type="text" id="editCardNameEn" placeholder="เช่น The Magician">
+    <!-- VIEW: BAZI APP VIEW (Four Pillars of Destiny / 八字命理) -->
+  <div id="baziAppView" class="view-container hidden">
+    <div class="bazi-app-container">
+      
+      <!-- 1. Toolbar & Birth Input Card -->
+      <section class="bazi-toolbar-card">
+        <div class="bazi-input-group">
+          <div class="bazi-field" style="min-width: 170px;">
+            <label><i class="fa-solid fa-address-book"></i> เลือกลูกดวง:</label>
+            <select id="baziQuickProfileSelect" class="bazi-quick-profile-select">
+              <option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>
+            </select>
           </div>
-          <div class="form-group">
-            <label for="editCardNameTh">ชื่อไพ่ (ไทย)</label>
-            <input type="text" id="editCardNameTh" placeholder="เช่น จี้กง">
+          <div class="bazi-field">
+            <label><i class="fa-solid fa-user"></i> ชื่อลูกดวง:</label>
+            <input type="text" id="baziNameInput" value="ดวงปัจจุบัน" placeholder="ชื่อ / นามสกุล" style="width: 130px;">
+          </div>
+          <div class="bazi-field">
+            <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
+            <select id="baziGenderSelect">
+              <option value="male">ชาย (Male)</option>
+              <option value="female">หญิง (Female)</option>
+            </select>
+          </div>
+          <div class="bazi-field">
+            <label><i class="fa-solid fa-calendar-day"></i> วันเกิด:</label>
+            <input type="date" id="baziDateInput">
+          </div>
+          <div class="bazi-field">
+            <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
+            <input type="time" id="baziHourInput">
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCardNameZh">ชื่อไพ่ (จีน/อื่น ๆ)</label>
-            <input type="text" id="editCardNameZh" placeholder="เช่น (濟公)">
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <button class="bazi-btn-secondary" id="baziPresetNowBtn" title="ใช้วันและเวลาปัจจุบัน">
+            <i class="fa-solid fa-bolt"></i> ขณะนี้
+          </button>
+          <button class="bazi-btn-primary" id="baziCalcBtn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> วิเคราะห์ดวงชะตา (Calculate)
+          </button>
+          <button class="bazi-btn-secondary bazi-btn-save" id="baziSaveBtn" title="บันทึกข้อมูลลูกดวงนี้ลงในเครื่อง">
+            <i class="fa-solid fa-bookmark"></i> บันทึกลูกดวง
+          </button>
+          <button class="bazi-btn-secondary" id="baziOpenSavedModalBtn" title="ดูและจัดการรายชื่อลูกดวงที่บันทึกไว้">
+            <i class="fa-solid fa-folder-open"></i> รายชื่อลูกดวง (<span id="baziSavedCount">0</span>)
+          </button>
+          <button class="bazi-btn-secondary" id="baziCopySummaryBtn" title="คัดลอกสรุปคำทำนาย">
+            <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
+          </button>
+        </div>
+      </section>
+
+      <!-- MODE SWITCHER (Basic vs Expert) -->
+      <section class="bazi-mode-switcher-bar">
+        <div class="bazi-mode-toggle-group">
+          <button type="button" class="bazi-mode-btn" id="baziModeBasicBtn" onclick="window.BaziApp.switchMode('basic')">
+            <i class="fa-solid fa-user-check"></i> <strong>โหมด Basic</strong>
+            <span class="mode-sub">ข้อมูลพื้นฐาน เข้าใจง่าย</span>
+          </button>
+          <button type="button" class="bazi-mode-btn active" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
+            <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong>
+            <span class="mode-sub">สำหรับหมอดู & คำนวณเจาะลึก</span>
+          </button>
+        </div>
+        <div class="bazi-mode-hint-box" id="baziModeHintBox">
+          <div id="baziModeBasicInfo" class="mode-banner-content hidden">
+            <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
+            <span><strong>โหมด Basic:</strong> สรุปผลวิเคราะห์ดวงชะตา ธาตุสำคัญ วัยจร 10 ปี ดวงรายปี และคำแนะนำกลยุทธ์ชีวิตเพื่อการนำไปใช้งานทันที</span>
           </div>
-          <div class="form-group">
-            <label for="editCardDeitySubtitle">ฉายา/คำโปรยใต้ชื่อ</label>
-            <input type="text" id="editCardDeitySubtitle" placeholder="เช่น ผู้สำแดงเดช ผู้แปรสรรพสิ่งด้วยปัญญา">
+          <div id="baziModeExpertInfo" class="mode-banner-content">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+            <span><strong>โหมด Expert:</strong> เปิดชุดเครื่องมือหมอดูเต็มรูปแบบ: โต๊ะถาม-ตอบ/คำนวณเฉพาะกิจ, ตารางเทพและดาวชะตา (神煞), ตารางปะทะ-ฮะ (刑沖合害), และแจกแจงสูตรคำนวณวั่งซ่วย & เตี้ยวโฮ่ว</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERT MODE SUITE (แสดงเฉพาะเมื่อเปิดโหมด Expert) -->
+      <section id="baziExpertSuite" class="bazi-expert-suite">
+        <!-- 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ 6 หัวข้อวิเคราะห์เจาะลึก (Interactive Astrologer Assistant) -->
+        <div class="bazi-section-card bazi-expert-card">
+          <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ
+            </div>
+            <span class="expert-badge" style="background: rgba(2, 132, 199, 0.1); color: #0284c7; border-color: rgba(2, 132, 199, 0.2);"><i class="fa-solid fa-book-bookmark"></i> Reference Toolkit</span>
+          </div>
+          <p style="color: #64748b; font-size: 13px; margin-top: -6px; margin-bottom: 14px;">
+            เลือกหัวข้อวิเคราะห์เจาะลึกด้านล่างเพื่อตรวจสอบหลักวิชาการโหราศาสตร์จีน 4 เสา
+          </p>
+
+          <!-- Quick Query Buttons for Expert (Chips 1-6) -->
+          <div class="expert-query-chips">
+            <button class="expert-chip active" id="btnQueryGeju" onclick="window.BaziApp.runExpertQuery('geju')">
+              <i class="fa-solid fa-landmark"></i> 1. วิเคราะห์โครงสร้างเก๋อ (格局)
+            </button>
+            <button class="expert-chip" id="btnQueryTiaohou" onclick="window.BaziApp.runExpertQuery('tiaohou')">
+              <i class="fa-solid fa-temperature-half"></i> 2. หลักการเตี้ยวโฮ่ว & วั่งซ่วย (調候&旺衰)
+            </button>
+            <button class="expert-chip" id="btnQueryInteractions" onclick="window.BaziApp.runExpertQuery('interactions')">
+              <i class="fa-solid fa-bolt"></i> 3. ตรวจจุดปะทะ/ฮะ/ซิ้ง/ไฮ่ (刑沖合害)
+            </button>
+            <button class="expert-chip" id="btnQueryShensha" onclick="window.BaziApp.runExpertQuery('shensha')">
+              <i class="fa-solid fa-star"></i> 4. รวมดาวเทพและดาวเคราะห์ (神煞大全)
+            </button>
+            <button class="expert-chip" id="btnQueryDayunYear" onclick="window.BaziApp.runExpertQuery('dayun_year')">
+              <i class="fa-solid fa-timeline"></i> 5. เจาะลึกวัยจรปัจจุบัน & ปีจร 2026
+            </button>
+            <button class="expert-chip" id="btnQueryHuasha" onclick="window.BaziApp.runExpertQuery('huasha')">
+              <i class="fa-solid fa-shield-halved"></i> 6. หลักการแก้ดวง & พลิกวิกฤต (化煞指南)
+            </button>
+          </div>
+
+          <!-- Result box for 6 Principles -->
+          <div id="baziExpertPrinciplesResult" class="expert-result-box" style="margin-top: 14px;">
+            <!-- Dynamically populated from runExpertQuery -->
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="editCardMainQuote">ข้อความคำคมประจำไพ่ (คำคมเด่นกลางหน้า)</label>
-          <input type="text" id="editCardMainQuote" placeholder="เช่น “ผู้ที่เข้าใจกฎของจักรวาล...”">
-        </div>
+        <!-- 2. Dual Expert Cards: Shen Sha Matrix + Clash/Harmony Matrix -->
+        <div class="bazi-dual-section" style="margin-top: 16px;">
+          <!-- Card A: ตารางเทพและดาวชะตา 4 เสา (Four Pillars Shen Sha Matrix) -->
+          <div class="bazi-section-card">
+            <div class="bazi-card-title">
+              <i class="fa-solid fa-star" style="color: #f59e0b;"></i> ตารางแจกแจงเทพและดาวชะตา 4 เสา (神煞星盤)
+            </div>
+            <div id="baziExpertShenShaTable" class="expert-table-wrap"></div>
+          </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCardElement">ธาตุ (Element)</label>
-            <input type="text" id="editCardElement" placeholder="เช่น ไฟ (火)">
-          </div>
-          <div class="form-group">
-            <label for="editCardCoreEnergy">พลังหลัก (Core Energy)</label>
-            <input type="text" id="editCardCoreEnergy" placeholder="เช่น ปัญญาและการสร้างสรรค์">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="editCardDeity">เทพประจำไพ่ (Deity)</label>
-            <input type="text" id="editCardDeity" placeholder="เช่น ไท่ซ่างเหล่าจวิน (太上老君)">
-          </div>
-          <div class="form-group">
-            <label for="editCardCategory">หมวดไพ่ (Category)</label>
-            <input type="text" id="editCardCategory" placeholder="เช่น Major Arcana">
+          <!-- Card B: ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (Clash, Harmony, Punishment, Harm) -->
+          <div class="bazi-section-card">
+            <div class="bazi-card-title">
+              <i class="fa-solid fa-arrows-split-up-and-left" style="color: #ef4444;"></i> ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (刑沖合害)
+            </div>
+            <div id="baziExpertInteractionsList" class="expert-interactions-wrap"></div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="editCardKeywords">คีย์เวิร์ดหน้าแรก (คั่นด้วยจุลภาค ,)</label>
-          <input type="text" id="editCardKeywords" placeholder="การสร้างสรรค์, การทำให้เป็นจริง, ความเชี่ยวชาญ">
+        <!-- 3. Mathematical & Theoretical Calculation Breakdown -->
+        <div class="bazi-section-card" style="margin-top: 16px;">
+          <div class="bazi-card-title">
+            <i class="fa-solid fa-calculator" style="color: #0284c7;"></i> แจกแจงสูตรและวิธีการคำนวณทางคณิตศาสตร์ (Calculation Breakdown)
+          </div>
+          <div id="baziExpertFormulaBreakdown" class="expert-formula-grid"></div>
         </div>
+      </section>
 
-        <div class="form-group">
-          <label for="editCardImage">ลิงก์รูปภาพไพ่ (หรือใช้ภาพจากกล้อง/คลังภาพ)</label>
-          <div class="image-input-container">
-            <input type="text" id="editCardImage" placeholder="เช่น link รูปภาพ หรือ กดเลือกไฟล์ด้านขวา">
-            <div class="file-upload-btn">
-              <input type="file" id="localImageFile" accept="image/*" style="display: none;">
-              <button type="button" class="btn btn-secondary-sm" onclick="document.getElementById('localImageFile').click()"><i class="fa-solid fa-image"></i> เลือกไฟล์ภาพ</button>
+      <!-- 2. Tri-Section: Day Master, Five Elements Balance, and Favorable Elements (3 กล่องวางแนวเดียวกัน) -->
+      <section class="bazi-tri-section">
+        <!-- Card 1: Day Master Profile -->
+        <div class="bazi-section-card bazi-dm-col-card">
+          <div class="bazi-card-title">
+            <i class="fa-solid fa-yin-yang" style="color: #7c3aed;"></i> ดิถีธาตุและตัวตน (Day Master)
+          </div>
+          <div class="bazi-dm-card-body">
+            <div class="bazi-dm-avatar" id="baziDmBadge">
+              <span class="dm-char" style="color: #ef4444;">丁</span>
+              <span class="dm-sub">Ding (ไฟหยิน)</span>
+            </div>
+            <div class="bazi-dm-card-info">
+              <h3 id="baziDmTitle">Bumji • ดิถีธาตุ 丁 (เต็ง - ไฟหยิน)</h3>
+              <p id="baziDmDesc">ดวงประทีป เปลวเทียน อ่อนโยนแต่ทรงพลัง รอบรู้ มีสติปัญญา</p>
+              <div style="margin-top: 8px;">
+                <span id="baziDmStrengthBadge" class="bazi-badge badge-strong">ดิถีแข็งแรง (身強 - Strong Day Master)</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- SECTION 2: DETAILS (PAGE B) -->
-        <div class="editor-section-title"><i class="fa-solid fa-book-open"></i> ตำนานและบุคลิกภาพ (หน้าสอง)</div>
-
-        <div class="form-group">
-          <label for="editCardMythology">ตำนานและที่มาของไพ่</label>
-          <textarea id="editCardMythology" rows="4" placeholder="ระบุตำนานที่มาและประวัติอย่างย่อ..."></textarea>
+        <!-- Card 2: Five Elements Balance -->
+        <div class="bazi-section-card">
+          <div class="bazi-card-title">
+            <i class="fa-solid fa-chart-simple" style="color: #0284c7;"></i> สมดุลพลังเบญจธาตุ (Five Elements Balance)
+          </div>
+          <div id="baziElementsBars"></div>
         </div>
 
-        <div class="form-group">
-          <label for="editCardPersonality">บุคลิกของคนที่เป็นตัวแทนไพ่</label>
-          <textarea id="editCardPersonality" rows="4" placeholder="ระบุตัวตน บุคลิก ลักษณะเฉพาะตัว..."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="editCardCareers">อาชีพที่เหมาะสม (คั่นด้วยจุลภาค ,)</label>
-          <input type="text" id="editCardCareers" placeholder="วิศวกร, โปรแกรมเมอร์, นักวิจัย, สถาปนิก">
-        </div>
-
-        <!-- SECTION 3: DIVINE STRATEGY (PAGE B) -->
-        <div class="editor-section-title"><i class="fa-solid fa-dharmachakra"></i> กลยุทธ์จากเทพ 4 ข้อ (หน้าสอง)</div>
-
-        <div class="strategy-form-grid">
-          <div class="strategy-edit-box">
-            <label>ข้อ 1: หัวข้อ & คำอธิบาย</label>
-            <input type="text" id="editStr1Title" placeholder="หัวข้อกลยุทธ์ 1">
-            <textarea id="editStr1Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+        <!-- Card 3: Favorable & Balancing Elements -->
+        <div class="bazi-section-card">
+          <div class="bazi-card-title">
+            <i class="fa-solid fa-scale-balanced" style="color: #10b981;"></i> ธาตุให้คุณและธาตุปรับสมดุล (喜用神)
           </div>
-          <div class="strategy-edit-box">
-            <label>ข้อ 2: หัวข้อ & คำอธิบาย</label>
-            <input type="text" id="editStr2Title" placeholder="หัวข้อกลยุทธ์ 2">
-            <textarea id="editStr2Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          <div style="margin-bottom: 10px;">
+            <span class="sub-label"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> ธาตุส่งเสริมกำลัง (喜用神 - Useful Elements):</span>
+            <div id="baziFavElements" class="bazi-tags-wrap"></div>
           </div>
-          <div class="strategy-edit-box">
-            <label>ข้อ 3: หัวข้อ & คำอธิบาย</label>
-            <input type="text" id="editStr3Title" placeholder="หัวข้อกลยุทธ์ 3">
-            <textarea id="editStr3Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          <div style="margin-bottom: 10px;">
+            <span class="sub-label"><i class="fa-solid fa-compass-drafting" style="color: #0284c7;"></i> ธาตุปรับดวง / ปรับอุณหภูมิ (調候用神 - Regulating Element):</span>
+            <div id="baziTiaoHouElement" class="bazi-tags-wrap"></div>
           </div>
-          <div class="strategy-edit-box">
-            <label>ข้อ 4: หัวข้อ & คำอธิบาย</label>
-            <input type="text" id="editStr4Title" placeholder="หัวข้อกลยุทธ์ 4">
-            <textarea id="editStr4Text" rows="2" placeholder="คำอธิบายสั้นๆ..."></textarea>
+          <div style="margin-bottom: 10px;">
+            <span class="sub-label"><i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i> ธาตุให้โทษ / ควรระวัง (忌神 - Avoid Elements):</span>
+            <div id="baziAvoidElements" class="bazi-tags-wrap"></div>
+          </div>
+          <div id="baziRegulatingAdvice" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: #475569; line-height: 1.5;">
+            <i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> <strong>หลักการปรับสมดุล:</strong> เสริมพลังธาตุให้คุณผ่านสีเสื้อผ้า สิ่งแวดล้อม และอาชีพ
           </div>
         </div>
+      </section>
 
-        <!-- SECTION 4: LOWER CONTENT (PAGE B) -->
-        <div class="editor-section-title"><i class="fa-solid fa-envelope-open-text"></i> สรุปข้อความและคีย์เวิร์ดหลัง (หน้าสอง)</div>
-
-        <div class="form-group">
-          <label for="editCardIfDrawn">หากคุณได้รับไพ่ใบนี้ (คำทำนายสรุป)</label>
-          <textarea id="editCardIfDrawn" rows="3" placeholder="ระบุการตีความการงาน การเงิน ความรักเชิงปฏิบัติ..."></textarea>
+      <!-- 3. Four Pillars Matrix (เสายาม, เสาวัน, เสาเดือน, เสาปี) -->
+      <section>
+        <div class="bazi-card-title" style="margin-bottom: 12px;">
+          <i class="fa-solid fa-columns" style="color: #7c3aed;"></i> ผัง 4 เสาชะตาฟ้าดิน (Four Pillars Matrix)
         </div>
-
-        <div class="form-group">
-          <label for="editCardDeityMessage">ข้อความจากเทพ (กรอบทองแดงเด่นกลางล่าง)</label>
-          <textarea id="editCardDeityMessage" rows="2" placeholder="ระบุประโยคข้อคิดเตือนใจศักดิ์สิทธิ์..."></textarea>
+        <div class="bazi-pillars-grid">
+          <!-- Hour Pillar -->
+          <div id="baziHourCol"></div>
+          <!-- Day Pillar (Self) -->
+          <div id="baziDayCol"></div>
+          <!-- Month Pillar -->
+          <div id="baziMonthCol"></div>
+          <!-- Year Pillar -->
+          <div id="baziYearCol"></div>
         </div>
+      </section>
 
-        <div class="form-group">
-          <label for="editCardStrategyKeywords">คีย์เวิร์ดหน้าสอง (คั่นด้วยจุลภาค ,)</label>
-          <input type="text" id="editCardStrategyKeywords" placeholder="Creation, Manifestation, Mastery">
+      <!-- 5. Da Yun Timeline (วัยจร 10 ปี / 大運) -->
+      <section class="bazi-section-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div class="bazi-card-title" style="margin-bottom: 0;">
+            <i class="fa-solid fa-timeline" style="color: #7c3aed;"></i> วัยจร 10 ปี (大運 - Da Yun Luck Pillars)
+          </div>
+          <span style="font-size: 12.5px; color: #64748b;"><i class="fa-solid fa-hand-pointer"></i> คลิกที่การ์ดช่วงอายุเพื่อดูคำทำนายวัยจรแบบเจาะลึก</span>
         </div>
+        <div id="baziDayunList" class="bazi-dayun-scroll"></div>
 
-      </div>
-    </section>
+        <!-- 5.1 Da Yun Detailed Interpretation Card -->
+        <div id="baziDayunDetailCard" class="bazi-fortune-detail-card" style="margin-top: 16px;">
+          <div class="fortune-detail-header">
+            <div class="fortune-detail-title">
+              <i class="fa-solid fa-clock-rotate-left" style="color: #7c3aed;"></i>
+              <strong id="baziDayunDetailTitle">คำทำนายวัยจร 10 ปี</strong>
+            </div>
+            <span class="fortune-detail-badge"><i class="fa-solid fa-circle-check"></i> วิเคราะห์เจาะลึก 10 ปี</span>
+          </div>
 
-    <!-- Live Preview Panel (A4 Sheet representation) -->
-    <section class="preview-panel">
-      <div class="panel-header">
-        <h2><i class="fa-solid fa-eye"></i> พรีวิวคู่มือ A4 แนวนอน (1 ไพ่ต่อ 2 หน้า)</h2>
-        <div class="preview-settings">
-          <label for="borderStyleSelect">สไตล์กรอบ:</label>
-          <select id="borderStyleSelect">
-            <option value="border-gold-ornate">กรอบทองหรูหรา (Ornate Gold)</option>
-            <option value="border-modern-minimal">ขอบเรียบหรู (Modern Gold)</option>
-            <option value="border-mystic-dark">กรอบโบราณมนตรา (Mystic Dark)</option>
-            <option value="border-none">ไม่มีกรอบ (No Border)</option>
-          </select>
+          <div class="bazi-fortune-grid">
+            <div class="fortune-grid-item">
+              <div class="fortune-item-header">
+                <i class="fa-solid fa-compass" style="color: #7c3aed;"></i> ภาพรวมวัยจร & ทิศทางชีวิต
+              </div>
+              <p id="baziDayunOverviewText" class="fortune-item-text">-</p>
+            </div>
+            <div class="fortune-grid-item">
+              <div class="fortune-item-header">
+                <i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน & ธุรกิจ
+              </div>
+              <p id="baziDayunCareerText" class="fortune-item-text">-</p>
+            </div>
+            <div class="fortune-grid-item">
+              <div class="fortune-item-header">
+                <i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน & โชคลาภ
+              </div>
+              <p id="baziDayunWealthText" class="fortune-item-text">-</p>
+            </div>
+            <div class="fortune-grid-item">
+              <div class="fortune-item-header">
+                <i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก & ครอบครัว
+              </div>
+              <p id="baziDayunLoveText" class="fortune-item-text">-</p>
+            </div>
+          </div>
+
+          <div id="baziDayunWarningText" class="fortune-warning-bar">
+            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <strong>ข้อควรระวัง & สุขภาพ:</strong> -
+          </div>
         </div>
-      </div>
-      <div class="preview-container landscape-scroll">
-        
-        <!-- PAGE A: ESSENCE PAGE -->
-        <div class="a4-page border-gold-ornate A4-landscape" id="a4PreviewPageA">
-          <!-- Decorative Corners -->
-          <div class="corner corner-tl"></div>
-          <div class="corner corner-tr"></div>
-          <div class="corner corner-bl"></div>
-          <div class="corner corner-br"></div>
+      </section>
+
+      <!-- 6. Comprehensive Strategic Life Insights -->
+      <section>
+        <div class="bazi-card-title" style="margin-bottom: 12px;">
+          <i class="fa-solid fa-compass" style="color: #db2777;"></i> คำทำนายและแนวทางกลยุทธ์ชีวิต (Strategic Life Guidance)
+        </div>
+        <div class="bazi-insights-grid">
+          <!-- Personality -->
+          <div class="bazi-insight-card">
+            <div class="insight-header">
+              <div class="insight-icon" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+              </div>
+              <span class="insight-title">อุปนิสัยและแก่นแท้จิตวิญญาณ</span>
+            </div>
+            <p class="insight-content" id="baziTraitsText">-</p>
+          </div>
+
+          <!-- Career -->
+          <div class="bazi-insight-card">
+            <div class="insight-header">
+              <div class="insight-icon" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">
+                <i class="fa-solid fa-briefcase"></i>
+              </div>
+              <span class="insight-title">การงาน อาชีพ & ธุรกิจที่ถูกโฉลก</span>
+            </div>
+            <p class="insight-content" id="baziCareerText">-</p>
+          </div>
+
+          <!-- Wealth -->
+          <div class="bazi-insight-card">
+            <div class="insight-header">
+              <div class="insight-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="fa-solid fa-coins"></i>
+              </div>
+              <span class="insight-title">โชคลาภ การเงิน & การสะสมทรัพย์</span>
+            </div>
+            <p class="insight-content" id="baziWealthText">-</p>
+          </div>
+
+          <!-- Love -->
+          <div class="bazi-insight-card">
+            <div class="insight-header">
+              <div class="insight-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
+                <i class="fa-solid fa-heart"></i>
+              </div>
+              <span class="insight-title">ความรัก คู่ครอง & ชีวิตคู่</span>
+            </div>
+            <p class="insight-content" id="baziLoveText">-</p>
+          </div>
+
+          <!-- Health -->
+          <div class="bazi-insight-card">
+            <div class="insight-header">
+              <div class="insight-icon" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                <i class="fa-solid fa-notes-medical"></i>
+              </div>
+              <span class="insight-title">สุขภาพ & อวัยวะที่ต้องดูแลตามแพทย์จีน</span>
+            </div>
+            <p class="insight-content" id="baziHealthText">-</p>
+          </div>
+
+          <!-- Feng Shui -->
+          <div class="bazi-insight-card">
+            <div class="insight-header">
+              <div class="insight-icon" style="background: rgba(100, 116, 139, 0.1); color: #475569;">
+                <i class="fa-solid fa-yin-yang"></i>
+              </div>
+              <span class="insight-title">การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา</span>
+            </div>
+            <div id="baziFengShuiList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Annual Fortune (ทำนายรายปี / 流年 Liu Nian) - ย้ายมาไว้ด้านล่างสุดของหน้า -->
+      <section class="bazi-section-card" id="baziAnnualSection">
+        <div class="bazi-annual-header">
+          <div class="bazi-card-title" style="margin-bottom: 0;">
+            <i class="fa-solid fa-calendar-star" style="color: #d97706;"></i> ทำนายดวงรายปี (流年 - Annual Fortune)
+          </div>
           
-          <!-- Running Header -->
-          <header class="page-header-print">
-            <span class="header-left"><i class="fa-solid fa-seedling"></i> JIU TIAN ARCANA</span>
-            <span class="header-center">WISDOM OF THE HEAVENS • GUIDANCE FOR THE SOUL</span>
-            <span class="header-right"><i class="fa-solid fa-yin-yang"></i></span>
-          </header>
-
-          <!-- Essence Layout -->
-          <div class="page-content-essence">
-            <!-- Left col: titles & quotes -->
-            <div class="essence-left-col">
-              <div class="card-num-badge">
-                <span class="badge-title">ไพ่หมายเลข</span>
-                <span class="badge-val" id="previewCardIdBadge">I</span>
-              </div>
-              <div class="card-titles">
-                <h1 id="previewCardNameEn" class="title-en">The Magician</h1>
-                <h2 id="previewCardNameTh" class="title-th">จี้กง</h2>
-                <h3 id="previewCardNameZh" class="title-zh">(濟公)</h3>
-                <p id="previewCardDeitySubtitle" class="deity-subtitle">ผู้สำแดงเดช ผู้แปรสรรพสิ่งด้วยปัญญา</p>
-              </div>
-              <div class="card-quote">
-                <p id="previewCardMainQuote">“ผู้ที่เข้าใจกฎของจักรวาล มิได้สร้างปาฏิหาริย์ แต่ทำให้สิ่งที่เป็นไปได้ กลายเป็นความจริง”</p>
-              </div>
+          <div class="bazi-annual-controls-right">
+            <div class="bazi-year-chips" id="baziYearChips">
+              <button class="bazi-year-chip" data-year="2025">2025 (มะเส็ง 乙巳)</button>
+              <button class="bazi-year-chip active" data-year="2026">2026 (มะเมีย 丙午)</button>
+              <button class="bazi-year-chip" data-year="2027">2027 (มะแม 丁未)</button>
             </div>
-
-            <!-- Center col: card art -->
-            <div class="essence-center-col">
-              <div class="card-image-frame">
-                <div class="card-image-inner" id="previewCardArt">
-                  <i class="fa-solid fa-bahai art-icon"></i>
-                  <span>รูปภาพไพ่</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right col: essence table -->
-            <div class="essence-right-col">
-              <div class="essence-table-panel">
-                <div class="essence-panel-header">ESSENCE OF THE CARD</div>
-                <div class="essence-table-content">
-                  <div class="essence-row">
-                    <div class="essence-icon"><i class="fa-solid fa-yin-yang"></i></div>
-                    <div class="essence-label-val">
-                      <span class="label">ธาตุ (Element)</span>
-                      <span class="val" id="previewCardElement">ไฟ (火)</span>
-                    </div>
-                  </div>
-                  <div class="essence-row">
-                    <div class="essence-icon"><i class="fa-solid fa-bahai"></i></div>
-                    <div class="essence-label-val">
-                      <span class="label">พลังหลัก (Core Energy)</span>
-                      <span class="val" id="previewCardCoreEnergy">ปัญญาและการสร้างสรรค์</span>
-                    </div>
-                  </div>
-                  <div class="essence-row">
-                    <div class="essence-icon"><i class="fa-solid fa-crown"></i></div>
-                    <div class="essence-label-val">
-                      <span class="label">เทพประจำไพ่ (Deity)</span>
-                      <span class="val" id="previewCardDeity">ไท่ซ่างเหล่าจวิน (太上老君)</span>
-                    </div>
-                  </div>
-                  <div class="essence-row">
-                    <div class="essence-icon"><i class="fa-solid fa-book"></i></div>
-                    <div class="essence-label-val">
-                      <span class="label">หมวดไพ่ (Category)</span>
-                      <span class="val" id="previewCardCategory">Major Arcana</span>
-                    </div>
-                  </div>
-                  <div class="essence-row">
-                    <div class="essence-icon"><i class="fa-solid fa-key"></i></div>
-                    <div class="essence-label-val">
-                      <span class="label">คีย์เวิร์ดหลัก (Keywords)</span>
-                      <span class="val" id="previewCardKeywords">การสร้างสรรค์ • การทำให้เป็นจริง</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            
+            <div class="bazi-year-dropdown-wrap">
+              <i class="fa-solid fa-calendar-days" style="color: #d97706; font-size: 13px;"></i>
+              <select id="baziAnnualYearSelect" class="bazi-year-select" title="เลือกปีที่ต้องการดูดวง">
+                <!-- Dynamically populated from 1950 to 2045 -->
+              </select>
             </div>
           </div>
-
-          <!-- Running Footer -->
-          <footer class="page-footer-print">
-            <span class="footer-left">ลิขสิทธิ์เฉพาะและสงวนสิทธิ์คำทำนายตามกฎหมาย</span>
-            <span class="footer-page-num" id="previewPageNumA">หน้า 2</span>
-          </footer>
         </div>
 
-        <!-- PAGE B: DETAIL & STRATEGY PAGE -->
-        <div class="a4-page border-gold-ornate A4-landscape" id="a4PreviewPageB">
-          <!-- Decorative Corners -->
-          <div class="corner corner-tl"></div>
-          <div class="corner corner-tr"></div>
-          <div class="corner corner-bl"></div>
-          <div class="corner corner-br"></div>
-          
-          <!-- Running Header -->
-          <header class="page-header-print">
-            <span class="header-left"><i class="fa-solid fa-seedling"></i> JIU TIAN ARCANA</span>
-            <span class="header-center">WISDOM OF THE HEAVENS • GUIDANCE FOR THE SOUL</span>
-            <span class="header-right"><i class="fa-solid fa-yin-yang"></i></span>
-          </header>
+        <!-- Annual Pillar & Clash/Harmony Banner -->
+        <div id="baziAnnualBanner" class="bazi-annual-banner">
+          <!-- Dynamically populated -->
+        </div>
 
-          <!-- Detail Layout -->
-          <div class="page-content-details">
-            <!-- Top part: 3 columns -->
-            <div class="details-top-row">
-              <div class="details-col col-mythology">
-                <h4><i class="fa-solid fa-book-open icon-gold"></i> ตำนานและที่มาของไพ่</h4>
-                <p id="previewCardMythology">รายละเอียดตำนานและที่มาของไพ่...</p>
-              </div>
-              <div class="details-col col-personality">
-                <h4><i class="fa-solid fa-user-astronaut icon-gold"></i> บุคลิกของคนที่เป็นตัวแทนไพ่</h4>
-                <p id="previewCardPersonality">รายละเอียดลักษณะนิสัยและบุคคล...</p>
-              </div>
-              <div class="details-col col-careers">
-                <h4><i class="fa-solid fa-briefcase icon-gold"></i> อาชีพที่เหมาะสม</h4>
-                <ul id="previewCardCareers">
-                  <li>อาชีพ 1</li>
-                  <li>อาชีพ 2</li>
-                </ul>
-              </div>
+        <!-- 4-Dimension Life Forecast Grid for Year -->
+        <div class="bazi-fortune-grid" style="margin-top: 14px;">
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-sparkles" style="color: #d97706;"></i> ภาพรวมดวงชะตาประจำปี
             </div>
-
-            <!-- Bottom part: Divine Strategy -->
-            <div class="details-bottom-row">
-              <div class="strategy-section-header">
-                <span class="flourish">❖</span> DIVINE STRATEGY : กลยุทธ์จากเทพ <span class="flourish">❖</span>
-              </div>
-              
-              <!-- 4 columns of strategies -->
-              <div class="strategies-grid">
-                <div class="strategy-card">
-                  <div class="strategy-num">1</div>
-                  <h5 id="previewStr1Title">หัวข้อกลยุทธ์ 1</h5>
-                  <p id="previewStr1Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 1...</p>
-                </div>
-                <div class="strategy-card">
-                  <div class="strategy-num">2</div>
-                  <h5 id="previewStr2Title">หัวข้อกลยุทธ์ 2</h5>
-                  <p id="previewStr2Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 2...</p>
-                </div>
-                <div class="strategy-card">
-                  <div class="strategy-num">3</div>
-                  <h5 id="previewStr3Title">หัวข้อกลยุทธ์ 3</h5>
-                  <p id="previewStr3Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 3...</p>
-                </div>
-                <div class="strategy-card">
-                  <div class="strategy-num">4</div>
-                  <h5 id="previewStr4Title">หัวข้อกลยุทธ์ 4</h5>
-                  <p id="previewStr4Text">เนื้อหาคำชี้แนะกลยุทธ์ข้อที่ 4...</p>
-                </div>
-              </div>
-
-              <!-- Lower row -->
-              <div class="strategy-lower-row">
-                <div class="lower-col if-drawn-col">
-                  <h6>หากคุณได้รับไพ่ใบนี้</h6>
-                  <p id="previewCardIfDrawn">บทวิเคราะห์เมื่อจับได้ไพ่ใบนี้...</p>
-                </div>
-                <div class="lower-col message-col">
-                  <div class="message-card-inner">
-                    <div class="message-title">ข้อความจากเทพ</div>
-                    <p id="previewCardDeityMessage">“ข้อคิดสัจธรรมศักดิ์สิทธิ์ประจำไพ่...”</p>
-                  </div>
-                </div>
-                <div class="lower-col keywords-col">
-                  <h6>KEYWORDS</h6>
-                  <div class="strategy-keywords-list" id="previewStrategyKeywords">
-                    <span>Keyword 1</span>
-                    <span>Keyword 2</span>
-                  </div>
-                  <div class="gold-star-flourish"><i class="fa-solid fa-bahai"></i></div>
-                </div>
-              </div>
-
-            </div>
+            <p id="baziAnnualOverviewText" class="fortune-item-text">-</p>
           </div>
-
-          <!-- Running Footer -->
-          <footer class="page-footer-print">
-            <span class="footer-left">ลิขสิทธิ์เฉพาะและสงวนสิทธิ์คำทำนายตามกฎหมาย</span>
-            <span class="footer-page-num" id="previewPageNumB">หน้า 3</span>
-          </footer>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน ธุรกิจ & ตำแหน่งหน้าที่
+            </div>
+            <p id="baziAnnualCareerText" class="fortune-item-text">-</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน โชคลาภ & โอกาสลงทุน
+            </div>
+            <p id="baziAnnualWealthText" class="fortune-item-text">-</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก เสน่ห์ & ความสัมพันธ์
+            </div>
+            <p id="baziAnnualLoveText" class="fortune-item-text">-</p>
+          </div>
         </div>
 
-      </div>
-    </section>
+        <div id="baziAnnualHealthText" class="fortune-warning-bar">
+          <i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i> <strong>สุขภาพ & สิ่งที่ต้องระวัง:</strong> -
+        </div>
+      </section>
 
-  </main>
+      <!-- 8. Monthly Fortune (ทำนายรายเดือน 12 สารท / 流月 Liu Yue) - ย้ายมาไว้ด้านล่างสุดของหน้า -->
+      <section class="bazi-section-card" id="baziMonthlySection">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+          <div class="bazi-card-title" style="margin-bottom: 0;">
+            <i class="fa-solid fa-calendar-days" style="color: #0284c7;"></i> ทำนายดวงรายเดือน 12 สารท (流月 - Solar Monthly Fortune ปี <span id="baziMonthYearLabel">2026</span>)
+          </div>
+          <span style="font-size: 12.5px; color: #64748b;"><i class="fa-solid fa-hand-pointer"></i> คลิกเลือกเดือนที่ต้องการดูเจาะลึก</span>
+        </div>
+
+        <!-- 12 Solar Months Matrix Grid (ทั้ง 12 เดือนอยู่ในแถวเดียวกัน) -->
+        <div id="baziMonthsGrid" class="bazi-months-grid">
+          <!-- Dynamically populated 12 months -->
+        </div>
+
+        <!-- Selected Month Detailed Card -->
+        <div id="baziSelectedMonthCard" class="bazi-selected-month-card">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- 9. BaZi Oracle AI (กล่องถามคำถามและคำนวณวิเคราะห์ดวงชะตาเจาะลึก) - อยู่ด้านล่างสุดของหน้า -->
+      <section class="bazi-section-card bazi-expert-card bazi-custom-calc-card" id="baziOracleAiSection" style="margin-top: 20px;">
+        <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i> ถามหรือให้คำนวณดวงชะตาตามต้องการ (BaZi Oracle AI Calculator)
+          </div>
+          <span class="expert-badge"><i class="fa-solid fa-sparkles"></i> BaZi Oracle AI</span>
+        </div>
+        <p style="color: #64748b; font-size: 13px; margin-top: -6px; margin-bottom: 12px;">
+          พิมพ์คำถามเฉพาะเจาะจงที่ต้องการ เพื่อให้ AI คำนวณและวิเคราะห์ตามกฎเกณฑ์ของศาสตร์ปาจื่อได้อย่างแม่นยำ
+        </p>
+
+        <!-- Custom Query Form -->
+        <div class="expert-custom-query-bar">
+          <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="text" id="baziExpertCustomInput" placeholder="พิมพ์คำถามที่ต้องการถาม... (เช่น 'สิ้นปีนี้มีเปลี่ยนงานหรือไม่', 'ปี 2026 การเงินเป็นอย่างไร', 'จังหวะความรัก', 'สุขภาพ')" value="" style="flex: 1; min-width: 240px;">
+          </div>
+          <button class="bazi-btn-primary" id="baziRunCustomQueryBtn" onclick="window.BaziApp.runCustomExpertQuery()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณวิเคราะห์
+          </button>
+        </div>
+
+        <!-- Quick Suggestions Pills -->
+        <div class="expert-suggestion-tags">
+          <span class="tag-label">คำถามยอดนิยม:</span>
+          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('สิ้นปีนี้มีเปลี่ยนงานหรือไม่')">สิ้นปีนี้มีเปลี่ยนงานหรือไม่</button>
+          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร')">ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร</button>
+          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('จังหวะความรักและคู่ครองเป็นอย่างไร')">จังหวะความรักและคู่ครองเป็นอย่างไร</button>
+          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('สุขภาพและอวัยวะที่ต้องระวังปีนี้')">สุขภาพและอวัยวะที่ต้องระวังปีนี้</button>
+        </div>
+
+        <!-- Query Result Box (แสดงผลเมื่อกดคำนวณวิเคราะห์) -->
+        <div id="baziExpertQueryResult" class="expert-result-box" style="margin-top: 14px; display: none;"></div>
+      </section>
+
+    </div>
   </div>
 
   <!-- VIEW 2: TAROT READING APP VIEW -->
@@ -812,6 +880,396 @@
     </div>
   </div>
 
+  <!-- ============================================================ -->
+  <!-- VIEW 3: TONGSHU ALMANAC & AUSPICIOUS TIMING VIEW (通書) -->
+  <!-- ============================================================ -->
+  <div id="tongShuAppView" class="view-container hidden">
+    <div class="tongshu-app-container">
+      
+      <!-- Top Control Toolbar -->
+      <div class="ts-toolbar-card">
+        <div class="ts-toolbar-left">
+          <div class="ts-date-nav-group">
+            <button class="ts-btn ts-btn-nav" id="tsPrevDayBtn" title="วันก่อนหน้า">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="ts-btn ts-btn-today" id="tsTodayBtn">
+              <i class="fa-solid fa-sparkles"></i> วันนี้
+            </button>
+            <button class="ts-btn ts-btn-nav" id="tsNextDayBtn" title="วันถัดไป">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+          <div class="ts-date-picker-box">
+            <i class="fa-solid fa-calendar-day ts-picker-icon"></i>
+            <input type="date" id="tsDatePicker">
+          </div>
+        </div>
+
+        <div class="ts-toolbar-center">
+          <div class="ts-subnav-tabs">
+            <button class="ts-subtab-btn active" id="tsSubTabAlmanac">
+              <i class="fa-solid fa-scroll"></i> ฤกษ์ประจำวัน (Daily)
+            </button>
+            <button class="ts-subtab-btn" id="tsSubTabFinder">
+              <i class="fa-solid fa-crosshairs"></i> ค้นหาฤกษ์มงคล (Finder)
+            </button>
+            <button class="ts-subtab-btn" id="tsSubTabCalendar">
+              <i class="fa-solid fa-calendar-days"></i> ปฏิทินรายเดือน (Calendar)
+            </button>
+          </div>
+        </div>
+
+        <div class="ts-toolbar-right">
+          <button class="ts-btn ts-btn-secondary" id="tsCopyDailyBtn" title="คัดลอกสรุปฤกษ์ยามวันนี้สำหรับแชร์">
+            <i class="fa-solid fa-copy"></i> คัดลอกสรุปฤกษ์
+          </button>
+          <button class="ts-btn ts-btn-line" id="tsShareLineBtn" title="แชร์ข้อมูลฤกษ์ยามลงใน LINE">
+            <i class="fa-brands fa-line"></i> แชร์ลง LINE
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SUB-VIEW 1: DAILY ALMANAC DETAILED VIEW -->
+      <!-- ============================================================ -->
+      <div id="tsSubViewAlmanac" class="ts-subview-section">
+        
+        <!-- Hero Section: Daily Auspicious Overview -->
+        <div class="ts-hero-card">
+          <div class="ts-hero-inner">
+            <div class="ts-hero-badge-group">
+              <span class="ts-badge-pill gold" id="tsHeroScoreBadge"><i class="fa-solid fa-star"></i> ความมงคล 88%</span>
+              <span class="ts-badge-pill violet" id="tsHeroSolarTermBadge">สารท 寒露 (หานลู่)</span>
+              <span class="ts-badge-pill amber" id="tsHeroNaYinBadge">ธาตุสถิต: 沙中土</span>
+            </div>
+
+            <h2 class="ts-hero-date-gregorian" id="tsHeroDateGregorian">วันเสาร์ที่ 10 ตุลาคม พ.ศ. 2569</h2>
+            <div class="ts-hero-date-lunar" id="tsHeroDateLunar">农历九月初一 (วันชิวอิก 初一 - ขึ้น 1 ค่ำ)</div>
+            
+            <div class="ts-hero-ganzhi-banner">
+              <div class="ts-ganzhi-box" id="tsHeroDayGanZhi">
+                วัน <strong>丁巳</strong> (ติง • มะเส็งไฟ)
+              </div>
+              <div class="ts-hero-status-wrap">
+                <span id="tsHeroStatusTitle" class="ts-status-title gold">วันหวงเต้าจี๋ยื่อ (黄道吉日 - วันดาวทองมหามงคล)</span>
+              </div>
+            </div>
+
+            <div class="ts-hero-cosmic-strip">
+              <span class="ts-cosmic-item" id="tsHeroOfficerBadge"><i class="fa-solid fa-shield-halved"></i> 12 เทพผู้พิทักษ์: 危 (เวย)</span>
+              <span class="ts-cosmic-item" id="tsHeroMansionBadge"><i class="fa-solid fa-certificate"></i> 28 ดาวฤกษ์: 柳 (ละมั่งดิน)</span>
+            </div>
+
+            <p class="ts-hero-summary" id="tsHeroOfficerSummary">
+              วันแห่งความตระหนักรู้ เตือนสติ ตั้งรับ เหมาะแก่การไหว้พระ สวดมนต์ ตั้งมั่นในศีลธรรม
+            </p>
+          </div>
+        </div>
+
+        <!-- 2 Columns: Activities (宜 / 忌) -->
+        <div class="ts-activities-grid">
+          <!-- 宜 Suitable Activities -->
+          <div class="ts-activity-card suitable-card">
+            <div class="ts-activity-header">
+              <div class="ts-stamp-seal seal-good">宜</div>
+              <div class="ts-activity-title">
+                <h3>สิ่งที่ควรทำ (มงคลยิ่ง)</h3>
+                <span>Suitable & Blessed Activities</span>
+              </div>
+            </div>
+            <div class="ts-tags-container" id="tsSuitableTagsList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- 忌 Taboo Activities -->
+          <div class="ts-activity-card taboo-card">
+            <div class="ts-activity-header">
+              <div class="ts-stamp-seal seal-bad">忌</div>
+              <div class="ts-activity-title">
+                <h3>สิ่งที่ควรละเว้น (ควรหลีกเลี่ยง)</h3>
+                <span>Taboo & Inauspicious Activities</span>
+              </div>
+            </div>
+            <div class="ts-tags-container" id="tsTabooTagsList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Auspicious Directions & Clash Grid -->
+        <div class="ts-directions-grid">
+          <div class="ts-dir-card dir-caishen">
+            <div class="ts-dir-icon"><i class="fa-solid fa-coins"></i></div>
+            <div class="ts-dir-info">
+              <span class="ts-dir-label">ทิศเทพเจ้าโชคลาภ (财神)</span>
+              <h4 class="ts-dir-val" id="tsDirCaiShen">ทิศตะวันตก</h4>
+              <span class="ts-dir-hint">หันหน้า/โต๊ะทำงานรับทรัพย์</span>
+            </div>
+          </div>
+
+          <div class="ts-dir-card dir-xishen">
+            <div class="ts-dir-icon"><i class="fa-solid fa-heart"></i></div>
+            <div class="ts-dir-info">
+              <span class="ts-dir-label">ทิศเทพเจ้าความยินดี (喜神)</span>
+              <h4 class="ts-dir-val" id="tsDirXiShen">ทิศใต้</h4>
+              <span class="ts-dir-hint">เสริมเสน่ห์ ความรัก มงคลสมรส</span>
+            </div>
+          </div>
+
+          <div class="ts-dir-card dir-guishen">
+            <div class="ts-dir-icon"><i class="fa-solid fa-crown"></i></div>
+            <div class="ts-dir-info">
+              <span class="ts-dir-label">ทิศเทพผู้อุปถัมภ์ (贵神)</span>
+              <h4 class="ts-dir-val" id="tsDirGuiShen">ตะวันตกเฉียงเหนือ</h4>
+              <span class="ts-dir-hint">ผู้ใหญ่เมตตา ช่วยเหลือราบรื่น</span>
+            </div>
+          </div>
+
+          <div class="ts-dir-card dir-clash">
+            <div class="ts-dir-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="ts-dir-info">
+              <span class="ts-dir-label">ปีชงประจำวัน (日冲)</span>
+              <h4 class="ts-dir-val clash-text" id="tsClashZodiac">ชงปีกุน (หมู)</h4>
+              <span class="ts-dir-hint">ทิศอัปมงคล: <strong id="tsShaDir">ทิศตะวันออก</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12 Shichen Hourly Fortunes Section -->
+        <div class="ts-section-card">
+          <div class="ts-section-header">
+            <div>
+              <h3><i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามมงคล 12 ชั่วยาม (时辰吉凶)</h3>
+              <p>คำนวณตามหลัก 6 ดาวมงคล (หวงเต้า) และ 6 ดาวร้าย (เฮยเต้า) ตลอด 24 ชั่วโมง</p>
+            </div>
+            <div class="ts-clock-badge-group">
+              <span class="ts-live-badge pulse-dot" id="tsLiveClockText">เวลาปัจจุบัน --:-- น.</span>
+              <span class="ts-shichen-current-badge" id="tsCurrentShichenBadge">⏰ ยามปัจจุบัน</span>
+            </div>
+          </div>
+
+          <div class="ts-hours-grid" id="tsHoursGrid">
+            <!-- 12 hourly cards dynamically populated -->
+          </div>
+        </div>
+
+        <!-- JiuTian Arcana Deity of the Day Section -->
+        <div class="ts-deity-card-section">
+          <div class="ts-deity-container">
+            <div class="ts-deity-visual">
+              <img id="tsDeityCardImage" src="CardImage/Major2.png" alt="Deity Card" class="ts-deity-img">
+            </div>
+            
+            <div class="ts-deity-details">
+              <div class="ts-deity-badge-row">
+                <span class="ts-badge-pill gold"><i class="fa-solid fa-shield-cat"></i> เทพผู้พิทักษ์ประจำวัน</span>
+                <span class="ts-badge-pill cyan" id="tsDeityCardElement">ธาตุน้ำ (Water)</span>
+              </div>
+              
+              <h2 class="ts-deity-name" id="tsDeityCardName">พระแม่จิ่วเทียนเสวียนหนี่ว์ (九天玄女)</h2>
+              <blockquote class="ts-deity-quote" id="tsDeityCardQuote">
+                “ผู้ที่รู้จักรอด้วยปัญญา ย่อมมองเห็นความจริงแห่งฟ้าดิน”
+              </blockquote>
+              
+              <div class="ts-deity-advice-box">
+                <h4><i class="fa-solid fa-sparkles"></i> สาส์นคำสอนและข้อคิดเสริมบารมี:</h4>
+                <p id="tsDeityCardAdvice">ทำจิตใจให้ผ่องใส เปิดรับโอกาสใหม่ๆ ด้วยความรอบคอบและสติปัญญา</p>
+              </div>
+
+              <div class="ts-deity-lucky-grid">
+                <div class="ts-lucky-item">
+                  <span class="ts-lucky-label">🔢 เลขมงคลประจำวัน</span>
+                  <span class="ts-lucky-val" id="tsDeityLuckyNumbers">2, 6, 8, 9</span>
+                </div>
+                <div class="ts-lucky-item">
+                  <span class="ts-lucky-label">🎨 สีมงคลเสริมพลัง</span>
+                  <span class="ts-lucky-val" id="tsDeityLuckyColor">ม่วงประกายทอง & น้ำเงินคราม</span>
+                </div>
+              </div>
+
+              <div class="ts-deity-actions">
+                <button class="ts-btn ts-btn-pray" id="tsPrayBlessingBtn">
+                  <i class="fa-solid fa-hands-praying"></i> สวดขอพรมงคล (Pray Blessing) ✨
+                </button>
+                <button class="ts-btn ts-btn-tarot-link" id="tsJumpToReadingBtn">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> นำพลังไปเปิดไพ่ในระบบทำนาย
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SUB-VIEW 2: PURPOSE-BASED AUSPICIOUS FINDER -->
+      <!-- ============================================================ -->
+      <div id="tsSubViewFinder" class="ts-subview-section hidden">
+        <div class="ts-finder-container">
+          <div class="ts-finder-filter-card">
+            <h3><i class="fa-solid fa-crosshairs"></i> เลือกวัตถุประสงค์เพื่อคำนวณหาฤกษ์มงคล</h3>
+            <p>ระบบจะสแกนปฏิทินจีน 35 วันข้างหน้า และเลือกเฟ้นวันที่เกื้อหนุนตามหลักวิชาการโหราศาสตร์จีน</p>
+            
+            <div class="ts-purpose-pills-row">
+              <button class="ts-purpose-pill active" data-purpose="opening">
+                <i class="fa-solid fa-store"></i> เปิดร้าน / เปิดธุรกิจ
+              </button>
+              <button class="ts-purpose-pill" data-purpose="wedding">
+                <i class="fa-solid fa-ring"></i> มงคลสมรส / สู่ขอ
+              </button>
+              <button class="ts-purpose-pill" data-purpose="moving">
+                <i class="fa-solid fa-house-chimney"></i> ขึ้นบ้านใหม่ / ย้ายที่อยู่
+              </button>
+              <button class="ts-purpose-pill" data-purpose="car">
+                <i class="fa-solid fa-car-side"></i> ออกรถใหม่ / ซื้อยานพาหนะ
+              </button>
+              <button class="ts-purpose-pill" data-purpose="signing">
+                <i class="fa-solid fa-file-signature"></i> เซ็นสัญญา / เจรจาการค้า
+              </button>
+              <button class="ts-purpose-pill" data-purpose="blessing">
+                <i class="fa-solid fa-hands-praying"></i> ไหว้พระ / สะเดาะเคราะห์
+              </button>
+            </div>
+          </div>
+
+          <div id="tsFinderResultsList" class="ts-finder-results-container">
+            <!-- Dynamically populated with top 6 auspicious dates -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- SUB-VIEW 3: MONTHLY CALENDAR MATRIX -->
+      <!-- ============================================================ -->
+      <div id="tsSubViewCalendar" class="ts-subview-section hidden">
+        <div class="ts-calendar-card">
+          <div class="ts-cal-controls-row">
+            <div class="ts-cal-nav-buttons">
+              <button class="ts-btn ts-btn-nav" id="tsCalPrevMonthBtn"><i class="fa-solid fa-chevron-left"></i> เดือนก่อน</button>
+              <button class="ts-btn ts-btn-nav" id="tsCalNextMonthBtn">เดือนถัดไป <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="ts-cal-selects-group">
+              <select id="tsCalMonthSelect" class="ts-select">
+                <option value="1">มกราคม (Jan)</option>
+                <option value="2">กุมภาพันธ์ (Feb)</option>
+                <option value="3">มีนาคม (Mar)</option>
+                <option value="4">เมษายน (Apr)</option>
+                <option value="5">พฤษภาคม (May)</option>
+                <option value="6">มิถุนายน (Jun)</option>
+                <option value="7">กรกฎาคม (Jul)</option>
+                <option value="8">สิงหาคม (Aug)</option>
+                <option value="9">กันยายน (Sep)</option>
+                <option value="10">ตุลาคม (Oct)</option>
+                <option value="11">พฤศจิกายน (Nov)</option>
+                <option value="12">ธันวาคม (Dec)</option>
+              </select>
+              <select id="tsCalYearSelect" class="ts-select">
+                <!-- Dynamically populated 2024 - 2030 -->
+              </select>
+            </div>
+
+            <div class="ts-cal-legend">
+              <span class="legend-item"><span class="ts-cal-status-dot dot-gold"></span> วันมงคล</span>
+              <span class="legend-item"><span class="ts-cal-status-dot dot-caution"></span> วันควรระวัง</span>
+              <span class="legend-item"><span class="ts-cal-hdot auspicious"></span> ฤกษ์มงคล</span>
+              <span class="legend-item"><span class="ts-cal-hdot moderate"></span> ฤกษ์ปานกลาง</span>
+            </div>
+          </div>
+
+          <!-- Calendar Matrix Grid -->
+          <div class="ts-cal-grid" id="tsCalDaysGrid">
+            <!-- Dynamically populated 7x5 days -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================== -->
+  <!-- VIEW 4: QI MEN DUN JIA (奇门遁甲) IMPERIAL STRATEGIC DIVINATION VIEW       -->
+  <!-- ========================================================================== -->
+  <div id="qiMenAppView" class="view-container hidden">
+    <div class="qimen-app-container">
+      
+      <!-- 1. Header Toolbar -->
+      <div class="qm-toolbar-card">
+        <div class="qm-toolbar-left">
+          <button class="qm-btn qm-btn-realtime" id="qmBtnRealtime">
+            <i class="fa-solid fa-clock-rotate-left"></i> ขณะนี้ (Real-Time Chart)
+          </button>
+          
+          <div class="qm-picker-box">
+            <i class="fa-regular fa-calendar-days qm-picker-icon"></i>
+            <input type="date" id="qmDatePicker">
+          </div>
+
+          <div class="qm-picker-box">
+            <i class="fa-regular fa-clock qm-picker-icon"></i>
+            <select id="qmHourSelect" class="qm-select">
+              <option value="0">23:00 - 00:59 (ยามชวด • 子)</option>
+              <option value="1">01:00 - 02:59 (ยามฉลู • 丑)</option>
+              <option value="2">03:00 - 04:59 (ยามขาล • 寅)</option>
+              <option value="3">05:00 - 06:59 (ยามเถาะ • 卯)</option>
+              <option value="4">07:00 - 08:59 (ยามมะโรง • 辰)</option>
+              <option value="5">09:00 - 10:59 (ยามมะเส็ง • 巳)</option>
+              <option value="6">11:00 - 12:59 (ยามมะเมีย • 午)</option>
+              <option value="7">13:00 - 14:59 (ยามมะแม • 未)</option>
+              <option value="8">15:00 - 16:59 (ยามวอก • 申)</option>
+              <option value="9">17:00 - 18:59 (ยามระกา • 酉)</option>
+              <option value="10">19:00 - 20:59 (ยามจอ • 戌)</option>
+              <option value="11">21:00 - 22:59 (ยามกุน • 亥)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="qm-toolbar-right">
+          <span class="qm-intl-badge"><i class="fa-solid fa-globe"></i> International Convention 2 Chart</span>
+        </div>
+      </div>
+
+      <!-- 2. Upper Section: Four Pillars Table (Left) + Chart Info Table (Right) -->
+      <div class="qm-upper-section">
+        <div class="qm-bazi-box" id="qmFourPillarsTable">
+          <!-- Four Pillars Table dynamically populated -->
+        </div>
+
+        <div class="qm-meta-box" id="qmMetaTable">
+          <!-- Chart Info & Xun Table dynamically populated -->
+        </div>
+      </div>
+
+      <!-- 3. Middle Section: 3x3 Luo Shu Qi Men Chart (Left) + Analysis Sidebars (Right) -->
+      <div class="qm-main-section">
+        <div class="qm-chart-card">
+          <div class="qm-int-matrix" id="qmIntMatrix">
+            <!-- 3x3 9 Palaces dynamically populated -->
+          </div>
+
+          <div class="qm-chart-footer">
+            <span>Calendar (Place of use) - Time Zone: Asia/Bangkok (UTC+7) • Longitude: 100.5°</span>
+            <span class="qm-conv-tag">This chart is plotted by using: <strong>Convention 2 (時家奇門)</strong></span>
+          </div>
+        </div>
+
+        <div class="qm-sidebar-section">
+          <div id="qmVictoriesBox"></div>
+          <div id="qmPalacesBox"></div>
+          <div id="qmClashBox"></div>
+        </div>
+      </div>
+
+      <!-- 4. Selected Palace Strategic Interpretation Drawer -->
+      <div class="qm-detail-container" id="qmPalaceDetailBox">
+        <!-- Dynamically rendered selected palace details -->
+      </div>
+
+    </div>
+  </div>
+
   <!-- MODAL: MANUAL CARD SELECTOR FOR PHYSICAL DECK -->
   <div class="modal-overlay hidden" id="cardSelectModal">
     <div class="modal-card">
@@ -841,6 +1299,27 @@
     </div>
   </div>
 
+  <!-- MODAL: BAZI SAVED PROFILES -->
+  <div class="modal-overlay hidden" id="baziSavedModal">
+    <div class="modal-card bazi-modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-folder-bookmark" style="color: #7c3aed;"></i> จัดการรายชื่อลูกดวงที่บันทึกไว้ (Saved Client Profiles)</h3>
+        <button class="modal-close" id="baziCloseSavedModalBtn">&times;</button>
+      </div>
+      
+      <div class="bazi-saved-modal-body">
+        <div class="modal-search-bar" style="margin-bottom: 14px;">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="baziSavedSearchInput" placeholder="ค้นหาชื่อลูกดวง, วันเกิด หรือธาตุดิถี...">
+        </div>
+
+        <div id="baziSavedProfilesList" class="bazi-saved-list">
+          <!-- Dynamically populated saved profile cards -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- PDF Rendering Progress Overlay -->
   <div class="progress-overlay" id="progressOverlay">
     <div class="progress-card">
@@ -866,10 +1345,15 @@
   <div id="pdfPrintBuffer" class="pdf-buffer-hidden"></div>
 
   <!-- Load default cards data (JiuTian Arcana) -->
-  <script src="data/default-cards.js?v=20260930_mobile1"></script>
+  <script src="data/default-cards.js?v=20261010_tongshu"></script>
   <!-- Load Bumji cards data (Bumji & The Gang) -->
-  <script src="data/bumji-cards.js?v=20260930_mobile1"></script>
+  <script src="data/bumji-cards.js?v=20261010_tongshu"></script>
   <!-- Load App scripts -->
-  <script src="app.js?v=20260930_mobile1"></script>
+  <script src="app.js?v=20261010_bazi_v3"></script>
+  <!-- Load TongShu Almanac Engine & Controller -->
+  <script src="tongshu.js?v=20261010_cal_hours"></script>
+  <!-- Load Qi Men Dun Jia Engine & Controller -->
+  <script src="qimen.js?v=20261010_qimen"></script>
+  <script src="bazi.js?v=20261011_bazi_v17"></script>
 </body>
 </html>

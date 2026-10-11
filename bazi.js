@@ -1,0 +1,2818 @@
+/**
+ * ============================================================================
+ * BAZI FOUR PILLARS OF DESTINY (八字命理) ENGINE & CONTROLLER
+ * Comprehensive Professional BaZi Analysis System
+ * Features:
+ *  - Four Pillars Matrix (Year, Month, Day, Hour) with Hidden Stems & NaYin
+ *  - Five Elements Balance (Scores & Percentages) & Favorable Gods (喜用神)
+ *  - Da Yun 10-Year Luck Pillars with Interactive Deep Decade Readings
+ *  - Annual Fortune Prediction (流年 Liu Nian) with Clashes/Harmonies Analysis
+ *  - Monthly Fortune Prediction (流月 Liu Yue) for all 12 Solar Months
+ *  - Saved Profiles Manager (LocalStorage CRUD with Quick Switcher)
+ * ============================================================================
+ */
+
+(function () {
+  'use strict';
+
+  // 1. Ten Heavenly Stems (十天干)
+  const STEMS = [
+    { zh: '甲', py: 'Jia', th: 'กะ (ไม้หยาง)', element: 'wood', polarity: 'yang', desc: 'ไม้ใหญ่ ยืนต้นมั่นคง เปี่ยมคุณธรรม มีความเป็นผู้นำ' },
+    { zh: '乙', py: 'Yi', th: 'อิก (ไม้หยิน)', element: 'wood', polarity: 'yin', desc: 'ไม้เลื้อย พืชพรรณ ยืดหยุ่น ปรับตัวเก่ง มีไหวพริบ' },
+    { zh: '丙', py: 'Bing', th: 'เปี้ย (ไฟหยาง)', element: 'fire', polarity: 'yang', desc: 'พระอาทิตย์ สดใส อบอุ่น ตรงไปตรงมา กระตือรือร้น' },
+    { zh: '丁', py: 'Ding', th: 'เต็ง (ไฟหยิน)', element: 'fire', polarity: 'yin', desc: 'ดวงประทีป เปลวเทียน อ่อนโยนแต่ทรงพลัง รอบรู้ มีสติปัญญา' },
+    { zh: '戊', py: 'Wu', th: 'โบ่ว (ดินหยาง)', element: 'earth', polarity: 'yang', desc: 'ภูเขาใหญ่ หนักแน่น น่าเชื่อถือ มั่นคง ซื่อสัตย์' },
+    { zh: '己', py: 'Ji', th: 'กี้ (ดินหยิน)', element: 'earth', polarity: 'yin', desc: 'ดินแปลงเกษตร โอบอ้อมอารี เลี้ยงดูเก่ง ใจกว้าง เข้าใจผู้อื่น' },
+    { zh: '庚', py: 'Geng', th: 'แก (ทองหยาง)', element: 'metal', polarity: 'yang', desc: 'ดาบเหล็กกล้า เด็ดขาด ชัดเจน กล้าหาญ รักความยุติธรรม' },
+    { zh: '辛', py: 'Xin', th: 'ซิง (ทองหยิน)', element: 'metal', polarity: 'yin', desc: 'อัญมณี ส่องประกาย สง่างาม มีรสนิยม รักศักดิ์ศรี' },
+    { zh: '壬', py: 'Ren', th: 'หยิม (น้ำหยาง)', element: 'water', polarity: 'yang', desc: 'มหาสมุทร ทรงพลัง คล่องแคล่ว มีวิสัยทัศน์กว้างไกล' },
+    { zh: '癸', py: 'Gui', th: 'กุ่ย (น้ำหยิน)', element: 'water', polarity: 'yin', desc: 'น้ำค้าง สายฝน ช่างคิด ฉลาด ลึกล้ำ มีญาณหยั่งรู้' }
+  ];
+
+  // 2. Twelve Earthly Branches (十二地支)
+  const BRANCHES = [
+    { zh: '子', py: 'Zi', th: 'จื่อ (ชวด - หนู)', zodiac: 'หนู (Rat)', element: 'water', polarity: 'yang', season: 'winter', monthNum: 11, hidden: [{ stem: '癸', weight: 1.0 }] },
+    { zh: '丑', py: 'Chou', th: 'โฉ่ว (ฉลู - วัว)', zodiac: 'วัว (Ox)', element: 'earth', polarity: 'yin', season: 'winter', monthNum: 12, hidden: [{ stem: '己', weight: 0.6 }, { stem: '癸', weight: 0.3 }, { stem: '辛', weight: 0.1 }] },
+    { zh: '寅', py: 'Yin', th: 'อิ๋น (ขาล - เสือ)', zodiac: 'เสือ (Tiger)', element: 'wood', polarity: 'yang', season: 'spring', monthNum: 1, hidden: [{ stem: '甲', weight: 0.6 }, { stem: '丙', weight: 0.3 }, { stem: '戊', weight: 0.1 }] },
+    { zh: '卯', py: 'Mao', th: 'เหม่า (เถาะ - กระต่าย)', zodiac: 'กระต่าย (Rabbit)', element: 'wood', polarity: 'yin', season: 'spring', monthNum: 2, hidden: [{ stem: '乙', weight: 1.0 }] },
+    { zh: '辰', py: 'Chen', th: 'เฉิน (มะโรง - มังกร)', zodiac: 'มังกร (Dragon)', element: 'earth', polarity: 'yang', season: 'spring', monthNum: 3, hidden: [{ stem: '戊', weight: 0.6 }, { stem: '乙', weight: 0.3 }, { stem: '癸', weight: 0.1 }] },
+    { zh: '巳', py: 'Si', th: 'ซื่อ (มะเส็ง - งูเล็ก)', zodiac: 'งู (Snake)', element: 'fire', polarity: 'yin', season: 'summer', monthNum: 4, hidden: [{ stem: '丙', weight: 0.6 }, { stem: '戊', weight: 0.3 }, { stem: '庚', weight: 0.1 }] },
+    { zh: '午', py: 'Wu', th: 'อู่ (มะเมีย - ม้า)', zodiac: 'ม้า (Horse)', element: 'fire', polarity: 'yang', season: 'summer', monthNum: 5, hidden: [{ stem: '丁', weight: 0.7 }, { stem: '己', weight: 0.3 }] },
+    { zh: '未', py: 'Wei', th: 'เว่ย (มะแม - แพะ)', zodiac: 'แพะ (Goat)', element: 'earth', polarity: 'yin', season: 'summer', monthNum: 6, hidden: [{ stem: '己', weight: 0.6 }, { stem: '丁', weight: 0.3 }, { stem: '乙', weight: 0.1 }] },
+    { zh: '申', py: 'Shen', th: 'เซิน (วอก - ลิง)', zodiac: 'ลิง (Monkey)', element: 'metal', polarity: 'yang', season: 'autumn', monthNum: 7, hidden: [{ stem: '庚', weight: 0.6 }, { stem: '壬', weight: 0.3 }, { stem: '戊', weight: 0.1 }] },
+    { zh: '酉', py: 'You', th: 'โหย่ว (ระกา - ไก่)', zodiac: 'ไก่ (Rooster)', element: 'metal', polarity: 'yin', season: 'autumn', monthNum: 8, hidden: [{ stem: '辛', weight: 1.0 }] },
+    { zh: '戌', py: 'Xu', th: 'ซวี (จอ - หมา)', zodiac: 'หมา (Dog)', element: 'earth', polarity: 'yang', season: 'autumn', monthNum: 9, hidden: [{ stem: '戊', weight: 0.6 }, { stem: '辛', weight: 0.3 }, { stem: '丁', weight: 0.1 }] },
+    { zh: '亥', py: 'Hai', th: 'ฮ่าย (กุน - หมู)', zodiac: 'หมู (Pig)', element: 'water', polarity: 'yin', season: 'winter', monthNum: 10, hidden: [{ stem: '壬', weight: 0.7 }, { stem: '甲', weight: 0.3 }] }
+  ];
+
+  // 3. Five Elements Meta (五行)
+  const ELEMENTS_META = {
+    wood: { th: 'ธาตุไม้', zh: '木', color: '#10b981', lightBg: 'rgba(16, 185, 129, 0.12)', border: '#10b981', generates: 'fire', controls: 'earth', direction: 'ตะวันออก', organ: 'ตับ / ถุงน้ำดี / สายตา', emotion: 'ความเมตตา / การเติบโต' },
+    fire: { th: 'ธาตุไฟ', zh: '火', color: '#ef4444', lightBg: 'rgba(239, 68, 68, 0.12)', border: '#ef4444', generates: 'earth', controls: 'metal', direction: 'ทิศใต้', organ: 'หัวใจ / หลอดเลือด / สมอง', emotion: 'ความมีชีวิตชีวา / ความหลงใหล' },
+    earth: { th: 'ธาตุดิน', zh: '土', color: '#d97706', lightBg: 'rgba(217, 119, 6, 0.12)', border: '#d97706', generates: 'metal', controls: 'water', direction: 'จุดศูนย์กลาง / ตกเฉียงใต้', organ: 'ม้าม / กระเพาะอาหาร / ย่อยอาหาร', emotion: 'ความน่าเชื่อถือ / ความสงบ' },
+    metal: { th: 'ธาตุทอง', zh: '金', color: '#64748b', lightBg: 'rgba(100, 116, 139, 0.14)', border: '#64748b', generates: 'water', controls: 'wood', direction: 'ทิศตะวันตก', organ: 'ปอด / ผิวหนัง / ทางเดินหายใจ', emotion: 'ความเฉียบขาด / ระเบียบวินัย' },
+    water: { th: 'ธาตุน้ำ', zh: '水', color: '#0284c7', lightBg: 'rgba(2, 132, 199, 0.12)', border: '#0284c7', generates: 'wood', controls: 'fire', direction: 'ทิศเหนือ', organ: 'ไต / กระเพาะปัสสาวะ / หู', emotion: 'สติปัญญา / ความยืดหยุ่น' }
+  };
+
+  // 4. Ten Gods (十神) Definition and Relations
+  const TEN_GODS_MAP = {
+    'same_same': { zh: '比肩', py: 'Bi Jian', th: 'เพื่อนร่วมทาง (比肩)', en: 'Friend', role: 'ตนเอง มิตรสหาย พี่น้อง ความมั่นใจ ความเป็นอิสระ' },
+    'same_diff': { zh: '劫財', py: 'Jie Cai', th: 'ช่วงชิงทรัพย์ (劫財)', en: 'Rob Wealth', role: 'การแข่งขัน มนุษยสัมพันธ์ ความกล้าได้กล้าเสีย การแบ่งปัน' },
+    'gen_same': { zh: '食神', py: 'Shi Shen', th: 'ดาวผลิตทรัพย์ (食神)', en: 'Eating God', role: 'สุนทรียภาพ ศิลปะ จินตนาการ ความสุขุม การเจรจา' },
+    'gen_diff': { zh: '傷官', py: 'Shang Guan', th: 'ดาวฝ่ากฎเกณฑ์ (傷官)', en: 'Hurting Officer', role: 'นวัตกรรม ปฏิภาณไหวพริบ ฉีกกรอบ ความสามารถพิเศษ' },
+    'ctrl_same': { zh: '偏財', py: 'Pian Cai', th: 'โชคลาภพิเศษ (偏財)', en: 'Indirect Wealth', role: 'การลงทุน ลาภลอย โอกาสทางธุรกิจ เงินหมุนเวียน' },
+    'ctrl_diff': { zh: '正財', py: 'Zheng Cai', th: 'ทรัพย์มั่นคง (正財)', en: 'Direct Wealth', role: 'รายได้ประจำ วินัยการออม ความซื่อสัตย์ ความรับผิดชอบ' },
+    'ctrld_same': { zh: '七殺', py: 'Qi Sha', th: 'อำนาจบารมี (七殺)', en: 'Seven Killings', role: 'ความเด็ดขาด ภาวะผู้นำ กล้าเผชิญหน้า จัดการวิกฤต' },
+    'ctrld_diff': { zh: '正官', py: 'Zheng Guan', th: 'เกียรติยศชื่อเสียง (正官)', en: 'Direct Officer', role: 'ตำแหน่งหน้าที่ ระเบียบแบบแผน คุณธรรม วินัย' },
+    'gend_same': { zh: '偏印', py: 'Pian Yin', th: 'ปัญญาญาณหยั่งรู้ (偏印)', en: 'Indirect Resource', role: 'ศาสตร์ลี้ลับ วิสัยทัศน์พิเศษ ความคิดลึกซึ้ง เอกลักษณ์' },
+    'gend_diff': { zh: '正印', py: 'Zheng Yin', th: 'ผู้อุปถัมภ์เกื้อหนุน (正印)', en: 'Direct Resource', role: 'ผู้ใหญ่ช่วยเหลือ ความรู้ ความเมตตา สุขภาพกายใจ' }
+  };
+
+  function getTenGod(dayStemObj, targetStemObj) {
+    if (!dayStemObj || !targetStemObj) return TEN_GODS_MAP['same_same'];
+    const dElem = dayStemObj.element;
+    const tElem = targetStemObj.element;
+    const samePolarity = dayStemObj.polarity === targetStemObj.polarity;
+
+    if (dElem === tElem) {
+      return samePolarity ? TEN_GODS_MAP['same_same'] : TEN_GODS_MAP['same_diff'];
+    }
+    if (ELEMENTS_META[dElem].generates === tElem) {
+      return samePolarity ? TEN_GODS_MAP['gen_same'] : TEN_GODS_MAP['gen_diff'];
+    }
+    if (ELEMENTS_META[dElem].controls === tElem) {
+      return samePolarity ? TEN_GODS_MAP['ctrl_same'] : TEN_GODS_MAP['ctrl_diff'];
+    }
+    if (ELEMENTS_META[tElem].generates === dElem) {
+      return samePolarity ? TEN_GODS_MAP['gend_same'] : TEN_GODS_MAP['gend_diff'];
+    }
+    if (ELEMENTS_META[tElem].controls === dElem) {
+      return samePolarity ? TEN_GODS_MAP['ctrld_same'] : TEN_GODS_MAP['ctrld_diff'];
+    }
+    return TEN_GODS_MAP['same_same'];
+  }
+
+  // 5. 60 NaYin (六十甲子納音)
+  const NAYIN_TABLE = [
+    '海中金 (ทองในมหาสมุทร)', '海中金 (ทองในมหาสมุทร)', '爐中火 (ไฟในเตาหลอม)', '爐中火 (ไฟในเตาหลอม)',
+    '大林木 (ไม้ในป่าใหญ่)', '大林木 (ไม้ในป่าใหญ่)', '路旁土 (ดินริมทาง)', '路旁土 (ดินริมทาง)',
+    '劍鋒金 (ทองปลายกระบี่)', '劍鋒金 (ทองปลายกระบี่)', '山頭火 (ไฟบนยอดเขา)', '山頭火 (ไฟบนยอดเขา)',
+    '澗下水 (น้ำในลำธาร)', '澗下水 (น้ำในลำธาร)', '城頭土 (ดินบนกำแพงเมือง)', '城頭土 (ดินบนกำแพงเมือง)',
+    '白蠟金 (ทองขาวบริสุทธิ์)', '白蠟金 (ทองขาวบริสุทธิ์)', '楊柳木 (ไม้ต้นหลิว)', '楊柳木 (ไม้ต้นหลิว)',
+    '泉中水 (น้ำพุใต้พิภพ)', '泉中水 (น้ำพุใต้พิภพ)', '屋上土 (ดินบนหลังคา)', '屋上土 (ดินบนหลังคา)',
+    '霹靂火 (ไฟสายฟ้าฟาด)', '霹靂火 (ไฟสายฟ้าฟาด)', '松柏木 (ไม้สนยืนต้น)', '松柏木 (ไม้สนยืนต้น)',
+    '長流水 (น้ำไหลไม่สิ้นสุด)', '長流水 (น้ำไหลไม่สิ้นสุด)', '砂中金 (ทองในหาดทราย)', '砂中金 (ทองในหาดทราย)',
+    '山下火 (ไฟเชิงเขา)', '山下火 (ไฟเชิงเขา)', '平地木 (ไม้บนที่ราบ)', '平地木 (ไม้บนที่ราบ)',
+    '壁上土 (ดินฉาบฝาผนัง)', '壁上土 (ดินฉาบฝาผนัง)', '金箔金 (ทองคำเปลว)', '金箔金 (ทองคำเปลว)',
+    '覆燈火 (ไฟดวงประทีป)', '覆燈火 (ไฟดวงประทีป)', '天河水 (น้ำแม่น้ำสวรรค์)', '天河水 (น้ำแม่น้ำสวรรค์)',
+    '大驛土 (ดินสถานีใหญ่)', '大驛土 (ดินสถานีใหญ่)', '釵釧金 (ทองปิ่นปักผม)', '釵釧金 (ทองปิ่นปักผม)',
+    '桑柘木 (ไม้หม่อนมงคล)', '桑柘木 (ไม้หม่อนมงคล)', '大溪水 (น้ำในห้วยใหญ่)', '大溪水 (น้ำในห้วยใหญ่)',
+    '沙中土 (ดินทรายปนหิน)', '沙中土 (ดินทรายปนหิน)', '天上火 (ไฟบนท้องนภา)', '天上火 (ไฟบนท้องนภา)',
+    '石榴木 (ไม้ทับทิมมงคล)', '石榴木 (ไม้ทับทิมมงคล)', '大海水 (น้ำในทะเลหลวง)', '大海水 (น้ำในทะเลหลวง)'
+  ];
+
+  function getNaYin(stemIdx, branchIdx) {
+    const s = stemIdx;
+    const b = branchIdx;
+    let cycle = 0;
+    for (let i = 0; i < 60; i++) {
+      if (i % 10 === s && i % 12 === b) {
+        cycle = i;
+        break;
+      }
+    }
+    return NAYIN_TABLE[cycle] || '五行之氣';
+  }
+
+  // 6. Branch Clash & Harmony Rules
+  const CLASH_PAIRS = [
+    { a: '子', b: '午', th: 'ชวด ปะทะ มะเมีย (น้ำปะทะไฟ: ระวังอารมณ์ สายตา ความดัน)' },
+    { a: '丑', b: '未', th: 'ฉลู ปะทะ มะแม (ดินปะทะดิน: ระวังระบบย่อยอาหาร อสังหาฯ ทรัพย์สิน)' },
+    { a: '寅', b: '申', th: 'ขาล ปะทะ วอก (ไม้ปะทะทอง: ระวังอุบัติเหตุ ยวดยาน การเดินทาง)' },
+    { a: '卯', b: '酉', th: 'เถาะ ปะทะ ระกา (ไม้ปะทะทอง: ระวังความสัมพันธ์ ของมีคม รักสามเส้า)' },
+    { a: '辰', b: '戌', th: 'มะโรง ปะทะ จอ (ดินปะทะดิน: การเปลี่ยนแปลงโครงสร้าง การงาน ผู้ใหญ่)' },
+    { a: '巳', b: '亥', th: 'มะเส็ง ปะทะ กุน (ไฟปะทะน้ำ: ความคิดสับสน โยกย้ายที่อยู่หรือสายงาน)' }
+  ];
+
+  const HARMONY_PAIRS = [
+    { a: '子', b: '丑', name: 'ชวด-ฉลู สมพงศ์ธาตุดิน' },
+    { a: '寅', b: '亥', name: 'ขาล-กุน สมพงศ์ธาตุไม้' },
+    { a: '卯', b: '戌', name: 'เถาะ-จอ สมพงศ์ธาตุไฟ' },
+    { a: '辰', b: '酉', name: 'มะโรง-ระกา สมพงศ์ธาตุทอง' },
+    { a: '巳', b: '申', name: 'มะเส็ง-วอก สมพงศ์ธาตุน้ำ' },
+    { a: '午', b: '未', name: 'มะเมีย-มะแม สมพงศ์ธาตุไฟ/ดิน' }
+  ];
+
+  function checkBranchClash(b1, b2) {
+    return CLASH_PAIRS.find(p => (p.a === b1 && p.b === b2) || (p.a === b2 && p.b === b1));
+  }
+
+  function checkBranchHarmony(b1, b2) {
+    return HARMONY_PAIRS.find(p => (p.a === b1 && p.b === b2) || (p.a === b2 && p.b === b1));
+  }
+
+  // 7. Special Shen Sha (神煞 - Stars of Destiny)
+  function computeShenSha(dayStemObj, dayBranchObj, yearBranchObj, targetBranchObj) {
+    const stars = [];
+    const tb = targetBranchObj.zh;
+    const ds = dayStemObj.zh;
+    const db = dayBranchObj.zh;
+    const yb = yearBranchObj.zh;
+
+    const tianYiMap = {
+      '甲': ['丑', '未'], '戊': ['丑', '未'], '庚': ['丑', '未'],
+      '乙': ['子', '申'], '己': ['子', '申'],
+      '丙': ['亥', '酉'], '丁': ['亥', '酉'],
+      '壬': ['卯', '巳'], '癸': ['卯', '巳'],
+      '辛': ['午', '寅']
+    };
+    if (tianYiMap[ds] && tianYiMap[ds].includes(tb)) {
+      stars.push({ name: 'ดาวเทียนอี่กุ้ยเหริน (天乙貴人)', desc: 'ดาวผู้ใหญ่อุปถัมภ์ คลาดแคล้วภัย มีคนยื่นมือช่วยเสมอยามยาก' });
+    }
+
+    const wenChangMap = {
+      '甲': '巳', '乙': '午', '丙': '申', '丁': '酉', '戊': '申',
+      '己': '酉', '庚': '亥', '辛': '子', '壬': '寅', '癸': '卯'
+    };
+    if (wenChangMap[ds] === tb) {
+      stars.push({ name: 'ดาวบุ๋นชัง (文昌貴人)', desc: 'ดาวปัญญา วิชาการ การเรียนรู้โดดเด่น สอบแข่งขันราบรื่น มีไหวพริบ' });
+    }
+
+    const yiMaMap = {
+      '申': '寅', '子': '寅', '辰': '寅',
+      '寅': '申', '午': '申', '戌': '申',
+      '巳': '亥', '酉': '亥', '丑': '亥',
+      '亥': '巳', '卯': '巳', '未': '巳'
+    };
+    if (yiMaMap[yb] === tb || yiMaMap[db] === tb) {
+      stars.push({ name: 'ดาวอี้หม่า (驛馬星)', desc: 'ดาวม้าสวรรค์ เดินทางไกล ได้ดีต่างแดน ปรับตัวไว มีความคล่องตัวสูง' });
+    }
+
+    const taoHuaMap = {
+      '申': '酉', '子': '酉', '辰': '酉',
+      '寅': '卯', '午': '卯', '戌': '卯',
+      '巳': '午', '酉': '午', '丑': '午',
+      '亥': '子', '卯': '子', '未': '子'
+    };
+    if (taoHuaMap[yb] === tb || taoHuaMap[db] === tb) {
+      stars.push({ name: 'ดาวดอกท้อ (桃花星)', desc: 'ดาวเสน่ห์เมตตามหานิยม มีแรงดึงดูด ผู้คนรักใคร่เอ็นดู โดดเด่นในสังคม' });
+    }
+
+    const huaGaiMap = {
+      '申': '辰', '子': '辰', '辰': '辰',
+      '寅': '戌', '午': '戌', '戌': '戌',
+      '巳': '丑', '酉': '丑', '丑': '丑',
+      '亥': '未', '卯': '未', '未': '未'
+    };
+    if (huaGaiMap[yb] === tb || huaGaiMap[db] === tb) {
+      stars.push({ name: 'ดาวหัวก่าย (華蓋星)', desc: 'ดาวศิลปะ ญาณทัศนะ สนใจปรัชญา โลกทัศน์ลึกซึ้ง โดดเด่นทางงานสร้างสรรค์' });
+    }
+
+    const luShenMap = {
+      '甲': '寅', '乙': '卯', '丙': '巳', '丁': '午', '戊': '巳',
+      '己': '午', '庚': '申', '辛': '酉', '壬': '亥', '癸': '子'
+    };
+    if (luShenMap[ds] === tb) {
+      stars.push({ name: 'ดาวลกซิ้ง (祿神星)', desc: 'ดาวโภคทรัพย์ ลาภผลมั่นคง มีกินมีใช้ พึ่งพาความสามารถตนเองสำเร็จ' });
+    }
+
+    return stars;
+  }
+
+  // 8. Core BaZi Engine
+  const BaziEngine = {
+    STEMS,
+    BRANCHES,
+    ELEMENTS_META,
+
+    calculateChart: function (params) {
+      const {
+        birthDate, // 'YYYY-MM-DD'
+        birthHour = 12, // 0-23
+        birthMinute = 0,
+        gender = 'male', // 'male' or 'female'
+        name = 'Bumji'
+      } = params;
+
+      const date = new Date(birthDate + 'T' + String(birthHour).padStart(2, '0') + ':' + String(birthMinute).padStart(2, '0') + ':00');
+      const year = date.getFullYear();
+      const month = date.getMonth(); // 0-11
+      const day = date.getDate();
+
+      // 1. Year Pillar (Li Chun threshold approx Feb 4)
+      let baziYear = year;
+      if (month < 1 || (month === 1 && day < 4)) {
+        baziYear = year - 1;
+      }
+      const yrStemIdx = ((baziYear - 4) % 10 + 10) % 10;
+      const yrBranchIdx = ((baziYear - 4) % 12 + 12) % 12;
+      const yearStem = STEMS[yrStemIdx];
+      const yearBranch = BRANCHES[yrBranchIdx];
+
+      // 2. Month Pillar
+      const solarCutoffs = [5, 4, 5, 5, 5, 6, 7, 7, 7, 8, 7, 7];
+      let solarM = month;
+      if (day < solarCutoffs[month]) {
+        solarM = (month + 11) % 12;
+      }
+      const mBranchMap = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0];
+      const mBranchIdx = mBranchMap[solarM];
+      const monthBranch = BRANCHES[mBranchIdx];
+
+      const mTigerStart = (yrStemIdx % 5) * 2 + 2;
+      const mOffsetFromYin = (mBranchIdx - 2 + 12) % 12;
+      const mStemIdx = (mTigerStart + mOffsetFromYin) % 10;
+      const monthStem = STEMS[mStemIdx];
+
+      // 3. Day Pillar (Julian Days from Epoch)
+      const baseUTC = Date.UTC(2000, 0, 1);
+      const targetUTC = Date.UTC(year, month, day);
+      const diffDays = Math.round((targetUTC - baseUTC) / 86400000);
+      const dayCycle = ((54 + diffDays) % 60 + 60) % 60;
+      const dayStemIdx = dayCycle % 10;
+      const dayBranchIdx = dayCycle % 12;
+      const dayStem = STEMS[dayStemIdx]; // Day Master (日主)
+      const dayBranch = BRANCHES[dayBranchIdx];
+
+      // 4. Hour Pillar
+      const hBranchIdx = Math.floor((birthHour + 1) % 24 / 2);
+      const hourBranch = BRANCHES[hBranchIdx];
+
+      const hRatStart = (dayStemIdx % 5) * 2;
+      const hStemIdx = (hRatStart + hBranchIdx) % 10;
+      const hourStem = STEMS[hStemIdx];
+
+      // Build Pillars
+      const buildPillar = (stem, branch, stemIdx, branchIdx, labelTh, roleTh) => {
+        const isDayMaster = labelTh === 'เสาวัน (Day)';
+        const tenGod = isDayMaster ? { zh: '日主', py: 'Day Master', th: 'ดิถีธาตุ (ตนเอง)', en: 'Self' } : getTenGod(dayStem, stem);
+        const hiddenStemsWithGods = branch.hidden.map(h => {
+          const hStemObj = STEMS.find(s => s.zh === h.stem);
+          return {
+            ...h,
+            stemObj: hStemObj,
+            tenGod: getTenGod(dayStem, hStemObj)
+          };
+        });
+        const naYin = getNaYin(stemIdx, branchIdx);
+        const stars = computeShenSha(dayStem, dayBranch, yearBranch, branch);
+
+        return {
+          label: labelTh,
+          role: roleTh,
+          stem,
+          branch,
+          tenGod,
+          hiddenStems: hiddenStemsWithGods,
+          naYin,
+          stars
+        };
+      };
+
+      const pillars = {
+        hour: buildPillar(hourStem, hourBranch, hStemIdx, hBranchIdx, 'เสายาม (Hour)', 'บริวาร บุตรหลาน วัยชรา (49+ ปี) ความปรารถนาลึกๆ'),
+        day: buildPillar(dayStem, dayBranch, dayStemIdx, dayBranchIdx, 'เสาวัน (Day)', 'จิตวิญญาณ ตัวตนแก่นแท้ วังคู่ครอง (33-48 ปี)'),
+        month: buildPillar(monthStem, monthBranch, mStemIdx, mBranchIdx, 'เสาเดือน (Month)', 'การงาน ธุรกิจ พ่อแม่ วัยสร้างตัว (17-32 ปี) สภาพแวดล้อม'),
+        year: buildPillar(yearStem, yearBranch, yrStemIdx, yrBranchIdx, 'เสาปี (Year)', 'บรรพบุรุษ สังคมภายนอก วัยเด็ก (0-16 ปี) ภาพลักษณ์แรกพบ')
+      };
+
+      // 5. Five Elements Calculation
+      const elementScores = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
+      [hourStem, dayStem, monthStem, yearStem].forEach(s => { elementScores[s.element] += 1.0; });
+      [hourBranch, dayBranch, monthBranch, yearBranch].forEach(b => {
+        b.hidden.forEach(h => {
+          const sObj = STEMS.find(s => s.zh === h.stem);
+          if (sObj) elementScores[sObj.element] += h.weight * 1.5;
+        });
+      });
+
+      const totalScore = Object.values(elementScores).reduce((a, b) => a + b, 0);
+      const elementPercentages = {};
+      for (const el in elementScores) {
+        elementPercentages[el] = Math.round((elementScores[el] / totalScore) * 100);
+      }
+
+      // 6. Day Master Strength (身強 vs 身弱)
+      const dmElement = dayStem.element;
+      const resourceElement = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].generates === dmElement);
+      const supportingScore = (elementScores[dmElement] || 0) + (elementScores[resourceElement] || 0);
+      const supportPercentage = Math.round((supportingScore / totalScore) * 100);
+
+      const isStrong = supportPercentage >= 46;
+      const strengthText = isStrong ? 'ดิถีแข็งแรง (身強 - Strong Day Master)' : 'ดิถีอ่อนแอ (身弱 - Weak Day Master)';
+
+      let favorableElements = [];
+      let avoidElements = [];
+      if (isStrong) {
+        const outputElem = ELEMENTS_META[dmElement].generates;
+        const wealthElem = ELEMENTS_META[dmElement].controls;
+        const officerElem = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].controls === dmElement);
+        favorableElements = [outputElem, wealthElem, officerElem];
+        avoidElements = [dmElement, resourceElement];
+      } else {
+        favorableElements = [resourceElement, dmElement];
+        const officerElem = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].controls === dmElement);
+        const wealthElem = ELEMENTS_META[dmElement].controls;
+        avoidElements = [officerElem, wealthElem];
+      }
+
+      // 6.1 Classical Regulating Element (調候用神 - Tiao Hou / Climate & Balance)
+      // Reference: 窮通寶鑑 (Qiong Tong Bao Jian), 滴天髓 (Di Tian Shui), 三命通會 (San Ming Tong Hui)
+      function determineTiaoHou(dayStemObj, monthBranchObj, elScores, elPcts) {
+        const dStem = dayStemObj.zh;
+        const mBranch = monthBranchObj.zh;
+
+        let tiaoHouElem = 'water';
+        let tiaoHouRole = '';
+        let tiaoHouReason = '';
+
+        // 1. Winter (亥, 子, 丑): Freezing climate -> Needs FIRE (丙/丁) to thaw and warm (暖局解凍)
+        if (['亥', '子', '丑'].includes(mBranch)) {
+          tiaoHouElem = 'fire';
+          tiaoHouRole = 'อบอุ่นดวงชะตา & สลายความเย็น (暖局解凍)';
+          tiaoHouReason = `เกิดในเดือนสารทฤดูหนาว (${mBranch}) สภาพอากาศหนาวเย็นจัด แผ่นดินและสายน้ำเยือกแข็ง คัมภีร์เฉียงทงเป่าเจี้ยนระบุว่า ต้องการ "ธาตุไฟ" เป็นธาตุปรับดวงให้ความอบอุ่น เพื่อให้พลังชีวิตเบ่งบานและสร้างความสำเร็จ`;
+        }
+        // 2. Summer (巳, 午, 未): Scorching hot -> Needs WATER (壬/癸) to cool and moisturize (降溫潤局)
+        else if (['巳', '午', '未'].includes(mBranch)) {
+          tiaoHouElem = 'water';
+          tiaoHouRole = 'ลดอุณหภูมิ & ชโลมความชุ่มชื้น (降溫潤局)';
+          tiaoHouReason = `เกิดในเดือนสารทฤดูร้อน (${mBranch}) สภาพอากาศร้อนจัดแผดเผา ธาตุไฟและดินแห้งแล้ง ต้องการ "ธาตุน้ำ" เป็นธาตุปรับดวง เพื่อดับพิษร้อน ชโลมความชุ่มชื้น และรักษาความสมดุลของจิตใจ`;
+        }
+        // 3. Autumn (申, 酉, 戌): Crisp metal & cooling climate
+        else if (['申', '酉', '戌'].includes(mBranch)) {
+          if (['丁', '丙'].includes(dStem)) {
+            // Ding / Bing Fire in Autumn:
+            // 丁 Fire: 滴天髓 & 窮通寶鑑: 丁火秋令退氣，金旺。丁火喜水既濟，尤其是壬水/癸水 顯貴，水火既濟
+            tiaoHouElem = 'water';
+            tiaoHouRole = 'ชโลมดวงชะตา & สะท้อนเกียรติยศ (水火既濟 / 顯貴)';
+            tiaoHouReason = `เกิดในเดือนสารทฤดูใบไม้ร่วง (${mBranch}) พลังทองหนาแน่น อากาศเริ่มเย็นและแห้ง คัมภีร์เฉียงทงเป่าเจี้ยนระบุว่า ดิถีไฟ ${dStem} (ดวงประทีป) ต้องการ "ธาตุน้ำ" เป็นธาตุปรับดวง เพื่อสะท้อนประกายเกียรติยศชื่อเสียง นำมาซึ่งความเยือกเย็น สติปัญญา และความสำเร็จในตำแหน่งหน้าที่การงาน (官殺)`;
+          } else if (['甲', '乙'].includes(dStem)) {
+            // Wood in Autumn: Metal chops Wood -> Needs Water as bridge (通關) to generate wood
+            tiaoHouElem = 'water';
+            tiaoHouRole = 'สะพานเชื่อมพลัง & พิทักษ์ต้นไม้ (通關化殺)';
+            tiaoHouReason = `เกิดในเดือนสารทฤดูใบไม้ร่วง (${mBranch}) พลังทองพิฆาตตัดไม้ ต้องการ "ธาตุน้ำ" เป็นธาตุปรับดวง เพื่อถ่ายเทพลังทองมาเสริมส่งไม้ เปลี่ยนแรงกดดันให้กลายเป็นสติปัญญาและโชคลาภ`;
+          } else if (['庚', '辛'].includes(dStem)) {
+            // Metal in Autumn: Metal heavy -> Needs Water to wash metal or Fire to forge
+            tiaoHouElem = (elScores.fire > elScores.water) ? 'water' : 'fire';
+            if (tiaoHouElem === 'water') {
+              tiaoHouRole = 'ชำระล้างทองให้ผุดผ่อง (金水傷官 / 水淘金)';
+              tiaoHouReason = `เกิดในเดือนสารทฤดูใบไม้ร่วง (${mBranch}) พลังทองแกร่งกล้า ต้องการ "ธาตุน้ำ" ชำระล้างทองให้ส่องประกาย แสดงออกซึ่งปฏิภาณไหวพริบและสติปัญญา`;
+            } else {
+              tiaoHouRole = 'หลอมหล่อศาสตรา (火煉秋金)';
+              tiaoHouReason = `เกิดในเดือนสารทฤดูใบไม้ร่วง (${mBranch}) พลังทองหนาแน่น ต้องการ "ธาตุไฟ" มาหลอมตีให้เป็นยอดศาสตราและผู้นำที่เข้มแข็ง`;
+            }
+          } else {
+            // Earth / Water in Autumn
+            if (elPcts.water <= 10) {
+              tiaoHouElem = 'water';
+              tiaoHouRole = 'หล่อเลี้ยงความชุ่มชื้น (潤澤調候)';
+              tiaoHouReason = `ในดวงมีพลังธาตุน้ำพร่อง ต้องการ "ธาตุน้ำ" เพื่อปรับความชุ่มชื้นและกระตุ้นการไหลเวียนของโชคลาภ`;
+            } else {
+              tiaoHouElem = 'fire';
+              tiaoHouRole = 'อบอุ่นและเสริมกำลัง (暖土培元)';
+              tiaoHouReason = `เกิดในเดือนสารทฤดูใบไม้ร่วง (${mBranch}) ต้องการ "ธาตุไฟ" ให้ความอบอุ่นแก่ผืนดินและขับเคลื่อนความสำเร็จ`;
+            }
+          }
+        }
+        // 4. Spring (寅, 卯, 辰): Wood grows
+        else if (['寅', '卯', '辰'].includes(mBranch)) {
+          if (mBranch === '寅') {
+            tiaoHouElem = 'fire';
+            tiaoHouRole = 'คลายหนาวต้นฤดูใบไม้ผลิ (陽和解寒)';
+            tiaoHouReason = `เกิดในเดือนสารทต้นฤดูใบไม้ผลิ (${mBranch}) ไอหนาวปลายฤดูยังหลงเหลือ ต้องการ "ธาตุไฟ" มอบแสงตะวันอบอุ่นให้ยอดไม้งอกงาม`;
+          } else {
+            if (elPcts.water <= 12) {
+              tiaoHouElem = 'water';
+              tiaoHouRole = 'หล่อเลี้ยงพืชผล (雨露滋潤)';
+              tiaoHouReason = `เกิดในฤดูใบไม้ผลิ (${mBranch}) ต้นไม้ต้องการ "ธาตุน้ำ" ดั่งสายฝนชุ่มฉ่ำหล่อเลี้ยงรากให้มั่นคง`;
+            } else {
+              tiaoHouElem = 'fire';
+              tiaoHouRole = 'ให้แสงสว่างเจริญเติบโต (木火通明)';
+              tiaoHouReason = `เกิดในฤดูใบไม้ผลิ (${mBranch}) ต้องการ "ธาตุไฟ" เพื่อให้พืชพันธุ์สังเคราะห์แสง ดอกไม้เบ่งบาน นำพาชื่อเสียงและผลงานโดดเด่น`;
+            }
+          }
+        }
+
+        // Secondary check: Chart Dryness vs Coldness (燥濕平衡)
+        if ((elPcts.water <= 8 || (elPcts.fire + elPcts.earth) >= 48) && tiaoHouElem !== 'water') {
+          tiaoHouElem = 'water';
+          tiaoHouRole = 'น้ำทิพย์ชโลมดวงแห้งแล้ง (潤局調候)';
+          tiaoHouReason = `ผังดวงมีความแห้งแล้งสูง (ธาตุน้ำมีเพียง ${elPcts.water || 0}%) ต้องการ "ธาตุน้ำ" ชโลมดวง ปรับสมดุลอารมณ์ และเปิดรับโอกาสโชคลาภ`;
+        } else if ((elPcts.fire <= 8 || (elPcts.water + elPcts.metal) >= 48) && tiaoHouElem !== 'fire') {
+          tiaoHouElem = 'fire';
+          tiaoHouRole = 'ดวงประทีปสลายความเย็น (暖局調候)';
+          tiaoHouReason = `ผังดวงมีความเย็นชื้นสูง (ธาตุไฟมีเพียง ${elPcts.fire || 0}%) ต้องการ "ธาตุไฟ" สลายความหนาวเย็น เพิ่มความกระตือรือร้นและพลังขับเคลื่อนชีวิต`;
+        }
+
+        return {
+          element: tiaoHouElem,
+          role: tiaoHouRole,
+          reason: tiaoHouReason
+        };
+      }
+
+      const tiaoHou = determineTiaoHou(dayStem, monthBranch, elementScores, elementPercentages);
+
+      // CRITICAL BAZI PRINCIPLE: "調候為先" (Climate Regulation Takes Priority)
+      // The regulating element must NEVER be treated as an Avoid Element (忌神)!
+      avoidElements = avoidElements.filter(e => e !== tiaoHou.element);
+
+      // 7. Da Yun (วัยจร 10 ปี / 大運)
+      const isYearYang = yearStem.polarity === 'yang';
+      const isForward = (gender === 'male' && isYearYang) || (gender === 'female' && !isYearYang);
+
+      const daYunPillars = [];
+      const currentYear = new Date().getFullYear();
+      const currentAge = currentYear - year;
+      const startAge = 4;
+
+      for (let i = 1; i <= 8; i++) {
+        const offset = isForward ? i : -i;
+        const dyStemIdx = (mStemIdx + offset + 100) % 10;
+        const dyBranchIdx = (mBranchIdx + offset + 120) % 12;
+        const dyStem = STEMS[dyStemIdx];
+        const dyBranch = BRANCHES[dyBranchIdx];
+        const ageFrom = startAge + (i - 1) * 10;
+        const ageTo = ageFrom + 9;
+        const isCurrent = currentAge >= ageFrom && currentAge <= ageTo;
+
+        daYunPillars.push({
+          index: i - 1,
+          order: i,
+          ageRange: `${ageFrom} - ${ageTo} ปี`,
+          ageFrom,
+          ageTo,
+          stem: dyStem,
+          branch: dyBranch,
+          tenGod: getTenGod(dayStem, dyStem),
+          naYin: getNaYin(dyStemIdx, dyBranchIdx),
+          isCurrent
+        });
+      }
+
+      // 8. Personality Profiles
+      const personalityProfiles = {
+        '甲': {
+          title: 'ต้นไม้ใหญ่ผู้สง่างาม เปี่ยมด้วยวิสัยทัศน์และความเป็นผู้นำ',
+          traits: 'ใจกว้าง หนักแน่น ซื่อตรง มีจิตใจเมตตา มุ่งมั่นสู่ความสำเร็จ ไม่ยอมแพ้ต่ออุปสรรค ดุจต้นไม้ใหญ่ที่แผ่กิ่งก้านให้ร่มเงาแก่ผู้คน',
+          career: 'การบริหารองค์กร, ผู้บริหารระดับสูง, นักพัฒนาอสังหาริมทรัพย์, การศึกษา, การแพทย์, ธุรกิจเพื่อสังคม',
+          wealth: 'การเงินมั่นคงแบบสั่งสมระยะยาว เหมาะกับการลงทุนในสินทรัพย์ที่มีรากฐานแน่นอน เช่น ที่ดิน หรือหุ้นเติบโตยั่งยืน',
+          love: 'เป็นที่พึ่งพาให้คนรักได้ดี อบอุ่น มีความรับผิดชอบสูง แต่อาจขาดความโรแมนติกแบบหวานแหววไปบ้าง ควรเพิ่มการรับฟังอย่างใส่ใจ',
+          health: 'ดูแลระบบตับ ถุงน้ำดี สายตา และอาการปวดเมื่อยกล้ามเนื้อ ควรออกกำลังกายแบบยืดเส้นสม่ำเสมอ'
+        },
+        '乙': {
+          title: 'ไม้เลื้อยผู้ทรงเสน่ห์ ปรับตัวเป็นเลิศ ไหวพริบยอดเยี่ยม',
+          traits: 'อ่อนโยน นุ่มนวล มีมนุษยสัมพันธ์ดีเยี่ยม เข้ากับคนง่าย พลิกแพลงแก้ไขปัญหาเฉพาะหน้าได้อย่างอัศจรรย์ ดั่งดอกไม้และเถาวัลย์ที่เติบโตได้ทุกที่',
+          career: 'ศิลปะ, งานออกแบบ, การทูต, การประชาสัมพันธ์, การตลาด, วงการบันเทิง, ธุรกิจความงามและแฟชั่น',
+          wealth: 'มีโชคจากการเชื่อมโยงผู้คน คอนเนกชันนำพาเงินทองมาให้ มีไหวพริบจับโอกาสธุรกิจใหม่ๆ ได้รวดเร็ว',
+          love: 'มีเสน่ห์ดึงดูด ช่างเอาอกเอาใจ คู่ครองมักเป็นคนที่คอยปกป้องคุ้มครองและเป็นที่พึ่งให้ได้',
+          health: 'ดูแลระบบประสาท ทางเดินอาหารส่วนล่าง และเส้นเอ็น ควรหลีกเลี่ยงความเครียดสะสมด้วยการพักผ่อนใกล้ชิดธรรมชาติ'
+        },
+        '丙': {
+          title: 'พระอาทิตย์เจิดจ้า เปี่ยมพลังบวก ความกระตือรือร้นและชื่อเสียง',
+          traits: 'สดใส ตรงไปตรงมา รักความยุติธรรม ชอบความชัดเจน มีความเป็นมิตรสูง สร้างพลังใจและแรงบันดาลใจให้ผู้อื่นเสมอ ดั่งแสงสุริยาที่มอบความอบอุ่น',
+          career: 'สื่อสารมวลชน, การแสดง, อินฟลูเอนเซอร์, การตลาดออนไลน์, ธุรกิจพลังงาน, งานต้อนรับและการบริการระดับไฮเอนด์',
+          wealth: 'เงินทองหมุนเวียนคล่องตัว มีโอกาสสร้างความมั่งคั่งจากชื่อเสียงและภาพลักษณ์ ระวังการใช้จ่ายตามอารมณ์',
+          love: 'รักจริงจัง เปิดเผย ทุ่มเทเต็มที่ ชอบคนที่มีพลังงานสดใสเหมือนกัน ควรระวังความใจร้อนหรือพูดตรงเกินไป',
+          health: 'ดูแลระบบหัวใจ ความดันโลหิต สายตา และระบบไหลเวียนโลหิต ควรดื่มน้ำให้เพียงพอและฝึกสมาธิ'
+        },
+        '丁': {
+          title: 'เปลวเทียนส่องแสง สติปัญญาหยั่งรู้ สุขุมลุ่มลึกและมีเอกลักษณ์',
+          traits: 'ช่างสังเกต สุภาพ อ่อนโยน มีความคิดสร้างสรรค์ลึกซึ้ง มีสัมผัสพิเศษหรือเซนส์ในการรับรู้ความรู้สึกผู้อื่น ดั่งดวงประทีปที่ส่องสว่างในความมืด',
+          career: 'วิจัยเชิงลึก, นักคิดนักเขียน, นักวิเคราะห์ข้อมูล, ปรัชญา, โหราศาสตร์, เทคโนโลยี, การแพทย์เฉพาะทาง',
+          wealth: 'ร่ำรวยจากองค์ความรู้เฉพาะตัว นวัตกรรม และไอเดียที่ไม่เหมือนใคร เงินทองเข้ามาสม่ำเสมอตามความเชี่ยวชาญ',
+          love: 'รักลึกซึ้ง ละเอียดอ่อน เอาใจใส่ความรู้สึกคนรักอย่างประณีต มักมองหาคู่แท้ที่เข้าใจจิตวิญญาณและความคิดลึกๆ',
+          health: 'ดูแลระบบหลอดเลือด หัวใจ และดวงตา ระวังการใช้สายตาตอนกลางคืนและภาวะนอนไม่หลับ'
+        },
+        '戊': {
+          title: 'ขุนเขาตระหง่าน หนักแน่น ซื่อสัตย์ ไว้วางใจได้สูงสุด',
+          traits: 'มั่นคง ไม่หวั่นไหวง่าย เก็บความลับเก่ง มีความอดทนสูง เป็นที่ปรึกษาที่ทุกคนเชื่อมั่น ดั่งภูเขาใหญ่ที่โอบรับทุกสรรพสิ่ง',
+          career: 'อสังหาริมทรัพย์, การเงินการธนาคาร, ภาครัฐ, ก่อสร้าง, การเกษตร, ผู้พิพากษา, นักบริหารทรัพย์สิน',
+          wealth: 'สร้างความมั่งคั่งจากความมั่นคงและวินัยระยะยาว มักมีทรัพย์สินสะสมเป็นกอบเป็นกำ ปลอดภัยไร้ความเสี่ยง',
+          love: 'รักเดียวใจเดียว มั่นคงเหมือนหินผา เป็นเสาหลักของครอบครัว ควรแสดงความรู้สึกและคำหวานให้บ่อยขึ้น',
+          health: 'ดูแลระบบกระเพาะอาหาร ม้าม การย่อยอาหาร และการเผาผลาญ ควรทานอาหารให้ตรงเวลา'
+        },
+        '己': {
+          title: 'ผืนดินอุดมสมบูรณ์ โอบอ้อมอารี อดทนและเกื้อกูลผู้คน',
+          traits: 'ใจกว้าง ละเอียดรอบคอบ พร้อมสนับสนุนผู้อื่น มีความสามารถในการประสานงานและจัดการสิ่งต่างๆ ให้ออกมาสมบูรณ์แบบ ดั่งดินดีที่เพาะปลูกพืชผล',
+          career: 'การศึกษา, ทรัพยากรบุคคล (HR), การบริการ, การท่องเที่ยว, เกษตรแปรรูป, วางแผนการเงิน, ที่ปรึกษา',
+          wealth: 'ได้ลาภจากผลงานที่ค่อยๆ บ่มเพาะ มีเสถียรภาพทางการเงินสูง เก็บหอมรอมริบเก่งและต่อยอดเงินได้อย่างมีประสิทธิภาพ',
+          love: 'เป็นผู้ให้ที่อบอุ่น เอาใจใส่ครอบครัวเป็นเลิศ รักความสงบและมั่นคง คู่ครองมักซาบซึ้งในความเสียสละ',
+          health: 'ดูแลระบบทางเดินอาหาร ลำไส้ ผิวพรรณ และการดูดซึมสารอาหาร ควรออกกำลังกายสม่ำเสมอ'
+        },
+        '庚': {
+          title: 'กระบี่เหล็กกล้า เด็ดขาด กล้าหาญ รักความถูกต้องและเฉียบคม',
+          traits: 'ตรงฉิน มีหลักการชัดเจน ไม่กลัวความลำบาก กล้าตัดสินใจในภาวะวิกฤต มุ่งมั่นพัฒนาตนเองให้แกร่งขึ้น ดั่งโลหะมีค่าที่ผ่านการตีหลอมจนเป็นยอดศาสตรา',
+          career: 'วิศวกรรม, ทหาร/ตำรวจ, กฎหมาย, การผ่าตัด, การบริหารจัดการความเสี่ยง, โลจิสติกส์, เทคโนโลยีฮาร์ดแวร์',
+          wealth: 'หาเงินได้เก่งจากความสามารถเชิงรุกและความกล้าลงทุน ยิ่งเผชิญความท้าทายยิ่งสร้างความสำเร็จทางเงินทองได้สูง',
+          love: 'รักจริงจัง ปกป้องคนรักสุดความสามารถ แต่อาจปากแข็งหรือไม่ค่อยง้อ ควรปรับลดความเข้มงวดในชีวิตคู่',
+          health: 'ดูแลระบบปอด ระบบทางเดินหายใจ กระดูกและฟัน ควรฝึกหายใจลึกๆ และหลีกเลี่ยงฝุ่นควัน'
+        },
+        '辛': {
+          title: 'อัญมณีล้ำค่า สง่างาม รสนิยมประณีต รักศักดิ์ศรีและเปล่งประกาย',
+          traits: 'มีเสน่ห์โดดเด่น ไหวพริบปฏิภาณดี มีสไตล์เฉพาะตัว ชื่นชอบความสมบูรณ์แบบ รักความสะอาดและระเบียบ ดั่งเพชรน้ำเอกที่เจียระไนแล้ว',
+          career: 'จิวเวลรี่, สินค้าแบรนด์เนม, ดีไซเนอร์, ที่ปรึกษาภาพลักษณ์, การทูต, พิธีกร, ศิลปะประยุกต์',
+          wealth: 'สร้างมูลค่าเพิ่มให้กับสิ่งรอบตัวได้มหาศาล มีโชคจากสินค้าพรีเมียมและความเชี่ยวชาญเฉพาะทางระดับสูง',
+          love: 'เลือกสรรคนรักอย่างประณีต ต้องการคู่ครองที่ให้เกียรติ เข้าใจในคุณค่าของตนเอง และมีความภูมิฐาน',
+          health: 'ดูแลระบบผิวหนัง ปอด ทางเดินหายใจ และอาการภูมิแพ้ ควรพักผ่อนในที่ที่อากาศบริสุทธิ์'
+        },
+        '壬': {
+          title: 'มหาสมุทรไร้ขอบเขต ปราดเปรื่อง ทรงพลัง และมีวิสัยทัศน์กว้างไกล',
+          traits: 'ฉลาดหลักแหลม มีพลังความคิดสร้างสรรค์ล้นเหลือ คล่องตัว ปรับตัวเข้ากับทุกสถานการณ์ มีความทะเยอทะยานสูง ดั่งแม่น้ำใหญ่ที่ไหลรวมสู่ทะเล',
+          career: 'การค้าระหว่างประเทศ, ธุรกิจข้ามชาติ, การเดินเรือ, โลจิสติกส์, เทคโนโลยีสารสนเทศ, การเงินการลงทุน, การตลาดดิจิทัล',
+          wealth: 'กระแสเงินสดหมุนเวียนมหาศาล ยิ่งเคลื่อนไหวทำธุรกิจยิ่งรวย มีสายตาเฉียบคมในการจับทิศทางตลาดโลก',
+          love: 'มีเสน่ห์ดึงดูดใจ รักอิสระ ชอบคนคุยรู้เรื่องและมีเป้าหมายชีวิตยิ่งใหญ่ ไม่ชอบการผูกมัดที่อึดอัด',
+          health: 'ดูแลระบบไต กระเพาะปัสสาวะ การไหลเวียนของของเหลวในร่างกาย และหู ควรดื่มน้ำสะอาดสม่ำเสมอ'
+        },
+        '癸': {
+          title: 'สายฝนและน้ำค้างบริสุทธิ์ ปัญญาหยั่งรู้ ลึกซึ้ง และอ่อนโยนเป็นที่สุด',
+          traits: 'ช่างคิด เข้าใจความรู้สึกคนรอบข้างอย่างลึกซึ้ง มีญาณหยั่งรู้ จิตใจดี โอบอ้อมอารี สงบเสงี่ยม ดั่งสายฝนชุ่มฉ่ำที่หล่อเลี้ยงโลกอย่างเงียบๆ',
+          career: 'จิตวิทยา, การบำบัดรักษา, โหราศาสตร์, วรรณกรรม, การวิจัย, วิทยาศาสตร์สิ่งแวดล้อม, งานบริการทางการแพทย์',
+          wealth: 'มีโชคแบบไม่คาดฝัน ลาภลอย เงินทองไหลเข้ามาเรื่อยๆ จากความเมตตาและคุณงามความดีที่ได้สร้างไว้',
+          love: 'โรแมนติก ซาบซึ้ง อ่อนโยน เข้าอกเข้าใจคนรักเป็นเลิศ ต้องการความรักที่จริงใจและปลอดภัยทางอารมณ์',
+          health: 'ดูแลระบบสืบพันธุ์ ระบบทางเดินปัสสาวะ และการนอนหลับ ควรหลีกเลี่ยงความหนาวเย็นและความชื้นสะสม'
+        }
+      };
+
+      const dayMasterProfile = personalityProfiles[dayStem.zh] || personalityProfiles['甲'];
+
+      return {
+        name,
+        gender,
+        birthDateString: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        birthTimeString: `${String(birthHour).padStart(2, '0')}:${String(birthMinute).padStart(2, '0')}`,
+        birthHour,
+        birthMinute,
+        dayMaster: dayStem,
+        dayBranch: dayBranch,
+        pillars,
+        elementScores,
+        elementPercentages,
+        isStrong,
+        strengthText,
+        supportPercentage,
+        favorableElements,
+        avoidElements,
+        tiaoHou,
+        daYunPillars,
+        dayMasterProfile
+      };
+    },
+
+    // 9. Detailed Da Yun (10-Year Luck Pillar) Interpretation
+    calculateDaYunInterpretation: function (chart, daYunPillar) {
+      if (!chart || !daYunPillar) return null;
+      const tg = daYunPillar.tenGod;
+      const sElem = daYunPillar.stem.element;
+      const bElem = daYunPillar.branch.element;
+      const isFav = chart.favorableElements.includes(sElem) || chart.favorableElements.includes(bElem);
+      
+      // Check clashes with natal branches
+      const clashes = [];
+      ['year', 'month', 'day', 'hour'].forEach(k => {
+        const p = chart.pillars[k];
+        const clash = checkBranchClash(daYunPillar.branch.zh, p.branch.zh);
+        if (clash) {
+          clashes.push({ pillarKey: k, pillarLabel: p.label, desc: clash.th });
+        }
+      });
+
+      // Ten God Specific Readings
+      const godReadings = {
+        '比肩': {
+          theme: 'ช่วงเวลาแห่งการสร้างมิตรภาพ พึ่งพาตนเอง และขยายเครือข่าย',
+          career: 'มีโอกาสร่วมทุนหรือทำงานเป็นทีม โดดเด่นด้านการขยายพันธมิตร ควรระวังความดื้อรั้นและฟังความเห็นผู้อื่นให้มากขึ้น',
+          wealth: 'การเงินหมุนเวียนจากความสามารถของตนเอง มีการแบ่งปันผลกำไรกับหุ้นส่วน ไม่ควรค้ำประกันให้ใคร',
+          love: 'ระวังทิฐิหรือการแข่งขันเอาชนะกันในชีวิตคู่ คนโสดมีโอกาสพบรักผ่านกลุ่มเพื่อนฝูง'
+        },
+        '劫財': {
+          theme: 'วัยแห่งการแข่งขัน ชิงไหวชิงพริบ และการใช้ความกล้าได้กล้าเสีย',
+          career: 'เผชิญการแข่งขันสูง แต่หากเปลี่ยนเป็นการแข่งขันเชิงรุกจะเติบโตแบบก้าวกระโดด โดดเด่นในสายธุรกิจและการตลาด',
+          wealth: 'มีรายจ่ายจรและการลงทุนก้อนใหญ่ ควรบริหารกระแสเงินสดอย่างรัดกุม การซื้ออสังหาริมทรัพย์ช่วยแก้เคล็ดเงินรั่วไหล',
+          love: 'ระวังมือที่สามหรือความขัดแย้งเรื่องเงินทองในครอบครัว ต้องให้ความซื่อสัตย์เป็นที่ตั้ง'
+        },
+        '食神': {
+          theme: 'ยุคทองแห่งความคิดสร้างสรรค์ สุนทรียภาพ ความสุขุม และผลผลิตงอกเงย',
+          career: 'โปรเจกต์ใหม่และไอเดียได้รับการยอมรับ ผลงานเป็นที่ชื่นชอบ ค้าขายคล่องตัว งานด้านการบริการและอาหารเจริญรุ่งเรือง',
+          wealth: 'ลาภผลไหลเข้ามาสม่ำเสมอจากการลงมือทำสิ่งใหม่ มีโชคลาภจากการเจรจาและการสร้างสรรค์',
+          love: 'ความรักสดชื่น อบอุ่น มีความเข้าใจลึกซึ้ง คนโสดมีเสน่ห์ดึงดูดคนดีๆ เข้ามาในชีวิต'
+        },
+        '傷官': {
+          theme: 'ทศวรรษแห่งการฉีกกรอบ นวัตกรรม ปฏิภาณไหวพริบ และชื่อเสียงกึกก้อง',
+          career: 'มีความสามารถโดดเด่น กล้าท้าทายสิ่งเก่าๆ ประสบความสำเร็จในงานศิลป์ สื่อสาร เทคโนโลยี แต่ต้องระวังวาจาขัดแย้งกับผู้ใหญ่',
+          wealth: 'หาเงินได้รวดเร็วจากไอเดียแปลกใหม่ ลาภลอยโดดเด่น การลงทุนที่มีชั้นเชิงให้ผลตอบแทนสูง',
+          love: 'อารมณ์ขึ้นลงง่าย คาดหวังในตัวคนรักสูง ควรลดความจู้จี้และให้อิสระแก่คู่ครอง'
+        },
+        '偏財': {
+          theme: 'ช่วงเวลาแห่งโชคลาภพิเศษ โอกาสทางธุรกิจ และความมั่งคั่งหมุนเวียน',
+          career: 'โอกาสธุรกิจใหม่ๆ วิ่งเข้าหา เหมาะกับการขยายการลงทุน การค้าขายระหว่างประเทศ และการบริหารเงินทุน',
+          wealth: 'การเงินพุ่งทะยาน มีลาภลอยและผลตอบแทนจากการเก็งกำไร ยิ่งเคลื่อนไหวทำธุรกิจยิ่งได้ผลตอบแทนคุ้มค่า',
+          love: 'คนโสดมีเสน่ห์แพรวพราว มีโอกาสพบรักจากการทำงานหรือการเข้าสังคม แต่ต้องระวังรักซ้อน'
+        },
+        '正財': {
+          theme: 'ความมั่นคงในอาชีพการงาน รากฐานชีวิตที่แข็งแกร่ง และทรัพย์สินพอกพูน',
+          career: 'การงานก้าวหน้าอย่างมั่นคง ได้รับความไว้วางใจให้ดูแลงานสำคัญ การงานมีเสถียรภาพสูง',
+          wealth: 'เงินทองเข้ามาสม่ำเสมอ รายได้หลักมั่นคง วางแผนออมเงินและซื้อสินทรัพย์ถาวรได้สำเร็จงดงาม',
+          love: 'ความรักมั่นคง ได้คู่ครองที่เกื้อกูลส่งเสริม มีโอกาสสร้างครอบครัวและลงหลักปักฐาน'
+        },
+        '七殺': {
+          theme: 'วัยแห่งอำนาจบารมี ภาวะผู้นำ การก้าวกระโดดผ่านความท้าทายใหญ่',
+          career: 'ได้รับตำแหน่งที่มีอำนาจตัดสินใจสูง เผชิญแรงกดดันแต่สามารถเปลี่ยนเป็นบันไดสู่ความสำเร็จยิ่งใหญ่',
+          wealth: 'การเงินเติบโตรวดเร็วตามภาระหน้าที่ มีการลงทุนเชิงรุกที่ต้องใช้ความเด็ดขาด',
+          love: 'คนโสดอาจพบคนรักสายลุยหรือมีบุคลิกเข้มแข็ง คนมีคู่ควรช่วยกันประคับประคองและอย่าเอาเรื่องงานมาปนชีวิตคู่'
+        },
+        '正官': {
+          theme: 'เกียรติยศชื่อเสียง ตำแหน่งหน้าที่การงาน และคุณธรรมค้ำจุนชีวิต',
+          career: 'ได้รับการเลื่อนขั้นเลื่อนตำแหน่ง สอบแข่งขันราบรื่น สัญญาทางกฎหมายผ่านฉลุย มีชื่อเสียงในแวดวงสังคม',
+          wealth: 'การเงินมั่นคง ได้รับผลตอบแทนตามผลงานและตำแหน่งหน้าที่ มีโชคจากความซื่อสัตย์',
+          love: 'ความรักได้รับความเห็นชอบจากผู้ใหญ่ คนโสดพบรักกับคนมีเกียรติ มีศีลธรรม และฐานะมั่นคง'
+        },
+        '偏印': {
+          theme: 'ปัญญาญาณหยั่งรู้ การศึกษาศาสตร์ลึกซึ้ง และวิถีทางเฉพาะตัว',
+          career: 'โดดเด่นในสายงานวิจัย การค้นคว้า ปรัชญา โหราศาสตร์ และการคิดค้นสิ่งที่ไม่มีใครทำมาก่อน',
+          wealth: 'ร่ำรวยจากองค์ความรู้เฉพาะทางและงานเบื้องหลัง มีโชคลาภที่ไม่คาดคิดจากสัญชาตญาณ',
+          love: 'ต้องการพื้นที่ส่วนตัวสูง เข้าใจยากในบางมุม คนรักต้องเข้าใจในโลกส่วนตัวและจิตวิญญาณ'
+        },
+        '正印': {
+          theme: 'ช่วงเวลาแห่งความสุขสงบ ผู้ใหญ่อุปถัมภ์ สติปัญญา และสุขภาพกายใจสมบูรณ์',
+          career: 'ผู้ใหญ่และผู้บังคับบัญชาเมตตาช่วยเหลือ ได้รับใบอนุญาต รางวัลเกียรติยศ หรือสำเร็จการศึกษาระดับสูง',
+          wealth: 'การเงินมีผู้อุปถัมภ์ มีโอกาสซื้อบ้าน ที่ดิน หรืออสังหาริมทรัพย์เป็นของตนเอง',
+          love: 'ความสัมพันธ์อบอุ่นเหมือนคนในครอบครัว มีคนคอยดูแลเอาใจใส่ คู่ครองมีวุฒิภาวะสูง'
+        }
+      };
+
+      const reading = godReadings[tg.zh] || godReadings['比肩'];
+      let warningText = 'รักษาสมดุลชีวิต พักผ่อนให้เพียงพอ และตรวจสุขภาพสม่ำเสมอ';
+      if (clashes.length > 0) {
+        warningText = `ระวังการปะทะ (ชง) กับ${clashes.map(c => c.pillarLabel).join(', ')}: ${clashes.map(c => c.desc).join(' | ')}`;
+      }
+
+      return {
+        pillar: daYunPillar,
+        isFavorable: isFav,
+        favorabilityText: isFav ? 'วัยจรธาตุให้คุณ (ช่วงเวลาทองคำ เกื้อหนุนดวงชะตา)' : 'วัยจรธาตุท้าทาย (ต้องใช้ความรอบคอบและตั้งรับอย่างมีสติ)',
+        theme: reading.theme,
+        career: reading.career,
+        wealth: reading.wealth,
+        love: reading.love,
+        warning: warningText,
+        clashes
+      };
+    },
+
+    // 10. Annual Fortune Prediction (流年 - Liu Nian)
+    calculateAnnualFortune: function (chart, targetYear) {
+      if (!chart) return null;
+      const y = parseInt(targetYear, 10) || new Date().getFullYear();
+      
+      const sIdx = ((y - 4) % 10 + 10) % 10;
+      const bIdx = ((y - 4) % 12 + 12) % 12;
+      const stem = STEMS[sIdx];
+      const branch = BRANCHES[bIdx];
+      const stemGod = getTenGod(chart.dayMaster, stem);
+      const branchGod = getTenGod(chart.dayMaster, STEMS.find(s => s.zh === branch.hidden[0].stem));
+      const naYin = getNaYin(sIdx, bIdx);
+
+      // 1. Identify active Da Yun (วัยจร 10 ปี) for targetYear y
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = y - birthYear;
+      let curDaYun = (chart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      let isChildhood = false;
+
+      if (!curDaYun && chart.daYunPillars && chart.daYunPillars.length > 0) {
+        if (ageInYear < chart.daYunPillars[0].ageFrom) {
+          isChildhood = true;
+          curDaYun = {
+            ageRange: `0 - ${chart.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์ก่อนเข้าวัยจร)`,
+            stem: chart.pillars.month.stem,
+            branch: chart.pillars.month.branch,
+            tenGod: chart.pillars.month.tenGod,
+            naYin: chart.pillars.month.naYin,
+            isChildhood: true
+          };
+        } else {
+          curDaYun = chart.daYunPillars[chart.daYunPillars.length - 1];
+        }
+      }
+
+      // Check interactions with Natal Chart (พื้นดวง 4 เสา)
+      const clashes = [];
+      const harmonies = [];
+      ['year', 'month', 'day', 'hour'].forEach(k => {
+        const p = chart.pillars[k];
+        const clash = checkBranchClash(branch.zh, p.branch.zh);
+        if (clash) {
+          clashes.push({ pillarKey: k, label: p.label, desc: clash.th });
+        }
+        const harmony = checkBranchHarmony(branch.zh, p.branch.zh);
+        if (harmony) {
+          harmonies.push({ pillarKey: k, label: p.label, name: harmony.name });
+        }
+      });
+
+      // Check interactions between Annual Pillar (ปีจร) and Current Da Yun (วัยจร ณ ปีนั้น)
+      let daYunNote = '';
+      if (curDaYun && !curDaYun.isChildhood) {
+        const dyClash = checkBranchClash(branch.zh, curDaYun.branch.zh);
+        if (dyClash) {
+          clashes.push({
+            pillarKey: 'dayun',
+            label: `วัยจร 10 ปี (ช่วงอายุ ${curDaYun.ageRange})`,
+            desc: `ปีจรปะทะวัยจร (${dyClash.a} ปะทะ ${dyClash.b}): จุดเปลี่ยนผันหรือโยกย้ายใหญ่`
+          });
+          daYunNote = `ระวังจุดเปลี่ยนผันสำคัญเนื่องจากปีจรปะทะกับวัยจร 10 ปี (${curDaYun.stem.zh}${curDaYun.branch.zh})`;
+        }
+        const dyHarmony = checkBranchHarmony(branch.zh, curDaYun.branch.zh);
+        if (dyHarmony) {
+          harmonies.push({
+            pillarKey: 'dayun',
+            label: `วัยจร 10 ปี (ช่วงอายุ ${curDaYun.ageRange})`,
+            name: `ปีจรฮะสมพงศ์กับวัยจร (${dyHarmony.name})`
+          });
+          daYunNote = `มีแรงเกื้อหนุนเป็นพิเศษจากวัยจร 10 ปี (${curDaYun.stem.zh}${curDaYun.branch.zh}) ช่วยส่งเสริมให้ปีนี้ราบรื่น`;
+        }
+        if (stem.zh === curDaYun.stem.zh && branch.zh === curDaYun.branch.zh) {
+          harmonies.push({
+            pillarKey: 'dayun_binglin',
+            label: `วัยจร 10 ปี`,
+            name: `สภาวะ岁运并临 (ปีจรตรงกับวัยจรพอดี: พลังวัยจรเข้มข้นสูงสุด เป็นปีหัวเลี้ยวหัวต่อ)`
+          });
+          daYunNote = `สภาวะปีจรตรงกับวัยจรพอดี (岁运并临) พลังวัยจรเข้มข้นสูงสุด เป็นปีแห่งการเปลี่ยนแปลงครั้งสำคัญ`;
+        }
+      }
+
+      // Element favorability (Integrating Liu Nian + Da Yun Macro Influence)
+      const isStemFav = chart.favorableElements.includes(stem.element);
+      const isBranchFav = chart.favorableElements.includes(branch.element);
+      const isDaYunFav = curDaYun ? (chart.favorableElements.includes(curDaYun.stem.element) || chart.favorableElements.includes(curDaYun.branch.element)) : false;
+
+      let scoreStars = 3;
+      if (isStemFav && isBranchFav) scoreStars = 5;
+      else if (isStemFav || isBranchFav) scoreStars = 4;
+      if (isDaYunFav && scoreStars < 5) scoreStars += 1; // Macro climate boost from Da Yun
+      if (clashes.length > 0) scoreStars = Math.max(2, scoreStars - 1);
+
+      // Annual Readings by Stem God
+      const annualReadings = {
+        '比肩': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งการขยายเครือข่าย พึ่งพาความสามารถตนเอง และการทำงานร่วมกับพันธมิตร`,
+          career: 'การร่วมมือกับเพื่อนร่วมงานหรือพาร์ทเนอร์นำมาซึ่งผลลัพธ์ที่ดี แต่ต้องแบ่งขอบเขตหน้าที่และผลประโยชน์ให้โปร่งใส',
+          wealth: 'การเงินหมุนเวียนสม่ำเสมอ มีค่าใช้จ่ายเพื่อการสังสรรค์และการลงทุนสร้างคอนเนกชัน หลีกเลี่ยงการให้ผู้อื่นยืมเงิน',
+          love: 'คนโสดมีโอกาสพบรักจากกลุ่มเพื่อนหรือการทำกิจกรรมร่วมกัน คนมีคู่ควรลดการเอาชนะและเพิ่มการรับฟัง',
+          health: 'ระวังอาการปวดกล้ามเนื้อ แขนขา และการเหนื่อยล้าจากการทำงานหนัก ควรจัดเวลาพักผ่อน'
+        },
+        '劫財': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งการขับเคี่ยว การแข่งขัน และการใช้โอกาสจากความกล้าคิดกล้าทำ`,
+          career: 'มีโอกาสทางธุรกิจใหม่ๆ ที่ท้าทาย แข่งขันสูง ต้องใช้กลยุทธ์ที่เฉียบขาดเพื่อครองส่วนแบ่งตลาด',
+          wealth: 'มีรายจ่ายจรและเงินไหลออกเร็ว การเปลี่ยนเงินสดเป็นสินทรัพย์ถาวรหรือการลงทุนในอสังหาฯ ช่วยแก้เคล็ดเงินรั่วไหล',
+          love: 'ระวังอารมณ์หงุดหงิดหรือความไม่ไว้ใจซึ่งกันและกัน คนโสดควรดูใจนานๆ ก่อนตกลงปลงใจ',
+          health: 'ระวังความเครียดสะสม และอุบัติเหตุจากการเดินทางด้วยความรีบร้อน ควรบริจาคโลหิตเพื่อเสริมมงคล'
+        },
+        '食神': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งความสุขสำราญ ความคิดสร้างสรรค์ และการต่อยอดโปรเจกต์ใหม่`,
+          career: 'งานสร้างสรรค์ นวัตกรรม และการเจรจาประสบผลสำเร็จอย่างงดงาม ผู้คนชื่นชอบในฝีมือและผลงาน ค้าขายเจริญก้าวหน้า',
+          wealth: 'การเงินคล่องตัว มีช่องทางทำเงินใหม่ๆ งอกเงยจากสิ่งที่รักหรือทักษะเฉพาะตัว มีกินมีใช้ไม่ขาดมือ',
+          love: 'ความรักหวานชื่น อบอุ่น คนโสดมีเสน่ห์เมตตามหานิยม มีเกณฑ์พบคนที่พูดคุยถูกคออย่างลึกซึ้ง',
+          health: 'สุขภาพกายใจสมบูรณ์ ระวังเพียงน้ำหนักตัวขึ้นและระบบย่อยอาหารจากการรับประทานอาหารอร่อยบ่อยครั้ง'
+        },
+        '傷官': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งการฉีกกรอบ โดดเด่นทางสติปัญญา และการสร้างชื่อเสียงในแบบของตนเอง`,
+          career: 'มีไหวพริบปฏิภาณเฉียบคม ปฏิวัติการทำงานจนได้ผลงานชั้นเลิศ ระวังเพียงการแสดงความเห็นที่ตรงเกินไปจนขัดใจผู้ใหญ่',
+          wealth: 'หาเงินได้รวดเร็วจากช่องทางดิจิทัลและงานสร้างสรรค์ ลาภลอยโดดเด่น การลงทุนที่มีชั้นเชิงให้ผลตอบแทนสูง',
+          love: 'คนโสดเลือกเยอะและต้องการคนที่มีทัศนคติเฉียบคมเหมือนกัน คนมีคู่ควรลดความจู้จี้เพื่อความสงบสุข',
+          health: 'ระวังการนอนไม่หลับ สายตา และระบบประสาทตึงเครียดจากการใช้ความคิดอย่างหนัก'
+        },
+        '偏財': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งโชคลาภพิเศษ การเงินหมุนเวียนคล่องตัว และโอกาสทางธุรกิจรอบด้าน`,
+          career: 'เหมาะกับการริเริ่มทำธุรกิจส่วนตัว ลงทุน หรือจับโครงการใหญ่ มีโอกาสขยายสาขาหรือรับงานพิเศษที่สร้างผลกำไรสูง',
+          wealth: 'กระแสเงินสดพุ่งทะยาน มีลาภลอยหรือผลตอบแทนจากการลงทุนคุ้มค่า เป็นปีที่กล้าลุยแล้วเห็นผลลัพธ์มั่งคั่ง',
+          love: 'คนโสดมีเสน่ห์ดึงดูดใจ มีคนเข้ามาคุยหลายคน คนมีคู่ควรชวนกันทำธุรกิจหรือวางแผนการเงินร่วมกัน',
+          health: 'ระวังการพักผ่อนไม่เพียงพอจากกิจกรรมทางสังคมที่หนาแน่น ควรดูแลระบบตับและดื่มน้ำสะอาด'
+        },
+        '正財': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งความมั่นคง มั่งคั่งเป็นกอบเป็นกำ และการสั่งสมทรัพย์สิน`,
+          career: 'หน้าที่การงานก้าวหน้า ได้รับการประเมินผลงานยอดเยี่ยม มีเสถียรภาพสูงและได้รับการยอมรับจากองค์กร',
+          wealth: 'รายได้ประจำเพิ่มขึ้น วางแผนซื้อบ้าน ที่ดิน หรือลงทุนระยะยาวได้สำเร็จ มีวินัยทางการเงินที่ยอดเยี่ยม',
+          love: 'ความรักมั่นคงมาก คนโสดมีเกณฑ์พบรักกับคนมีฐานะมั่นคงและจริงจัง คนมีคู่ความสัมพันธ์ลงตัว',
+          health: 'สุขภาพแข็งแรงดี ควรตรวจสุขภาพประจำปีตามปกติ และออกกำลังกายสม่ำเสมอ'
+        },
+        '七殺': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งการก้าวกระโดดครั้งใหญ่ การเผชิญหน้ากับความท้าทาย และการสร้างอำนาจบารมี`,
+          career: 'ได้รับมอบหมายงานที่ยากและมีความรับผิดชอบสูง แต่หากทำให้สำเร็จจะเป็นใบเบิกทางสู่อำนาจและตำแหน่งสูงสุด',
+          wealth: 'การเงินมีโอกาสเติบโตแบบก้าวกระโดด แต่ต้องระวังความเสี่ยงจากการลงทุนเกินตัว',
+          love: 'คนโสดมีเกณฑ์พบคนรักบุคลิกผู้นำเด็ดขาด คนมีคู่ต้องถ้อยทีถ้อยอาศัย ไม่นำความตึงเครียดจากงานเข้าบ้าน',
+          health: 'ระวังอุบัติเหตุ ความดัน และอาการปวดเมื่อยหลัง ควรหมั่นปล่อยปลา ทำบุญโลงศพเพื่อเสริมดวงบารมี'
+        },
+        '正官': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งเกียรติยศชื่อเสียง ความเจริญก้าวหน้าในตำแหน่ง และคุณธรรมคุ้มครอง`,
+          career: 'ได้รับการเลื่อนขั้น เลื่อนตำแหน่ง หรือสอบแข่งขันสำเร็จ สัญญาข้อตกลงราบรื่น ได้รับการยกย่องในวงสังคม',
+          wealth: 'การเงินมั่นคงและมีเกียรติ รายได้เติบโตตามตำแหน่งหน้าที่ มีโชคจากความซื่อสัตย์สุจริต',
+          love: 'ความรักราบรื่นและได้รับการสนับสนุนจากผู้ใหญ่ คนโสดมีเกณฑ์แต่งงานหรือพบเนื้อคู่ที่มีคุณธรรม',
+          health: 'สุขภาพดี จิตใจสงบ ควรระวังเพียงอาการเมื่อยล้าจากการนั่งทำงานโต๊ะเป็นเวลานาน'
+        },
+        '偏印': {
+          theme: 'ปีแห่งปัญญาญาณ การเรียนรู้ศาสตร์เฉพาะทาง และสัมผัสหยั่งรู้แม่นยำ',
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งการศึกษาค้นคว้า ศาสตร์ลี้ลับ วิทยาการใหม่ และงานเบื้องหลัง`,
+          career: 'ทำงานที่ต้องใช้ความเชี่ยวชาญเฉพาะทางได้ดีเยี่ยม เหมาะกับการวิจัย คิดค้น หรือให้คำปรึกษาเชิงลึก',
+          wealth: 'มีโชคจากความรู้เฉพาะตัวและไอเดียที่ไม่เหมือนใคร การเงินเข้ามาแบบเงียบๆ แต่มั่นคง',
+          love: 'มีความรักแบบลึกซึ้งและต้องการความเข้าใจสูง คนโสดอาจพบรักกับคนในแวดวงวิชาการหรือสายมู',
+          health: 'ระวังระบบย่อยอาหาร การนอนหลับ และความวิตกกังวล ควรฝึกสมาธิและปล่อยวาง'
+        },
+        '正印': {
+          overview: `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งความร่มเย็นเป็นสุข ผู้ใหญ่อุปถัมภ์ค้ำชู และสุขภาพกายใจฟื้นฟู`,
+          career: 'ผู้บังคับบัญชาเมตตา ได้รับการช่วยเหลือยามติดขัด สอบผ่านฉลุย มีความก้าวหน้าอย่างสง่างาม',
+          wealth: 'การเงินมีเกราะคุ้มกัน มีผู้ใหญ่ให้การสนับสนุน หรือได้ทรัพย์มรดก/ของขวัญล้ำค่า',
+          love: 'ความรักอบอุ่นมั่นคง คนรักคอยดูแลเอาใจใส่ประดุจคนในครอบครัว มีความสงบสุขในบ้าน',
+          health: 'สุขภาพฟื้นฟู สุขภาพจิตแจ่มใส เป็นปีที่เหมาะแก่การฟื้นฟูร่างกายและพักผ่อนจิตใจ'
+        }
+      };
+
+      const reading = annualReadings[stemGod.zh] || annualReadings['比肩'];
+
+      return {
+        year: y,
+        stem,
+        branch,
+        stemGod,
+        branchGod,
+        naYin,
+        scoreStars,
+        clashes,
+        harmonies,
+        curDaYun,
+        daYunNote,
+        ageInYear,
+        overview: daYunNote ? `${reading.overview} (${daYunNote})` : reading.overview,
+        career: reading.career,
+        wealth: reading.wealth,
+        love: reading.love,
+        health: reading.health
+      };
+    },
+
+    // 11. Monthly Fortune Prediction (流月 - Liu Yue)
+    calculateMonthlyFortune: function (chart, targetYear) {
+      if (!chart) return [];
+      const y = parseInt(targetYear, 10) || new Date().getFullYear();
+      const yrStemIdx = ((y - 4) % 10 + 10) % 10;
+      const mTigerStart = (yrStemIdx % 5) * 2 + 2;
+
+      // Identify active Da Yun and Tai Sui for targetYear
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = y - birthYear;
+      const curDaYun = (chart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      const taiSuiBranch = BRANCHES[((y - 4) % 12 + 12) % 12];
+
+      // 12 Chinese Solar Months metadata
+      const monthMeta = [
+        { num: 1, branchIdx: 2, labelDate: '4 ก.พ.', solarTh: 'ก.พ. (เดือนขาล - 立春/雨水)', dates: '4 ก.พ. - 4 มี.ค.' },
+        { num: 2, branchIdx: 3, labelDate: '5 มี.ค.', solarTh: 'มี.ค. (เดือนเถาะ - 惊蛰/春分)', dates: '5 มี.ค. - 3 เม.ย.' },
+        { num: 3, branchIdx: 4, labelDate: '4 เม.ย.', solarTh: 'เม.ย. (เดือนมะโรง - 清明/谷雨)', dates: '4 เม.ย. - 4 พ.ค.' },
+        { num: 4, branchIdx: 5, labelDate: '5 พ.ค.', solarTh: 'พ.ค. (เดือนมะเส็ง - 立夏/小满)', dates: '5 พ.ค. - 4 มิ.ย.' },
+        { num: 5, branchIdx: 6, labelDate: '5 มิ.ย.', solarTh: 'มิ.ย. (เดือนมะเมีย - 芒种/夏至)', dates: '5 มิ.ย. - 5 ก.ค.' },
+        { num: 6, branchIdx: 7, labelDate: '6 ก.ค.', solarTh: 'ก.ค. (เดือนมะแม - 小暑/大暑)', dates: '6 ก.ค. - 6 ส.ค.' },
+        { num: 7, branchIdx: 8, labelDate: '7 ส.ค.', solarTh: 'ส.ค. (เดือนวอก - 立秋/处暑)', dates: '7 ส.ค. - 6 ก.ย.' },
+        { num: 8, branchIdx: 9, labelDate: '7 ก.ย.', solarTh: 'ก.ย. (เดือนระกา - 白露/秋分)', dates: '7 ก.ย. - 7 ต.ค.' },
+        { num: 9, branchIdx: 10, labelDate: '8 ต.ค.', solarTh: 'ต.ค. (เดือนจอ - 寒露/霜降)', dates: '8 ต.ค. - 6 พ.ย.' },
+        { num: 10, branchIdx: 11, labelDate: '7 พ.ย.', solarTh: 'พ.ย. (เดือนกุน - 立冬/小雪)', dates: '7 พ.ย. - 6 ธ.ค.' },
+        { num: 11, branchIdx: 0, labelDate: '7 ธ.ค.', solarTh: 'ธ.ค. (เดือนชวด - 大雪/冬至)', dates: '7 ธ.ค. - 4 ม.ค.' },
+        { num: 12, branchIdx: 1, labelDate: '5 ม.ค.', solarTh: 'ม.ค. ถัดไป (เดือนฉลู - 小寒/大寒)', dates: '5 ม.ค. - 3 ก.พ.' }
+      ];
+
+      const now = new Date();
+      const currentCalYear = now.getFullYear();
+      const currentCalMonth = now.getMonth() + 1; // 1-12
+
+      return monthMeta.map((m, idx) => {
+        const mStemIdx = (mTigerStart + idx) % 10;
+        const stem = STEMS[mStemIdx];
+        const branch = BRANCHES[m.branchIdx];
+        const stemGod = getTenGod(chart.dayMaster, stem);
+        const branchGod = getTenGod(chart.dayMaster, STEMS.find(s => s.zh === branch.hidden[0].stem));
+        const naYin = getNaYin(mStemIdx, m.branchIdx);
+
+        // Clashes with natal chart
+        const clashWithDay = checkBranchClash(branch.zh, chart.pillars.day.branch.zh);
+        const clashWithMonth = checkBranchClash(branch.zh, chart.pillars.month.branch.zh);
+        const clashWithYear = checkBranchClash(branch.zh, chart.pillars.year.branch.zh);
+
+        // Clashes and Harmonies with Annual Tai Sui & Active Da Yun of target year
+        const clashWithTaiSui = checkBranchClash(branch.zh, taiSuiBranch.zh);
+        const clashWithDaYun = curDaYun ? checkBranchClash(branch.zh, curDaYun.branch.zh) : null;
+        const harmWithDaYun = curDaYun ? checkBranchHarmony(branch.zh, curDaYun.branch.zh) : null;
+
+        const hasClash = !!(clashWithDay || clashWithMonth || clashWithYear || clashWithTaiSui || clashWithDaYun);
+        const isFav = chart.favorableElements.includes(stem.element) || chart.favorableElements.includes(branch.element);
+
+        let ratingBadge = 'ราบรื่น';
+        let ratingBadgeShort = 'ราบรื่น';
+        let ratingType = 'normal';
+        if (hasClash) {
+          if (clashWithDaYun) {
+            ratingBadge = '⚠️ ชงวัยจร';
+            ratingBadgeShort = '⚠️ ชงวัยจร';
+          } else if (clashWithTaiSui) {
+            ratingBadge = '⚠️ ชงปีจร';
+            ratingBadgeShort = '⚠️ ชงปีจร';
+          } else {
+            ratingBadge = '⚠️ ระวังการปะทะ';
+            ratingBadgeShort = '⚠️ ปะทะ';
+          }
+          ratingType = 'clash';
+        } else if (harmWithDaYun || isFav) {
+          ratingBadge = harmWithDaYun ? '⭐ ฮะวัยจร มงคล' : '⭐ มงคลยิ่ง';
+          ratingBadgeShort = harmWithDaYun ? '⭐ ฮะวัยจร' : '⭐ มงคล';
+          ratingType = 'auspicious';
+        }
+
+        // Determine if current real-world month
+        let isCurrent = false;
+        if (y === currentCalYear) {
+          // approx match: month 1 is Feb (2), month 2 is Mar (3)... month 11 is Dec (12), month 12 is Jan (1 next year)
+          if (m.num === 12 && currentCalMonth === 1) isCurrent = true;
+          else if (m.num === currentCalMonth - 1 && currentCalMonth >= 2) isCurrent = true;
+        }
+
+        // Generate tailored monthly advice
+        let adviceText = '';
+        if (clashWithDaYun) {
+          adviceText = `เดือนนี้มีพลังปะทะกับวัยจร 10 ปี (${curDaYun.stem.zh}${curDaYun.branch.zh}) เป็นจุดเปลี่ยนสำคัญของจังหวะชีวิต ควรตั้งรับอย่างมีสติและรอบคอบ`;
+        } else if (clashWithTaiSui) {
+          adviceText = `เดือนนี้ปะทะกับปีจร (ไท้ส่วย) ระวังความขัดแย้งกับผู้ใหญ่หรือความผันผวนของงาน ควรหลีกเลี่ยงการตัดสินใจผลีผลาม`;
+        } else if (clashWithDay) {
+          adviceText = `เดือนนี้มีพลังปะทะกับเสาวัน (วังคู่ครอง/ตัวตน) ควรใจเย็นกับคนรักและดูแลสุขภาพตนเอง`;
+        } else if (clashWithMonth) {
+          adviceText = `เดือนนี้ปะทะกับเสาเดือน (วังการงาน) มีเกณฑ์ปรับเปลี่ยนงาน เดินทาง หรือมีภาระเร่งด่วน`;
+        } else if (harmWithDaYun) {
+          adviceText = `เดือนนี้สมพงศ์กับวัยจร 10 ปี (${curDaYun.stem.zh}${curDaYun.branch.zh}) ได้รับแรงส่งเสริมให้กิจการและการงานก้าวหน้าราบรื่น`;
+        } else if (isFav) {
+          adviceText = `พลังธาตุเกื้อหนุนดวงชะตา (${stemGod.zh} - ${stemGod.th}) มีโอกาสดีทางการงานและการเงิน เหมาะแก่การเปิดตัวโปรเจกต์ใหม่ เจรจาธุรกิจ`;
+        } else {
+          adviceText = `พลังงานประจำเดือนไหลเวียนปกติ ดำเนินการตามแผนที่วางไว้ รักษาสมดุลกระแสเงินสด และดูแลสุขภาพกายใจให้แจ่มใส`;
+        }
+
+        return {
+          index: idx,
+          monthNum: m.num,
+          labelDate: m.labelDate,
+          displayLabel: `${m.labelDate} (${m.num})`,
+          title: m.solarTh,
+          solarTh: m.solarTh,
+          dates: m.dates,
+          stem,
+          branch,
+          stemGod,
+          branchGod,
+          naYin,
+          ratingBadge,
+          ratingBadgeShort,
+          ratingType,
+          isCurrent,
+          adviceText
+        };
+      });
+    }
+  };
+
+  // 12. BaZi UI App Controller
+  const BaziApp = {
+    currentChart: null,
+    savedProfiles: [],
+    selectedDaYunIndex: null,
+    selectedYear: new Date().getFullYear(),
+    selectedMonthIndex: 0,
+    currentMode: (function () {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramMode = urlParams.get('mode');
+        if (paramMode === 'expert' || paramMode === 'basic') return paramMode;
+        return localStorage.getItem('bazi_display_mode') || 'expert';
+      } catch (e) { return 'expert'; }
+    })(),
+    activeExpertQuery: 'geju',
+
+    init: function () {
+      this.loadSavedProfiles();
+      this.setDefaultCurrentDateTimeInputs();
+      this.renderQuickProfileSelect();
+      this.bindEvents();
+      this.calculateFromInputs();
+      this.switchMode(this.currentMode, true);
+
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const queryQ = urlParams.get('q');
+        if (queryQ) {
+          this.fillAndRunCustomQuery(queryQ);
+        }
+      } catch (e) {}
+    },
+
+    setDefaultCurrentDateTimeInputs: function () {
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const defaultTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+
+      if (nameInput) nameInput.value = 'ดวงปัจจุบัน';
+      if (dateInput) dateInput.value = todayStr;
+      if (hourInput) hourInput.value = defaultTimeStr;
+      this.selectedYear = now.getFullYear();
+
+      const quickSel = document.getElementById('baziQuickProfileSelect');
+      if (quickSel) quickSel.value = '__now__';
+    },
+
+    loadSavedProfiles: function () {
+      try {
+        const raw = localStorage.getItem('bazi_saved_profiles');
+        this.savedProfiles = raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.warn('Failed to parse saved bazi profiles:', e);
+        this.savedProfiles = [];
+      }
+
+      // Preload Bumji as a saved profile if empty so it's readily accessible
+      if (!this.savedProfiles || this.savedProfiles.length === 0) {
+        this.savedProfiles = [{
+          id: 'bazi_default_bumji',
+          name: 'Bumji',
+          gender: 'male',
+          birthDate: '1998-08-18',
+          birthTime: '10:30',
+          savedAt: 'ดวงตัวอย่าง (Bumji)'
+        }];
+        this.saveProfilesToStorage();
+      }
+
+      this.updateSavedCountBadge();
+    },
+
+    saveProfilesToStorage: function () {
+      try {
+        localStorage.setItem('bazi_saved_profiles', JSON.stringify(this.savedProfiles));
+      } catch (e) {
+        console.warn('Failed to save bazi profiles to storage:', e);
+      }
+      this.updateSavedCountBadge();
+    },
+
+    updateSavedCountBadge: function () {
+      const el = document.getElementById('baziSavedCount');
+      if (el) el.textContent = this.savedProfiles.length;
+    },
+
+    renderQuickProfileSelect: function () {
+      const select = document.getElementById('baziQuickProfileSelect');
+      if (!select) return;
+
+      let html = `<option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>`;
+      if (this.savedProfiles && this.savedProfiles.length > 0) {
+        html += `<optgroup label="ลูกดวงที่บันทึกไว้ (${this.savedProfiles.length} ท่าน)">`;
+        this.savedProfiles.forEach(p => {
+          html += `<option value="${p.id}">👤 ${p.name} (${p.birthDate})</option>`;
+        });
+        html += `</optgroup>`;
+      }
+      select.innerHTML = html;
+    },
+
+    onQuickProfileChange: function (val) {
+      if (val === '__now__') {
+        this.setDefaultCurrentDateTimeInputs();
+        this.calculateFromInputs();
+        this.showToast('ตั้งค่าเป็นดวงวันเวลาปัจจุบันเรียบร้อยแล้วค่ะ');
+      } else {
+        this.loadProfile(val);
+      }
+    },
+
+    showToast: function (msg) {
+      let toast = document.getElementById('baziToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'baziToast';
+        toast.className = 'bazi-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: #a855f7;"></i> <span>${msg}</span>`;
+      toast.classList.add('show');
+      clearTimeout(this._toastTimeout);
+      this._toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2600);
+    },
+
+    bindEvents: function () {
+      const calcBtn = document.getElementById('baziCalcBtn');
+      if (calcBtn) {
+        calcBtn.addEventListener('click', () => this.calculateFromInputs());
+      }
+
+      const presetNowBtn = document.getElementById('baziPresetNowBtn');
+      if (presetNowBtn) {
+        presetNowBtn.addEventListener('click', () => {
+          this.setDefaultCurrentDateTimeInputs();
+          this.calculateFromInputs();
+          this.showToast('ตั้งค่าเป็นดวงวันเวลาปัจจุบันเรียบร้อยแล้วค่ะ');
+        });
+      }
+
+      // Quick Profile Select
+      const quickSelect = document.getElementById('baziQuickProfileSelect');
+      if (quickSelect) {
+        quickSelect.addEventListener('change', (e) => this.onQuickProfileChange(e.target.value));
+      }
+
+      const copyBtn = document.getElementById('baziCopySummaryBtn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => this.copySummary());
+      }
+
+      // Save Profile Button
+      const saveBtn = document.getElementById('baziSaveBtn');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => this.saveCurrentProfile());
+      }
+
+      // Open Saved Profiles Modal
+      const openSavedModalBtn = document.getElementById('baziOpenSavedModalBtn');
+      if (openSavedModalBtn) {
+        openSavedModalBtn.addEventListener('click', () => this.openSavedModal());
+      }
+
+      // Close Saved Profiles Modal
+      const closeSavedModalBtn = document.getElementById('baziCloseSavedModalBtn');
+      if (closeSavedModalBtn) {
+        closeSavedModalBtn.addEventListener('click', () => this.closeSavedModal());
+      }
+
+      // Close modal on click backdrop
+      const modal = document.getElementById('baziSavedModal');
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) this.closeSavedModal();
+        });
+      }
+
+      // Search in Saved Modal
+      const savedSearchInput = document.getElementById('baziSavedSearchInput');
+      if (savedSearchInput) {
+        savedSearchInput.addEventListener('input', (e) => this.renderSavedProfilesList(e.target.value));
+      }
+
+      // Populate Annual Year Dropdown (1950 - 2040)
+      const yearSelect = document.getElementById('baziAnnualYearSelect');
+      if (yearSelect) {
+        yearSelect.innerHTML = '';
+        const curY = this.selectedYear || new Date().getFullYear();
+        for (let y = 2040; y >= 1950; y--) {
+          const sIdx = ((y - 4) % 10 + 10) % 10;
+          const bIdx = ((y - 4) % 12 + 12) % 12;
+          const opt = document.createElement('option');
+          opt.value = y;
+          opt.textContent = `ปี ${y} (${STEMS[sIdx].zh}${BRANCHES[bIdx].zh} • ${BRANCHES[bIdx].zodiac.split(' ')[0]})`;
+          if (y === curY) opt.selected = true;
+          yearSelect.appendChild(opt);
+        }
+
+        yearSelect.addEventListener('change', (e) => {
+          const y = parseInt(e.target.value, 10);
+          if (y) this.selectAnnualYear(y);
+        });
+      }
+
+      // Annual Year Chips
+      document.querySelectorAll('.bazi-year-chip').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const y = parseInt(e.currentTarget.dataset.year, 10);
+          if (y) this.selectAnnualYear(y);
+        });
+      });
+    },
+
+    onTabShow: function () {
+      if (!this.currentChart) {
+        this.calculateFromInputs();
+      }
+    },
+
+    calculateFromInputs: function () {
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+      const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'ดวงปัจจุบัน';
+      const birthDate = dateInput && dateInput.value ? dateInput.value : todayStr;
+      let birthHour = now.getHours();
+      let birthMinute = now.getMinutes();
+
+      if (hourInput && hourInput.value) {
+        const parts = hourInput.value.split(':');
+        birthHour = parseInt(parts[0], 10);
+        birthMinute = parseInt(parts[1], 10);
+        if (isNaN(birthHour)) birthHour = now.getHours();
+        if (isNaN(birthMinute)) birthMinute = now.getMinutes();
+      }
+
+      const gender = genderSelect ? genderSelect.value : 'male';
+
+      const chart = BaziEngine.calculateChart({
+        birthDate,
+        birthHour,
+        birthMinute,
+        gender,
+        name
+      });
+
+      this.currentChart = chart;
+
+      // Automatically sync active Da Yun with the currently selected annual year
+      const curCalcYear = this.selectedYear || now.getFullYear();
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : now.getFullYear();
+      const ageInYear = curCalcYear - birthYear;
+      const matchingIdx = chart.daYunPillars.findIndex(p => ageInYear >= p.ageFrom && ageInYear <= p.ageTo);
+      this.selectedDaYunIndex = matchingIdx !== -1 ? matchingIdx : 0;
+
+      this.renderChart(chart);
+      this.renderDaYunInterpretation();
+      this.renderAnnualAndMonthlyFortune();
+      if (this.currentMode === 'expert') {
+        this.renderExpertSuite();
+      }
+    },
+
+    saveCurrentProfile: function () {
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const defaultTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      const rawName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : '';
+      const name = rawName || `ลูกดวง (${dateInput && dateInput.value ? dateInput.value : todayStr})`;
+      const birthDate = dateInput && dateInput.value ? dateInput.value : todayStr;
+      const birthTime = hourInput && hourInput.value ? hourInput.value : defaultTimeStr;
+      const gender = genderSelect ? genderSelect.value : 'male';
+
+      const profile = {
+        id: 'bazi_' + Date.now(),
+        name,
+        gender,
+        birthDate,
+        birthTime,
+        savedAt: new Date().toLocaleDateString('th-TH')
+      };
+
+      // Check if duplicate name exists, replace or append
+      const existingIdx = this.savedProfiles.findIndex(p => p.name === name);
+      if (existingIdx !== -1) {
+        this.savedProfiles[existingIdx] = profile;
+      } else {
+        this.savedProfiles.unshift(profile);
+      }
+
+      this.saveProfilesToStorage();
+      this.renderQuickProfileSelect();
+      const quickSel = document.getElementById('baziQuickProfileSelect');
+      if (quickSel) quickSel.value = profile.id;
+
+      this.showToast(`บันทึกข้อมูลดวง "${name}" เรียบร้อยแล้วค่ะ`);
+    },
+
+    openSavedModal: function () {
+      const modal = document.getElementById('baziSavedModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        this.renderSavedProfilesList();
+      }
+    },
+
+    closeSavedModal: function () {
+      const modal = document.getElementById('baziSavedModal');
+      if (modal) modal.classList.add('hidden');
+    },
+
+    renderSavedProfilesList: function (filterQuery = '') {
+      const container = document.getElementById('baziSavedProfilesList');
+      if (!container) return;
+
+      const q = filterQuery.toLowerCase().trim();
+      const filtered = this.savedProfiles.filter(p => p.name.toLowerCase().includes(q) || (p.birthDate && p.birthDate.includes(q)));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="bazi-empty-saved" style="text-align: center; padding: 30px 10px;">
+            <i class="fa-solid fa-folder-open" style="font-size: 36px; color: #cbd5e1; margin-bottom: 10px;"></i>
+            <p style="font-size: 14px; font-weight: 600; color: #475569;">ไม่พบรายชื่อลูกดวงที่ตรงกับการค้นหา</p>
+            <span style="font-size: 12px; color: #94a3b8;">กดปุ่ม "💾 บันทึกลูกดวง" ที่แถบด้านบนเพื่อบันทึกข้อมูลดวงชะตา</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => `
+        <div class="bazi-saved-item">
+          <div class="bazi-saved-info" onclick="window.BaziApp.loadProfile('${p.id}')">
+            <strong><i class="fa-solid fa-user-circle" style="color: #7c3aed;"></i> ${p.name} (${p.gender === 'male' ? 'ชาย' : 'หญิง'})</strong>
+            <span>📅 ${p.birthDate} • ⏰ ${p.birthTime} น. <small style="color: #94a3b8;">(บันทึกเมื่อ ${p.savedAt})</small></span>
+          </div>
+          <div class="bazi-saved-actions">
+            <button class="bazi-btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="window.BaziApp.loadProfile('${p.id}')">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> โหลดดวง
+            </button>
+            <button class="bazi-btn-delete" title="ลบรายชื่อนี้" onclick="window.BaziApp.deleteProfile('${p.id}', event)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    },
+
+    loadProfile: function (id) {
+      const p = this.savedProfiles.find(item => item.id === id);
+      if (!p) return;
+
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+
+      if (nameInput) nameInput.value = p.name;
+      if (dateInput) dateInput.value = p.birthDate;
+      if (hourInput) hourInput.value = p.birthTime;
+      if (genderSelect) genderSelect.value = p.gender;
+
+      const quickSel = document.getElementById('baziQuickProfileSelect');
+      if (quickSel) quickSel.value = p.id;
+
+      this.closeSavedModal();
+      this.calculateFromInputs();
+      this.showToast(`โหลดดวงของ "${p.name}" เรียบร้อยแล้วค่ะ`);
+    },
+
+    deleteProfile: function (id, event) {
+      if (event) event.stopPropagation();
+      const p = this.savedProfiles.find(item => item.id === id);
+      const name = p ? p.name : 'รายชื่อนี้';
+      if (!confirm(`ต้องการลบข้อมูลลูกดวง "${name}" ออกจากระบบใช่หรือไม่?`)) return;
+
+      this.savedProfiles = this.savedProfiles.filter(item => item.id !== id);
+      this.saveProfilesToStorage();
+      this.renderQuickProfileSelect();
+      this.renderSavedProfilesList();
+      this.showToast(`ลบข้อมูลลูกดวง "${name}" เรียบร้อยแล้วค่ะ`);
+    },
+
+    renderDaYunCards: function () {
+      if (!this.currentChart || !this.currentChart.daYunPillars) return;
+      const dayunContainer = document.getElementById('baziDayunList');
+      if (!dayunContainer) return;
+
+      const curCalcYear = this.selectedYear || new Date().getFullYear();
+      const birthYear = this.currentChart.birthDateString ? parseInt(this.currentChart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = curCalcYear - birthYear;
+      const activeYearIdx = this.currentChart.daYunPillars.findIndex(p => ageInYear >= p.ageFrom && ageInYear <= p.ageTo);
+
+      dayunContainer.innerHTML = this.currentChart.daYunPillars.map((dy, idx) => {
+        const sMeta = ELEMENTS_META[dy.stem.element];
+        const bMeta = ELEMENTS_META[dy.branch.element];
+        const isSelected = this.selectedDaYunIndex === idx;
+        const isActiveYear = activeYearIdx === idx;
+
+        let badgeHtml = '';
+        if (isActiveYear) {
+          badgeHtml = `<span class="active-year-dayun-tag"><i class="fa-solid fa-clock"></i> คุมปี ${curCalcYear}</span>`;
+        } else if (dy.isCurrent) {
+          badgeHtml = `<span class="current-tag">วัยจรปัจจุบัน</span>`;
+        }
+
+        return `
+          <div class="dayun-card ${dy.isCurrent ? 'current-dayun' : ''} ${isSelected ? 'selected-dayun' : ''}" onclick="window.BaziApp.selectDaYun(${idx})">
+            ${badgeHtml}
+            <div class="dayun-age">${dy.ageRange}</div>
+            <div class="dayun-chars">
+              <span style="color: ${sMeta.color};">${dy.stem.zh}</span>
+              <span style="color: ${bMeta.color};">${dy.branch.zh}</span>
+            </div>
+            <div class="dayun-info">
+              <span class="dayun-py">${dy.stem.py} ${dy.branch.py}</span>
+              <span class="dayun-god">${dy.tenGod.zh}</span>
+            </div>
+            <div class="dayun-nayin">${dy.naYin.split(' ')[0]}</div>
+            <div class="dayun-click-hint">คลิกดูคำทำนาย</div>
+          </div>
+        `;
+      }).join('');
+    },
+
+    selectDaYun: function (index) {
+      this.selectedDaYunIndex = index;
+      this.renderDaYunCards();
+      this.renderDaYunInterpretation();
+    },
+
+    selectAnnualYear: function (year) {
+      this.selectedYear = year;
+      // Update chips UI
+      document.querySelectorAll('.bazi-year-chip').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.year, 10) === year);
+      });
+      // Update dropdown select UI
+      const yearSelect = document.getElementById('baziAnnualYearSelect');
+      if (yearSelect && parseInt(yearSelect.value, 10) !== year) {
+        yearSelect.value = year;
+      }
+
+      // Automatically sync active Da Yun with target year
+      if (this.currentChart && this.currentChart.daYunPillars) {
+        const birthYear = this.currentChart.birthDateString ? parseInt(this.currentChart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+        const ageInYear = year - birthYear;
+        const matchingIdx = this.currentChart.daYunPillars.findIndex(p => ageInYear >= p.ageFrom && ageInYear <= p.ageTo);
+        if (matchingIdx !== -1) {
+          this.selectedDaYunIndex = matchingIdx;
+          this.renderDaYunInterpretation();
+        }
+      }
+
+      this.renderDaYunCards();
+      this.renderAnnualAndMonthlyFortune();
+    },
+
+    selectMonth: function (idx) {
+      this.selectedMonthIndex = idx;
+      document.querySelectorAll('.bazi-month-cell').forEach((el, i) => {
+        el.classList.toggle('active', i === idx);
+      });
+      this.renderSelectedMonthDetail();
+    },
+
+    renderChart: function (chart) {
+      // 1. Day Master Badge & Hero summary
+      const dmBadge = document.getElementById('baziDmBadge');
+      const dmTitle = document.getElementById('baziDmTitle');
+      const dmDesc = document.getElementById('baziDmDesc');
+      const dmStrengthBadge = document.getElementById('baziDmStrengthBadge');
+
+      const dmMeta = ELEMENTS_META[chart.dayMaster.element];
+
+      if (dmBadge) {
+        dmBadge.innerHTML = `<span class="dm-char" style="color: ${dmMeta.color};">${chart.dayMaster.zh}</span><span class="dm-sub">${chart.dayMaster.py} (${dmMeta.th})</span>`;
+      }
+      if (dmTitle) {
+        dmTitle.textContent = `${chart.name} • ดิถีธาตุ ${chart.dayMaster.zh} (${chart.dayMaster.th})`;
+      }
+      if (dmDesc) {
+        dmDesc.textContent = chart.dayMasterProfile.title;
+      }
+      if (dmStrengthBadge) {
+        dmStrengthBadge.textContent = chart.strengthText;
+        dmStrengthBadge.className = `bazi-badge ${chart.isStrong ? 'badge-strong' : 'badge-weak'}`;
+      }
+
+      // 2. Four Pillars Table
+      const renderPillarCol = (pKey, colId) => {
+        const p = chart.pillars[pKey];
+        const colEl = document.getElementById(colId);
+        if (!colEl) return;
+
+        const sMeta = ELEMENTS_META[p.stem.element];
+        const bMeta = ELEMENTS_META[p.branch.element];
+
+        let hiddenHtml = p.hiddenStems.map(h => {
+          const hMeta = ELEMENTS_META[h.stemObj.element];
+          return `
+            <div class="hidden-stem-item">
+              <span class="hidden-char" style="color: ${hMeta.color};">${h.stem}</span>
+              <span class="hidden-god">${h.tenGod.zh}</span>
+              <span class="hidden-pct">${Math.round(h.weight * 100)}%</span>
+            </div>
+          `;
+        }).join('');
+
+        let starsHtml = p.stars.length > 0 ? p.stars.map(s => `
+          <span class="bazi-star-pill" title="${s.desc}">${s.name}</span>
+        `).join('') : '<span class="text-muted" style="font-size: 11px;">-</span>';
+
+        colEl.innerHTML = `
+          <div class="bazi-pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-label">${p.label}</span>
+              <span class="pillar-role">${p.role}</span>
+            </div>
+            
+            <div class="pillar-tengod">
+              <span class="god-badge">${p.tenGod.zh}</span>
+              <span class="god-th">${p.tenGod.th}</span>
+            </div>
+
+            <div class="pillar-stem" style="border-left: 4px solid ${sMeta.color};">
+              <span class="stem-zh" style="color: ${sMeta.color};">${p.stem.zh}</span>
+              <div class="stem-info">
+                <strong>${p.stem.py} (${p.stem.polarity === 'yang' ? 'หยาง' : 'หยิน'})</strong>
+                <span>${sMeta.th}</span>
+              </div>
+            </div>
+
+            <div class="pillar-branch" style="border-left: 4px solid ${bMeta.color};">
+              <span class="branch-zh" style="color: ${bMeta.color};">${p.branch.zh}</span>
+              <div class="branch-info">
+                <strong>${p.branch.py} • ${p.branch.zodiac}</strong>
+                <span>${bMeta.th} (${p.branch.season})</span>
+              </div>
+            </div>
+
+            <div class="pillar-hidden-section">
+              <span class="sub-label">ก้านฟ้าซ่อน (藏干):</span>
+              <div class="hidden-stems-grid">
+                ${hiddenHtml}
+              </div>
+            </div>
+
+            <div class="pillar-nayin">
+              <i class="fa-solid fa-music"></i> <strong>ธาตุในเสียง (納音):</strong> ${p.naYin}
+            </div>
+
+            <div class="pillar-stars">
+              <span class="sub-label"><i class="fa-solid fa-star"></i> เทพและดาวชะตา:</span>
+              <div class="stars-wrap">
+                ${starsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+      };
+
+      renderPillarCol('hour', 'baziHourCol');
+      renderPillarCol('day', 'baziDayCol');
+      renderPillarCol('month', 'baziMonthCol');
+      renderPillarCol('year', 'baziYearCol');
+
+      // 3. Five Elements Balance Bars
+      const elementsContainer = document.getElementById('baziElementsBars');
+      if (elementsContainer) {
+        const order = ['wood', 'fire', 'earth', 'metal', 'water'];
+        elementsContainer.innerHTML = order.map(el => {
+          const meta = ELEMENTS_META[el];
+          const pct = chart.elementPercentages[el] || 0;
+          const score = chart.elementScores[el].toFixed(1);
+          let statusText = 'สมดุล';
+          if (pct >= 35) statusText = 'เด่นมาก';
+          else if (pct <= 8) statusText = 'พร่อง/ขาด';
+
+          return `
+            <div class="element-bar-row">
+              <div class="el-name-badge" style="color: ${meta.color};">
+                <strong>${meta.zh} ${meta.th}</strong>
+                <span class="el-score-tag">${score} คะแนน (${pct}%)</span>
+              </div>
+              <div class="el-track">
+                <div class="el-fill" style="width: ${Math.min(pct * 2, 100)}%; background-color: ${meta.color};"></div>
+              </div>
+              <span class="el-status-tag el-status-${pct >= 35 ? 'high' : pct <= 8 ? 'low' : 'normal'}">${statusText}</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Favorable / Avoid Elements & Tiao Hou
+      const favEl = document.getElementById('baziFavElements');
+      const tiaoHouEl = document.getElementById('baziTiaoHouElement');
+      const avoidEl = document.getElementById('baziAvoidElements');
+      const adviceEl = document.getElementById('baziRegulatingAdvice');
+
+      if (favEl) {
+        favEl.innerHTML = chart.favorableElements.map(k => {
+          const meta = ELEMENTS_META[k];
+          return `<span class="bazi-tag-pill" style="background: ${meta.lightBg}; color: ${meta.color}; border: 1px solid ${meta.border};"><i class="fa-solid fa-circle-check"></i> ${meta.zh} ${meta.th}</span>`;
+        }).join('');
+      }
+
+      if (tiaoHouEl && chart.tiaoHou) {
+        const thMeta = ELEMENTS_META[chart.tiaoHou.element];
+        tiaoHouEl.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span class="bazi-tag-pill" style="background: ${thMeta.lightBg}; color: ${thMeta.color}; border: 1.5px solid ${thMeta.border}; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <i class="fa-solid fa-gem"></i> ${thMeta.zh} ${thMeta.th}
+            </span>
+            <span style="font-size: 11.5px; color: #475569; font-weight: 600;">(${chart.tiaoHou.role})</span>
+          </div>
+        `;
+      }
+
+      if (avoidEl) {
+        if (!chart.avoidElements || chart.avoidElements.length === 0) {
+          avoidEl.innerHTML = '<span style="font-size: 12px; color: #10b981;"><i class="fa-solid fa-check"></i> ดวงค่อนข้างสมดุล ไม่มีธาตุที่ให้โทษเด่นชัด</span>';
+        } else {
+          avoidEl.innerHTML = chart.avoidElements.map(k => {
+            const meta = ELEMENTS_META[k];
+            return `<span class="bazi-tag-pill" style="background: ${meta.lightBg}; color: ${meta.color}; border: 1px solid ${meta.border};"><i class="fa-solid fa-circle-exclamation"></i> ${meta.zh} ${meta.th}</span>`;
+          }).join('');
+        }
+      }
+
+      if (adviceEl && chart.tiaoHou) {
+        const thMeta = ELEMENTS_META[chart.tiaoHou.element];
+        adviceEl.innerHTML = `
+          <div style="margin-bottom: 5px;">
+            <i class="fa-solid fa-scale-balanced" style="color: ${thMeta.color};"></i> 
+            <strong>หลักการปรับดวง (調候用神):</strong> ${chart.tiaoHou.reason}
+          </div>
+          <div style="font-size: 11px; color: #64748b; border-top: 1px dashed #cbd5e1; padding-top: 4px; margin-top: 4px;">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> <strong>แนวทางส่งเสริม:</strong> เน้นสีและสิ่งแวดล้อม${thMeta.th} (${thMeta.direction}, ความหมาย: ${thMeta.emotion})
+          </div>
+        `;
+      }
+
+      // 4. Da Yun Timeline (วัยจร 10 ปี)
+      this.renderDaYunCards();
+
+      // 5. Strategic Life Insights
+      const prof = chart.dayMasterProfile;
+      const setElText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      };
+
+      setElText('baziTraitsText', prof.traits);
+      setElText('baziCareerText', prof.career);
+      setElText('baziWealthText', prof.wealth);
+      setElText('baziLoveText', prof.love);
+      setElText('baziHealthText', prof.health);
+
+      // Feng Shui Recommendations
+      const fsContainer = document.getElementById('baziFengShuiList');
+      if (fsContainer) {
+        const favNames = chart.favorableElements.map(k => ELEMENTS_META[k].th).join(', ');
+        const favDirs = chart.favorableElements.map(k => ELEMENTS_META[k].direction).join(', ');
+        const favColors = chart.favorableElements.map(k => {
+          if (k === 'wood') return 'เขียว, ไม้ธรรมชาติ, ลายพฤกษา';
+          if (k === 'fire') return 'แดง, ชมพู, ส้มสดใส, ม่วง';
+          if (k === 'earth') return 'เหลือง, ครีม, น้ำตาล, เอิร์ธโทน';
+          if (k === 'metal') return 'ขาว, เงิน, ทองคำ, เทาเมทัลลิก';
+          return 'ฟ้า, น้ำเงิน, ดำ, กรมท่า';
+        }).join(' | ');
+
+        fsContainer.innerHTML = `
+          <div class="fs-item"><i class="fa-solid fa-palette"></i> <strong>สีมงคลเสริมชีวิต:</strong> ${favColors}</div>
+          <div class="fs-item"><i class="fa-solid fa-compass"></i> <strong>ทิศมงคลตั้งโต๊ะทำงาน/หัวนอน:</strong> ${favDirs}</div>
+          <div class="fs-item"><i class="fa-solid fa-wand-magic-sparkles"></i> <strong>ธาตุปรับสมดุล (喜用神):</strong> ${favNames} (ส่งเสริมให้ชีวิตราบรื่น มีพลังเกื้อหนุน)</div>
+        `;
+      }
+    },
+
+    renderDaYunInterpretation: function () {
+      if (!this.currentChart) return;
+      const dyPillar = this.currentChart.daYunPillars[this.selectedDaYunIndex || 0];
+      if (!dyPillar) return;
+
+      const interp = BaziEngine.calculateDaYunInterpretation(this.currentChart, dyPillar);
+      if (!interp) return;
+
+      const titleEl = document.getElementById('baziDayunDetailTitle');
+      if (titleEl) {
+        titleEl.innerHTML = `ช่วงอายุ ${dyPillar.ageRange} (${dyPillar.stem.zh}${dyPillar.branch.zh} • ${dyPillar.tenGod.zh} ${dyPillar.tenGod.th}) - <span style="font-size: 13px; font-weight: normal; color: ${interp.isFavorable ? '#059669' : '#d97706'};">${interp.favorabilityText}</span>`;
+      }
+
+      const setText = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+
+      setText('baziDayunOverviewText', interp.theme);
+      setText('baziDayunCareerText', interp.career);
+      setText('baziDayunWealthText', interp.wealth);
+      setText('baziDayunLoveText', interp.love);
+
+      const warnEl = document.getElementById('baziDayunWarningText');
+      if (warnEl) {
+        warnEl.innerHTML = `<i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <strong>ข้อควรระวัง & สุขภาพ:</strong> ${interp.warning}`;
+      }
+    },
+
+    renderAnnualAndMonthlyFortune: function () {
+      if (!this.currentChart) return;
+      const y = this.selectedYear || new Date().getFullYear();
+
+      // 1. Annual Fortune
+      const annual = BaziEngine.calculateAnnualFortune(this.currentChart, y);
+      if (annual) {
+        const bannerEl = document.getElementById('baziAnnualBanner');
+        if (bannerEl) {
+          const sMeta = ELEMENTS_META[annual.stem.element];
+          const bMeta = ELEMENTS_META[annual.branch.element];
+          const starsHtml = '⭐'.repeat(annual.scoreStars);
+
+          let interactionTags = '';
+          if (annual.clashes.length > 0) {
+            interactionTags += annual.clashes.map(c => `<span class="annual-clash-tag"><i class="fa-solid fa-triangle-exclamation"></i> ชงกับ${c.label} (${c.desc})</span>`).join('');
+          }
+          if (annual.harmonies.length > 0) {
+            interactionTags += annual.harmonies.map(h => `<span class="annual-harmony-tag"><i class="fa-solid fa-handshake"></i> ${h.name} (${h.label})</span>`).join('');
+          }
+          if (!interactionTags) {
+            interactionTags = `<span class="annual-normal-tag"><i class="fa-solid fa-circle-check"></i> ไม่มีการปะทะรุนแรงกับพื้นดวงกำเนิด</span>`;
+          }
+
+          bannerEl.innerHTML = `
+            <div class="annual-banner-left">
+              <div class="annual-year-chars">
+                <span style="color: ${sMeta.color};">${annual.stem.zh}</span>
+                <span style="color: ${bMeta.color};">${annual.branch.zh}</span>
+              </div>
+              <div class="annual-year-meta">
+                <h3>ปี ${annual.year} (${annual.stem.py} ${annual.branch.py} - ${annual.branch.zodiac})</h3>
+                <div class="annual-god-pill">ก้านฟ้า: ${annual.stemGod.zh} (${annual.stemGod.th}) • กิ่งดิน: ${annual.branchGod.zh}</div>
+                ${annual.curDaYun ? `<div style="font-size: 11.5px; color: #7c3aed; font-weight: 600; margin-top: 4px;"><i class="fa-solid fa-timeline"></i> คุมโดยวัยจรช่วงอายุ ${annual.curDaYun.ageRange} (${annual.curDaYun.stem.zh}${annual.curDaYun.branch.zh} • ${annual.curDaYun.tenGod.zh} ${annual.curDaYun.tenGod.th})</div>` : ''}
+                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${annual.naYin}</div>
+              </div>
+            </div>
+            <div class="annual-banner-right">
+              <div class="annual-rating-box">
+                <span class="rating-label">ดัชนีสิริมงคลปีนี้:</span>
+                <span class="rating-stars">${starsHtml} (${annual.scoreStars}/5)</span>
+              </div>
+              <div class="annual-interaction-wrap">
+                ${interactionTags}
+              </div>
+            </div>
+          `;
+        }
+
+        const setText = (id, txt) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = txt;
+        };
+        setText('baziAnnualOverviewText', annual.overview);
+        setText('baziAnnualCareerText', annual.career);
+        setText('baziAnnualWealthText', annual.wealth);
+        setText('baziAnnualLoveText', annual.love);
+
+        const healthEl = document.getElementById('baziAnnualHealthText');
+        if (healthEl) {
+          healthEl.innerHTML = `<i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i> <strong>สุขภาพ & สิ่งที่ต้องระวังปี ${y}:</strong> ${annual.health}`;
+        }
+      }
+
+      // 2. Monthly Fortune
+      const labelEl = document.getElementById('baziMonthYearLabel');
+      if (labelEl) labelEl.textContent = y;
+
+      const months = BaziEngine.calculateMonthlyFortune(this.currentChart, y);
+      const monthsGrid = document.getElementById('baziMonthsGrid');
+      if (monthsGrid) {
+        monthsGrid.innerHTML = months.map(m => {
+          const sMeta = ELEMENTS_META[m.stem.element];
+          const bMeta = ELEMENTS_META[m.branch.element];
+          const isAct = m.index === this.selectedMonthIndex;
+          return `
+            <div class="bazi-month-cell ${isAct ? 'active' : ''} ${m.isCurrent ? 'current-month' : ''}" onclick="window.BaziApp.selectMonth(${m.index})" title="${m.title}">
+              ${m.isCurrent ? '<span class="current-month-badge">เดือนนี้</span>' : ''}
+              <div class="month-cell-header">
+                <div class="month-cell-title">
+                  <span class="month-name-bold">${m.labelDate}</span> <span class="month-num-bracket">(${m.monthNum})</span>
+                </div>
+                <span class="month-cell-rating rating-${m.ratingType}">${m.ratingBadgeShort}</span>
+              </div>
+              <div class="month-cell-chars">
+                <span style="color: ${sMeta.color};">${m.stem.zh}</span>
+                <span style="color: ${bMeta.color};">${m.branch.zh}</span>
+              </div>
+              <div class="month-cell-god">${m.stemGod.zh}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      this.renderSelectedMonthDetail();
+    },
+
+    renderSelectedMonthDetail: function () {
+      if (!this.currentChart) return;
+      const y = this.selectedYear || new Date().getFullYear();
+      const months = BaziEngine.calculateMonthlyFortune(this.currentChart, y);
+      const m = months[this.selectedMonthIndex || 0];
+      const cardEl = document.getElementById('baziSelectedMonthCard');
+      if (!m || !cardEl) return;
+
+      const sMeta = ELEMENTS_META[m.stem.element];
+      const bMeta = ELEMENTS_META[m.branch.element];
+
+      cardEl.innerHTML = `
+        <div class="month-detail-header">
+          <div class="month-detail-title">
+            <i class="fa-solid fa-calendar-day" style="color: #0284c7;"></i> <strong>คำทำนายเดือนที่ ${m.monthNum}: ${m.title}</strong>
+            <span style="font-size: 13px; color: #64748b;">(ช่วงเวลา ${m.dates})</span>
+          </div>
+          <span class="month-cell-rating rating-${m.ratingType}" style="font-size: 12.5px; padding: 4px 10px;">${m.ratingBadge}</span>
+        </div>
+        <div class="month-detail-body">
+          <div class="month-detail-pillar-box">
+            <span style="color: ${sMeta.color}; font-size: 24px; font-weight: 800;">${m.stem.zh}</span>
+            <span style="color: ${bMeta.color}; font-size: 24px; font-weight: 800;">${m.branch.zh}</span>
+            <div style="font-size: 12px; color: #475569;">${m.stem.py} ${m.branch.py}</div>
+            <div style="font-size: 11px; color: #7c3aed; font-weight: 600;">${m.stemGod.zh} (${m.stemGod.th})</div>
+            <div style="font-size: 10.5px; color: #94a3b8;">${m.naYin.split(' ')[0]}</div>
+          </div>
+          <div class="month-detail-text">
+            <p><i class="fa-solid fa-circle-info" style="color: #0284c7;"></i> <strong>พลังงานและแนวโน้มประจำเดือน:</strong> ${m.adviceText}</p>
+          </div>
+        </div>
+      `;
+    },
+
+    copySummary: function () {
+      if (!this.currentChart) return;
+      const c = this.currentChart;
+      const p = c.pillars;
+      const prof = c.dayMasterProfile;
+      const favNames = c.favorableElements.map(k => ELEMENTS_META[k].th).join(', ');
+      const curDaYun = c.daYunPillars.find(d => d.isCurrent) || c.daYunPillars[0];
+
+      const text = `🔮 ผลการวิเคราะห์ดวงชะตา ปาจื่อ (BaZi Four Pillars of Destiny)
+👤 เจ้าชะตา: ${c.name} (${c.gender === 'male' ? 'ชาย' : 'หญิง'})
+📅 วันเกิด: ${c.birthDateString} เวลา ${c.birthTimeString}
+
+🏛️ ผัง 4 เสาชะตา (Four Pillars):
+- เสาปี (Year): ${p.year.stem.zh}${p.year.branch.zh} (${p.year.stem.py} ${p.year.branch.py}) • สิบลักษณ์: ${p.year.tenGod.zh} • ${p.year.naYin}
+- เสาเดือน (Month): ${p.month.stem.zh}${p.month.branch.zh} (${p.month.stem.py} ${p.month.branch.py}) • สิบลักษณ์: ${p.month.tenGod.zh} • ${p.month.naYin}
+- เสาวัน (Day/Self): ${p.day.stem.zh}${p.day.branch.zh} (${p.day.stem.py} ${p.day.branch.py}) • ดิถีธาตุ: ${c.dayMaster.zh} (${c.dayMaster.th}) • ${p.day.naYin}
+- เสายาม (Hour): ${p.hour.stem.zh}${p.hour.branch.zh} (${p.hour.stem.py} ${p.hour.branch.py}) • สิบลักษณ์: ${p.hour.tenGod.zh} • ${p.hour.naYin}
+
+✨ สถานะดิถี: ${c.strengthText}
+🌿 ธาตุให้คุณ (喜用神): ${favNames}
+⚖️ ธาตุปรับดวง (調候用神): ${ELEMENTS_META[c.tiaoHou.element].th} (${c.tiaoHou.role})
+⏳ วัยจรปัจจุบัน: ช่วงอายุ ${curDaYun.ageRange} (${curDaYun.stem.zh}${curDaYun.branch.zh} - ${curDaYun.tenGod.zh})
+
+🌟 อุปนิสัยแก่นแท้: ${prof.traits}
+💼 การงาน & ธุรกิจ: ${prof.career}
+💰 โชคลาภ & การเงิน: ${prof.wealth}
+❤️ ความรัก & คู่ครอง: ${prof.love}
+🌿 สุขภาพ: ${prof.health}
+
+✨ ตรวจดวงชะตาด้วยระบบ DESTINY ARCANA (Standalone Edition)`;
+
+      navigator.clipboard.writeText(text).then(() => {
+        alert('คัดลอกสรุปคำทำนาย BaZi เรียบร้อยแล้วค่ะ!');
+      }).catch(err => {
+        console.error('Copy failed:', err);
+      });
+    },
+
+    switchMode: function (mode, shouldRender = true) {
+      this.currentMode = mode;
+      try {
+        localStorage.setItem('bazi_display_mode', mode);
+      } catch (e) {}
+
+      const basicBtn = document.getElementById('baziModeBasicBtn');
+      const expertBtn = document.getElementById('baziModeExpertBtn');
+      const basicInfo = document.getElementById('baziModeBasicInfo');
+      const expertInfo = document.getElementById('baziModeExpertInfo');
+      const expertSuite = document.getElementById('baziExpertSuite');
+      const oracleSection = document.getElementById('baziOracleAiSection');
+
+      const isExpert = mode === 'expert';
+
+      if (basicBtn) basicBtn.classList.toggle('active', !isExpert);
+      if (expertBtn) expertBtn.classList.toggle('active', isExpert);
+      if (basicInfo) basicInfo.classList.toggle('hidden', isExpert);
+      if (expertInfo) expertInfo.classList.toggle('hidden', !isExpert);
+      if (expertSuite) expertSuite.classList.toggle('hidden', !isExpert);
+      if (oracleSection) oracleSection.classList.toggle('hidden', !isExpert);
+
+      if (isExpert && shouldRender && this.currentChart) {
+        this.renderExpertSuite();
+      }
+    },
+
+    getPatternStructure: function (chart) {
+      if (!chart) return null;
+      const mPillar = chart.pillars.month;
+      const mBranch = mPillar.branch;
+      const hidden = mPillar.hiddenStems || [];
+      const mainHidden = hidden.reduce((max, h) => (h.weight > max.weight ? h : max), hidden[0] || {});
+
+      // Check if any hidden stem penetrates into other stems
+      const stems = [chart.pillars.year.stem.zh, chart.pillars.month.stem.zh, chart.pillars.hour.stem.zh];
+      const penetrated = hidden.find(h => stems.includes(h.stem));
+      const targetGod = penetrated ? penetrated.tenGod : (mainHidden.tenGod || { zh: '正財', th: 'ทรัพย์แท้' });
+
+      const patternNames = {
+        '正官': { name: '正官格 (เจิ้งกวานเก๋อ - ขุนนางแท้ / Direct Officer)', desc: 'โครงสร้างผู้นำ ข้าราชการ หรือผู้บริหาร ซื่อสัตย์ มีวินัย รักเกียรติยศชื่อเสียงสูง มุ่งมั่นสร้างความมั่นคงตามกฎระเบียบ' },
+        '七殺': { name: '七殺格 / 偏官格 (ชีสัวะเก๋อ - ขุนพลปราบปราม / Seven Killings)', desc: 'โครงสร้างนักรบ ผู้บุกเบิก เด็ดขาด กล้าได้กล้าเสีย ชอบความท้าทาย มักสร้างชื่อเสียงจากวิกฤตและอุปสรรคใหญ่' },
+        '正財': { name: '正財格 (เจิ้งไฉเก๋อ - ทรัพย์แท้ / Direct Wealth)', desc: 'โครงสร้างนักบริหารความมั่งคั่ง มัธยัสถ์ รอบคอบ มีวินัยทางการเงินสูง สร้างฐานะจากงานสุจริตและความเชี่ยวชาญเฉพาะทาง' },
+        '偏財': { name: '偏財格 (เพี่ยนไฉเก๋อ - ทรัพย์จร/โชคลาภ / Indirect Wealth)', desc: 'โครงสร้างนักลงทุน ผู้ประกอบการ วิสัยทัศน์กว้างไกล ใจกว้าง มักมีโชคลาภและโอกาสทางธุรกิจเข้ามาต่อเนื่อง' },
+        '正印': { name: '正印格 (เจิ้งอิ้นเก๋อ - ตราประทับแท้/ปราชญ์ / Direct Resource)', desc: 'โครงสร้างนักวิชาการ ครูบาอาจารย์ คุณธรรมสูง มีเมตตา อุปถัมภ์ค้ำชูผู้อื่น และเรียนรู้สิ่งต่างๆ ได้รวดเร็ว' },
+        '偏印': { name: '偏印格 / 梟神格 (เพี่ยนอิ้นเก๋อ - ญาณทัศนะ / Indirect Resource)', desc: 'โครงสร้างนักคิดค้น ศาสตร์ลี้ลับ เทคโนโลยี ปรัชญา มีเซนส์พิเศษ มีความลึกซึ้งและเอกลักษณ์เฉพาะตัว' },
+        '食神': { name: '食神格 (สือเสินเก๋อ - เทพโอสถ/ความสุข / Eating God)', desc: 'โครงสร้างนักสร้างสรรค์ อาหาร ศิลปะ มีสุนทรียภาพ ชีวิตอุดมสมบูรณ์ มองโลกในแง่ดี มีโภคทรัพย์ไม่ขาดมือ' },
+        '傷官': { name: '傷官格 (ชางกวานเก๋อ - ยอดอัจฉริยะปฏิรูป / Hurting Officer)', desc: 'โครงสร้างผู้มีพรสวรรค์สูง ปฏิภาณไหวพริบยอดเยี่ยม กล้าฉีกกฎเกณฑ์ นวัตกรรมใหม่ โดดเด่นทางวาทศิลป์และความคิดสร้างสรรค์' },
+        '比肩': { name: '建祿格 (เจี้ยนลู่เก๋อ - บารมีพึ่งตนเอง / Companion Pattern)', desc: 'โครงสร้างสร้างตัวด้วยลำแข้งตนเอง หนักแน่น มั่นคง มิตรสหายมาก ไม่ยอมแพ้ต่ออุปสรรค' },
+        '劫財': { name: '陽刃格 (หยางเหรินเก๋อ - กระบี่กล้า / Rob Wealth Pattern)', desc: 'โครงสร้างพลังจิตใจแกร่งกล้า เด็ดขาด ทะเยอทะยานสูง มักประสบความสำเร็จยิ่งใหญ่หากได้รับการควบคุมที่ดี' }
+      };
+
+      const matched = patternNames[targetGod.zh] || {
+        name: `${targetGod.zh}格 (${targetGod.th}เก๋อ)`,
+        desc: `โครงสร้างที่ขับเคลื่อนด้วยพลังของ ${targetGod.th} นำพาคุณสมบัติเฉพาะตัวมาเป็นแกนหลักของชีวิต`
+      };
+
+      return {
+        god: targetGod,
+        name: matched.name,
+        desc: matched.desc,
+        penetratedStem: penetrated ? penetrated.stem : null,
+        monthBranch: mBranch.zh
+      };
+    },
+
+    analyzeInteractions: function (chart) {
+      if (!chart) return [];
+      const interactions = [];
+      const pList = [
+        { key: 'year', label: 'เสาปี (บรรพบุรุษ/วัยเด็ก)', branch: chart.pillars.year.branch.zh },
+        { key: 'month', label: 'เสาเดือน (การงาน/พ่อแม่)', branch: chart.pillars.month.branch.zh },
+        { key: 'day', label: 'เสาวัน (ตัวตน/คู่ครอง)', branch: chart.pillars.day.branch.zh },
+        { key: 'hour', label: 'เสายาม (บริวาร/ลูกหลาน)', branch: chart.pillars.hour.branch.zh }
+      ];
+
+      for (let i = 0; i < pList.length; i++) {
+        for (let j = i + 1; j < pList.length; j++) {
+          const clash = checkBranchClash(pList[i].branch, pList[j].branch);
+          if (clash) {
+            interactions.push({
+              type: 'clash',
+              icon: '⚔️',
+              title: `${pList[i].label} ปะทะกับ ${pList[j].label} (${pList[i].branch} 沖 ${pList[j].branch})`,
+              desc: clash.th,
+              advice: 'การปะทะในดวงเดิมหมายถึงการเปลี่ยนแปลง ความกระตือรือร้น หรือการเดินทางโยกย้าย ระวังความใจร้อน'
+            });
+          }
+
+          const harm = checkBranchHarmony(pList[i].branch, pList[j].branch);
+          if (harm) {
+            interactions.push({
+              type: 'harmony',
+              icon: '🤝',
+              title: `${pList[i].label} ฮะสมพงศ์กับ ${pList[j].label} (${pList[i].branch} 合 ${pList[j].branch})`,
+              desc: harm.name,
+              advice: 'การฮะก่อให้เกิดความร่วมมือ ประสานงานราบรื่น และเสริมสร้างความผูกพันมั่นคง'
+            });
+          }
+        }
+      }
+
+      // Check current Da Yun
+      const curDaYun = chart.daYunPillars.find(d => d.isCurrent) || chart.daYunPillars[0];
+      if (curDaYun) {
+        pList.forEach(p => {
+          const clash = checkBranchClash(curDaYun.branch.zh, p.branch);
+          if (clash) {
+            interactions.push({
+              type: 'clash',
+              icon: '🌊',
+              title: `วัยจรปัจจุบัน (${curDaYun.branch.zh} ช่วงอายุ ${curDaYun.ageRange}) ปะทะกับ ${p.label} (${p.branch})`,
+              desc: clash.th,
+              advice: 'ช่วงวัยจรนี้มีการปรับเปลี่ยนสภาพแวดล้อมหรือเผชิญบททดสอบสำคัญ ควรมีสติรอบคอบและปรับตัวตามสถานการณ์'
+            });
+          }
+
+          const harm = checkBranchHarmony(curDaYun.branch.zh, p.branch);
+          if (harm) {
+            interactions.push({
+              type: 'harmony',
+              icon: '✨',
+              title: `วัยจรปัจจุบัน (${curDaYun.branch.zh} ช่วงอายุ ${curDaYun.ageRange}) ฮะสมพงศ์กับ ${p.label} (${p.branch})`,
+              desc: harm.name,
+              advice: 'ช่วงวัยจรนี้มีโอกาสร่วมทุน มีผู้สนับสนุน และความสัมพันธ์ดีขึ้นอย่างเด่นชัด'
+            });
+          }
+        });
+      }
+
+      return interactions;
+    },
+
+    renderExpertSuite: function () {
+      if (!this.currentChart) return;
+      const c = this.currentChart;
+
+      // 1. Render Shen Sha Table
+      const shenshaContainer = document.getElementById('baziExpertShenShaTable');
+      if (shenshaContainer) {
+        const pKeys = ['year', 'month', 'day', 'hour'];
+        const pNames = {
+          year: 'เสาปี (บรรพบุรุษ/วัยเด็ก 0-16 ปี)',
+          month: 'เสาเดือน (การงาน/พ่อแม่ 17-32 ปี)',
+          day: 'เสาวัน (ตัวตน/คู่ครอง 33-48 ปี)',
+          hour: 'เสายาม (บริวาร/อนาคต 49+ ปี)'
+        };
+
+        shenshaContainer.innerHTML = `
+          <table class="expert-matrix-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">เสาชะตา</th>
+                <th style="width: 20%;">กิ่งดิน (Branch)</th>
+                <th style="width: 55%;">เทพและดาวชะตา (神煞) ที่สถิตอยู่</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pKeys.map(k => {
+                const p = c.pillars[k];
+                const stars = p.stars;
+                const starsHtml = stars.length > 0
+                  ? stars.map(s => `<div style="margin-bottom: 4px;"><strong style="color: #7c3aed;">★ ${s.name}</strong>: <span style="color: #475569;">${s.desc}</span></div>`).join('')
+                  : '<span class="text-muted" style="color: #94a3b8;">- ราบรื่น ไม่มีดาวอิทธิพลรุนแรง -</span>';
+
+                return `
+                  <tr>
+                    <td><strong>${pNames[k]}</strong></td>
+                    <td><strong style="color: ${ELEMENTS_META[p.branch.element].color}; font-size: 16px;">${p.branch.zh}</strong> (${p.branch.py} • ${p.branch.zodiac})</td>
+                    <td>${starsHtml}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      // 3. Render Interactions List
+      const interactionsContainer = document.getElementById('baziExpertInteractionsList');
+      if (interactionsContainer) {
+        const interactions = this.analyzeInteractions(c);
+        if (interactions.length === 0) {
+          interactionsContainer.innerHTML = '<div style="padding: 16px; text-align: center; color: #64748b;">ไม่มีการปะทะหรือฮะรุนแรงใน 4 เสาชะตา ผังดวงค่อนข้างมีเสถียรภาพสูง</div>';
+        } else {
+          interactionsContainer.innerHTML = interactions.map(it => `
+            <div class="interaction-item type-${it.type}">
+              <div class="interaction-icon">${it.icon}</div>
+              <div class="interaction-body">
+                <strong>${it.title}</strong>
+                <div>${it.desc}</div>
+                <div style="font-size: 11.5px; color: #64748b; margin-top: 3px;">💡 <em>คำแนะนำ: ${it.advice}</em></div>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      // 4. Render Formula Breakdown
+      const formulaContainer = document.getElementById('baziExpertFormulaBreakdown');
+      if (formulaContainer) {
+        const dm = c.dayMaster;
+        const resElem = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].generates === dm.element);
+        const dmScore = c.elementScores[dm.element].toFixed(1);
+        const resScore = c.elementScores[resElem].toFixed(1);
+        const total = Object.values(c.elementScores).reduce((a, b) => a + b, 0).toFixed(1);
+
+        formulaContainer.innerHTML = `
+          <div class="formula-card">
+            <div class="formula-card-title">
+              <i class="fa-solid fa-scale-balanced" style="color: #7c3aed;"></i> 1. เกณฑ์คำนวณกำลังดิถี (旺衰 / Wang Shuai)
+            </div>
+            <div>
+              คำนวณจากน้ำหนัก <strong>ก้านฟ้า (Stem = 1.0 แต้ม)</strong> + <strong>กิ่งดินแฝง (Hidden Stem weight x 1.5 แต้ม)</strong>
+            </div>
+            <div class="formula-box">
+              Support = ดิถี (${dm.zh} ${dmScore}) + ธาตุแม่ (${ELEMENTS_META[resElem].zh} ${resScore}) = ${(parseFloat(dmScore) + parseFloat(resScore)).toFixed(1)} / ${total}
+              คิดเป็น: ${c.supportPercentage}% (เกณฑ์ดิถีแข็ง >= 46%) -> ผลสรุป: ${c.strengthText}
+            </div>
+            <div style="color: #64748b; font-size: 11.5px;">
+              *เกณฑ์ตัด 46% เป็นมาตรฐานคัมภีร์หยวนไห่จื่อผิงในการแบ่งดิถีแข็ง (身強) หรือดิถีอ่อน (身弱)
+            </div>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-card-title">
+              <i class="fa-solid fa-temperature-arrow-up" style="color: #0284c7;"></i> 2. เกณฑ์ปรับอุณหภูมิดวง (調候 / Tiao Hou)
+            </div>
+            <div>
+              อ้างอิงคัมภีร์ <strong>เฉียงทงเป่าเจี้ยน (窮通寶鑑)</strong> & <strong>ตีเทียนสุ่ย (滴天髓)</strong>
+            </div>
+            <div class="formula-box">
+              เดือนเกิด: ${c.pillars.month.branch.zh} (${c.pillars.month.branch.season}) • สภาพดวง: ${c.elementPercentages.water <= 8 ? 'แห้งแล้ง (燥局)' : (c.elementPercentages.fire <= 8 ? 'หนาวเย็น (寒局)' : 'สมดุล')}
+              ธาตุปรับดวง (調候用神): ${ELEMENTS_META[c.tiaoHou.element].th} (${c.tiaoHou.role})
+            </div>
+            <div style="color: #64748b; font-size: 11.5px;">
+              *หลักวิชาปาจื่อ "調候為先" ธาตุปรับดวงมีความสำคัญสูงสุด จะไม่ถูกจัดเป็นธาตุให้โทษเด็ดขาด
+            </div>
+          </div>
+
+          <div class="formula-card">
+            <div class="formula-card-title">
+              <i class="fa-solid fa-landmark" style="color: #10b981;"></i> 3. โครงสร้างดวงชะตา (格局 / Ge Ju)
+            </div>
+            <div>
+              วิเคราะห์จากพลังกิ่งดินเสาเดือน (月令司令) และการทะลุขึ้นก้านฟ้า (透干)
+            </div>
+            <div class="formula-box">
+              เก๋อประจำดวง: ${this.getPatternStructure(c).name}
+              แกนหลัก: ${this.getPatternStructure(c).god.zh} (${this.getPatternStructure(c).god.th})
+            </div>
+            <div style="color: #64748b; font-size: 11.5px;">
+              ${this.getPatternStructure(c).desc}
+            </div>
+          </div>
+        `;
+      }
+
+      // 5. Run active query for principles desk (6 topics)
+      this.runExpertQuery(this.activeExpertQuery || 'geju');
+
+      // 6. Attach enter key and button click listeners for BaZi Oracle AI
+      const customInput = document.getElementById('baziExpertCustomInput');
+      if (customInput && !customInput._hasEnterListener) {
+        customInput._hasEnterListener = true;
+        customInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.runCustomExpertQuery();
+          }
+        });
+      }
+
+      const customRunBtn = document.getElementById('baziRunCustomQueryBtn');
+      if (customRunBtn && !customRunBtn._hasClickListener) {
+        customRunBtn._hasClickListener = true;
+        customRunBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.runCustomExpertQuery();
+        });
+      }
+    },
+
+    fillAndRunCustomQuery: function (text) {
+      const inputEl = document.getElementById('baziExpertCustomInput');
+      if (inputEl) {
+        inputEl.value = text;
+      }
+      this.runCustomExpertQuery();
+    },
+
+    runExpertQuery: function (queryType) {
+      this.activeExpertQuery = queryType;
+      document.querySelectorAll('.expert-chip').forEach(btn => btn.classList.remove('active'));
+
+      const idMap = {
+        geju: 'btnQueryGeju',
+        tiaohou: 'btnQueryTiaohou',
+        interactions: 'btnQueryInteractions',
+        shensha: 'btnQueryShensha',
+        dayun_year: 'btnQueryDayunYear',
+        huasha: 'btnQueryHuasha'
+      };
+      const activeBtn = document.getElementById(idMap[queryType]);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const resultBox = document.getElementById('baziExpertPrinciplesResult') || document.getElementById('baziExpertQueryResult');
+      if (!resultBox || !this.currentChart) return;
+      const c = this.currentChart;
+
+      let title = '';
+      let tag = '';
+      let content = '';
+
+      switch (queryType) {
+        case 'geju': {
+          const geju = this.getPatternStructure(c);
+          title = `<i class="fa-solid fa-landmark" style="color: #7c3aed;"></i> วิเคราะห์โครงสร้างดวงชะตา (格局 - BaZi Pattern)`;
+          tag = geju.name;
+          content = `
+            <div class="expert-point-card">
+              <strong>🏛️ โครงสร้างหลัก: ${geju.name}</strong>
+              <p>${geju.desc}</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>🔍 ที่มาของพลังเก๋อ:</strong>
+              <p>เกิดในเดือนสารท <strong>${geju.monthBranch} (เสาเดือน)</strong> ซึ่งมีพลังแฝงของ <strong>${geju.god.zh} (${geju.god.th})</strong> กุมอำนาจ${geju.penetratedStem ? ` และทะลุขึ้นก้านฟ้า ${geju.penetratedStem} อย่างสง่างาม (透干成格)` : ''} ทำให้มีบุคลิกภาพ ความคิด และการตัดสินใจในชีวิตถูกนำทางด้วยคุณลักษณะของ ${geju.god.th} เป็นหลัก</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>⚖️ สภาวะความสมบูรณ์ของเก๋อ (成格 vs 破格):</strong>
+              <p>ดวงนี้มีพลังค้ำยันที่ดี หากควบคุมมิให้มีธาตุปรปักษ์มาทำลายเก๋อ จะสามารถสั่งสมทรัพย์สิน เกียรติยศ และสร้างผลงานที่ยิ่งใหญ่ในสายงานของตนได้อย่างมั่นคง</p>
+            </div>
+          `;
+          break;
+        }
+
+        case 'tiaohou': {
+          const th = c.tiaoHou;
+          title = `<i class="fa-solid fa-temperature-half" style="color: #0284c7;"></i> หลักการเตี้ยวโฮ่ว & วั่งซ่วย (調候 & 旺衰 Theory)`;
+          tag = `ธาตุปรับดวง: ${ELEMENTS_META[th.element].th}`;
+          content = `
+            <div class="expert-point-card">
+              <strong>🌡️ บทวิเคราะห์เตี้ยวโฮ่ว (調候分析):</strong>
+              <p>${th.reason}</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>📊 การประเมินกำลังดิถี (旺衰分析):</strong>
+              <p>ดิถี ${c.dayMaster.zh} (${c.dayMaster.th}) มีคะแนนพลังเกื้อหนุน ${c.supportPercentage}% จัดเป็น <strong>${c.strengthText}</strong> ซึ่งในทางทฤษฎีทั่วไปอาจมองแค่เสริมไฟ/ไม้ แต่เมื่อพิจารณาภูมิอากาศเดือนเกิด คัมภีร์ตีเทียนสุ่ยระบุว่า <em>"丁火柔中... 合壬而傾"</em> ไฟดวงประทีปต้องการ <strong>ธาตุน้ำ</strong> ส่องประกายและชโลมดวง</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>🎯 บทสรุปทางวิชาการ:</strong>
+              <p>การนำ <strong>${ELEMENTS_META[th.element].th}</strong> มาใช้เป็นธาตุปรับดวง จะช่วยเปิดทางให้ดวงชะตาคลี่คลายความตึงเครียด อารมณ์แจ่มใส มีสติปัญญาตกผลึก และเสริมสร้างดาวกัวสัวะ (หน้าที่การงาน/บารมี) ให้โดดเด่นยิ่งขึ้น</p>
+            </div>
+          `;
+          break;
+        }
+
+        case 'interactions': {
+          const interactions = this.analyzeInteractions(c);
+          title = `<i class="fa-solid fa-bolt" style="color: #ef4444;"></i> ตรวจสอบจุดปะทะ / ฮะ / ซิ้ง / ไฮ่ ในดวงชะตา`;
+          tag = `พบ ${interactions.length} จุดปฏิสัมพันธ์`;
+          content = interactions.length > 0 ? interactions.map(it => `
+            <div class="expert-point-card" style="border-left-color: ${it.type === 'clash' ? '#ef4444' : '#10b981'};">
+              <strong>${it.icon} ${it.title}</strong>
+              <p>${it.desc}</p>
+              <div style="font-size: 12px; color: #64748b;"><strong>แนวทางรับมือ:</strong> ${it.advice}</div>
+            </div>
+          `).join('') : '<p>ดวงนี้ไม่มีการปะทะหรือฮะรุนแรง โครงสร้างค่อนข้างมีเสถียรภาพและสงบนิ่ง</p>';
+          break;
+        }
+
+        case 'shensha': {
+          title = `<i class="fa-solid fa-star" style="color: #f59e0b;"></i> รวมดาวเทพและดาวเคราะห์สำคัญ (神煞大全)`;
+          tag = `ดาวชะตาประจำ 4 เสา`;
+          content = `
+            <div class="expert-point-card">
+              <strong>🌟 ดาวเทียนอี่กุ้ยเหริน (天乙貴人 - ผู้อุปถัมภ์สวรรค์):</strong>
+              <p>เป็นยอดดาวมงคลอันดับหนึ่ง สถิตในดวงช่วยให้แคล้วคลาดจากภยันตราย มีผู้ใหญ่ ครูบาอาจารย์ หรือกัลยาณมิตรยื่นมือเข้าช่วยเหลือเสมอในยามวิกฤต</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>📖 ดาวบุ๋นชัง (文昌貴人 - ปัญญาบัณฑิต):</strong>
+              <p>ดาวแห่งปัญญา การเรียนรู้ การสอบแข่งขัน ไหวพริบ และศาสตร์วิชาการ ทำให้เป็นคนเรียนรู้อะไรได้รวดเร็ว ลึกซึ้ง และมีพรสวรรค์ในการถ่ายทอดความรู้</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>🐎 ดาวอี้หม่า (驛馬星 - ม้าสวรรค์):</strong>
+              <p>ดาวแห่งการเดินทางไกล การเคลื่อนไหว และการค้าต่างแดน ทำให้มีโอกาสประสบความสำเร็จสูงหากได้เดินทาง ออกนอกพื้นที่ หรือทำงานที่ต้องปรับตัวตลอดเวลา</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>👑 ดาวเจี้ยงซิ้ง (將星 - แม่ทัพ):</strong>
+              <p>ดาวแห่งอำนาจบารมี ความเป็นผู้นำ และการสั่งการ ช่วยเสริมความหนักแน่นและความน่าเชื่อถือในการปกครองบริวาร</p>
+            </div>
+          `;
+          break;
+        }
+
+        case 'dayun_year': {
+          const dy = c.daYunPillars.find(d => d.isCurrent) || c.daYunPillars[0];
+          title = `<i class="fa-solid fa-timeline" style="color: #7c3aed;"></i> เจาะลึกวัยจรปัจจุบัน & ปีจร 2026`;
+          tag = `ช่วงอายุ ${dy.ageRange} (${dy.stem.zh}${dy.branch.zh})`;
+          content = `
+            <div class="expert-point-card">
+              <strong>⏳ วัยจร 10 ปี (${dy.stem.zh}${dy.branch.zh} - ${dy.tenGod.zh}):</strong>
+              <p>กำลังเดินวัยจร <strong>${dy.stem.zh}${dy.branch.zh} (${dy.stem.py} ${dy.branch.py})</strong> ซึ่งมีสิบลักษณ์เป็น <strong>${dy.tenGod.zh} (${dy.tenGod.th})</strong> เป็นช่วงเวลาแห่งการพัฒนาศักยภาพครั้งใหญ่ ท้าทาย แต่เปิดโอกาสให้อำนาจบารมีเติบโตสูงสุด</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>🔥 ความสัมพันธ์กับปีจร 2026 (丙午 - ม้าไฟ):</strong>
+              <p>ปี 2026 เป็นปีธาตุไฟบริสุทธิ์ (丙午) กิ่งฟ้าเป็น 丙 (ช่วงชิงทรัพย์/พี่น้องมิตรภาพ) กิ่งดินเป็น 午 (ไฟม้า) ช่วยเพิ่มกำลังวังชาให้ดิถี ${c.dayMaster.zh} มีพลังรุกไปข้างหน้า กล้าตัดสินใจ และมีคนร่วมอุดมการณ์มากมาย</p>
+            </div>
+          `;
+          break;
+        }
+
+        case 'huasha': {
+          title = `<i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> หลักการแก้ดวง & พลิกวิกฤต (化煞指南)`;
+          tag = `การปรับสมดุลธาตุ & ฮวงจุ้ย`;
+          content = `
+            <div class="expert-point-card">
+              <strong>💧 1. ใช้น้ำชโลมดวง (เตี้ยวโฮ่ว):</strong>
+              <p>จัดโต๊ะทำงานให้หันไปทาง <strong>ทิศเหนือ</strong> หรือมีน้ำพุ/ตู้ปลา/น้ำสะอาดวางอยู่ทางทิศเหนือเพื่อหมุนเวียนพลัง และใช้เครื่องแต่งกายสีฟ้า น้ำเงิน ดำ เพื่อเสริมความเยือกเย็นรอบคอบ</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>🌿 2. ใช้ธาตุไม้เป็นสะพานเชื่อม (通關):</strong>
+              <p>หากมีจุดปะทะระหว่างทองกับไม้ ให้ใช้ธาตุน้ำเพื่อดูดซับแรงกระแทกจากทอง แล้วส่งต่อพลังไปสร้างไม้ ทำให้ความขัดแย้งเปลี่ยนเป็นความคิดสร้างสรรค์และโอกาสใหม่ๆ</p>
+            </div>
+            <div class="expert-point-card">
+              <strong>🧘 3. การปฏิบัติตนและจิตวิญญาณ:</strong>
+              <p>ฝึกสมาธิ การหายใจลึกๆ และหลีกเลี่ยงการตัดสินใจเรื่องใหญ่ในยามอารมณ์ร้อน ดวงนี้เมื่อจิตใจสงบนิ่ง แสงเทียน 丁 จะส่องสว่างสะท้อนผิวน้ำอย่างงดงาม นำพาสู่ความสำเร็จสูงสุด</p>
+            </div>
+          `;
+          break;
+        }
+      }
+
+      resultBox.innerHTML = `
+        <div class="expert-result-header">
+          <div class="expert-result-title">${title}</div>
+          <span class="expert-result-tag">${tag}</span>
+        </div>
+        <div class="expert-result-content">
+          ${content}
+        </div>
+      `;
+    },
+
+    runCustomExpertQuery: function () {
+      const inputEl = document.getElementById('baziExpertCustomInput');
+      const resultBox = document.getElementById('baziExpertQueryResult');
+      const runBtn = document.getElementById('baziRunCustomQueryBtn');
+      if (!resultBox || !this.currentChart) return;
+
+      const c = this.currentChart;
+      const rawQ = inputEl ? inputEl.value.trim() : '';
+      const q = rawQ.toLowerCase();
+
+      // Ensure result box is visible and trigger smooth animation
+      resultBox.style.display = 'block';
+      resultBox.classList.remove('expert-result-animate');
+      void resultBox.offsetWidth;
+      resultBox.classList.add('expert-result-animate');
+
+      if (runBtn) {
+        runBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณวิเคราะห์';
+        runBtn.disabled = false;
+      }
+
+      // ตรวจสอบกรณีไม่ได้พิมพ์คำถาม
+      if (!rawQ) {
+        resultBox.innerHTML = `
+          <div class="expert-result-header" style="border-bottom: 1px solid rgba(124, 58, 237, 0.25);">
+            <div class="expert-result-title" style="color: #7c3aed;">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i> พร้อมคำนวณและทำนายดวงชะตาตามศาสตร์ปาจื่อ
+            </div>
+            <span class="expert-result-tag" style="background: rgba(124, 58, 237, 0.12); color: #7c3aed;">กรุณาพิมพ์คำถาม</span>
+          </div>
+          <div class="expert-verdict-banner" style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(168, 85, 247, 0.04) 100%); border: 1px solid rgba(124, 58, 237, 0.3);">
+            <div class="verdict-left">
+              <div class="verdict-icon">🔮</div>
+              <div>
+                <div class="verdict-text-main" style="color: #5b21b6;">กรุณาระบุคำถามที่ต้องการให้ AI วิเคราะห์</div>
+                <div class="verdict-text-sub">พิมพ์คำถามในช่องด้านบน หรือคลิกเลือก <strong>"คำถามยอดนิยม"</strong> เพื่อเริ่มคำนวณตามหลักวิชาปาจื่อ</div>
+              </div>
+            </div>
+          </div>
+          <div class="expert-point-card" style="border-left-color: #7c3aed; background: #faf5ff;">
+            <strong style="color: #6b21a8;">🎯 คำถามตัวอย่างที่สามารถคำนวณตามหลักวิชาปาจื่อ (คลิกเพื่อเลือกถามทันที):</strong>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+              <div>• <strong>เรื่องการงาน/โยกย้าย:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('สิ้นปีนี้มีเปลี่ยนงานหรือไม่')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"สิ้นปีนี้มีเปลี่ยนงานหรือไม่"</a></div>
+              <div>• <strong>เรื่องการเงิน/โชคลาภ:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร"</a></div>
+              <div>• <strong>เรื่องความรัก/คู่ครอง:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('จังหวะความรักและคู่ครองเป็นอย่างไร')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"จังหวะความรักและคู่ครองเป็นอย่างไร"</a></div>
+              <div>• <strong>เรื่องสุขภาพ/ระวังตัว:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('สุขภาพและอวัยวะที่ต้องระวังปีนี้')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"สุขภาพและอวัยวะที่ต้องระวังปีนี้"</a></div>
+              <div>• <strong>ระบุปีเฉพาะเจาะจง:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('ปี 2027 ดวงชะตาเป็นอย่างไร')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"ปี 2027 ดวงชะตาเป็นอย่างไร"</a></div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // 1. ตรวจสอบความชัดเจนของคำถาม (ถ้าคำถามไม่ชัดเจน ไม่สามารถวิเคราะห์ได้ ให้ถามกลับ)
+        const hasCareer = /งาน|เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|เลื่อนตำแหน่ง|ตกงาน|สิ้นปี|ปลายปี|บริษัท|สอบ|ราชการ|ทำงาน|อาชีพ|ธุรกิจ|ค้าขาย|กิจการ|career|job|ย้าย|ตำแหน่ง/.test(q);
+        const hasWealth = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|กำไร|ขาดทุน|บ้าน|รถ|ทอง|wealth|money|รายได้|การเงิน|ค้าขาย/.test(q);
+        const hasLove = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|ชู้|ครอบครัว|love|marry|คนรัก|เนื้อคู่|ความรัก/.test(q);
+        const hasHealth = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|นอน|เครียด|หมอ|health|sick|ปอด|ตับ|ร่างกาย/.test(q);
+        const hasTimingOrDestiny = /(20\d\d|25\d\d|ปีนี้|ปีหน้า|ปีที่แล้ว|ชะตา|ดวง|เคราะห์|เกณฑ์|อนาคต|วาสนา|destiny|ภาพรวม)/.test(q);
+
+        const isUnclear = rawQ.length < 2
+          || /^[\d\s.,!?@#$%^&*()_+\-=\[\]{};':"\\|<>\/]+$/.test(rawQ)
+          || /^(55+|ฮ่า+|555|abc|test|ทดสอบ|อะไร|ยังไง|ดีไหม|ดูดวง|หมอดู|ก|ข|ค|ไก่|hello|hi|สวัสดี)$/i.test(rawQ)
+          || (!hasCareer && !hasWealth && !hasLove && !hasHealth && !hasTimingOrDestiny);
+
+        if (isUnclear) {
+          resultBox.innerHTML = `
+            <div class="expert-result-header" style="border-bottom: 1px solid rgba(245, 158, 11, 0.25);">
+              <div class="expert-result-title" style="color: #b45309;">
+                <i class="fa-solid fa-circle-question" style="color: #f59e0b;"></i> คำถามยังไม่ชัดเจนเพียงพอสำหรับการคำนวณปาจื่อ
+              </div>
+              <span class="expert-result-tag" style="background: rgba(245, 158, 11, 0.12); color: #b45309;">กรุณาระบุประเด็นเพิ่มเติม</span>
+            </div>
+            <div class="expert-verdict-banner" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(251, 191, 36, 0.04) 100%); border: 1px solid rgba(245, 158, 11, 0.3);">
+              <div class="verdict-left">
+                <div class="verdict-icon">💡</div>
+                <div>
+                  <div class="verdict-text-main" style="color: #92400e;">ระบบยังไม่สามารถวิเคราะห์ได้ เนื่องจากข้อความสั้นหรือคลุมเครือเกินไป</div>
+                  <div class="verdict-text-sub">กรุณาระบุ <strong>เรื่องที่ต้องการถาม</strong> (เช่น การงาน/เปลี่ยนงาน, การเงิน, ความรัก, สุขภาพ) และ <strong>ช่วงเวลาหรือปีที่สนใจ</strong></div>
+                </div>
+              </div>
+            </div>
+            <div class="expert-point-card" style="border-left-color: #f59e0b; background: #fffbeb;">
+              <strong style="color: #92400e;">🎯 ตัวอย่างคำถามที่สามารถคำนวณและทำนายได้อย่างแม่นยำ (คลิกเพื่อเลือกถามทันที):</strong>
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+                <div>• <strong>เรื่องการงาน/โยกย้าย:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('สิ้นปีนี้มีเปลี่ยนงานหรือไม่')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"สิ้นปีนี้มีเปลี่ยนงานหรือไม่"</a></div>
+                <div>• <strong>เรื่องการเงิน/โชคลาภ:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร"</a></div>
+                <div>• <strong>เรื่องความรัก/คู่ครอง:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('จังหวะความรักและคู่ครองเป็นอย่างไร')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"จังหวะความรักและคู่ครองเป็นอย่างไร"</a></div>
+                <div>• <strong>เรื่องสุขภาพ/ระวังตัว:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('สุขภาพและอวัยวะที่ต้องระวังปีนี้')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"สุขภาพและอวัยวะที่ต้องระวังปีนี้"</a></div>
+                <div>• <strong>ระบุปีเฉพาะเจาะจง:</strong> <a href="javascript:void(0)" onclick="window.BaziApp.fillAndRunCustomQuery('ปี 2027 ดวงชะตาเป็นอย่างไร')" style="color: #7c3aed; font-weight: 600; text-decoration: underline;">"ปี 2027 ดวงชะตาเป็นอย่างไร"</a></div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // 2. ตรวจสอบปีเป้าหมายจากข้อความคำถาม
+        let simY = this.selectedYear || new Date().getFullYear() || 2026;
+        const beMatch = q.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
+        const ceMatch = q.match(/(?:ปี\s*)?(20\d{2})/);
+        if (ceMatch) {
+          simY = parseInt(ceMatch[1], 10);
+        } else if (beMatch) {
+          simY = parseInt(beMatch[1], 10) - 543;
+        } else if (q.includes('ปีหน้า')) {
+          simY = (new Date().getFullYear() || 2026) + 1;
+        } else if (q.includes('ปีที่แล้ว')) {
+          simY = (new Date().getFullYear() || 2026) - 1;
+        }
+
+        // คำนวณหลักปีจรเป้าหมาย (Tai Sui)
+        const sIdx = ((simY - 4) % 10 + 10) % 10;
+        const bIdx = ((simY - 4) % 12 + 12) % 12;
+        const simStem = STEMS[sIdx];
+        const simBranch = BRANCHES[bIdx];
+        const simStemGod = getTenGod(c.dayMaster, simStem);
+        const simBranchMainStem = STEMS.find(s => s.zh === simBranch.hidden[0].stem) || simStem;
+        const simBranchGod = getTenGod(c.dayMaster, simBranchMainStem);
+        const simNaYin = getNaYin(sIdx, bIdx);
+
+        // คำนวณวัยจรเป้าหมาย (Active Da Yun for simY)
+        const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+        const ageInYear = simY - birthYear;
+        let curDaYun = (c.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+        if (!curDaYun && c.daYunPillars && c.daYunPillars.length > 0) {
+          if (ageInYear < c.daYunPillars[0].ageFrom) {
+            curDaYun = {
+              ageRange: `0 - ${c.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์ก่อนเข้าวัยจร)`,
+              stem: c.pillars.month.stem,
+              branch: c.pillars.month.branch,
+              tenGod: c.pillars.month.tenGod,
+              naYin: c.pillars.month.naYin
+            };
+          } else {
+            curDaYun = c.daYunPillars[c.daYunPillars.length - 1];
+          }
+        }
+
+        // คำนวณการปะทะ / สมพงศ์ ระหว่างปีจรกับพื้นดวง 4 เสา
+        const clashMonth = checkBranchClash(simBranch.zh, c.pillars.month.branch.zh);
+        const clashDay = checkBranchClash(simBranch.zh, c.pillars.day.branch.zh);
+        const clashYear = checkBranchClash(simBranch.zh, c.pillars.year.branch.zh);
+        const clashHour = checkBranchClash(simBranch.zh, c.pillars.hour.branch.zh);
+
+        const harmMonth = checkBranchHarmony(simBranch.zh, c.pillars.month.branch.zh);
+        const harmDay = checkBranchHarmony(simBranch.zh, c.pillars.day.branch.zh);
+        const harmYear = checkBranchHarmony(simBranch.zh, c.pillars.year.branch.zh);
+        const harmHour = checkBranchHarmony(simBranch.zh, c.pillars.hour.branch.zh);
+
+        const dyClash = curDaYun ? checkBranchClash(simBranch.zh, curDaYun.branch.zh) : null;
+        const dyHarm = curDaYun ? checkBranchHarmony(simBranch.zh, curDaYun.branch.zh) : null;
+
+        // คำนวณดาวจรและดาวในผัง
+        const monthHasYiMa = (c.pillars.month.stars || []).some(s => s.name.includes('驛馬'));
+        const dayHasYiMa = (c.pillars.day.stars || []).some(s => s.name.includes('驛馬'));
+        const yiMaMap = {
+          '申': '寅', '子': '寅', '辰': '寅',
+          '寅': '申', '午': '申', '戌': '申',
+          '巳': '亥', '酉': '亥', '丑': '亥',
+          '亥': '巳', '卯': '巳', '未': '巳'
+        };
+        const isYearYiMa = (yiMaMap[c.pillars.year.branch.zh] === simBranch.zh || yiMaMap[c.pillars.day.branch.zh] === simBranch.zh);
+        const monthHasTianYi = (c.pillars.month.stars || []).some(s => s.name.includes('天乙'));
+        const dayHasWenChang = (c.pillars.day.stars || []).some(s => s.name.includes('文昌'));
+        const dayHasTaoHua = (c.pillars.day.stars || []).some(s => s.name.includes('桃花'));
+
+        // คำนวณ 12 สารทของปีเป้าหมายจริง
+        const allMonths = BaziEngine.calculateMonthlyFortune(c, simY);
+        let selectedMonths = [];
+        let timelineLabel = '';
+        if (q.includes('สิ้นปี') || q.includes('ปลายปี')) {
+          selectedMonths = allMonths.slice(8, 12);
+          timelineLabel = `ไทม์ไลน์สารท 4 เดือนปลายปี ${simY} (เจาะลึกจุดเปลี่ยนสำคัญ)`;
+        } else if (q.includes('ต้นปี')) {
+          selectedMonths = allMonths.slice(0, 4);
+          timelineLabel = `ไทม์ไลน์สารท 4 เดือนต้นปี ${simY} (จังหวะการเริ่มต้น)`;
+        } else if (q.includes('กลางปี')) {
+          selectedMonths = allMonths.slice(4, 8);
+          timelineLabel = `ไทม์ไลน์สารท 4 เดือนกลางปี ${simY} (จังหวะขับเคลื่อน)`;
+        } else {
+          selectedMonths = [allMonths[0], allMonths[3], allMonths[7], allMonths[10]].filter(Boolean);
+          if (selectedMonths.length < 4) selectedMonths = allMonths.slice(0, 4);
+          timelineLabel = `ไทม์ไลน์สารท 4 ไตรมาสหลักของปี ${simY}`;
+        }
+
+        let topicTitle = '';
+        let verdictBanner = '';
+        let topicAnalysis = '';
+
+        // แยกประเภทประเด็นคำถาม
+        const isJobChangeQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|ย้ายหน้าที่|ย้ายสายงาน/.test(q) || (/งาน/.test(q) && /สิ้นปี|ปลายปี|เปลี่ยน|ย้าย/.test(q));
+        const isWealthQuery = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|ทอง|ค้าขาย|กำไร/.test(q);
+        const isLoveQuery = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|คู่ครอง|เนื้อคู่/.test(q);
+        const isHealthQuery = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|ปอด|ตับ|เครียด/.test(q);
+
+        if (isJobChangeQuery) {
+          // --- หมวดเปลี่ยนงาน / โยกย้าย ---
+          let prob = 48;
+          if (clashMonth) prob += 24;
+          if (monthHasYiMa || isYearYiMa) prob += 16;
+          if (simStemGod.zh === '傷官' || simStemGod.zh === '七殺') prob += 14;
+          if (harmMonth) prob += 10;
+          if (dyClash) prob += 10;
+          if (checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)) prob += 8;
+          prob = Math.min(94, Math.max(32, prob));
+
+          const peakMonth = selectedMonths.find(m => m.ratingType === 'clash') || selectedMonths[2] || selectedMonths[0];
+          topicTitle = `คำนวณปาจื่อเจาะลึก: เกณฑ์การเปลี่ยนงาน & โยกย้ายหน้าที่ช่วง${q.includes('สิ้นปี') ? 'สิ้นปี ' : ''}${simY}`;
+
+          verdictBanner = `
+            <div class="expert-verdict-banner">
+              <div class="verdict-left">
+                <div class="verdict-icon">🐎</div>
+                <div>
+                  <div class="verdict-text-main">คำวินิจฉัยปาจื่อ: มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่รับผิดชอบ ${prob >= 75 ? 'สูงมาก (ฟันธงตามผังดวง)' : 'ปานกลาง (มีโอกาสปรับบทบาท)'}</div>
+                  <div class="verdict-text-sub">ช่วงเวลาที่มีแรงส่งและโอกาสสูงสุด: <strong>${peakMonth ? ((peakMonth.title || peakMonth.solarTh || peakMonth.labelDate || '').split('(')[0].trim() || 'ช่วงปลายปี') : 'ช่วงปลายปี'} ${simY} (${peakMonth ? peakMonth.stem.zh + peakMonth.branch.zh : ''})</strong></div>
+                </div>
+              </div>
+              <div class="verdict-prob-badge" style="background: ${prob >= 75 ? 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' : '#2563eb'};">โอกาสเปลี่ยนงาน ${prob}%</div>
+            </div>
+          `;
+
+          const natalClashText = checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)
+            ? `• <strong>จุดปะทะในดวงเดิม (${c.pillars.year.branch.zh} 沖 ${c.pillars.month.branch.zh}):</strong> เสาปีปะทะเสาเดือน บ่งชี้ว่าสภาพแวดล้อมการทำงานมักมีการปรับเปลี่ยนเพื่อเติบโตสู่ระดับที่สูงขึ้นเสมอ`
+            : `• <strong>โครงสร้างเสาเดิม:</strong> เสาเดือนเป็น ${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} มีความมั่นคงในบทบาทเดิม แต่พร้อมขยับขยายเมื่อมีพลังกระตุ้นจากปีจร`;
+
+          topicAnalysis = `
+            <div class="expert-point-card">
+              <strong>🐎 1. สัญญาณการโยกย้ายในผัง 4 เสาเดิม (Natal Mobility Indicators):</strong>
+              <p>• <strong>เสาเดือน (${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} / กุมภพการงาน):</strong> ${monthHasYiMa ? `มีดาว <strong>驛馬 (ม้าสวรรค์)</strong> สถิตอยู่ในกิ่งดิน <strong>${c.pillars.month.branch.zh} (${c.pillars.month.branch.zodiac.split(' ')[0]})</strong> ซึ่งเป็นดาวแห่งการเดินทางไกล การโยกย้ายตำแหน่ง และความคล่องตัวสูง` : `กิ่งดิน ${c.pillars.month.branch.zh} (${c.pillars.month.branch.zodiac.split(' ')[0]}) เป็นฐานการทำงานหลัก มีสิบเทพเป็น ${c.pillars.month.tenGod.zh} (${c.pillars.month.tenGod.th})`}<br>
+              ${natalClashText}</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>⚡ 2. ปัจจัยเร่งจากวัยจรปัจจุบัน (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : ''}) และปีจร ${simY} (${simStem.zh}${simBranch.zh}):</strong>
+              <p>• <strong>วัยจร ${curDaYun ? `${curDaYun.stem.zh}${curDaYun.branch.zh} (อายุ ${curDaYun.ageRange})` : ''}:</strong> มีสิบเทพเป็น <strong>${curDaYun ? curDaYun.tenGod.zh + ' (' + curDaYun.tenGod.th + ')' : ''}</strong> ${dyClash ? `<span style="color: #ef4444; font-weight: 700;">(มีจุดปะทะกับปีจร ${simBranch.zh}: จุดเปลี่ยนผันใหญ่)</span>` : 'คอยประคับประคองกระแสชีวิต'}<br>
+              • <strong>ปีจร ${simY} (${simStem.zh}${simBranch.zh}):</strong> ก้านฟ้าเป็น ${simStem.zh} (${simStemGod.zh} - ${simStemGod.th}) มีบทบาทกระตุ้นดิถี ${c.dayMaster.zh} (${c.dayMaster.element}) ${clashMonth ? `<span style="color: #ef4444; font-weight: 700;">พร้อมมีพลังปะทะเสาการงาน (${simBranch.zh} 沖 ${c.pillars.month.branch.zh})</span> ทำให้เกิดแรงขับดันให้อยากเปลี่ยนบรรยากาศหรือก้าวสู่ความท้าทายใหม่` : 'เสริมสร้างโอกาสความมั่นคง'}</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>📅 3. ${timelineLabel}:</strong>
+              <div class="expert-timeline-wrap">
+                ${selectedMonths.map((m, idx) => `
+                  <div class="expert-timeline-step" ${m.ratingType === 'clash' ? 'style="border-top-color: #ef4444; background: #fff1f2;"' : ''}>
+                    <div class="step-time">
+                      <span ${m.ratingType === 'clash' ? 'style="color: #e11d48; font-weight: 700;"' : ''}>สารท ${m.labelDate.split(' ')[1]} ${m.ratingType === 'clash' ? '★ พีคสุด' : ''}</span>
+                      <span ${m.ratingType === 'clash' ? 'style="color: #e11d48;"' : ''}>${m.branch.zodiac.split(' ')[0]} (${m.stem.zh}${m.branch.zh})</span>
+                    </div>
+                    <div><strong>${m.stemGod.zh} (${m.stemGod.th}):</strong> ${m.ratingType === 'clash' ? 'จุดเปลี่ยนผ่านสำคัญ มีพลังปะทะกระตุ้นการตัดสินใจเด็ดขาด ยื่นใบลาออกหรือเซ็นสัญญาใหม่' : m.ratingType === 'auspicious' ? 'พลังธาตุเกื้อหนุนดวงชะตา มีผู้ใหญ่ติดต่อยื่นข้อเสนอ หรือสัมภาษณ์ราบรื่น' : 'เจรจาขอบเขตงาน เริ่มวางแผนและเตรียม Portfolio ล่วงหน้า'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>💡 4. คำแนะนำเชิงกลยุทธ์สำหรับหมอดู (Astrologer Consultation Guide):</strong>
+              <p>1. <strong>ผลลัพธ์ของการย้าย:</strong> ใช้พลังธาตุปรับดวง <strong>${ELEMENTS_META[c.tiaoHou.element].th}</strong> ควบคู่กับธาตุให้คุณ <strong>${c.favorableElements.map(k => ELEMENTS_META[k].th).join(', ')}</strong> หนุนนำให้ได้งานใหม่ที่มีความสุขและเติบโตระยะยาว<br>
+              2. <strong>ข้อควรระวัง:</strong> อย่าเพิ่งยื่นใบลาออกด้วยอารมณ์ก่อนมีหนังสือสัญญาตอบรับที่แน่นอน โดยเฉพาะช่วงเดือนที่มีจุดปะทะ ควรเตรียมเอกสารให้พร้อมล่วงหน้า 1-2 เดือน</p>
+            </div>
+          `;
+        } else if (isWealthQuery) {
+          // --- หมวดการเงิน / โชคลาภ / ลงทุน ---
+          const dmElem = c.dayMaster.element;
+          const wealthElem = ELEMENTS_META[dmElem].controls;
+          const wealthMeta = ELEMENTS_META[wealthElem];
+          const wealthPct = c.elementPercentages[wealthElem] || 0;
+          const outputElem = ELEMENTS_META[dmElem].generates;
+          const outputMeta = ELEMENTS_META[outputElem];
+
+          let wealthScore = 3.8;
+          if (c.favorableElements.includes(simStem.element) || c.favorableElements.includes(simBranch.element)) wealthScore += 0.6;
+          if (simStemGod.zh === '正財' || simStemGod.zh === '偏財' || simStemGod.zh === '食神') wealthScore += 0.5;
+          if (clashDay || clashMonth) wealthScore -= 0.4;
+          wealthScore = Math.min(4.9, Math.max(2.5, wealthScore));
+
+          topicTitle = `คำนวณปาจื่อเจาะลึก: ฐานการเงิน โชคลาภ & การบริหารทรัพย์ปี ${simY}`;
+          verdictBanner = `
+            <div class="expert-verdict-banner">
+              <div class="verdict-left">
+                <div class="verdict-icon">💰</div>
+                <div>
+                  <div class="verdict-text-main">คำวินิจฉัยปาจื่อ: ฐานะการเงินหมุนเวียน ${wealthScore >= 4.0 ? 'คล่องตัวสูง มีเกณฑ์ได้เงินก้อนจากผลงาน' : 'ต้องวางแผนรอบคอบ ป้องกันรายจ่ายจร'}</div>
+                  <div class="verdict-text-sub">ธาตุโชคลาภคือ <strong>${wealthMeta.th} (${wealthMeta.zh})</strong> คิดเป็นสัดส่วนในดวงเดิม ${wealthPct}% | ธาตุสร้างโอกาสคือ <strong>${outputMeta.th} (${outputMeta.zh})</strong></div>
+                </div>
+              </div>
+              <div class="verdict-prob-badge" style="background: #10b981;">ดัชนีโชคลาภ ${wealthScore.toFixed(1)}/5</div>
+            </div>
+          `;
+
+          topicAnalysis = `
+            <div class="expert-point-card">
+              <strong>💎 1. ศักยภาพการสร้างความมั่งคั่งในดวงเดิม:</strong>
+              <p>ดวงนี้มีพลังธาตุโชคลาภ (${wealthMeta.th}) คิดเป็นสัดส่วน <strong>${wealthPct}%</strong> และพลังธาตุผลิตทรัพย์ (${outputMeta.th}) คิดเป็นสัดส่วน <strong>${c.elementPercentages[outputElem] || 0}%</strong> บ่งบอกว่าเป็นคนมีสายตาเฉียบแหลมในการหาโอกาสทางธุรกิจ และมีความสามารถเฉพาะตัวที่เปลี่ยนเป็นมูลค่าได้ดี</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>🔥 2. ผลกระทบจากปีจร ${simY} (${simStem.zh}${simBranch.zh} - ${simStemGod.th}):</strong>
+              <p>ในปี ${simY} ก้านฟ้าเป็น ${simStem.zh} (${simStemGod.zh}) ${c.favorableElements.includes(simStem.element) ? 'ซึ่งเป็นธาตุให้คุณ ช่วยเสริมความมั่นใจและการปิดดีลธุรกิจ' : 'ควรระวังเรื่องรายจ่ายจร หรือการลงทุนที่มีความเสี่ยงสูง'} ${clashDay ? '<span style="color: #ef4444; font-weight: 700;">(ปีจรปะทะเสาวัน ควรระวังเรื่องสัญญาทางการเงินกับคนใกล้ชิด)</span>' : 'กระแสการเงินหมุนเวียนสม่ำเสมอ'}</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>📈 3. ${timelineLabel}:</strong>
+              <div class="expert-timeline-wrap">
+                ${selectedMonths.map(m => `
+                  <div class="expert-timeline-step" ${m.ratingType === 'auspicious' ? 'style="border-top-color: #10b981; background: #f0fdf4;"' : ''}>
+                    <div class="step-time">
+                      <span ${m.ratingType === 'auspicious' ? 'style="color: #059669; font-weight: 700;"' : ''}>สารท ${m.labelDate.split(' ')[1]}</span>
+                      <span ${m.ratingType === 'auspicious' ? 'style="color: #059669;"' : ''}>${m.stem.zh}${m.branch.zh}</span>
+                    </div>
+                    <div><strong>${m.stemGod.zh} (${m.stemGod.th}):</strong> ${m.ratingType === 'auspicious' ? 'ช่วงทองของการเงินและสภาพคล่อง มีกระแสเงินสดเข้ามาเด่นชัด' : m.ratingType === 'clash' ? 'มีเกณฑ์จ่ายเงินก้อนเพื่อการลงทุน หรือซ่อมแซมสิ่งของ ควรวางแผนงบประมาณ' : 'รายได้คงที่ ควบคุมรายจ่ายตามแผนงาน'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>⚖️ 4. กลยุทธ์การบริหารทรัพย์สำหรับหมอดู:</strong>
+              <p>แนะนำให้ใช้ธาตุปรับดวง <strong>${ELEMENTS_META[c.tiaoHou.element].th}</strong> เพื่อควบคุมสมดุลความโลภและการตัดสินใจ เปลี่ยนเงินสดเป็นสินทรัพย์ถาวร หรือออมในกองทุนมั่นคงเพื่อป้องกันเงินรั่วไหล</p>
+            </div>
+          `;
+        } else if (isLoveQuery) {
+          // --- หมวดความรัก / คู่ครอง ---
+          const spouseBranch = c.pillars.day.branch;
+          let loveText = harmDay ? 'มีเกณฑ์พบรัก สมหวัง หรือความสัมพันธ์พัฒนาสู่ความมั่นคงสูง' : clashDay ? 'ต้องระวังความใจร้อน ความขัดแย้ง และอารมณ์เปราะบาง' : 'ความสัมพันธ์ดำเนินไปอย่างราบรื่น อบอุ่น';
+          let loveBadge = harmDay ? 'สมพงศ์ส่งเสริม' : clashDay ? 'เฝ้าระวังอารมณ์' : 'ราบรื่นมั่นคง';
+
+          topicTitle = `คำนวณปาจื่อเจาะลึก: ความรัก คู่ครอง & ชีวิตคู่ปี ${simY}`;
+          verdictBanner = `
+            <div class="expert-verdict-banner">
+              <div class="verdict-left">
+                <div class="verdict-icon">💖</div>
+                <div>
+                  <div class="verdict-text-main">คำวินิจฉัยปาจื่อ: ${loveText}</div>
+                  <div class="verdict-text-sub">เรือนคู่ครอง (เสาวัน): <strong>${spouseBranch.zh} (${spouseBranch.zodiac.split(' ')[0]} - ธาตุ${spouseBranch.element})</strong> ${dayHasWenChang ? 'สถิตด้วยดาวบุ๋นชัง (ปัญญาบัณฑิต)' : ''} ${dayHasTaoHua ? 'สถิตด้วยดาวดอกท้อ (เสน่ห์เมตตา)' : ''}</div>
+                </div>
+              </div>
+              <div class="verdict-prob-badge" style="background: #ec4899;">เกณฑ์ความรัก: ${loveBadge}</div>
+            </div>
+          `;
+
+          topicAnalysis = `
+            <div class="expert-point-card">
+              <strong>❤️ 1. สภาพเรือนคู่ครองในดวงเดิม:</strong>
+              <p>เสาวัน <strong>${c.pillars.day.stem.zh}${c.pillars.day.branch.zh}</strong> ฐานที่นั่งของคู่ครองเป็น <strong>${spouseBranch.zh} (${spouseBranch.zodiac.split(' ')[0]})</strong> คู่ครองมักเป็นคนฉลาด คล่องแคล่ว มีบทบาทช่วยสนับสนุนทั้งเรื่องส่วนตัวและหน้าที่การงาน</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>⚖️ 2. ปฏิสัมพันธ์กับปีจร ${simY} (${simBranch.zh}):</strong>
+              <p>${harmDay ? `กิ่งดินปีจร ${simBranch.zh} ฮะสมพงศ์กับเสาวัน (${harmDay.name}) นำมาซึ่งความผูกพันและโอกาสเริ่มต้นความสัมพันธ์ใหม่ที่จริงจัง` : clashDay ? `กิ่งดินปีจร ${simBranch.zh} มีจุดปะทะกับเสาวัน (${clashDay.th}) ควรระวังคำพูดและการคาดหวังสูงเกินไป ให้พื้นที่ส่วนตัวแก่กัน` : `พลังงานปีจรกับเรือนคู่ครองส่งเสริมกันอย่างเรียบง่าย ไม่มีจุดปะทะรุนแรง`}</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>📅 3. ${timelineLabel}:</strong>
+              <div class="expert-timeline-wrap">
+                ${selectedMonths.map(m => `
+                  <div class="expert-timeline-step" ${m.ratingType === 'auspicious' ? 'style="border-top-color: #ec4899; background: #fdf2f8;"' : ''}>
+                    <div class="step-time"><span>สารท ${m.labelDate.split(' ')[1]}</span><span>${m.stem.zh}${m.branch.zh}</span></div>
+                    <div><strong>${m.stemGod.zh}:</strong> ${m.ratingType === 'auspicious' ? 'จังหวะเสน่ห์เปิดกว้าง ได้พบปะหรือใช้เวลาคุณภาพร่วมกัน' : m.ratingType === 'clash' ? 'ควรใจเย็น หลีกเลี่ยงการหยิบยกเรื่องอดีตมาถกเถียง' : 'ความสัมพันธ์ดำเนินไปอย่างมั่นคง'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else if (isHealthQuery) {
+          // --- หมวดสุขภาพ / เบญจธาตุ ---
+          const elemPcts = c.elementPercentages;
+          const weakestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] < elemPcts[b] ? a : b);
+          const strongestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] > elemPcts[b] ? a : b);
+
+          topicTitle = `คำนวณปาจื่อเจาะลึก: สมดุลเบญจธาตุ & สุขภาพตามแพทย์จีนปี ${simY}`;
+          verdictBanner = `
+            <div class="expert-verdict-banner">
+              <div class="verdict-left">
+                <div class="verdict-icon">🩺</div>
+                <div>
+                  <div class="verdict-text-main">คำวินิจฉัยปาจื่อ: เฝ้าระวังอวัยวะธาตุ${ELEMENTS_META[weakestElem].th} (${ELEMENTS_META[weakestElem].organ}) และการพักผ่อน</div>
+                  <div class="verdict-text-sub">ธาตุที่น้อยที่สุดคือ <strong>${ELEMENTS_META[weakestElem].th} (${elemPcts[weakestElem]}%)</strong> | ธาตุที่เข้มข้นสูงสุดคือ <strong>${ELEMENTS_META[strongestElem].th} (${elemPcts[strongestElem]}%)</strong></div>
+                </div>
+              </div>
+              <div class="verdict-prob-badge" style="background: #0284c7;">เกณฑ์สุขภาพ: เฝ้าระวังสมดุล</div>
+            </div>
+          `;
+
+          topicAnalysis = `
+            <div class="expert-point-card">
+              <strong>🫀 1. อวัยวะที่ต้องดูแลตามหลักเบญจธาตุแพทย์จีน:</strong>
+              <p>• <strong>ระบบ${ELEMENTS_META[weakestElem].organ} (${ELEMENTS_META[weakestElem].th}):</strong> เนื่องจากมีสัดส่วนเพียง ${elemPcts[weakestElem]}% จึงควรบำรุงและหลีกเลี่ยงพฤติกรรมเสี่ยงที่กระทบอวัยวะนี้<br>
+              • <strong>ระบบ${ELEMENTS_META[strongestElem].organ} (${ELEMENTS_META[strongestElem].th}):</strong> มีสัดส่วนสูงถึง ${elemPcts[strongestElem]}% อาจมีความร้อนสะสมหรือความตึงเครียดสูง ควรระบายพลังงานด้วยการออกกำลังกายสม่ำเสมอ</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>🌿 2. อิทธิพลปีจร ${simY} (${simStem.zh}${simBranch.zh}):</strong>
+              <p>ในปี ${simY} ธาตุของปีจรคือ ${simStem.element} และ ${simBranch.element} ${clashDay ? '<span style="color: #ef4444; font-weight: 700;">มีจุดปะทะกับเสาวัน (สุขภาพกายใจ) ควรเน้นการนอนหลับให้เพียงพอและงดทำงานหามรุ่งหามค่ำ</span>' : 'ช่วยปรับกระแสชี่ให้หมุนเวียนราบรื่น'}</p>
+            </div>
+          `;
+        } else {
+          // --- หมวดทั่วไป / ภาพรวมดวงชะตาปีเป้าหมาย ---
+          topicTitle = rawQ ? `ผลการคำนวณวิเคราะห์เจาะลึก: "${rawQ}" (ปี ${simY})` : `ผลการคำนวณจำลองปีจร ${simY} (${simStem.zh}${simBranch.zh})`;
+          verdictBanner = `
+            <div class="expert-verdict-banner">
+              <div class="verdict-left">
+                <div class="verdict-icon">🔮</div>
+                <div>
+                  <div class="verdict-text-main">ผลการคำนวณจำลองปีจร ${simY} (${simStem.zh}${simBranch.zh} • ${simBranch.zodiac.split(' ')[0]})</div>
+                  <div class="verdict-text-sub">ก้านฟ้า: <strong>${simStem.zh} (${simStemGod.zh} - ${simStemGod.th})</strong> | กิ่งดิน: <strong>${simBranch.zh} (${simBranch.element})</strong> | นั่บอิม: <strong>${simNaYin.split(' ')[0]}</strong></div>
+                </div>
+              </div>
+              <div class="verdict-prob-badge" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">ดัชนีภาพรวม 4.3/5</div>
+            </div>
+          `;
+
+          topicAnalysis = `
+            <div class="expert-point-card">
+              <strong>🌌 1. การปฏิสัมพันธ์ฟ้าดินในรอบปี ${simY}:</strong>
+              <p>ในปี ${simY} พลังก้านฟ้าเป็น ${simStem.zh} (${simStemGod.th}) ส่งผลต่อมุมมอง ความคิด และการตัดสินใจ ขณะที่กิ่งดิน ${simBranch.zh} มีปฏิสัมพันธ์กับดวงชะตาเดิม ${clashMonth ? '<span style="color: #ef4444; font-weight: 700;">(ปะทะเสาการงาน มีการปรับเปลี่ยน)</span>' : clashDay ? '<span style="color: #ef4444; font-weight: 700;">(ปะทะเสาวัน เฝ้าระวังอารมณ์)</span>' : '<span style="color: #10b981; font-weight: 700;">(มีพลังส่งเสริมเกื้อหนุนอย่างราบรื่น)</span>'}</p>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>📅 2. ${timelineLabel}:</strong>
+              <div class="expert-timeline-wrap">
+                ${selectedMonths.map(m => `
+                  <div class="expert-timeline-step" ${m.ratingType === 'auspicious' ? 'style="border-top-color: #10b981; background: #f0fdf4;"' : m.ratingType === 'clash' ? 'style="border-top-color: #ef4444; background: #fff1f2;"' : ''}>
+                    <div class="step-time"><span>สารท ${m.labelDate.split(' ')[1]}</span><span>${m.stem.zh}${m.branch.zh}</span></div>
+                    <div><strong>${m.stemGod.zh} (${m.stemGod.th}):</strong> ${m.ratingType === 'auspicious' ? 'จังหวะมงคลยิ่ง ธาตุเกื้อหนุนดวงชะตา' : m.ratingType === 'clash' ? 'มีจุดปะทะกระตุ้นการเปลี่ยนแปลง ควรตัดสินใจด้วยความรอบคอบ' : 'กระแสไหลเวียนราบรื่นตามแผน'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <div class="expert-point-card">
+              <strong>⚖️ 3. กลยุทธ์การปรับใช้สำหรับหมอดู:</strong>
+              <p>เน้นการใช้ธาตุปรับดวง <strong>${ELEMENTS_META[c.tiaoHou.element].th}</strong> ควบคู่กับธาตุส่งเสริม <strong>${c.favorableElements.map(k => ELEMENTS_META[k].th).join(', ')}</strong> เพื่อสร้างสมดุลและดึงศักยภาพสูงสุดของเจ้าชะตาออกมาใช้ในทุกมิติ</p>
+            </div>
+          `;
+        }
+
+        resultBox.innerHTML = `
+          <div class="expert-result-header">
+            <div class="expert-result-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i> ${topicTitle}</div>
+            <span class="expert-result-tag">ปีที่คำนวณ: ${simY} (${simStem.zh}${simBranch.zh})</span>
+          </div>
+          ${verdictBanner}
+          <div class="expert-result-content">
+            ${topicAnalysis}
+          </div>
+        `;
+
+        // Smooth scroll to the result
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  };
+
+  // Expose globally
+  window.BaziEngine = BaziEngine;
+  window.BaziApp = BaziApp;
+
+  // Auto initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => BaziApp.init());
+  } else {
+    BaziApp.init();
+  }
+})();
