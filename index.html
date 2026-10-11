@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>DESTINY ARCANA - ระบบดูดวงด้วยไพ่ออนไลน์ (Standalone)</title>
   
   <!-- Google Fonts for premium Thai & English typography -->
@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261011_nav_v2">
+  <link rel="stylesheet" href="styles.css?v=20261011_nav_v3">
   
   <!-- html2pdf.js for exporting HTML to high-quality protected PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -77,7 +77,7 @@
       <!-- 1. Toolbar & Birth Input Card -->
       <section class="bazi-toolbar-card">
         <div class="bazi-input-group">
-          <div class="bazi-field" style="min-width: 170px;">
+          <div class="bazi-field bazi-field-profile">
             <label><i class="fa-solid fa-address-book"></i> เลือกลูกดวง:</label>
             <select id="baziQuickProfileSelect" class="bazi-quick-profile-select">
               <option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>
@@ -85,7 +85,7 @@
           </div>
           <div class="bazi-field">
             <label><i class="fa-solid fa-user"></i> ชื่อลูกดวง:</label>
-            <input type="text" id="baziNameInput" value="ดวงปัจจุบัน" placeholder="ชื่อ / นามสกุล" style="width: 130px;">
+            <input type="text" id="baziNameInput" value="ดวงปัจจุบัน" placeholder="ชื่อ / นามสกุล">
           </div>
           <div class="bazi-field">
             <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
@@ -104,7 +104,7 @@
           </div>
         </div>
 
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <div class="bazi-toolbar-actions">
           <button class="bazi-btn-secondary" id="baziPresetNowBtn" title="ใช้วันและเวลาปัจจุบัน">
             <i class="fa-solid fa-bolt"></i> ขณะนี้
           </button>
@@ -509,8 +509,8 @@
 
         <!-- Custom Query Form -->
         <div class="expert-custom-query-bar">
-          <div style="flex: 1; display: flex; gap: 8px; flex-wrap: wrap;">
-            <input type="text" id="baziExpertCustomInput" placeholder="พิมพ์คำถามที่ต้องการถาม... (เช่น 'สิ้นปีนี้มีเปลี่ยนงานหรือไม่', 'ปี 2026 การเงินเป็นอย่างไร', 'จังหวะความรัก', 'สุขภาพ')" value="" style="flex: 1; min-width: 240px;">
+          <div style="flex: 1; display: flex; width: 100%;">
+            <input type="text" id="baziExpertCustomInput" class="bazi-expert-custom-input" placeholder="พิมพ์คำถามที่ต้องการถาม... (เช่น 'สิ้นปีนี้มีเปลี่ยนงานหรือไม่', 'ปี 2026 การเงินเป็นอย่างไร', 'จังหวะความรัก', 'สุขภาพ')" value="">
           </div>
           <button class="bazi-btn-primary" id="baziRunCustomQueryBtn" onclick="window.BaziApp.runCustomExpertQuery()">
             <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณวิเคราะห์
@@ -1356,7 +1356,7 @@
   <!-- Load Bumji cards data (Bumji & The Gang) -->
   <script src="data/bumji-cards.js?v=20261010_tongshu"></script>
   <!-- Load App scripts -->
-  <script src="app.js?v=20261011_app_v6"></script>
+  <script src="app.js?v=20261011_app_v7"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261011_qimen_v4"></script>

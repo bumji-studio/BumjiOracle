@@ -879,6 +879,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerNavTabs = document.getElementById('headerNavTabs') || document.querySelector('.header-nav-tabs');
   const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
 
+  // Responsive Viewport & Device Detector
+  function updateResponsiveViewMode() {
+    const isMobile = window.innerWidth <= 768 || 
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    document.documentElement.classList.toggle('is-mobile', isMobile);
+    document.documentElement.classList.toggle('is-desktop', !isMobile);
+    document.body.classList.toggle('is-mobile', isMobile);
+    document.body.classList.toggle('is-desktop', !isMobile);
+  }
+  updateResponsiveViewMode();
+  window.addEventListener('resize', updateResponsiveViewMode);
+  window.addEventListener('orientationchange', () => setTimeout(updateResponsiveViewMode, 150));
+
   function toggleMobileMenu(forceClose = false) {
     if (!headerNavTabs) return;
     const isCurrentlyOpen = headerNavTabs.classList.contains('open');
