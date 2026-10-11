@@ -874,7 +874,57 @@ document.addEventListener('DOMContentLoaded', () => {
   const qiMenAppView = document.getElementById('qiMenAppView');
   const baziAppView = document.getElementById('baziAppView');
 
+  // Mobile Hamburger Menu Navigation Toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const headerNavTabs = document.getElementById('headerNavTabs') || document.querySelector('.header-nav-tabs');
+  const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+
+  function toggleMobileMenu(forceClose = false) {
+    if (!headerNavTabs) return;
+    const isCurrentlyOpen = headerNavTabs.classList.contains('open');
+    const shouldOpen = forceClose ? false : !isCurrentlyOpen;
+
+    headerNavTabs.classList.toggle('open', shouldOpen);
+    if (mobileMenuBackdrop) {
+      mobileMenuBackdrop.classList.toggle('open', shouldOpen);
+    }
+    if (mobileMenuBtn) {
+      mobileMenuBtn.classList.toggle('active', shouldOpen);
+      mobileMenuBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      const icon = mobileMenuBtn.querySelector('i');
+      if (icon) {
+        icon.className = shouldOpen ? 'fa-solid fa-xmark' : 'fa-solid fa-bars';
+      }
+    }
+  }
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMobileMenu();
+    });
+  }
+
+  if (mobileMenuBackdrop) {
+    mobileMenuBackdrop.addEventListener('click', () => {
+      toggleMobileMenu(true);
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') toggleMobileMenu(true);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+      toggleMobileMenu(true);
+    }
+  });
+
   function setActiveAppMode(mode) {
+    // Close mobile menu if open
+    toggleMobileMenu(true);
+
     // Nav tab active state
     if (tabReadingBtn) tabReadingBtn.classList.toggle('active', mode === 'reading');
     if (tabTongShuBtn) tabTongShuBtn.classList.toggle('active', mode === 'tongshu');

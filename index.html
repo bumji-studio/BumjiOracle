@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261011_bazi_v16">
+  <link rel="stylesheet" href="styles.css?v=20261011_nav_v2">
   
   <!-- html2pdf.js for exporting HTML to high-quality protected PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -40,7 +40,7 @@
       </div>
     </div>
     <!-- Mode Navigation Tabs -->
-    <div class="header-nav-tabs">
+    <div class="header-nav-tabs" id="headerNavTabs">
       <button class="nav-tab active" id="tabReadingBtn">
         <i class="fa-solid fa-wand-magic-sparkles"></i> ระบบทำนายไพ่ (Tarot Reading)
       </button>
@@ -61,8 +61,14 @@
         <img id="lineUserAvatar" src="" class="line-user-avatar" alt="LINE Avatar">
         <span id="lineUserName" class="line-user-name">LINE User</span>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูนำทาง" aria-expanded="false" title="เมนูหลัก">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </div>
   </header>
+
+  <!-- Mobile Menu Backdrop -->
+  <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
 
     <!-- VIEW: BAZI APP VIEW (Four Pillars of Destiny / 八字命理) -->
   <div id="baziAppView" class="view-container hidden">
@@ -585,21 +591,12 @@
           </div>
           <h2 class="step1-title">ถามอะไรก็ได้... จักรวาลพร้อมตอบ 🔮✨</h2>
           <p class="step1-desc">
-            พิมพ์เรื่องที่อยากรู้ในใจ หรือแตะเลือกหัวข้อยอดฮิตด้านล่างได้เลย ไพ่พร้อมเปิดชะตาให้แล้ว!
+            แตะเลือกหัวข้อยอดฮิตด้านบน หรือพิมพ์เรื่องที่อยากรู้ในใจได้เลย ไพ่พร้อมเปิดชะตาให้แล้ว!
           </p>
         </div>
 
         <div class="question-input-box-wrapper">
-          <div class="question-textarea-container">
-            <textarea id="userQuestionInput" class="question-textarea" rows="3" placeholder="พิมพ์คำถามที่อยากรู้ เช่น คนคุยคนนี้คิดยังไงกับเรา? / สัมภาษณ์งานรอบนี้จะผ่านไหม? / ปีนี้จะมีโชคมีเงินเปย์ตัวเองรัวๆ ไหม..."></textarea>
-            <div class="textarea-actions">
-              <button class="btn-clear-text" id="clearQuestionBtn" type="button" title="ล้างข้อความ">
-                <i class="fa-solid fa-xmark"></i> ล้าง
-              </button>
-            </div>
-          </div>
-
-          <!-- Quick Suggestion Topic Chips -->
+          <!-- Quick Suggestion Topic Chips (Moved above question input) -->
           <div class="suggestion-chips-area">
             <span class="chips-label"><i class="fa-solid fa-fire text-pink"></i> หัวข้อฮิตวัยรุ่น อยากรู้เรื่องไหนจิ้มเลย:</span>
             <div class="chips-grid">
@@ -620,6 +617,16 @@
               </button>
               <button type="button" class="chip-btn chip-blue" data-question="ภาพรวมโชคชะตาและเรื่องดีๆ ที่กำลังจะวิ่งเข้ามาหาเรา">
                 <i class="fa-solid fa-sparkles"></i> 🚀 สรุปภาพรวมชะตา
+              </button>
+            </div>
+          </div>
+
+          <!-- Question Textarea Container -->
+          <div class="question-textarea-container">
+            <textarea id="userQuestionInput" class="question-textarea" rows="3" placeholder="พิมพ์คำถามที่อยากรู้ เช่น คนคุยคนนี้คิดยังไงกับเรา? / สัมภาษณ์งานรอบนี้จะผ่านไหม? / ปีนี้จะมีโชคมีเงินเปย์ตัวเองรัวๆ ไหม..."></textarea>
+            <div class="textarea-actions">
+              <button class="btn-clear-text" id="clearQuestionBtn" type="button" title="ล้างข้อความ">
+                <i class="fa-solid fa-xmark"></i> ล้าง
               </button>
             </div>
           </div>
@@ -1349,7 +1356,7 @@
   <!-- Load Bumji cards data (Bumji & The Gang) -->
   <script src="data/bumji-cards.js?v=20261010_tongshu"></script>
   <!-- Load App scripts -->
-  <script src="app.js?v=20261011_app_v4"></script>
+  <script src="app.js?v=20261011_app_v6"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261011_qimen_v4"></script>
