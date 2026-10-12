@@ -85,6 +85,15 @@
       archetype: 'The Philosopher (偏印)',
       discTendency: 'C-S',
       mbtiMatch: 'INFJ / INTJ',
+      traitModifier: {
+        catNoun: 'วิเชียรมาศ',
+        breedShort: 'แมววิเชียรมาศ',
+        adjective: 'ลึกลับสัญชาตญาณแม่นยำ ปราชญ์หยั่งรู้ลึกซึ้ง',
+        primaryPhrase: 'วิเชียรมาศผู้หยั่งรู้',
+        secondaryPhrase: 'ฉลาดลึกซึ้ง มีญาณทิพย์',
+        tertiaryPhrase: 'ฉลาดหยั่งรู้',
+        roleNoun: 'ปราชญ์ลึกลับผู้หยั่งรู้'
+      },
       tagline: '“ความเงียบคือเวทมนตร์ สัญชาตญาณคือดวงตาที่สาม”',
       superpowers: [
         'สัญชาตญาณแม่นยำ ลางสังหรณ์ดีเลิศ รู้ทันคนอื่นก่อนเขาจะพูด',
@@ -119,6 +128,15 @@
       archetype: 'The Analyzer (正印)',
       discTendency: 'S-C',
       mbtiMatch: 'ISFJ / INTP',
+      traitModifier: {
+        catNoun: 'สก็อตติชโฟลด์',
+        breedShort: 'แมวสก็อตติชโฟลด์',
+        adjective: 'สุขุมรอบคอบ คลังความรู้แน่น นุ่มฟูใจดี',
+        primaryPhrase: 'สก็อตติชโฟลด์นักวิชาการ',
+        secondaryPhrase: 'สุขุมรอบคอบ คลังความรู้แน่น',
+        tertiaryPhrase: 'ช่างวิเคราะห์สุขุม',
+        roleNoun: 'นักวิชาการผู้นุ่มฟู'
+      },
       tagline: '“ความรอบรู้คือเกราะป้องกัน ความเมตตาคือหัวใจที่งดงาม”',
       superpowers: [
         'เก็บข้อมูลเก่ง ความจำยอดเยี่ยม มีฐานความรู้แน่นและแม่นยำ',
@@ -150,12 +168,21 @@
       tenGodPy: 'Zheng Guan',
       tenGodTh: 'เกียรติยศชื่อเสียง (Direct Officer)',
       guildKey: 'supporters',
-      catBreed: 'แมวเมนคูน (Regal Maine Coon)',
-      catEmoji: '🐱👑',
-      title: 'แมวยักษ์ราชันย์ผู้ทรงเกียรติ (The Diplomat)',
+      catBreed: 'แมวเบงกอล / สยาม (Noble Bengal / Siamese)',
+      catEmoji: '🐱⚡',
+      title: 'แมวผู้นำทรงเกียรติผู้มีวินัย (The Diplomat)',
       archetype: 'The Diplomat (正官)',
       discTendency: 'D-C',
       mbtiMatch: 'ESTJ / ISTJ',
+      traitModifier: {
+        catNoun: 'เบงกอล',
+        breedShort: 'แมวเบงกอล',
+        adjective: 'มีเกียรติยศชื่อเสียง วินัยสูง บารมีแม่ทัพ',
+        primaryPhrase: 'เบงกอลผู้นำทรงเกียรติ',
+        secondaryPhrase: 'มีเกียรติบารมีแม่ทัพ',
+        tertiaryPhrase: 'มีวินัยบารมีผู้นำ',
+        roleNoun: 'ผู้นำที่น่านับถือ'
+      },
       tagline: '“เกียรติยศอยู่ที่วินัย บารมีอยู่ที่ความยุติธรรม”',
       superpowers: [
         'ภาวะผู้นำสุขุม น่าเกรงขาม บริหารจัดการคนและงานได้อย่างมีระบบ',
@@ -184,12 +211,21 @@
       tenGodPy: 'Qi Sha',
       tenGodTh: 'อำนาจบารมี (Seven Killings)',
       guildKey: 'supporters',
-      catBreed: 'แมวเบงกอล (Warrior Bengal)',
-      catEmoji: '🐱⚡',
-      title: 'แมวนักล่าผู้ไร้ความกลัว (The Warrior)',
+      catBreed: 'แมวเมนคูน (Regal Maine Coon)',
+      catEmoji: '🐱👑',
+      title: 'แมวเมนคูนนักล่าผู้ไร้ความกลัว (The Warrior)',
       archetype: 'The Warrior (七殺)',
       discTendency: 'D-I',
       mbtiMatch: 'ENTJ / ESTP',
+      traitModifier: {
+        catNoun: 'เมนคูน',
+        breedShort: 'แมวเมนคูน',
+        adjective: 'กล้าไล่ล่าเด็ดขาด ไม่กลัววิกฤต พร้อมลุยเป้าหมาย',
+        primaryPhrase: 'เมนคูนกล้าไล่ล่า',
+        secondaryPhrase: 'เด็ดขาดไม่กลัววิกฤต',
+        tertiaryPhrase: 'กล้าลุยเด็ดขาด',
+        roleNoun: 'แม่ทัพผู้เกรงขาม'
+      },
       tagline: '“วิกฤตคือเวทมนตร์ของฉัน อุปสรรคมีไว้ให้ขย้ำ”',
       superpowers: [
         'กล้าหาญ เด็ดขาด ลุยตรงเป้า ไม่เคยยอมแพ้ต่ออุปสรรคใดๆ',
@@ -227,6 +263,15 @@
       archetype: 'The Artist (食神)',
       discTendency: 'S-I',
       mbtiMatch: 'ISFP / INFP',
+      traitModifier: {
+        catNoun: 'ขาวมณี',
+        breedShort: 'แมวขาวมณี',
+        adjective: 'รสนิยมประณีต รักสงบ สุนทรีย์มีคลาส ดึงดูดโชคลาภ',
+        primaryPhrase: 'ขาวมณีศิลปินเอก',
+        secondaryPhrase: 'รักสงบ รสนิยมสุนทรีย์มีคลาส',
+        tertiaryPhrase: 'สุนทรีย์มีระดับ',
+        roleNoun: 'ศิลปินผู้รังสรรค์ความสุข'
+      },
       tagline: '“ชีวิตคืองานศิลปะ ความสุขคือเป้าหมายที่แท้จริง”',
       superpowers: [
         'รสนิยมเป็นเลิศ ประณีต อ่อนโยน มีสัมผัสพิเศษด้านความงามและรสชาติ',
@@ -261,6 +306,15 @@
       archetype: 'The Performer (傷官)',
       discTendency: 'I-D',
       mbtiMatch: 'ENFP / ENTP',
+      traitModifier: {
+        catNoun: 'แมวส้ม',
+        breedShort: 'แมวส้ม',
+        adjective: 'ซุปตาร์ตัวตึง เปล่งประกายแพรวพราว ไอเดียล้นฉีกกรอบ',
+        primaryPhrase: 'แมวส้มตัวตึง',
+        secondaryPhrase: 'เปล่งประกายแพรวพราว ไอเดียล้น',
+        tertiaryPhrase: 'คารมดีไอเดียล้น',
+        roleNoun: 'ซุปตาร์ดาวเด่นฉีกกรอบ'
+      },
       tagline: '“กฎมีไว้ให้แหก แสงสปอตไลต์มีไว้ให้ฉันยืน”',
       superpowers: [
         'หัวไว ปฏิภาณไหวพริบยอดเยี่ยม พูดจาโน้มน้าวและสะกดผู้ฟังได้เก่งกาจ',
@@ -298,6 +352,15 @@
       archetype: 'The Pioneer (偏財)',
       discTendency: 'D-I',
       mbtiMatch: 'ENTP / ESTJ',
+      traitModifier: {
+        catNoun: 'แมวดำตาเหลือง',
+        breedShort: 'แมวดำ',
+        adjective: 'สายตากว้างไกล หัวการค้า จมูกไวคว้าโอกาสทอง',
+        primaryPhrase: 'แมวดำนักล่าโอกาสทอง',
+        secondaryPhrase: 'หัวการค้า จมูกไวคว้าโอกาส',
+        tertiaryPhrase: 'หัวการค้าสายตาเฉียบไว',
+        roleNoun: 'นักล่าโอกาสและโชคลาภ'
+      },
       tagline: '“โอกาสซ่อนอยู่ในความมืด และฉันคือผู้คว้ามัน”',
       superpowers: [
         'สายตากว้างไกล มองเห็นช่องทางทำเงินและโอกาสธุรกิจในทุกสถานการณ์',
@@ -332,6 +395,15 @@
       archetype: 'The Director (正財)',
       discTendency: 'C-S',
       mbtiMatch: 'ISTJ / ESTJ',
+      traitModifier: {
+        catNoun: 'เปอร์เซีย',
+        breedShort: 'แมวเปอร์เซีย',
+        adjective: 'บริหารจัดการมั่นคง ละเอียดรอบคอบ เจ้าสัวผู้มั่นคง',
+        primaryPhrase: 'เปอร์เซียเจ้าสัว',
+        secondaryPhrase: 'บริหารจัดการมั่นคง ละเอียดรอบคอบ',
+        tertiaryPhrase: 'มั่นคงมั่งคั่ง',
+        roleNoun: 'เจ้าสัวผู้มั่นคง'
+      },
       tagline: '“ความมั่งคั่งสร้างจากหยาดเหงื่อ ความมั่นคงสร้างจากวินัย”',
       superpowers: [
         'บริหารการเงินและสินทรัพย์ได้อย่างแม่นยำ ไม่ยอมให้มีรอยรั่วไหล',
@@ -369,6 +441,15 @@
       archetype: 'The Friend (比肩)',
       discTendency: 'S-I',
       mbtiMatch: 'ESFJ / ISFP',
+      traitModifier: {
+        catNoun: 'แมวสามสี',
+        breedShort: 'แมวสามสี',
+        adjective: 'เพื่อนเยอะจริงใจ สร้างมิตรภาพอบอุ่น เป็นนางฟ้าของเพื่อน',
+        primaryPhrase: 'แมวสามสีมิตรแท้',
+        secondaryPhrase: 'ที่มีเพื่อนเยอะ จริงใจอบอุ่น',
+        tertiaryPhrase: 'เพื่อนเยอะจริงใจ',
+        roleNoun: 'มิตรแท้ที่ทุกคนรัก'
+      },
       tagline: '“มิตรภาพแท้มีค่ากว่าทองคำ รอยยิ้มของคุณคือความสุขของฉัน”',
       superpowers: [
         'จริงใจ ซื่อตรง เป็นมิตรแท้ที่ยืนหยัดเคียงข้างเพื่อนเสมอ',
@@ -403,6 +484,15 @@
       archetype: 'The Leader (劫財)',
       discTendency: 'I-D',
       mbtiMatch: 'ENFJ / ESTP',
+      traitModifier: {
+        catNoun: 'สฟิงซ์',
+        breedShort: 'แมวสฟิงซ์',
+        adjective: 'จ่าฝูงนักระดมพล มนุษยสัมพันธ์ทรงพลัง ซื้อใจคนได้รวดเร็ว',
+        primaryPhrase: 'สฟิงซ์จ่าฝูง',
+        secondaryPhrase: 'ใจถึงพึ่งได้ ระดมพลเก่ง',
+        tertiaryPhrase: 'บารมีจ่าฝูงดึงดูดใจ',
+        roleNoun: 'จ่าฝูงนักระดมพล'
+      },
       tagline: '“รวมใจผู้คนให้เป็นหนึ่ง พิชิตยอดเขาไปด้วยกัน”',
       superpowers: [
         'มนุษยสัมพันธ์ทรงพลังอย่างเหลือเชื่อ เข้าถึงและซื้อใจคนได้ทุกระดับ',
@@ -432,6 +522,63 @@
   const CatProfileEngine = {
     GUILDS: CAT_GUILDS,
     PROFILES: CAT_PROFILES,
+
+    synthesizeCompositePersona: function (rankedProfiles) {
+      if (!rankedProfiles || rankedProfiles.length === 0) return null;
+
+      const top1 = rankedProfiles[0];
+      const top2 = rankedProfiles[1] || rankedProfiles[0];
+      const top3 = rankedProfiles[2] || rankedProfiles[1] || rankedProfiles[0];
+
+      const p1 = CAT_PROFILES[top1.tenGodZh] || {};
+      const p2 = CAT_PROFILES[top2.tenGodZh] || {};
+      const p3 = CAT_PROFILES[top3.tenGodZh] || {};
+
+      const t1 = p1.traitModifier || {
+        breedShort: top1.catBreed.split(' (')[0],
+        catNoun: top1.catBreed.split(' (')[0],
+        primaryPhrase: top1.catBreed.split(' (')[0],
+        adjective: 'ทรงพลัง'
+      };
+      const t2 = p2.traitModifier || {
+        secondaryPhrase: top2.title,
+        tertiaryPhrase: 'เปี่ยมเสน่ห์'
+      };
+      const t3 = p3.traitModifier || {
+        secondaryPhrase: top3.title,
+        tertiaryPhrase: 'เฉลียวฉลาด'
+      };
+
+      let phrase2 = t2.secondaryPhrase || '';
+      let phrase3 = t3.tertiaryPhrase || '';
+
+      let compositeTitle = '';
+      if (top1.tenGodZh === top2.tenGodZh) {
+        compositeTitle = `${t1.primaryPhrase} บริสุทธิ์`;
+      } else {
+        if (phrase2.startsWith('ที่') || phrase2.startsWith('มี')) {
+          compositeTitle = `${t1.primaryPhrase} ${phrase2} ${phrase3.startsWith('และ') ? phrase3 : (phrase3.startsWith('ฉลาด') ? phrase3 : 'และ' + phrase3)}`;
+        } else {
+          compositeTitle = `${t1.primaryPhrase} ${phrase2} ${phrase3}`;
+        }
+      }
+
+      compositeTitle = compositeTitle.replace(/\s+/g, ' ').trim();
+
+      const compositeNarrative = `จิตวิญญาณหลักคือ **${t1.breedShort}** (${top1.archetype.split(' (')[0]} ${top1.percentage}%) ผู้${t1.adjective} ผสานพลังหนุนจาก **${top2.archetype.split(' (')[0]}** (${top2.percentage}%) ${t2.secondaryPhrase} พร้อมขับเคลื่อนด้วย **${top3.archetype.split(' (')[0]}** (${top3.percentage}%) ${t3.tertiaryPhrase}`;
+
+      return {
+        breedShort: t1.breedShort,
+        catNoun: t1.catNoun,
+        compositeTitle,
+        compositeNarrative,
+        top1,
+        top2,
+        top3,
+        primaryCat: p1,
+        secondaryCat: p2
+      };
+    },
 
     resolveCatProfile: function (chart) {
       if (!chart || !chart.pillars) return null;
@@ -608,6 +755,9 @@
         }
       ];
 
+      // Synthesize dynamic composite persona from Top 1, Top 2, Top 3 profiles
+      const compositePersona = CatProfileEngine.synthesizeCompositePersona(rankedProfiles);
+
       return {
         primaryCat,
         secondaryCat,
@@ -619,6 +769,7 @@
         radarData,
         dominantTenGod: primaryTenGod,
         secondaryTenGod: secondaryTenGod,
+        compositePersona,
         allGuilds: CAT_GUILDS
       };
     }

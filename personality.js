@@ -384,6 +384,9 @@
       if (cat) {
         text += `🐱 แมวตัวแทนตามหลักแม่หมอติ๊ดติ๊ด:\n`;
         text += `  • สายพันธุ์หลัก: ${cat.catEmoji} ${cat.catBreed} (${cat.title})\n`;
+        if (this.currentCatData?.compositePersona?.compositeTitle) {
+          text += `  • เอกลักษณ์ย่อย: ${this.currentCatData.compositePersona.compositeTitle}\n`;
+        }
         text += `  • กิลด์พลังชีวิต: ${guild?.nameTh || '-'}\n`;
         text += `  • นิยามแมว: "${cat.tagline}"\n`;
         text += `  • แมวคู่แท้: ${cat.catChemistry.bestPartner}\n\n`;
@@ -452,6 +455,7 @@
       const p = this.currentProfile;
       const cat = this.currentCatData?.primaryCat;
       const guild = this.currentCatData?.primaryGuild;
+      const comp = this.currentCatData?.compositePersona;
 
       modal.innerHTML = `
         <div class="modal-card story-modal-card">
@@ -470,6 +474,11 @@
                 <div class="story-cat-avatar-box">
                   <div class="story-cat-emoji">${cat.catEmoji}</div>
                   <div class="story-cat-breed">${cat.catBreed}</div>
+                  ${comp?.compositeTitle ? `
+                    <div style="font-size: 12.5px; color: #fbcfe8; font-weight: 700; margin-top: 4px; text-align: center;">
+                      ${comp.compositeTitle}
+                    </div>
+                  ` : ''}
                   <div class="story-cat-guild">${guild?.nameTh || ''}</div>
                 </div>
               ` : ''}
@@ -616,63 +625,19 @@
         `;
       }
 
-      // SECTION 3: 10 Profiles Rankings HTML
-      let tenProfilesSectionHtml = '';
-      if (catData && catData.rankedProfiles) {
-        const profiles = catData.rankedProfiles;
-
-        tenProfilesSectionHtml = `
-          <div class="personality-section-box ten-profiles-box">
-            <div class="personality-section-header">
-              <div class="p-header-icon-badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">
-                <i class="fa-solid fa-list-ol"></i>
-              </div>
-              <div class="p-header-titles">
-                <h3>สัดส่วน % ของ 10 Profiles (十神 Profiling)</h3>
-                <span class="p-header-sub">จัดอันดับขุนพลพลังงานประจำตัว 10 ด้าน ตามหลักวิชา BaZi Profiling ของ Joey Yap</span>
-              </div>
-            </div>
-
-            <div class="profiles-rank-grid">
-              ${profiles.map(rp => `
-                <div class="profile-rank-card ${rp.isPrimary ? 'primary-card' : ''} ${rp.isSecondary ? 'secondary-card' : ''}">
-                  <div class="profile-card-top">
-                    <div class="profile-badge-num ${rp.isPrimary ? 'rank-1' : rp.isSecondary ? 'rank-2' : ''}">
-                      ${rp.isPrimary ? '⭐ #1' : rp.isSecondary ? '✨ #2' : '#' + rp.rank}
-                    </div>
-                    <div class="profile-god-zh" style="color: ${rp.color};">
-                      ${rp.tenGodZh}
-                    </div>
-                    <div class="profile-pct-val" style="color: ${rp.color};">
-                      ${rp.percentage}%
-                    </div>
-                  </div>
-
-                  <div class="profile-card-mid">
-                    <h4 class="profile-title-text">${rp.archetype}</h4>
-                    <span class="profile-god-th">${rp.tenGodTh}</span>
-                  </div>
-
-                  <div class="profile-card-cat-tag">
-                    <span class="cat-chip"><i class="fa-solid fa-cat"></i> ${rp.catEmoji} ${rp.catBreed}</span>
-                  </div>
-
-                  <div class="profile-bar-track">
-                    <div class="profile-bar-fill" style="width: ${rp.percentage}%; background: ${rp.color};"></div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        `;
-      }
-
-      // SECTION 4: Mapping กับ แมวตามหลักการของแม่หมอติ๊ดติ๊ด
+      // SECTION 3: Cat Archetype Mapping (แม่หมอติ๊ดติ๊ด) with Side-by-Side 10 Profiles Mini Breakdowns
       let catMappingSectionHtml = '';
       if (catData && catData.primaryCat) {
         const cat = catData.primaryCat;
         const subCat = catData.secondaryCat;
         const guild = catData.primaryGuild;
+        const composite = catData.compositePersona || {
+          breedShort: cat.catBreed.split(' (')[0],
+          compositeTitle: cat.title,
+          compositeNarrative: `จิตวิญญาณหลักของคุณคือ ${cat.catBreed} (${cat.archetype})`
+        };
+        const profiles = catData.rankedProfiles || [];
+        const isMaineCoonWarrior = (catData.dominantTenGod === '七殺' || p.zh === '辛巳');
 
         catMappingSectionHtml = `
           <div class="personality-section-box cat-mapping-full-box">
@@ -682,37 +647,91 @@
               </div>
               <div class="p-header-titles">
                 <h3>แมวประจำตัวตนตามหลักการของแม่หมอติ๊ดติ๊ด (The Cat Persona)</h3>
-                <span class="p-header-sub">ถอดรหัสพฤติกรรม จิตวิทยา และสัญชาตญาณของจิตวิญญาณแมวในตัวคุณ</span>
+                <span class="p-header-sub">ถอดรหัสพฤติกรรม จิตวิทยา และเอกลักษณ์ของจิตวิญญาณแมวตามสัดส่วน 10 Profiles</span>
               </div>
             </div>
 
-            <!-- Cat Hero Emblem -->
-            <div class="cat-mapping-hero">
-              <div class="cat-emblem-large">
-                <span class="big-cat-emoji">${cat.catEmoji}</span>
-                <span class="emblem-breed-name">${cat.catBreed}</span>
-                <span class="emblem-guild-tag" style="background: ${guild.bg}; color: ${guild.color};">
-                  ${guild.nameTh}
-                </span>
+            <!-- Cat Hero Composite: Side-by-Side Character + Mini 10 Profiles -->
+            <div class="cat-composite-hero">
+              <!-- Left Column: Character Card & Personality Synthesis -->
+              <div class="cat-composite-char-col">
+                <div class="cat-char-badge-header">
+                  <span class="cat-char-tag">[Character ${composite.breedShort}]</span>
+                  <span class="cat-guild-tag" style="background: ${guild.bg}; color: ${guild.color};">
+                    <i class="fa-solid ${guild.icon}"></i> ${guild.nameTh}
+                  </span>
+                </div>
+
+                <div class="cat-visual-card">
+                  ${isMaineCoonWarrior ? `
+                    <div class="cat-portrait-wrap">
+                      <img src="assets/cats/founder_mystic_mainecoon.jpg" alt="${composite.compositeTitle}" class="cat-portrait-img" />
+                      <div class="cat-portrait-overlay">
+                        <span class="cat-portrait-tag">✨ คาแรคเตอร์เฉพาะตัวตนของคุณ</span>
+                      </div>
+                    </div>
+                  ` : `
+                    <div class="cat-avatar-fallback">
+                      <span class="fallback-cat-emoji">${cat.catEmoji}</span>
+                      <span class="fallback-cat-breed">${cat.catBreed}</span>
+                    </div>
+                  `}
+                </div>
+
+                <div class="cat-composite-info">
+                  <div class="cat-top-badges">
+                    <span class="c-badge-pill">${cat.tenGodTh}</span>
+                    <span class="c-badge-pill">DISC: ${cat.discTendency}</span>
+                    <span class="c-badge-pill">MBTI: ${cat.mbtiMatch}</span>
+                  </div>
+
+                  <h2 class="cat-composite-title">${composite.compositeTitle}</h2>
+                  <p class="cat-quote-callout">“${cat.tagline}”</p>
+
+                  <div class="cat-composite-narrative-box">
+                    <div class="c-narrative-head">
+                      <i class="fa-solid fa-wand-magic-sparkles" style="color: #f472b6;"></i>
+                      <span>เอกลักษณ์ย่อยตาม Profile หลัก-รอง:</span>
+                    </div>
+                    <p class="c-narrative-text">${composite.compositeNarrative}</p>
+                  </div>
+                </div>
               </div>
 
-              <div class="cat-details-col">
-                <div class="cat-role-badge">
-                  <span>${cat.tenGodTh}</span>
-                  <span class="bullet">•</span>
-                  <span>DISC Style: ${cat.discTendency}</span>
-                  <span class="bullet">•</span>
-                  <span>MBTI: ${cat.mbtiMatch}</span>
-                </div>
-                <h2 class="cat-headline">${cat.title} (${cat.archetype})</h2>
-                <p class="cat-quote-callout">“${cat.tagline}”</p>
-
-                ${subCat ? `
-                  <div class="companion-cat-pill">
-                    <i class="fa-solid fa-shield-cat"></i>
-                    <span>แมวเพื่อนแท้ซ่อนเร้น (Companion Cat): <strong>${subCat.catEmoji} ${subCat.catBreed}</strong> (${subCat.title})</span>
+              <!-- Right Column: Compact Mini-Percentages of 10 Profiles -->
+              <div class="cat-composite-stats-col">
+                <div class="mini-profiles-header">
+                  <div class="m-stat-title">
+                    <i class="fa-solid fa-chart-simple" style="color: #ec4899;"></i>
+                    <span>สัดส่วนพลัง 10 Profiles (十神)</span>
                   </div>
-                ` : ''}
+                  <span class="m-stat-sub">เรียงตามเปอร์เซ็นต์พลังงานแฝงในตัวคุณ</span>
+                </div>
+
+                <div class="mini-profiles-list">
+                  ${profiles.map(rp => `
+                    <div class="mini-profile-item ${rp.isPrimary ? 'primary-item' : (rp.isSecondary ? 'secondary-item' : '')}">
+                      <div class="m-item-left">
+                        <span class="m-rank-badge ${rp.rank === 1 ? 'rank-1' : (rp.rank === 2 ? 'rank-2' : (rp.rank === 3 ? 'rank-3' : ''))}">
+                          #${rp.rank}
+                        </span>
+                        <span class="m-god-zh" style="color: ${rp.color};">${rp.tenGodZh}</span>
+                        <div class="m-names">
+                          <span class="m-profile-name">${rp.archetype.split(' (')[0]}</span>
+                          <span class="m-cat-sub">${rp.catBreed.split(' (')[0]}</span>
+                        </div>
+                      </div>
+                      <div class="m-item-mid">
+                        <div class="m-bar-track">
+                          <div class="m-bar-fill" style="width: ${rp.percentage}%; background: ${rp.color};"></div>
+                        </div>
+                      </div>
+                      <div class="m-item-right">
+                        <span class="m-pct" style="color: ${rp.color}; font-weight: 800;">${rp.percentage}%</span>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
               </div>
             </div>
 
@@ -836,12 +855,7 @@
           ${radarSectionHtml}
 
           <!-- ============================================================== -->
-          <!-- 3. 10 PROFILES RANKING PERCENTAGES (JOEY YAP)                  -->
-          <!-- ============================================================== -->
-          ${tenProfilesSectionHtml}
-
-          <!-- ============================================================== -->
-          <!-- 4. CAT ARCHETYPE MAPPING (แม่หมอติ๊ดติ๊ด)                      -->
+          <!-- 3. CAT PERSONA & 10 PROFILES BREAKDOWN (แม่หมอติ๊ดติ๊ด)         -->
           <!-- ============================================================== -->
           ${catMappingSectionHtml}
 
