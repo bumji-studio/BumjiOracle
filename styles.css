@@ -5844,12 +5844,12 @@ body.is-mobile .synthesis-box-body {
 .qm-int-cell {
   background: #ffffff;
   color: #0f172a;
-  min-height: 155px;
+  min-height: 180px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border: 1px solid #cbd5e1;
-  padding: 4px 6px;
+  padding: 5px 8px 6px 8px;
   position: relative;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -5908,9 +5908,17 @@ body.is-mobile .synthesis-box-body {
 
 /* Top Row: Heaven Stem | 9 Star | 8 Deity | Corner Num */
 .qm-int-row.top-row {
+  display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
-  gap: 6px;
+  justify-content: space-between;
+  width: 100%;
+}
+.qm-center-star-deity {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
 }
 
 .qm-elem-stem {
@@ -5970,10 +5978,12 @@ body.is-mobile .synthesis-box-body {
 
 /* Middle Row: Hexagram / Formations / Envoy */
 .qm-int-row.mid-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 38px;
-  margin: 2px 0;
+  min-height: 42px;
+  margin: 3px 0;
+  width: 100%;
 }
 
 .qm-hexagram-box {
@@ -6002,11 +6012,15 @@ body.is-mobile .synthesis-box-body {
 .qm-envoy-pill {
   background: #dc2626;
   color: #ffffff;
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 800;
-  padding: 0 4px;
+  padding: 1px 4px;
   border-radius: 2px;
   text-transform: uppercase;
+  margin-bottom: 2px;
+  line-height: 1.1;
+  display: inline-block;
+  letter-spacing: 0.3px;
 }
 .qm-formation-text {
   font-size: 10px;
@@ -6023,9 +6037,16 @@ body.is-mobile .synthesis-box-body {
 
 /* Bottom Row: Earth Stem | 8 Door | Constellation */
 .qm-int-row.bot-row {
+  display: flex;
   align-items: flex-end;
-  justify-content: flex-start;
-  gap: 6px;
+  justify-content: space-between;
+  width: 100%;
+}
+.qm-center-door-wrap {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex: 1;
 }
 
 .qm-elem-door {
@@ -6399,8 +6420,8 @@ body.is-mobile .synthesis-box-body {
   }
 
   .qm-int-cell {
-    min-height: 112px !important;
-    padding: 2px 3px !important;
+    min-height: 135px !important;
+    padding: 3px 4px !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
     overflow: hidden !important;

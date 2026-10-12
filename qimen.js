@@ -1098,26 +1098,28 @@
                 </div>
               </div>
 
-              <!-- Top Row: Heaven Stem | 9 Star | 8 Deity | Corner Num -->
+              <!-- Top Row: Heaven Stem | 9 Star & 8 Deity (Centered) | Corner Num -->
               <div class="qm-int-row top-row">
                 <div class="qm-elem-stem">
                   <span class="qm-char-big ${p.heavenStem.element.toLowerCase()}">${p.heavenStem.zh}${p.heavenStem.extra ? `<span class="extra">${p.heavenStem.extra}</span>` : ''}</span>
                   <span class="qm-py-sm">${p.heavenStem.py}</span>
                 </div>
-                <div class="qm-elem-star">
-                  <span class="qm-char-med star-color">${p.star.zh}${p.star.extra ? `<span class="extra">${p.star.extra}</span>` : ''}</span>
-                  <span class="qm-py-xs">${p.star.py}</span>
-                  <span class="qm-en-xs">${p.star.en}</span>
-                </div>
-                <div class="qm-elem-deity">
-                  <span class="qm-char-med deity-color">${p.deity.zh}</span>
-                  <span class="qm-py-xs">${p.deity.py}</span>
-                  <span class="qm-en-xs">${p.deity.en}</span>
+                <div class="qm-center-star-deity">
+                  <div class="qm-elem-star">
+                    <span class="qm-char-med star-color">${p.star.zh}${p.star.extra ? `<span class="extra">${p.star.extra}</span>` : ''}</span>
+                    <span class="qm-py-xs">${p.star.py}</span>
+                    <span class="qm-en-xs">${p.star.en}</span>
+                  </div>
+                  <div class="qm-elem-deity">
+                    <span class="qm-char-med deity-color">${p.deity.zh}</span>
+                    <span class="qm-py-xs">${p.deity.py}</span>
+                    <span class="qm-en-xs">${p.deity.en}</span>
+                  </div>
                 </div>
                 <div class="qm-corner-num">${p.numCorner}</div>
               </div>
 
-              <!-- Middle Row: Hexagram / Formations / Envoy -->
+              <!-- Middle Row: Hexagram / Formations -->
               <div class="qm-int-row mid-row">
                 <div class="qm-hexagram-box">
                   ${p.hexagram ? `
@@ -1127,21 +1129,23 @@
                   ` : ''}
                 </div>
                 <div class="qm-formations-box">
-                  ${p.door && p.door.isEnvoy ? '<span class="qm-envoy-pill">Envoy</span>' : ''}
                   ${p.formations.map(f => `<span class="qm-formation-text ${typeof f === 'object' ? f.color : 'red'}">${typeof f === 'object' ? f.name : f}</span>`).join('')}
                 </div>
               </div>
 
-              <!-- Bottom Row: Earth Stem | 8 Door | Constellation -->
+              <!-- Bottom Row: Earth Stem | 8 Door (Centered with Envoy directly above) | Constellation -->
               <div class="qm-int-row bot-row">
                 <div class="qm-elem-stem">
                   <span class="qm-char-big ${p.earthStem.element.toLowerCase()}">${p.earthStem.zh}${p.earthStem.extra ? `<span class="extra">${p.earthStem.extra}</span>` : ''}</span>
                   <span class="qm-py-sm">${p.earthStem.py}</span>
                 </div>
-                <div class="qm-elem-door">
-                  <span class="qm-char-door ${p.door.type === '吉' ? 'good' : 'bad'}">${p.door.zh}</span>
-                  <span class="qm-py-xs">${p.door.py}</span>
-                  <span class="qm-en-xs">${p.door.en}</span>
+                <div class="qm-center-door-wrap">
+                  <div class="qm-elem-door">
+                    ${p.door && p.door.isEnvoy ? '<span class="qm-envoy-pill">Envoy</span>' : ''}
+                    <span class="qm-char-door ${p.door.type === '吉' ? 'good' : 'bad'}">${p.door.zh}</span>
+                    <span class="qm-py-xs">${p.door.py}</span>
+                    <span class="qm-en-xs">${p.door.en}</span>
+                  </div>
                 </div>
                 <div class="qm-elem-constellation">
                   <span>${p.constellation}</span>
