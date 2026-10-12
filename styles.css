@@ -2525,6 +2525,11 @@ body {
 
   .view-container {
     height: calc(100vh - 60px) !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .line-user-badge {
@@ -2546,11 +2551,26 @@ body {
 
   /* App Canvas on Mobile */
   #readingAppView {
-    padding: 16px 12px 60px 12px !important;
+    display: block !important;
+    padding: 12px 8px 60px 8px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
 
   .reading-app-container {
-    gap: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    gap: 12px !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
 
   /* Compact Stepper on Mobile */
@@ -2599,8 +2619,14 @@ body {
 
   /* Reading Step Cards on Mobile */
   .reading-step-card {
-    padding: 22px 14px !important;
-    border-radius: 20px !important;
+    padding: 16px 10px !important;
+    border-radius: 18px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
 
   /* STEP 1: MOBILE QUESTION */
@@ -2677,17 +2703,34 @@ body {
 
   /* STEP 2: MOBILE DECK SELECTION */
   .step-header-with-back {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 12px !important;
+    gap: 10px !important;
+  }
+
+  .step-title-group {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
   }
 
   .step-title-group .step-title {
-    font-size: 19px !important;
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 
   .step-title-group .step-desc {
-    font-size: 12.5px !important;
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 
   .collection-selection-grid {
@@ -2742,54 +2785,83 @@ body {
   /* STEP 3: MOBILE 3-SLOTS SIDE BY SIDE (CRITICAL FIX) */
   .pick-slots-container {
     display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 8px !important;
-    margin: 14px 0 !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 12px 0 !important;
+    box-sizing: border-box !important;
   }
 
   .pick-target-slot {
-    padding: 8px 4px !important;
-    border-radius: 14px !important;
+    padding: 6px 3px !important;
+    border-radius: 12px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .slot-pos-badge {
-    font-size: 11px !important;
-    margin-bottom: 6px !important;
-    gap: 3px !important;
+    font-size: 10px !important;
+    margin-bottom: 4px !important;
+    gap: 2px !important;
     flex-direction: column !important;
     text-align: center !important;
     color: #db2777 !important;
     font-weight: 700 !important;
-    line-height: 1.2 !important;
+    line-height: 1.15 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 
   .badge-num {
-    width: 22px !important;
-    height: 22px !important;
-    font-size: 11px !important;
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
     font-weight: 800 !important;
   }
 
   .slot-card-holder {
     width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     aspect-ratio: 2 / 3 !important;
     height: auto !important;
-    max-height: 155px !important;
-    border-radius: 10px !important;
-    margin-bottom: 4px !important;
+    max-height: 140px !important;
+    border-radius: 8px !important;
+    margin-bottom: 2px !important;
+    box-sizing: border-box !important;
   }
 
   .slot-placeholder {
-    gap: 4px !important;
-    font-size: 10px !important;
-    padding: 4px !important;
+    gap: 2px !important;
+    font-size: 9px !important;
+    padding: 2px !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    text-align: center !important;
   }
 
   .slot-placeholder i {
-    font-size: 20px !important;
+    font-size: 18px !important;
+  }
+
+  .slot-placeholder span {
+    display: block !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.15 !important;
+    font-size: 8.5px !important;
   }
 
   .slot-desc-text {
@@ -2798,58 +2870,78 @@ body {
 
   /* Mobile Pick Controls */
   .pick-controls-bar {
-    padding: 12px 14px !important;
-    margin-bottom: 16px !important;
+    padding: 10px 8px !important;
+    margin-bottom: 14px !important;
     flex-direction: column !important;
-    gap: 10px !important;
+    gap: 8px !important;
     text-align: center !important;
-    border-radius: 16px !important;
+    border-radius: 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .pick-current-instruction {
-    font-size: 13px !important;
+    font-size: 12.5px !important;
     justify-content: center !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 
   .pick-quick-actions {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .pick-quick-actions #autoDraw3CardsBtn {
     grid-column: 1 / -1 !important;
-    padding: 12px 14px !important;
-    font-size: 13.5px !important;
+    padding: 11px 10px !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
     background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%) !important;
     color: #ffffff !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     box-shadow: 0 4px 14px rgba(219, 39, 119, 0.25) !important;
     justify-content: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .pick-quick-actions .btn-secondary-sm:not(#autoDraw3CardsBtn) {
-    padding: 9px 8px !important;
-    font-size: 12px !important;
+    padding: 8px 4px !important;
+    font-size: 11px !important;
     justify-content: center !important;
     text-align: center !important;
     border-radius: 10px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    word-break: break-word !important;
   }
 
   /* Mobile Fan Deck Stage */
   .deck-fan-stage {
-    height: 200px !important;
-    padding-bottom: 12px !important;
+    height: 190px !important;
+    padding-bottom: 10px !important;
     border-radius: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .fan-card-item {
-    bottom: 10px !important;
-    width: 68px !important;
-    height: 108px !important;
+    bottom: 8px !important;
+    width: 64px !important;
+    height: 102px !important;
     border-radius: 8px !important;
     transform-origin: 50% 100% !important;
   }
@@ -2860,153 +2952,207 @@ body {
 
   /* Reveal Trigger Banner on Mobile */
   .reveal-trigger-banner {
-    padding: 18px 14px !important;
-    border-radius: 18px !important;
+    padding: 16px 12px !important;
+    border-radius: 16px !important;
     flex-direction: column !important;
     text-align: center !important;
-    gap: 12px !important;
-    margin-top: 18px !important;
+    gap: 10px !important;
+    margin-top: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .banner-content {
     flex-direction: column !important;
     gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .banner-icon {
-    font-size: 28px !important;
+    font-size: 26px !important;
   }
 
   .banner-content h3 {
-    font-size: 16.5px !important;
+    font-size: 16px !important;
+    word-break: break-word !important;
   }
 
   .banner-content p {
     font-size: 12px !important;
+    word-break: break-word !important;
   }
 
   .reveal-trigger-banner .btn-xl {
     width: 100% !important;
-    font-size: 14.5px !important;
-    padding: 13px 18px !important;
-    border-radius: 14px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 14px !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
   }
 
   /* STEP 4: MOBILE RESULTS & SYNTHESIS */
   .result-header-toolbar {
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 8px !important;
-    padding-bottom: 12px !important;
-    margin-bottom: 18px !important;
+    gap: 6px !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 14px !important;
     border-bottom: 1px solid #f1f5f9 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .toolbar-left, .toolbar-right {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .toolbar-right .btn-primary-sm {
     grid-column: 1 / -1 !important;
-    padding: 11px 12px !important;
+    padding: 10px 8px !important;
     font-weight: 700 !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .result-header-toolbar .btn {
-    padding: 9px 8px !important;
-    font-size: 12px !important;
+    padding: 8px 4px !important;
+    font-size: 11.5px !important;
     justify-content: center !important;
     text-align: center !important;
     border-radius: 10px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    word-break: break-word !important;
   }
 
   .result-question-banner {
-    padding: 16px 14px !important;
-    border-radius: 18px !important;
-    margin-bottom: 20px !important;
+    padding: 12px 10px !important;
+    border-radius: 14px !important;
+    margin-bottom: 16px !important;
     text-align: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .banner-badge-group {
     justify-content: center !important;
     flex-wrap: wrap !important;
-    gap: 6px !important;
-    margin-bottom: 10px !important;
+    gap: 5px !important;
+    margin-bottom: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .banner-badge-group span {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    word-break: break-word !important;
   }
 
   .result-question-title {
-    font-size: 17px !important;
-    line-height: 1.45 !important;
+    font-size: 16px !important;
+    line-height: 1.4 !important;
     text-align: center !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    margin: 4px 0 0 0 !important;
   }
 
   .result-cards-board {
     display: flex !important;
     flex-direction: column !important;
-    gap: 20px !important;
-    margin-bottom: 24px !important;
+    gap: 16px !important;
+    margin-bottom: 20px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .result-card-item {
     width: 100% !important;
-    padding: 18px 14px !important;
-    border-radius: 20px !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px 10px !important;
+    border-radius: 16px !important;
     box-sizing: border-box !important;
+    overflow: hidden !important;
   }
 
   .result-pos-header {
     justify-content: center !important;
-    gap: 8px !important;
-    margin-bottom: 14px !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
   }
 
   .result-pos-title {
-    font-size: 16px !important;
+    font-size: 15px !important;
     color: #db2777 !important;
+    word-break: break-word !important;
   }
 
   .result-card-media {
-    max-width: 220px !important;
+    max-width: 200px !important;
     width: 100% !important;
     aspect-ratio: 2 / 3 !important;
     height: auto !important;
-    margin: 0 auto 16px auto !important;
-    border-radius: 14px !important;
+    margin: 0 auto 12px auto !important;
+    border-radius: 12px !important;
     overflow: hidden !important;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1) !important;
+    box-sizing: border-box !important;
   }
 
   .result-card-name {
-    font-size: 17.5px !important;
+    font-size: 16.5px !important;
     text-align: center !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
     color: #0f172a !important;
+    word-break: break-word !important;
   }
 
   .result-tag-row {
     justify-content: center !important;
     flex-wrap: wrap !important;
-    gap: 6px !important;
-    margin-bottom: 14px !important;
+    gap: 4px !important;
+    margin-bottom: 10px !important;
   }
 
   .result-pos-meaning {
-    font-size: 13px !important;
-    padding: 14px !important;
-    border-radius: 14px !important;
-    line-height: 1.65 !important;
+    font-size: 12.5px !important;
+    padding: 10px 12px !important;
+    line-height: 1.6 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 
   .result-card-quote {
-    font-size: 12.5px !important;
-    padding: 10px 14px !important;
-    border-radius: 12px !important;
-    margin-top: 12px !important;
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+    border-radius: 10px !important;
+    margin-top: 10px !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
 
   .result-synthesis-container {
@@ -3466,79 +3612,128 @@ body {
    ========================================================================== */
 html.is-mobile .reading-step-card,
 body.is-mobile .reading-step-card {
-  padding: 18px 12px !important;
+  padding: 16px 10px !important;
   border-radius: 18px !important;
   width: 100% !important;
   max-width: 100% !important;
+  min-width: 0 !important;
   box-sizing: border-box !important;
   margin: 0 !important;
+  overflow-x: hidden !important;
 }
 
 html.is-mobile #readingAppView,
 body.is-mobile #readingAppView {
-  padding: 10px 8px 60px 8px !important;
+  display: block !important;
+  padding: 12px 8px 60px 8px !important;
   width: 100% !important;
   max-width: 100vw !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+html.is-mobile .reading-app-container,
+body.is-mobile .reading-app-container {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  gap: 12px !important;
+  overflow-x: hidden !important;
   box-sizing: border-box !important;
 }
 
 html.is-mobile .pick-slots-container,
 body.is-mobile .pick-slots-container {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 8px !important;
-  margin: 14px 0 !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin: 12px 0 !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .pick-target-slot,
 body.is-mobile .pick-target-slot {
-  padding: 8px 4px !important;
-  border-radius: 14px !important;
+  padding: 6px 3px !important;
+  border-radius: 12px !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 html.is-mobile .slot-pos-badge,
 body.is-mobile .slot-pos-badge {
-  font-size: 11px !important;
-  margin-bottom: 6px !important;
-  gap: 3px !important;
+  font-size: 10px !important;
+  margin-bottom: 4px !important;
+  gap: 2px !important;
   flex-direction: column !important;
   text-align: center !important;
   color: #db2777 !important;
   font-weight: 700 !important;
-  line-height: 1.2 !important;
+  line-height: 1.15 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 html.is-mobile .badge-num,
 body.is-mobile .badge-num {
-  width: 22px !important;
-  height: 22px !important;
-  font-size: 11px !important;
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 10px !important;
   font-weight: 800 !important;
 }
 
 html.is-mobile .slot-card-holder,
 body.is-mobile .slot-card-holder {
   width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
   aspect-ratio: 2 / 3 !important;
   height: auto !important;
-  max-height: 155px !important;
-  border-radius: 10px !important;
-  margin-bottom: 4px !important;
+  max-height: 140px !important;
+  border-radius: 8px !important;
+  margin-bottom: 2px !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .slot-placeholder,
 body.is-mobile .slot-placeholder {
-  gap: 4px !important;
-  font-size: 10px !important;
-  padding: 4px !important;
+  gap: 2px !important;
+  font-size: 9px !important;
+  padding: 2px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  text-align: center !important;
 }
 
 html.is-mobile .slot-placeholder i,
 body.is-mobile .slot-placeholder i {
-  font-size: 20px !important;
+  font-size: 18px !important;
+}
+
+html.is-mobile .slot-placeholder span,
+body.is-mobile .slot-placeholder span {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.15 !important;
+  font-size: 8.5px !important;
 }
 
 html.is-mobile .slot-desc-text,
@@ -3548,93 +3743,154 @@ body.is-mobile .slot-desc-text {
 
 html.is-mobile .pick-controls-bar,
 body.is-mobile .pick-controls-bar {
-  padding: 12px 14px !important;
-  margin-bottom: 16px !important;
+  padding: 10px 8px !important;
+  margin-bottom: 14px !important;
   flex-direction: column !important;
-  gap: 10px !important;
+  gap: 8px !important;
   text-align: center !important;
-  border-radius: 16px !important;
+  border-radius: 14px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .pick-current-instruction,
 body.is-mobile .pick-current-instruction {
-  font-size: 13px !important;
+  font-size: 12.5px !important;
   justify-content: center !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 html.is-mobile .pick-quick-actions,
 body.is-mobile .pick-quick-actions {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 8px !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 6px !important;
   width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .pick-quick-actions #autoDraw3CardsBtn,
 body.is-mobile .pick-quick-actions #autoDraw3CardsBtn {
   grid-column: 1 / -1 !important;
-  padding: 12px 14px !important;
-  font-size: 13.5px !important;
+  padding: 11px 10px !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
   background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%) !important;
   color: #ffffff !important;
   border: none !important;
-  border-radius: 12px !important;
+  border-radius: 10px !important;
   box-shadow: 0 4px 14px rgba(219, 39, 119, 0.25) !important;
   justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .pick-quick-actions .btn-secondary-sm:not(#autoDraw3CardsBtn),
 body.is-mobile .pick-quick-actions .btn-secondary-sm:not(#autoDraw3CardsBtn) {
-  padding: 9px 8px !important;
-  font-size: 12px !important;
+  padding: 8px 4px !important;
+  font-size: 11px !important;
   justify-content: center !important;
   text-align: center !important;
   border-radius: 10px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  word-break: break-word !important;
 }
 
 html.is-mobile .deck-fan-stage,
 body.is-mobile .deck-fan-stage {
-  height: 200px !important;
-  padding-bottom: 12px !important;
+  height: 190px !important;
+  padding-bottom: 10px !important;
   border-radius: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 html.is-mobile .fan-card-item,
 body.is-mobile .fan-card-item {
-  bottom: 10px !important;
-  width: 68px !important;
-  height: 108px !important;
+  bottom: 8px !important;
+  width: 64px !important;
+  height: 102px !important;
   border-radius: 8px !important;
   transform-origin: 50% 100% !important;
 }
 
+html.is-mobile .fan-card-item:hover,
+body.is-mobile .fan-card-item:hover {
+  transform: translateX(var(--card-x, 0px)) translateY(calc(var(--card-y, 0px) - 18px)) scale(1.06) !important;
+}
+
 html.is-mobile .reveal-trigger-banner,
 body.is-mobile .reveal-trigger-banner {
-  padding: 18px 14px !important;
-  border-radius: 18px !important;
+  padding: 16px 12px !important;
+  border-radius: 16px !important;
   flex-direction: column !important;
   text-align: center !important;
-  gap: 12px !important;
-  margin-top: 18px !important;
+  gap: 10px !important;
+  margin-top: 16px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html.is-mobile .banner-content,
+body.is-mobile .banner-content {
+  flex-direction: column !important;
+  gap: 6px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html.is-mobile .banner-icon,
+body.is-mobile .banner-icon {
+  font-size: 26px !important;
+}
+
+html.is-mobile .banner-content h3,
+body.is-mobile .banner-content h3 {
+  font-size: 16px !important;
+  word-break: break-word !important;
+}
+
+html.is-mobile .banner-content p,
+body.is-mobile .banner-content p {
+  font-size: 12px !important;
+  word-break: break-word !important;
 }
 
 html.is-mobile .reveal-trigger-banner .btn-xl,
 body.is-mobile .reveal-trigger-banner .btn-xl {
   width: 100% !important;
-  font-size: 14.5px !important;
-  padding: 13px 18px !important;
-  border-radius: 14px !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  padding: 12px 14px !important;
+  border-radius: 12px !important;
+  white-space: normal !important;
+  word-break: break-word !important;
 }
 
 html.is-mobile .result-header-toolbar,
 body.is-mobile .result-header-toolbar {
   flex-direction: column !important;
   align-items: stretch !important;
-  gap: 8px !important;
-  padding-bottom: 12px !important;
-  margin-bottom: 18px !important;
+  gap: 6px !important;
+  padding-bottom: 10px !important;
+  margin-bottom: 14px !important;
   border-bottom: 1px solid #f1f5f9 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .toolbar-left,
@@ -3642,108 +3898,163 @@ html.is-mobile .toolbar-right,
 body.is-mobile .toolbar-left,
 body.is-mobile .toolbar-right {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 8px !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 6px !important;
   width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .toolbar-right .btn-primary-sm,
 body.is-mobile .toolbar-right .btn-primary-sm {
   grid-column: 1 / -1 !important;
-  padding: 11px 12px !important;
+  padding: 10px 8px !important;
   font-weight: 700 !important;
-  border-radius: 12px !important;
+  border-radius: 10px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .result-header-toolbar .btn,
 body.is-mobile .result-header-toolbar .btn {
-  padding: 9px 8px !important;
-  font-size: 12px !important;
+  padding: 8px 4px !important;
+  font-size: 11.5px !important;
   justify-content: center !important;
   text-align: center !important;
   border-radius: 10px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  word-break: break-word !important;
 }
 
 html.is-mobile .result-question-banner,
 body.is-mobile .result-question-banner {
-  padding: 16px 14px !important;
-  border-radius: 18px !important;
-  margin-bottom: 20px !important;
+  padding: 12px 10px !important;
+  border-radius: 14px !important;
+  margin-bottom: 16px !important;
   text-align: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html.is-mobile .banner-badge-group,
+body.is-mobile .banner-badge-group {
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+  margin-bottom: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+html.is-mobile .banner-badge-group span,
+body.is-mobile .banner-badge-group span {
+  font-size: 10px !important;
+  padding: 4px 8px !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+}
+
+html.is-mobile .result-question-title,
+body.is-mobile .result-question-title {
+  font-size: 16px !important;
+  line-height: 1.4 !important;
+  text-align: center !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  margin: 4px 0 0 0 !important;
 }
 
 html.is-mobile .result-cards-board,
 body.is-mobile .result-cards-board {
   display: flex !important;
   flex-direction: column !important;
-  gap: 20px !important;
-  margin-bottom: 24px !important;
+  gap: 16px !important;
+  margin-bottom: 20px !important;
   width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .result-card-item,
 body.is-mobile .result-card-item {
   width: 100% !important;
-  padding: 18px 14px !important;
-  border-radius: 20px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  padding: 14px 10px !important;
+  border-radius: 16px !important;
   box-sizing: border-box !important;
+  overflow: hidden !important;
 }
 
 html.is-mobile .result-pos-header,
 body.is-mobile .result-pos-header {
   justify-content: center !important;
-  gap: 8px !important;
-  margin-bottom: 14px !important;
+  gap: 6px !important;
+  margin-bottom: 10px !important;
 }
 
 html.is-mobile .result-pos-title,
 body.is-mobile .result-pos-title {
-  font-size: 16px !important;
+  font-size: 15px !important;
   color: #db2777 !important;
+  word-break: break-word !important;
 }
 
 html.is-mobile .result-card-media,
 body.is-mobile .result-card-media {
-  max-width: 220px !important;
+  max-width: 200px !important;
   width: 100% !important;
   aspect-ratio: 2 / 3 !important;
   height: auto !important;
-  margin: 0 auto 16px auto !important;
-  border-radius: 14px !important;
+  margin: 0 auto 12px auto !important;
+  border-radius: 12px !important;
   overflow: hidden !important;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.1) !important;
+  box-sizing: border-box !important;
 }
 
 html.is-mobile .result-card-name,
 body.is-mobile .result-card-name {
-  font-size: 17.5px !important;
+  font-size: 16.5px !important;
   text-align: center !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 6px !important;
   color: #0f172a !important;
+  word-break: break-word !important;
 }
 
 html.is-mobile .result-tag-row,
 body.is-mobile .result-tag-row {
   justify-content: center !important;
   flex-wrap: wrap !important;
-  gap: 6px !important;
-  margin-bottom: 14px !important;
+  gap: 4px !important;
+  margin-bottom: 10px !important;
 }
 
 html.is-mobile .result-pos-meaning,
 body.is-mobile .result-pos-meaning {
-  font-size: 13px !important;
-  padding: 14px !important;
-  border-radius: 14px !important;
-  line-height: 1.65 !important;
+  font-size: 12.5px !important;
+  padding: 10px 12px !important;
+  line-height: 1.6 !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 html.is-mobile .result-card-quote,
 body.is-mobile .result-card-quote {
-  font-size: 12.5px !important;
-  padding: 10px 14px !important;
-  border-radius: 12px !important;
-  margin-top: 12px !important;
+  font-size: 12px !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  margin-top: 10px !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
 }
 
 html.is-mobile .result-synthesis-container,
