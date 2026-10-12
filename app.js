@@ -946,11 +946,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabQiMenBtn) tabQiMenBtn.classList.toggle('active', mode === 'qimen');
     if (tabBaziBtn) tabBaziBtn.classList.toggle('active', mode === 'bazi');
 
-    // View containers visibility
-    if (readingAppView) readingAppView.classList.toggle('hidden', mode !== 'reading');
-    if (tongShuAppView) tongShuAppView.classList.toggle('hidden', mode !== 'tongshu');
-    if (qiMenAppView) qiMenAppView.classList.toggle('hidden', mode !== 'qimen');
-    if (baziAppView) baziAppView.classList.toggle('hidden', mode !== 'bazi');
+    // View containers visibility - strictly enforce 1 active view
+    const views = [
+      { el: readingAppView, modeKey: 'reading' },
+      { el: tongShuAppView, modeKey: 'tongshu' },
+      { el: qiMenAppView, modeKey: 'qimen' },
+      { el: baziAppView, modeKey: 'bazi' }
+    ];
+
+    views.forEach(v => {
+      if (!v.el) return;
+      const isShow = mode === v.modeKey;
+      v.el.classList.toggle('hidden', !isShow);
+      v.el.style.setProperty('display', isShow ? 'block' : 'none', 'important');
+    });
 
     // Sync URL hash seamlessly without page jumping
     if (updateHash) {
@@ -1018,18 +1027,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Parse initial tab on page load
-  const initialTab = parseTargetTabFromUrl();
-  if (initialTab) {
-    setActiveAppMode(initialTab, false);
-  }
+  // Parse initial tab on page load (defaults to reading)
+  const initialTab = parseTargetTabFromUrl() || 'reading';
+  setActiveAppMode(initialTab, false);
 
   // Listen for dynamic hash changes (external links or browser back/forward)
   window.addEventListener('hashchange', () => {
-    const targetTab = parseTargetTabFromUrl();
-    if (targetTab) {
-      setActiveAppMode(targetTab, false);
-    }
+    const targetTab = parseTargetTabFromUrl() || 'reading';
+    setActiveAppMode(targetTab, false);
   });
 
   // ==========================================================================

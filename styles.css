@@ -2526,7 +2526,15 @@ body {
     text-align: center !important;
   }
 
-  .view-container {
+  .view-container.hidden,
+  #readingAppView.hidden,
+  #tongShuAppView.hidden,
+  #qiMenAppView.hidden,
+  #baziAppView.hidden {
+    display: none !important;
+  }
+
+  .view-container:not(.hidden) {
     height: calc(100vh - 60px) !important;
     display: block !important;
     width: 100% !important;
@@ -2553,7 +2561,7 @@ body {
   }
 
   /* App Canvas on Mobile */
-  #readingAppView {
+  #readingAppView:not(.hidden) {
     display: block !important;
     padding: 12px 8px 60px 8px !important;
     width: 100% !important;
@@ -3625,8 +3633,21 @@ body.is-mobile .reading-step-card {
   overflow-x: hidden !important;
 }
 
-html.is-mobile #readingAppView,
-body.is-mobile #readingAppView {
+html.is-mobile .view-container.hidden,
+body.is-mobile .view-container.hidden,
+html.is-mobile #readingAppView.hidden,
+body.is-mobile #readingAppView.hidden,
+html.is-mobile #tongShuAppView.hidden,
+body.is-mobile #tongShuAppView.hidden,
+html.is-mobile #qiMenAppView.hidden,
+body.is-mobile #qiMenAppView.hidden,
+html.is-mobile #baziAppView.hidden,
+body.is-mobile #baziAppView.hidden {
+  display: none !important;
+}
+
+html.is-mobile #readingAppView:not(.hidden),
+body.is-mobile #readingAppView:not(.hidden) {
   display: block !important;
   padding: 12px 8px 60px 8px !important;
   width: 100% !important;

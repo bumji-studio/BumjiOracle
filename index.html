@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261012_mobile_fit_v3">
+  <link rel="stylesheet" href="styles.css?v=20261012_mobile_view_fix_v4">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -29,7 +29,25 @@
         overflow-x: hidden !important;
         box-sizing: border-box !important;
       }
-      .view-container, #readingAppView {
+      .view-container.hidden,
+      #readingAppView.hidden,
+      #tongShuAppView.hidden,
+      #qiMenAppView.hidden,
+      #baziAppView.hidden,
+      .hidden {
+        display: none !important;
+      }
+
+      .view-container:not(.hidden) {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        min-width: 0 !important;
+        overflow-x: hidden !important;
+        box-sizing: border-box !important;
+      }
+
+      #readingAppView:not(.hidden) {
         display: block !important;
         width: 100% !important;
         max-width: 100vw !important;
@@ -1502,7 +1520,7 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load App scripts -->
-  <script src="app.js?v=20261012_mobile_fit_v3"></script>
+  <script src="app.js?v=20261012_mobile_view_fix_v4"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261011_qimen_v4"></script>
