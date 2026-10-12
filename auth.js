@@ -518,7 +518,7 @@
                   <i class="fa-solid fa-cat"></i>
                 </div>
                 <div>
-                  <h2>DESTINY ARCANA</h2>
+                  <h2>แม่หมอติ๊ดติ๊ด</h2>
                   <span class="auth-cat-subtitle">✨ ดูดวงไพ่ออราเคิล My Cat &amp; I (61 ใบ) • สไตล์โมเดิร์นฮีลใจ</span>
                 </div>
               </div>
