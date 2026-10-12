@@ -687,10 +687,12 @@
         }
 
         if (isAuth) {
-          badge.innerHTML = `<i class="fa-solid fa-sparkles"></i> ปลดล็อกแล้ว`;
-          badge.className = 'nav-lock-badge unlocked';
+          badge.style.display = 'none';
+          badge.innerHTML = '';
         } else {
-          badge.innerHTML = `<i class="fa-solid fa-lock"></i> สมาชิก`;
+          badge.style.display = 'inline-flex';
+          badge.innerHTML = `<i class="fa-solid fa-lock"></i>`;
+          badge.title = 'สำหรับสมาชิก';
           badge.className = 'nav-lock-badge locked';
         }
       });

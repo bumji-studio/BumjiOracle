@@ -883,7 +883,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Responsive Viewport & Device Detector
   function updateResponsiveViewMode() {
-    const isMobile = window.innerWidth <= 880 || 
+    const isMobile = window.innerWidth <= 980 || 
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
       (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches && window.innerWidth <= 1024);
     
