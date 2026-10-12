@@ -858,7 +858,7 @@
             <button type="button" class="p-btn-action secondary" id="personalityJumpToBaziBtn">
               <i class="fa-solid fa-yin-yang"></i> ดูดวง BaZi สี่แถวชะตาตัวเต็ม
             </button>
-            <button type="button" class="p-btn-action tertiary" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+            <button type="button" class="p-btn-action tertiary" onclick="document.getElementById('personalityAppView')?.scrollTo({ top: 0, behavior: 'smooth' })">
               <i class="fa-solid fa-arrow-up"></i> กลับขึ้นด้านบน
             </button>
           </div>
@@ -880,8 +880,18 @@
         newJumpBtn.addEventListener('click', () => this.jumpToBazi());
       }
 
-      // Smooth scroll to results
-      resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Smooth scroll to results within the personality scroll container
+      const appView = document.getElementById('personalityAppView');
+      if (appView && resultContainer) {
+        setTimeout(() => {
+          appView.scrollTo({
+            top: resultContainer.offsetTop - 15,
+            behavior: 'smooth'
+          });
+        }, 60);
+      } else if (resultContainer) {
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   };
 
