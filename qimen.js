@@ -522,11 +522,21 @@
   const QiMenEngine = {
     plot: function (dateObj, hourIndex = null, minute = null) {
       const now = dateObj instanceof Date ? dateObj : new Date();
-      const min = minute !== null ? minute : now.getMinutes();
-      const hIdx = hourIndex !== null ? hourIndex : Math.floor((now.getHours() + 1) % 24 / 2);
-      const hourHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
-      const displayH = (hourIndex !== null) ? hourHours[hIdx] : now.getHours();
-      const hourDisplay = `${String(displayH).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+      const actualH = now.getHours();
+      const actualHIdx = Math.floor((actualH + 1) % 24 / 2);
+      const hIdx = hourIndex !== null ? hourIndex : actualHIdx;
+
+      let displayH = actualH;
+      let displayM = (minute !== null) ? minute : now.getMinutes();
+
+      // If user manually selected a different hour bracket than dateObj's current local hour:
+      if (hourIndex !== null && hourIndex !== actualHIdx) {
+        const hourHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
+        displayH = hourHours[hIdx];
+        if (minute === null) displayM = 0;
+      }
+
+      const hourDisplay = `${String(displayH).padStart(2, '0')}:${String(displayM).padStart(2, '0')}`;
 
       // 4 Pillars BaZi calculation
       const stemsList = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
@@ -960,7 +970,7 @@
 
     render: function () {
       this.syncInputs();
-      const chart = QiMenEngine.plot(this.currentDate, this.currentHourIdx);
+      const chart = QiMenEngine.plot(this.currentDate, this.currentHourIdx, this.currentDate ? this.currentDate.getMinutes() : null);
       this.chartData = chart;
 
       // 1. Render Four Pillars Table (Top Left)
