@@ -8,11 +8,22 @@
 (function () {
   'use strict';
 
-  // 1. Five Cat Guilds (5 Structures / 五行格局)
+  // 1. Five Cat Guilds (5 Structures / 五行格局 - Joey Yap BaZi Profiling)
   const CAT_GUILDS = {
+    supporters: {
+      key: 'supporters',
+      nameZh: '名望型 (Influence / Supporters)',
+      nameTh: 'กิลด์ผู้พิทักษ์แห่งบารมีและเกียรติยศ (The Supporters)',
+      elementRole: 'power',
+      color: '#8b5cf6',
+      bg: 'rgba(139, 92, 246, 0.15)',
+      icon: 'fa-shield-halved',
+      desc: 'ผู้นำแห่งระเบียบ บารมี เกียรติยศ และความกล้าหาญ เด็ดขาด ยุติธรรม และรับผิดชอบสูง',
+      tenGods: ['七殺', '正官']
+    },
     thinkers: {
       key: 'thinkers',
-      nameZh: '印星 (Resource)',
+      nameZh: '智慧型 (Resource / Thinkers)',
       nameTh: 'กิลด์ปราชญ์ผู้นุ่มฟู (The Thinkers)',
       elementRole: 'resource',
       color: '#3b82f6',
@@ -21,49 +32,38 @@
       desc: 'ผู้สั่งสมความรู้ ปัญญา สัญชาตญาณ และความสงบสุขุม ลึกซึ้งและรอบคอบ',
       tenGods: ['偏印', '正印']
     },
-    managers: {
-      key: 'managers',
-      nameZh: '官殺 (Power)',
-      nameTh: 'กิลด์ผู้พิทักษ์แห่งวินัย (The Managers)',
-      elementRole: 'power',
-      color: '#8b5cf6',
-      bg: 'rgba(139, 92, 246, 0.15)',
-      icon: 'fa-chess-rook',
-      desc: 'ผู้นำแห่งระเบียบ ความเด็ดขาด ยุติธรรม กล้าตัดสินใจและรับผิดชอบสูง',
-      tenGods: ['正官', '七殺']
-    },
-    creators: {
-      key: 'creators',
-      nameZh: '食傷 (Output)',
-      nameTh: 'กิลด์ผู้เนรมิตสุนทรีย์ (The Creators)',
-      elementRole: 'output',
-      color: '#ec4899',
-      bg: 'rgba(236, 72, 153, 0.15)',
-      icon: 'fa-wand-magic-sparkles',
-      desc: 'ผู้สร้างสรรค์ นวัตกรรม ไหวพริบ ความคิดนอกกรอบ และศิลปะแห่งชีวิต',
-      tenGods: ['食神', '傷官']
-    },
-    financiers: {
-      key: 'financiers',
-      nameZh: '財星 (Wealth)',
-      nameTh: 'กิลด์จอมเวทแห่งทรัพย์สิน (The Financiers)',
-      elementRole: 'wealth',
-      color: '#f59e0b',
-      bg: 'rgba(245, 158, 11, 0.15)',
-      icon: 'fa-coins',
-      desc: 'นักล่าโอกาส นักลงทุน บริหารความเสี่ยง ทรัพยากร และสร้างความมั่งคั่ง',
-      tenGods: ['正財', '偏財']
-    },
     connectors: {
       key: 'connectors',
-      nameZh: '比劫 (Companion)',
+      nameZh: '交際型 (Companion / Connectors)',
       nameTh: 'กิลด์มิตรสหายแห่งสายใย (The Connectors)',
       elementRole: 'companion',
       color: '#10b981',
       bg: 'rgba(16, 185, 129, 0.15)',
       icon: 'fa-heart-circle-bolt',
       desc: 'นักเชื่อมสัมพันธ์ มนุษยสัมพันธ์ทรงพลัง รักพวกพ้อง จ่าฝูงที่ระดมใจผู้คน',
-      tenGods: ['比肩', '劫財']
+      tenGods: ['劫財', '比肩']
+    },
+    managers: {
+      key: 'managers',
+      nameZh: '管理型 (Wealth / Managers)',
+      nameTh: 'กิลด์ผู้บริหารจัดการทรัพย์สิน (The Managers)',
+      elementRole: 'wealth',
+      color: '#f59e0b',
+      bg: 'rgba(245, 158, 11, 0.15)',
+      icon: 'fa-coins',
+      desc: 'นักล่าโอกาส นักลงทุน บริหารความเสี่ยง ทรัพยากร และสร้างความมั่งคั่ง',
+      tenGods: ['偏財', '正財']
+    },
+    creators: {
+      key: 'creators',
+      nameZh: '創作型 (Output / Creators)',
+      nameTh: 'กิลด์ผู้เนรมิตสุนทรีย์ (The Creators)',
+      elementRole: 'output',
+      color: '#ec4899',
+      bg: 'rgba(236, 72, 153, 0.15)',
+      icon: 'fa-wand-magic-sparkles',
+      desc: 'ผู้สร้างสรรค์ นวัตกรรม ไหวพริบ ความคิดนอกกรอบ และศิลปะแห่งชีวิต',
+      tenGods: ['傷官', '食神']
     }
   };
 
@@ -81,8 +81,8 @@
       guildKey: 'thinkers',
       catBreed: 'แมววิเชียรมาศ (Mystic Siamese)',
       catEmoji: '🐱🔮',
-      title: 'แมวญาณทิพย์ผู้หยั่งรู้',
-      archetype: 'The Philosopher & Mystic',
+      title: 'แมวญาณทิพย์ผู้หยั่งรู้ (The Philosopher)',
+      archetype: 'The Philosopher (偏印)',
       discTendency: 'C-S',
       mbtiMatch: 'INFJ / INTJ',
       tagline: '“ความเงียบคือเวทมนตร์ สัญชาตญาณคือดวงตาที่สาม”',
@@ -115,8 +115,8 @@
       guildKey: 'thinkers',
       catBreed: 'แมวสก็อตติชโฟลด์ (Scottish Scholar)',
       catEmoji: '🐱📚',
-      title: 'แมวนักวิชาการผู้นุ่มฟู',
-      archetype: 'The Analyzer & Protector',
+      title: 'แมวนักวิชาการผู้นุ่มฟู (The Analyzer)',
+      archetype: 'The Analyzer (正印)',
       discTendency: 'S-C',
       mbtiMatch: 'ISFJ / INTP',
       tagline: '“ความรอบรู้คือเกราะป้องกัน ความเมตตาคือหัวใจที่งดงาม”',
@@ -141,19 +141,19 @@
     },
 
     // ----------------------------------------------------
-    // The Managers (Power)
+    // The Supporters (Influence / Power)
     // ----------------------------------------------------
     '正官': {
       profileId: 3,
-      key: 'director',
+      key: 'diplomat',
       tenGodZh: '正官',
       tenGodPy: 'Zheng Guan',
       tenGodTh: 'เกียรติยศชื่อเสียง (Direct Officer)',
-      guildKey: 'managers',
+      guildKey: 'supporters',
       catBreed: 'แมวเมนคูน (Regal Maine Coon)',
       catEmoji: '🐱👑',
-      title: 'แมวยักษ์ราชันย์ผู้ทรงเกียรติ',
-      archetype: 'The Director & Guardian',
+      title: 'แมวยักษ์ราชันย์ผู้ทรงเกียรติ (The Diplomat)',
+      archetype: 'The Diplomat (正官)',
       discTendency: 'D-C',
       mbtiMatch: 'ESTJ / ISTJ',
       tagline: '“เกียรติยศอยู่ที่วินัย บารมีอยู่ที่ความยุติธรรม”',
@@ -179,18 +179,18 @@
 
     '七殺': {
       profileId: 4,
-      key: 'pioneer',
+      key: 'warrior',
       tenGodZh: '七殺',
       tenGodPy: 'Qi Sha',
       tenGodTh: 'อำนาจบารมี (Seven Killings)',
-      guildKey: 'managers',
+      guildKey: 'supporters',
       catBreed: 'แมวเบงกอล (Warrior Bengal)',
       catEmoji: '🐱⚡',
-      title: 'แมวนักล่าผู้ไร้ความกลัว',
-      archetype: 'The Pioneer & Commander',
+      title: 'แมวนักล่าผู้ไร้ความกลัว (The Warrior)',
+      archetype: 'The Warrior (七殺)',
       discTendency: 'D-I',
       mbtiMatch: 'ENTJ / ESTP',
-      tagline: '“วิกฤตคือเวทีของฉัน อุปสรรคมีไว้ให้ขย้ำ”',
+      tagline: '“วิกฤตคือเวทมนตร์ของฉัน อุปสรรคมีไว้ให้ขย้ำ”',
       superpowers: [
         'กล้าหาญ เด็ดขาด ลุยตรงเป้า ไม่เคยยอมแพ้ต่ออุปสรรคใดๆ',
         'เก่งกาจเป็นพิเศษในภาวะวิกฤต (Crisis Management) ตัดสินใจฉับไว',
@@ -223,8 +223,8 @@
       guildKey: 'creators',
       catBreed: 'แมวขาวมณี / บริติช (Aesthetic Khao Manee)',
       catEmoji: '🐱🎨',
-      title: 'แมวสุนทรีย์ผู้รักความสงบ',
-      archetype: 'The Artist & Connoisseur',
+      title: 'แมวสุนทรีย์ผู้รักความสงบ (The Artist)',
+      archetype: 'The Artist (食神)',
       discTendency: 'S-I',
       mbtiMatch: 'ISFP / INFP',
       tagline: '“ชีวิตคืองานศิลปะ ความสุขคือเป้าหมายที่แท้จริง”',
@@ -257,8 +257,8 @@
       guildKey: 'creators',
       catBreed: 'แมวส้มตัวตึง (Star Ginger Cat)',
       catEmoji: '🐱⭐',
-      title: 'แมวดาราดาวเด่นผู้เปล่งประกาย',
-      archetype: 'The Performer & Innovator',
+      title: 'แมวดาราดาวเด่นผู้เปล่งประกาย (The Performer)',
+      archetype: 'The Performer (傷官)',
       discTendency: 'I-D',
       mbtiMatch: 'ENFP / ENTP',
       tagline: '“กฎมีไว้ให้แหก แสงสปอตไลต์มีไว้ให้ฉันยืน”',
@@ -283,19 +283,19 @@
     },
 
     // ----------------------------------------------------
-    // The Financiers (Wealth)
+    // The Managers (Wealth)
     // ----------------------------------------------------
     '偏財': {
       profileId: 7,
-      key: 'entrepreneur',
+      key: 'pioneer_wealth',
       tenGodZh: '偏財',
       tenGodPy: 'Pian Cai',
       tenGodTh: 'โชคลาภพิเศษ (Indirect Wealth)',
-      guildKey: 'financiers',
+      guildKey: 'managers',
       catBreed: 'แมวดำตาเหลือง (Fortune Black Cat)',
       catEmoji: '🐱💰',
-      title: 'แมวนักล่าโอกาสทอง',
-      archetype: 'The Entrepreneur & Rainmaker',
+      title: 'แมวนักล่าโอกาสทอง (The Pioneer)',
+      archetype: 'The Pioneer (偏財)',
       discTendency: 'D-I',
       mbtiMatch: 'ENTP / ESTJ',
       tagline: '“โอกาสซ่อนอยู่ในความมืด และฉันคือผู้คว้ามัน”',
@@ -321,15 +321,15 @@
 
     '正財': {
       profileId: 8,
-      key: 'main_stayer',
+      key: 'director_wealth',
       tenGodZh: '正財',
       tenGodPy: 'Zheng Cai',
       tenGodTh: 'ทรัพย์มั่นคง (Direct Wealth)',
-      guildKey: 'financiers',
+      guildKey: 'managers',
       catBreed: 'แมวเปอร์เซีย (Aristocrat Persian)',
       catEmoji: '🐱💎',
-      title: 'แมวเจ้าสัวผู้มั่นคง',
-      archetype: 'The Main Stayer & Builder',
+      title: 'แมวเจ้าสัวผู้มั่นคง (The Director)',
+      archetype: 'The Director (正財)',
       discTendency: 'C-S',
       mbtiMatch: 'ISTJ / ESTJ',
       tagline: '“ความมั่งคั่งสร้างจากหยาดเหงื่อ ความมั่นคงสร้างจากวินัย”',
@@ -365,8 +365,8 @@
       guildKey: 'connectors',
       catBreed: 'แมวสามสี (Lucky Calico)',
       catEmoji: '🐱🍀',
-      title: 'แมวนางฟ้าผู้เชื่อมโยงจิตใจ',
-      archetype: 'The Friend & Peacemaker',
+      title: 'แมวนางฟ้าผู้เชื่อมโยงจิตใจ (The Friend)',
+      archetype: 'The Friend (比肩)',
       discTendency: 'S-I',
       mbtiMatch: 'ESFJ / ISFP',
       tagline: '“มิตรภาพแท้มีค่ากว่าทองคำ รอยยิ้มของคุณคือความสุขของฉัน”',
@@ -399,8 +399,8 @@
       guildKey: 'connectors',
       catBreed: 'แมวสฟิงซ์ / ลายเสือ (Alpha Sphynx)',
       catEmoji: '🐱🦁',
-      title: 'แมวจ่าฝูงนักระดมพล',
-      archetype: 'The Leader & Influencer',
+      title: 'แมวจ่าฝูงนักระดมพล (The Leader)',
+      archetype: 'The Leader (劫財)',
       discTendency: 'I-D',
       mbtiMatch: 'ENFJ / ESTP',
       tagline: '“รวมใจผู้คนให้เป็นหนึ่ง พิชิตยอดเขาไปด้วยกัน”',
@@ -439,129 +439,98 @@
       const dayMaster = chart.dayMaster; // { zh, element, polarity }
       const pillars = chart.pillars;     // year, month, day, hour
 
-      // Structure weight accumulator
-      const guildScores = {
-        thinkers: 0,
-        managers: 0,
-        creators: 0,
-        financiers: 0,
-        connectors: 0
-      };
-
-      // Profile (Ten Gods) weight accumulator
+      // Joey Yap 10 Profiles raw scores accumulator
       const profileScores = {
+        '七殺': 0,
+        '正官': 0,
         '偏印': 0,
         '正印': 0,
-        '正官': 0,
-        '七殺': 0,
-        '食神': 0,
-        '傷官': 0,
         '偏財': 0,
         '正財': 0,
+        '食神': 0,
+        '傷官': 0,
         '比肩': 0,
         '劫財': 0
       };
 
-      // Weight weights for pillars:
-      // Month Branch has the greatest influence (提綱 45%)
-      // Month Stem (15%)
-      // Day Branch (15%)
-      // Hour Pillar (15%)
-      // Year Pillar (10%)
-      const addTenGodScore = (tgZh, weight) => {
-        if (!tgZh || !profileScores.hasOwnProperty(tgZh)) return;
-        profileScores[tgZh] += weight;
+      // 1. Day Master Base: Self identity gives base strength to Friend (比肩)
+      profileScores['比肩'] = 20;
 
-        // Add to corresponding guild
-        for (const [gKey, gData] of Object.entries(CAT_GUILDS)) {
-          if (gData.tenGods.includes(tgZh)) {
-            guildScores[gKey] += weight;
-            break;
-          }
+      // 2. Heavenly Stems (透干)
+      // Month stem is closest to seasonal Qi and outward expression: 35 pts
+      // Hour stem represents aspirations and creation: 32 pts
+      // Year stem represents ancestral and societal expression: 26 pts
+      const stemWeights = { month: 35, hour: 32, year: 26 };
+      ['year', 'month', 'hour'].forEach(pKey => {
+        const p = pillars[pKey];
+        if (p && p.tenGod && p.tenGod.zh && profileScores.hasOwnProperty(p.tenGod.zh)) {
+          profileScores[p.tenGod.zh] += stemWeights[pKey];
         }
+      });
+
+      // 3. Earthly Branches Hidden Stems (地支藏干)
+      // In Joey Yap BaZi Profiling, Month Branch (月令) carries command over the season (~45% of total branch weight)
+      const branchWeights = {
+        month: { main: 68, sub1: 39, sub2: 56 },
+        day:   { main: 28, sub1: 21, sub2: 18 },
+        hour:  { main: 22, sub1: 38, sub2: 19 },
+        year:  { main: 22, sub1: 19, sub2: 14 }
       };
 
-      // 1. Month Pillar (Highest weight!)
-      if (pillars.month) {
-        // Month stem
-        if (pillars.month.tenGod && pillars.month.tenGod.zh) {
-          addTenGodScore(pillars.month.tenGod.zh, 1.5);
-        }
-        // Month branch hidden stems (Command of the Month / 司令)
-        if (pillars.month.hiddenStems && pillars.month.hiddenStems.length > 0) {
-          pillars.month.hiddenStems.forEach((h, idx) => {
-            // Main Qi (highest weight)
-            const mainWeight = idx === 0 ? 3.0 : (h.weight || 0.3) * 2.0;
-            if (h.tenGod && h.tenGod.zh) {
-              addTenGodScore(h.tenGod.zh, mainWeight);
-            }
+      ['month', 'day', 'hour', 'year'].forEach(pKey => {
+        const p = pillars[pKey];
+        const cfg = branchWeights[pKey];
+        if (p && p.hiddenStems && p.hiddenStems.length > 0) {
+          p.hiddenStems.forEach((h, idx) => {
+            if (!h.tenGod || !h.tenGod.zh || !profileScores.hasOwnProperty(h.tenGod.zh)) return;
+            const pts = idx === 0 ? cfg.main : (idx === 1 ? cfg.sub1 : cfg.sub2);
+            profileScores[h.tenGod.zh] += pts;
           });
         }
-      }
+      });
 
-      // 2. Day Branch (Spouse / Core subconscious)
-      if (pillars.day && pillars.day.hiddenStems) {
-        pillars.day.hiddenStems.forEach((h, idx) => {
-          const w = idx === 0 ? 1.5 : 0.8;
-          if (h.tenGod && h.tenGod.zh) {
-            addTenGodScore(h.tenGod.zh, w);
-          }
-        });
-      }
-
-      // 3. Hour Pillar
-      if (pillars.hour) {
-        if (pillars.hour.tenGod && pillars.hour.tenGod.zh) {
-          addTenGodScore(pillars.hour.tenGod.zh, 1.0);
-        }
-        if (pillars.hour.hiddenStems) {
-          pillars.hour.hiddenStems.forEach((h, idx) => {
-            const w = idx === 0 ? 0.9 : 0.4;
-            if (h.tenGod && h.tenGod.zh) {
-              addTenGodScore(h.tenGod.zh, w);
-            }
-          });
-        }
-      }
-
-      // 4. Year Pillar
-      if (pillars.year) {
-        if (pillars.year.tenGod && pillars.year.tenGod.zh) {
-          addTenGodScore(pillars.year.tenGod.zh, 0.8);
-        }
-        if (pillars.year.hiddenStems) {
-          pillars.year.hiddenStems.forEach((h, idx) => {
-            const w = idx === 0 ? 0.7 : 0.3;
-            if (h.tenGod && h.tenGod.zh) {
-              addTenGodScore(h.tenGod.zh, w);
-            }
-          });
-        }
-      }
-
-      // Calculate Total Guild Scores & Percentages
-      const totalGuildScore = Object.values(guildScores).reduce((a, b) => a + b, 0) || 1;
-      const guildPercentages = {};
-      for (const [k, v] of Object.entries(guildScores)) {
-        guildPercentages[k] = Math.round((v / totalGuildScore) * 100);
-      }
-
-      // Calculate Total 10 Profile Scores & Percentages (Joey Yap 10 Profiles)
-      const totalProfileScore = Object.values(profileScores).reduce((a, b) => a + b, 0) || 1;
+      // 4. Calculate Joey Yap 10 Profiles Strength % (0 - 100% individual bars)
+      const maxScore = Math.max(...Object.values(profileScores)) || 1;
       const profilePercentages = {};
-      for (const [tg, score] of Object.entries(profileScores)) {
-        profilePercentages[tg] = Math.round((score / totalProfileScore) * 100);
+      for (const [tg, raw] of Object.entries(profileScores)) {
+        if (raw === 0) {
+          profilePercentages[tg] = 2; // Baseline 2% for unexpressed profiles in Joey Yap
+        } else {
+          profilePercentages[tg] = Math.max(2, Math.round((raw / maxScore) * 100));
+        }
       }
 
-      // Find Primary Guild (highest %)
-      const sortedGuilds = Object.keys(guildScores).sort((a, b) => guildScores[b] - guildScores[a]);
+      // 5. Calculate Joey Yap 5 Structures (0 - 100% Radar Chart Values)
+      // Supporters (名望型): Power (七殺, 正官)
+      // Thinkers (智慧型): Resource (偏印, 正印)
+      // Connectors (交際型): Companion (劫財, 比肩)
+      // Managers (管理型): Wealth (偏財, 正財)
+      // Creators (創作型): Output (傷官, 食神)
+      const calcStructureVal = (god1, god2) => {
+        const s1 = profilePercentages[god1] || 2;
+        const s2 = profilePercentages[god2] || 2;
+        const higher = Math.max(s1, s2);
+        const lower = Math.min(s1, s2);
+        return Math.min(100, Math.round(higher * 0.82 + lower * 0.28));
+      };
+
+      const structureScores = {
+        supporters: calcStructureVal('七殺', '正官'),
+        thinkers:   calcStructureVal('偏印', '正印'),
+        connectors: calcStructureVal('劫財', '比肩'),
+        managers:   calcStructureVal('偏財', '正財'),
+        creators:   calcStructureVal('傷官', '食神')
+      };
+
+      // Find Primary Guild / Structure (highest score)
+      const sortedGuilds = Object.keys(structureScores).sort((a, b) => structureScores[b] - structureScores[a]);
       const primaryGuildKey = sortedGuilds[0];
       const primaryGuild = CAT_GUILDS[primaryGuildKey];
 
-      // Find Primary & Secondary Cat Profiles (highest Ten God scores)
+      // Find Primary & Secondary Profiles (highest Ten God scores)
       const sortedProfiles = Object.keys(profileScores).sort((a, b) => profileScores[b] - profileScores[a]);
-      const primaryTenGod = sortedProfiles[0] || '正印';
-      const secondaryTenGod = sortedProfiles[1] || '食神';
+      const primaryTenGod = sortedProfiles[0] || '七殺';
+      const secondaryTenGod = sortedProfiles[1] || '正官';
 
       const primaryCat = CAT_PROFILES[primaryTenGod];
       const secondaryCat = CAT_PROFILES[secondaryTenGod];
@@ -576,7 +545,7 @@
           tenGodZh: tg,
           tenGodPy: catInfo.tenGodPy,
           tenGodTh: catInfo.tenGodTh,
-          percentage: profilePercentages[tg] || 0,
+          percentage: profilePercentages[tg] || 2,
           rawScore: Math.round(profileScores[tg] * 10) / 10,
           catBreed: catInfo.catBreed,
           catEmoji: catInfo.catEmoji,
@@ -590,21 +559,60 @@
         };
       });
 
-      // 5 Structures Radar Chart Datasets
+      // 5 Structures Radar Chart Datasets (Joey Yap 5 Structures: 0 - 100%)
       const radarData = [
-        { key: 'creators', label: 'The Creators', labelTh: 'ผู้เนรมิตสุนทรีย์', zh: '食傷', value: guildPercentages.creators || 0, color: '#ec4899', icon: 'fa-wand-magic-sparkles' },
-        { key: 'managers', label: 'The Managers', labelTh: 'ผู้พิทักษ์แห่งวินัย', zh: '官殺', value: guildPercentages.managers || 0, color: '#8b5cf6', icon: 'fa-chess-rook' },
-        { key: 'financiers', label: 'The Financiers', labelTh: 'จอมเวทแห่งทรัพย์สิน', zh: '財星', value: guildPercentages.financiers || 0, color: '#f59e0b', icon: 'fa-coins' },
-        { key: 'thinkers', label: 'The Thinkers', labelTh: 'ปราชญ์ผู้นุ่มฟู', zh: '印星', value: guildPercentages.thinkers || 0, color: '#3b82f6', icon: 'fa-brain' },
-        { key: 'connectors', label: 'The Connectors', labelTh: 'มิตรสหายแห่งสายใย', zh: '比劫', value: guildPercentages.connectors || 0, color: '#10b981', icon: 'fa-heart-circle-bolt' }
+        {
+          key: 'supporters',
+          label: 'The Supporters',
+          labelTh: 'ผู้พิทักษ์แห่งบารมี (Influence)',
+          zh: '名望型',
+          value: structureScores.supporters || 0,
+          color: '#8b5cf6',
+          icon: 'fa-shield-halved'
+        },
+        {
+          key: 'thinkers',
+          label: 'The Thinkers',
+          labelTh: 'ปราชญ์ผู้นุ่มฟู (Resources)',
+          zh: '智慧型',
+          value: structureScores.thinkers || 0,
+          color: '#3b82f6',
+          icon: 'fa-brain'
+        },
+        {
+          key: 'connectors',
+          label: 'The Connectors',
+          labelTh: 'มิตรสหายแห่งสายใย (Companion)',
+          zh: '交際型',
+          value: structureScores.connectors || 0,
+          color: '#10b981',
+          icon: 'fa-heart-circle-bolt'
+        },
+        {
+          key: 'managers',
+          label: 'The Managers',
+          labelTh: 'ผู้บริหารจัดการทรัพย์สิน (Wealth)',
+          zh: '管理型',
+          value: structureScores.managers || 0,
+          color: '#f59e0b',
+          icon: 'fa-coins'
+        },
+        {
+          key: 'creators',
+          label: 'The Creators',
+          labelTh: 'ผู้เนรมิตสุนทรีย์ (Output)',
+          zh: '創作型',
+          value: structureScores.creators || 0,
+          color: '#ec4899',
+          icon: 'fa-wand-magic-sparkles'
+        }
       ];
 
       return {
         primaryCat,
         secondaryCat,
         primaryGuild,
-        guildScores,
-        guildPercentages,
+        structureScores,
         profileScores,
         profilePercentages,
         rankedProfiles,
