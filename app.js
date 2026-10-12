@@ -1359,7 +1359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         holderEl.innerHTML = `
           <div class="slot-placeholder">
             <i class="fa-solid fa-circle-plus"></i>
-            <span>คลิกเลือกไพ่ใบที่ ${i + 1}</span>
+            <span>แตะเลือก</span>
           </div>
         `;
       }
@@ -1369,9 +1369,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pickCurrentInstruction) {
       if (fortuneState.currentPickSlot < 3) {
         const pos = POSITIONS[fortuneState.currentPickSlot];
+        const isMobile = window.innerWidth <= 880;
+        const targetLabel = isMobile ? `ใบที่ ${fortuneState.currentPickSlot + 1}: ${pos.shortName || pos.title}` : pos.title;
         pickCurrentInstruction.innerHTML = `
           <i class="fa-solid fa-arrow-down-long text-gold animate-bounce"></i> 
-          <span>คลิกเลือกไพ่จากสำรับด้านล่างสำหรับ <strong>${pos.title}</strong></span>
+          <span>คลิกเลือกไพ่จากสำรับด้านล่างสำหรับ <strong>${targetLabel}</strong></span>
         `;
       } else {
         pickCurrentInstruction.innerHTML = `
