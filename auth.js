@@ -185,6 +185,8 @@
             this.showToast('เบราว์เซอร์บล็อกหน้าต่างป๊อปอัป กรุณาอนุญาตป๊อปอัปแล้วลองใหม่', 'warning');
           } else if (error.code === 'auth/unauthorized-domain') {
             this.showToast('โดเมนนี้ยังไม่ได้รับอนุญาตใน Firebase Console > Authentication > Authorized domains', 'error');
+          } else if (error.code === 'auth/configuration-not-found' || (error.message && error.message.includes('configuration-not-found'))) {
+            this.showToast('ยังไม่ได้เปิดใช้งาน Authentication ใน Firebase Console: กรุณาไปที่เมนู Authentication > กด Get started > เปิดใช้งาน Google', 'error');
           } else {
             this.showToast('เกิดข้อผิดพลาด: ' + (error.message || 'ไม่สามารถเชื่อมต่อได้'), 'error');
           }
@@ -243,6 +245,7 @@
           else if (error.code === 'auth/wrong-password') msg = 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง';
           else if (error.code === 'auth/invalid-email') msg = 'รูปแบบอีเมลไม่ถูกต้อง';
           else if (error.code === 'auth/too-many-requests') msg = 'พยายามเข้าสู่ระบบบ่อยเกินไป กรุณารอสักครู่แล้วลองใหม่';
+          else if (error.code === 'auth/configuration-not-found' || (error.message && error.message.includes('configuration-not-found'))) msg = 'ยังไม่ได้เปิดใช้งาน Authentication ใน Firebase Console: กรุณาไปที่เมนู Authentication > กด Get started > เปิดใช้งาน Email/Password';
           this.showToast(msg, 'error');
           return false;
         }
@@ -358,6 +361,7 @@
           if (error.code === 'auth/email-already-in-use') msg = 'อีเมลนี้ถูกใช้งานแล้ว กรุณาเข้าสู่ระบบ';
           else if (error.code === 'auth/invalid-email') msg = 'รูปแบบอีเมลไม่ถูกต้อง';
           else if (error.code === 'auth/weak-password') msg = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+          else if (error.code === 'auth/configuration-not-found' || (error.message && error.message.includes('configuration-not-found'))) msg = 'ยังไม่ได้เปิดใช้งาน Authentication ใน Firebase Console: กรุณาไปที่เมนู Authentication > กด Get started > เปิดใช้งาน Email/Password';
           this.showToast(msg, 'error');
           return false;
         }
