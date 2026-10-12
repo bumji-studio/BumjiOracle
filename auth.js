@@ -160,8 +160,31 @@
     // ------------------------------------------------------------------------
     // 2. Real Google Sign-In (Firebase Auth)
     // ------------------------------------------------------------------------
+    openExternalBrowser: function () {
+      this.showToast('กำลังเปิดในเบราว์เซอร์ภายนอก (Safari / Chrome)...', 'info');
+      if (typeof liff !== 'undefined' && liff.openWindow) {
+        try {
+          liff.openWindow({ url: window.location.href, external: true });
+          return;
+        } catch (e) {}
+      }
+      try {
+        const u = new URL(window.location.href);
+        u.searchParams.set('openExternalBrowser', '1');
+        window.location.href = u.toString();
+      } catch (e) {
+        window.location.href = window.location.href + (window.location.href.includes('?') ? '&' : '?') + 'openExternalBrowser=1';
+      }
+    },
+
     loginWithGoogle: async function () {
       const self = this;
+
+      // Check if user is inside LINE In-App Browser (Google OAuth blocks in-app webviews)
+      if (/Line/i.test(navigator.userAgent)) {
+        this.openExternalBrowser();
+        return false;
+      }
 
       // Real Firebase Mode
       if (this.isFirebaseReady && window.firebase && window.firebase.auth) {
@@ -840,6 +863,12 @@
       if (statusPill) {
         statusPill.addEventListener('click', () => self.switchModalTab('config'));
       }
+
+      // Open external browser button for LINE users
+      const btnExt = document.getElementById('btnOpenExternalBrowser');
+      if (btnExt) {
+        btnExt.addEventListener('click', () => self.openExternalBrowser());
+      }
     },
 
     injectAuthUI: function () {
@@ -895,6 +924,20 @@
               <!-- 1. LOGIN TAB -->
               <div class="auth-tab-content active" data-content="login">
                 
+                <!-- LINE In-App Browser Warning & Helper -->
+                <div id="authLineNotice" class="auth-line-notice ${/Line/i.test(navigator.userAgent) ? '' : 'hidden'}">
+                  <div class="auth-line-notice-header">
+                    <i class="fa-brands fa-line line-green-icon"></i>
+                    <div>
+                      <strong>เปิดผ่านแอป LINE (In-App Browser)</strong>
+                      <p>นโยบายความปลอดภัยของ Google ไม่อนุญาตให้ล็อกอินภายใน LINE แตะปุ่มด้านล่างเพื่อเปิดใน Safari / Chrome หรือใช้อีเมลสมัครสมาชิกด้านล่างแทนได้ทันทีค่ะ</p>
+                    </div>
+                  </div>
+                  <button type="button" class="btn-open-external" id="btnOpenExternalBrowser">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> แตะเพื่อเปิดใน Safari / Chrome (Google Login)
+                  </button>
+                </div>
+
                 <!-- Google 1-Click Button -->
                 <button type="button" class="btn-google-auth">
                   <svg class="google-svg-icon" viewBox="0 0 24 24">
