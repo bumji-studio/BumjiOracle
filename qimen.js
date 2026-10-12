@@ -445,7 +445,7 @@
       f.push({ name: 'Yu Nu', color: 'red' });
     }
     if (hStem === '壬' && pNum === 4) {
-      f.push({ name: 'Ren Xing', color: 'red' });
+      f.push({ name: 'Ren Xing', color: 'dark' });
     } else if (pNum === 4 && !['壬'].includes(hStem)) {
       f.push({ name: 'Yue Wang', color: 'red' });
     }
