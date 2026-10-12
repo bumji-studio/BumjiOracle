@@ -188,21 +188,147 @@
     4: 6, 6: 4
   };
 
-  const HEXAGRAM_LOOKUP = {
-    1: { gua1: '☵ 3', branch: '酉', gua2: '☷ 8', name: '56-Travelling' },
-    2: { gua1: '☵ 6', branch: '卯', gua2: '☷ 9', name: '41-Decreasing' },
-    3: { gua1: '☵ 4', branch: '午', gua2: '☷ 3', name: '28-Great Exceeding' },
-    4: { gua1: '☵ 9', branch: '寅', gua2: '☷ 7', name: '13-Fellowship' },
-    6: { gua1: '☵ 2', branch: '申', gua2: '☷ 6', name: '59-Dispersing' },
-    7: { gua1: '☵ 8', branch: '巳', gua2: '☷ 2', name: '34-Great Strength' },
-    8: { gua1: '☵ 1', branch: '子', gua2: '☷ 8', name: '24-Returning' },
-    9: { gua1: '☵ 7', branch: '亥', gua2: '☷ 7', name: '8-Alliance' }
+  const MANSIONS_28_DATA = [
+    { idx: 1, zh: '角', en: 'Horn', element: '木', beast: '蛟', dir: 'E' },
+    { idx: 2, zh: '亢', en: 'Neck', element: '金', beast: '龙', dir: 'E' },
+    { idx: 3, zh: '氐', en: 'Root', element: '土', beast: '貉', dir: 'E' },
+    { idx: 4, zh: '房', en: 'Room', element: '日', beast: '兔', dir: 'E' },
+    { idx: 5, zh: '心', en: 'Heart', element: '月', beast: '狐', dir: 'E' },
+    { idx: 6, zh: '尾', en: 'Tail', element: '火', beast: '虎', dir: 'E' },
+    { idx: 7, zh: '箕', en: 'Basket', element: '水', beast: '豹', dir: 'E' },
+    { idx: 8, zh: '斗', en: 'Dipper', element: '木', beast: '獬', dir: 'N' },
+    { idx: 9, zh: '牛', en: 'Ox', element: '金', beast: '牛', dir: 'N' },
+    { idx: 10, zh: '女', en: 'Girl', element: '土', beast: '蝠', dir: 'N' },
+    { idx: 11, zh: '虚', en: 'Emptiness', element: '日', beast: '鼠', dir: 'N' },
+    { idx: 12, zh: '危', en: 'Rooftop', element: '月', beast: '燕', dir: 'N' },
+    { idx: 13, zh: '室', en: 'Encampment', element: '火', beast: '猪', dir: 'N' },
+    { idx: 14, zh: '壁', en: 'Wall', element: '水', beast: '獝', dir: 'N' },
+    { idx: 15, zh: '奎', en: 'Legs', element: '木', beast: '狼', dir: 'W' },
+    { idx: 16, zh: '娄', en: 'Bond', element: '金', beast: '狗', dir: 'W' },
+    { idx: 17, zh: '胃', en: 'Stomach', element: '土', beast: '雉', dir: 'W' },
+    { idx: 18, zh: '昴', en: 'Hairy Head', element: '日', beast: '鸡', dir: 'W' },
+    { idx: 19, zh: '毕', en: 'Net', element: '月', beast: '乌', dir: 'W' },
+    { idx: 20, zh: '觜', en: 'Turtle Beak', element: '火', beast: '猴', dir: 'W' },
+    { idx: 21, zh: '参', en: 'Three Stars', element: '水', beast: '猿', dir: 'W' },
+    { idx: 22, zh: '井', en: 'Well', element: '木', beast: '犴', dir: 'S' },
+    { idx: 23, zh: '鬼', en: 'Ghost', element: '金', beast: '羊', dir: 'S' },
+    { idx: 24, zh: '柳', en: 'Willow', element: '土', beast: '獐', dir: 'S' },
+    { idx: 25, zh: '星', en: 'Star', element: '日', beast: '马', dir: 'S' },
+    { idx: 26, zh: '张', en: 'Extended Net', element: '月', beast: '鹿', dir: 'S' },
+    { idx: 27, zh: '翼', en: 'Wings', element: '火', beast: '蛇', dir: 'S' },
+    { idx: 28, zh: '轸', en: 'Chariot', element: '水', beast: '蚓', dir: 'S' }
+  ];
+
+  const TRIGRAMS = {
+    QIAN: { zh: '乾', sym: '☰', num: 9, element: 'Metal' },
+    DUI:  { zh: '兑', sym: '☱', num: 4, element: 'Metal' },
+    LI:   { zh: '离', sym: '☲', num: 3, element: 'Fire' },
+    ZHEN: { zh: '震', sym: '☳', num: 8, element: 'Wood' },
+    XUN:  { zh: '巽', sym: '☴', num: 2, element: 'Wood' },
+    KAN:  { zh: '坎', sym: '☵', num: 7, element: 'Water' },
+    GEN:  { zh: '艮', sym: '☶', num: 6, element: 'Earth' },
+    KUN:  { zh: '坤', sym: '☷', num: 1, element: 'Earth' }
   };
 
-  const CONSTELLATION_LOOKUP = {
-    1: '5 Wing 火 S', 2: '6 Horn 木 E', 3: '7 Basket 水 E', 4: '8 Star 日 S',
-    6: '1 Heart 月 E', 7: '2 Stomach 土 W', 8: '3 Net 月 W', 9: '4 Ox 金 N'
+  const STEM_TO_TRIGRAM = {
+    '甲': 'QIAN', '壬': 'QIAN',
+    '乙': 'KUN',  '癸': 'KUN',
+    '丙': 'GEN',
+    '丁': 'DUI',
+    '戊': 'KAN',
+    '己': 'LI',
+    '庚': 'ZHEN',
+    '辛': 'XUN'
   };
+
+  const PALACE_TO_TRIGRAM = {
+    1: 'KAN', 2: 'KUN', 3: 'ZHEN', 4: 'XUN',
+    6: 'QIAN', 7: 'DUI', 8: 'GEN', 9: 'LI'
+  };
+
+  const HEXAGRAMS_64 = {
+    QIAN_QIAN: { no: 1, name: '1-Creative', zh: '乾为天', yun: 1, qi: 9, branch: '戌' },
+    KUN_KUN:   { no: 2, name: '2-Receptive', zh: '坤为地', yun: 1, qi: 1, branch: '未' },
+    KAN_ZHEN:  { no: 3, name: '3-Difficulty', zh: '水雷屯', yun: 2, qi: 4, branch: '寅' },
+    GEN_KAN:   { no: 4, name: '4-Youthful Folly', zh: '山水蒙', yun: 4, qi: 7, branch: '寅' },
+    KAN_QIAN:  { no: 5, name: '5-Waiting', zh: '水天需', yun: 6, qi: 6, branch: '子' },
+    QIAN_KAN:  { no: 6, name: '6-Conflict', zh: '天水讼', yun: 3, qi: 4, branch: '戌' },
+    KUN_KAN:   { no: 7, name: '7-The Army', zh: '地水师', yun: 7, qi: 3, branch: '酉' },
+    KAN_KUN:   { no: 8, name: '8-Alliance', zh: '水地比', yun: 7, qi: 7, branch: '亥' },
+    XUN_QIAN:  { no: 9, name: '9-Small Cattle', zh: '风天小畜', yun: 8, qi: 6, branch: '辰' },
+    QIAN_DUI:  { no: 10, name: '10-Treading', zh: '天泽履', yun: 6, qi: 9, branch: '巳' },
+    KUN_QIAN:  { no: 11, name: '11-Peace', zh: '地天泰', yun: 9, qi: 1, branch: '丑' },
+    QIAN_KUN:  { no: 12, name: '12-Standstill', zh: '天地否', yun: 9, qi: 9, branch: '未' },
+    QIAN_LI:   { no: 13, name: '13-Fellowship', zh: '天火同人', yun: 9, qi: 7, branch: '寅' },
+    LI_QIAN:   { no: 14, name: '14-Great Possession', zh: '火天大有', yun: 3, qi: 9, branch: '卯' },
+    KUN_GEN:   { no: 15, name: '15-Modesty', zh: '地山谦', yun: 8, qi: 3, branch: '未' },
+    ZHEN_KUN:  { no: 16, name: '16-Enthusiasm', zh: '雷地豫', yun: 8, qi: 7, branch: '申' },
+    DUI_ZHEN:  { no: 17, name: '17-Following', zh: '泽雷随', yun: 7, qi: 2, branch: '卯' },
+    GEN_XUN:   { no: 18, name: '18-Decay', zh: '山风蛊', yun: 3, qi: 8, branch: '酉' },
+    KUN_DUI:   { no: 19, name: '19-Approach', zh: '地泽临', yun: 2, qi: 8, branch: '丑' },
+    XUN_KUN:   { no: 20, name: '20-Contemplation', zh: '风地观', yun: 2, qi: 2, branch: '未' },
+    LI_ZHEN:   { no: 21, name: '21-Biting Through', zh: '火雷噬嗑', yun: 6, qi: 3, branch: '辰' },
+    GEN_LI:    { no: 22, name: '22-Grace', zh: '山火贲', yun: 4, qi: 7, branch: '戌' },
+    GEN_KUN:   { no: 23, name: '23-Splitting', zh: '山地剥', yun: 6, qi: 2, branch: '戌' },
+    KUN_ZHEN:  { no: 24, name: '24-Returning', zh: '地雷复', yun: 1, qi: 8, branch: '子' },
+    QIAN_ZHEN: { no: 25, name: '25-Innocence', zh: '天雷无妄', yun: 2, qi: 9, branch: '亥' },
+    GEN_QIAN:  { no: 26, name: '26-Great Accumulation', zh: '山天大畜', yun: 4, qi: 1, branch: '寅' },
+    GEN_ZHEN:  { no: 27, name: '27-Nourishment', zh: '山雷颐', yun: 3, qi: 7, branch: '丑' },
+    DUI_XUN:   { no: 28, name: '28-Great Exceeding', zh: '泽风大过', yun: 4, qi: 3, branch: '午' },
+    KAN_KAN:   { no: 29, name: '29-Abysmal Water', zh: '坎为水', yun: 1, qi: 7, branch: '子' },
+    LI_LI:     { no: 30, name: '30-Clinging Fire', zh: '离为火', yun: 1, qi: 3, branch: '午' },
+    DUI_GEN:   { no: 31, name: '31-Influence', zh: '泽山咸', yun: 9, qi: 4, branch: '申' },
+    ZHEN_XUN:  { no: 32, name: '32-Duration', zh: '雷风恒', yun: 9, qi: 6, branch: '寅' },
+    QIAN_GEN:  { no: 33, name: '33-Retreat', zh: '天山遁', yun: 2, qi: 1, branch: '申' },
+    ZHEN_QIAN: { no: 34, name: '34-Great Strength', zh: '雷天大壮', yun: 8, qi: 2, branch: '巳' },
+    LI_KUN:    { no: 35, name: '35-Progress', zh: '火地晋', yun: 7, qi: 9, branch: '酉' },
+    KUN_LI:    { no: 36, name: '36-Darkening', zh: '地火明夷', yun: 3, qi: 1, branch: '卯' },
+    XUN_LI:    { no: 37, name: '37-The Family', zh: '风火家人', yun: 2, qi: 3, branch: '亥' },
+    LI_DUI:    { no: 38, name: '38-Opposition', zh: '火泽睽', yun: 8, qi: 7, branch: '巳' },
+    KAN_GEN:   { no: 39, name: '39-Obstruction', zh: '水山蹇', yun: 8, qi: 4, branch: '辰' },
+    ZHEN_KAN:  { no: 40, name: '40-Deliverance', zh: '雷水解', yun: 2, qi: 6, branch: '戌' },
+    GEN_DUI:   { no: 41, name: '41-Decreasing', zh: '山泽损', yun: 6, qi: 9, branch: '卯' },
+    XUN_ZHEN:  { no: 42, name: '42-Increase', zh: '风雷益', yun: 4, qi: 1, branch: '酉' },
+    DUI_QIAN:  { no: 43, name: '43-Breakthrough', zh: '泽天夬', yun: 6, qi: 2, branch: '辰' },
+    QIAN_XUN:  { no: 44, name: '44-Coming to Meet', zh: '天风姤', yun: 4, qi: 8, branch: '戌' },
+    DUI_KUN:   { no: 45, name: '45-Gathering', zh: '泽地萃', yun: 7, qi: 8, branch: '未' },
+    KUN_XUN:   { no: 46, name: '46-Pushing Upward', zh: '地风升', yun: 3, qi: 2, branch: '丑' },
+    DUI_KAN:   { no: 47, name: '47-Oppression', zh: '泽水困', yun: 8, qi: 8, branch: '巳' },
+    KAN_XUN:   { no: 48, name: '48-The Well', zh: '水风井', yun: 2, qi: 2, branch: '亥' },
+    DUI_LI:    { no: 49, name: '49-Revolution', zh: '泽火革', yun: 3, qi: 3, branch: '未' },
+    LI_XUN:    { no: 50, name: '50-The Cauldron', zh: '火风鼎', yun: 7, qi: 7, branch: '丑' },
+    ZHEN_ZHEN: { no: 51, name: '51-Thunder', zh: '震为雷', yun: 1, qi: 8, branch: '卯' },
+    GEN_GEN:   { no: 52, name: '52-Mountain', zh: '艮为山', yun: 1, qi: 2, branch: '寅' },
+    XUN_GEN:   { no: 53, name: '53-Development', zh: '风山渐', yun: 7, qi: 6, branch: '申' },
+    ZHEN_DUI:  { no: 54, name: '54-Marrying Maiden', zh: '雷泽归妹', yun: 3, qi: 4, branch: '寅' },
+    ZHEN_LI:   { no: 55, name: '55-Abundance', zh: '雷火丰', yun: 4, qi: 8, branch: '午' },
+    LI_GEN:    { no: 56, name: '56-Travelling', zh: '火山旅', yun: 3, qi: 8, branch: '酉' },
+    XUN_XUN:   { no: 57, name: '57-Gentle Wind', zh: '巽为风', yun: 1, qi: 4, branch: '辰' },
+    DUI_DUI:   { no: 58, name: '58-Joyous Lake', zh: '兑为泽', yun: 1, qi: 6, branch: '酉' },
+    XUN_KAN:   { no: 59, name: '59-Dispersing', zh: '风水涣', yun: 2, qi: 6, branch: '申' },
+    KAN_DUI:   { no: 60, name: '60-Limitation', zh: '水泽节', yun: 8, qi: 4, branch: '寅' },
+    XUN_DUI:   { no: 61, name: '61-Inner Truth', zh: '风泽中孚', yun: 9, qi: 2, branch: '申' },
+    ZHEN_GEN:  { no: 62, name: '62-Small Exceeding', zh: '雷山小过', yun: 9, qi: 8, branch: '寅' },
+    KAN_LI:    { no: 63, name: '63-After Completion', zh: '水火既济', yun: 9, qi: 9, branch: '亥' },
+    LI_KAN:    { no: 64, name: '64-Before Completion', zh: '火水未济', yun: 9, qi: 1, branch: '巳' }
+  };
+
+  function getPalaceHexagram(hStem, eStem, pNum) {
+    const upperKey = STEM_TO_TRIGRAM[hStem] || PALACE_TO_TRIGRAM[pNum] || 'KAN';
+    const lowerKey = STEM_TO_TRIGRAM[eStem] || PALACE_TO_TRIGRAM[pNum] || 'KUN';
+    const pairKey = `${upperKey}_${lowerKey}`;
+    const hex = HEXAGRAMS_64[pairKey] || HEXAGRAMS_64['KAN_KUN'];
+    const upperTri = TRIGRAMS[upperKey] || TRIGRAMS.KAN;
+    const lowerTri = TRIGRAMS[lowerKey] || TRIGRAMS.KUN;
+
+    return {
+      stem: hStem,
+      gua1: `${upperTri.sym} ${hex.yun}`,
+      branch: hex.branch,
+      gua2: `${lowerTri.sym} ${hex.qi}`,
+      name: hex.name
+    };
+  }
 
   function getSolarTerm(date) {
     const m = date.getMonth();
@@ -216,34 +342,86 @@
     return SOLAR_TERMS[SOLAR_TERMS.length - 1];
   }
 
-  function checkFormations(hStem, eStem, doorKey, isEnvoy) {
+  function checkFormations(hStem, eStem, doorKey, pNum, isEnvoy, deityKey) {
     const f = [];
-    if (isEnvoy) f.push('Ri Shi');
     const pair = `${hStem}+${eStem}`;
+
+    // 1. Auspicious Stem Formations (吉格)
     if (pair === '戊+丙') f.push('青龙返首');
     else if (pair === '丙+戊') f.push('飞鸟跌穴');
     else if (pair === '乙+丙') f.push('奇仪顺遂');
     else if (pair === '乙+丁') f.push('奇仪相佐');
     else if (pair === '丁+戊') f.push('青龙转光');
     else if (pair === '丁+乙') f.push('玉女奇捷');
-    else if (pair === '丁+丙') f.push('星奇升殿');
-    else if (pair === '庚+癸') f.push('大格');
+
+    // Palace Specific Noble Stems
+    if (hStem === '丁' && pNum === 7) f.push('星奇升殿');
+    if (hStem === '乙' && pNum === 3) f.push('日出扶桑');
+    if (hStem === '丙' && pNum === 9) f.push('月奇升殿');
+
+    // San Qi De Shi (三奇得使)
+    if (hStem === '乙' && (doorKey === '杜' || doorKey === '景')) f.push('三奇得使');
+    if (hStem === '丙' && (doorKey === '伤' || doorKey === '生')) f.push('三奇得使');
+    if (hStem === '丁' && (doorKey === '开' || doorKey === '休')) f.push('三奇得使');
+
+    // Nine Dun (九遁)
+    if (hStem === '丙' && doorKey === '生' && (eStem === '丁' || deityKey === '天')) f.push('天遁');
+    else if (hStem === '乙' && doorKey === '开' && (eStem === '己' || deityKey === '地')) f.push('地遁');
+    else if (hStem === '丁' && doorKey === '休' && deityKey === '阴') f.push('人遁');
+    else if (hStem === '丙' && doorKey === '生' && deityKey === '天') f.push('神遁');
+    else if (hStem === '乙' && doorKey === '杜' && deityKey === '地') f.push('鬼遁');
+    else if (hStem === '乙' && pNum === 4 && ['开', '休', '生'].includes(doorKey)) f.push('风遁');
+    else if (hStem === '乙' && eStem === '辛' && ['开', '休', '生'].includes(doorKey)) f.push('云遁');
+    else if (hStem === '乙' && pNum === 1 && ['开', '休', '生'].includes(doorKey)) f.push('龙遁');
+    else if (hStem === '辛' && pNum === 8 && ['生', '开'].includes(doorKey)) f.push('虎遁');
+
+    // 2. Inauspicious Stem Formations (凶格)
+    if (pair === '庚+癸') f.push('大格');
     else if (pair === '庚+己') f.push('刑格');
     else if (pair === '庚+壬') f.push('小格');
     else if (pair === '庚+丙') f.push('太白入荧');
-    else if (pair === '丙+庚') f.push('荧入白');
+    else if (pair === '丙+庚') f.push('荧入太白');
     else if (pair === '辛+乙') f.push('白虎猖狂');
     else if (pair === '乙+辛') f.push('青龙逃走');
     else if (pair === '丁+癸') f.push('雀投江');
     else if (pair === '癸+丁') f.push('蛇夭矫');
-    else if (hStem === eStem) f.push('伏吟');
+    else if (pair === '戊+庚') f.push('飞宫格');
+    else if (pair === '庚+戊') f.push('伏宫格');
+    else if (pair === '庚+辛') f.push('白虎出力');
+    else if (pair === '辛+丁') f.push('狱神得奇');
+    else if (pair === '丁+辛') f.push('朱雀入狱');
+    else if (pair === '癸+辛') f.push('网高张');
+    else if (pair === '癸+壬') f.push('天网四张');
 
-    if (['乙', '丙', '丁'].includes(hStem) && ['开', '休', '生'].includes(doorKey)) {
-      f.push('San Qi Zhi');
+    // Fu Yin (伏吟)
+    if (hStem === eStem) f.push('伏吟');
+
+    // Men Po (门迫 - Door Clashing Palace)
+    const doorElem = {
+      '休': 'Water',
+      '生': 'Earth', '死': 'Earth',
+      '伤': 'Wood', '杜': 'Wood',
+      '景': 'Fire',
+      '惊': 'Metal', '开': 'Metal'
+    }[doorKey];
+    const palaceElem = {
+      1: 'Water',
+      2: 'Earth', 8: 'Earth',
+      3: 'Wood', 4: 'Wood',
+      9: 'Fire',
+      6: 'Metal', 7: 'Metal'
+    }[pNum];
+
+    if (
+      (doorElem === 'Metal' && palaceElem === 'Wood') ||
+      (doorElem === 'Water' && palaceElem === 'Fire') ||
+      (doorElem === 'Wood' && palaceElem === 'Earth') ||
+      (doorElem === 'Fire' && palaceElem === 'Metal') ||
+      (doorElem === 'Earth' && palaceElem === 'Water')
+    ) {
+      f.push('门迫');
     }
-    if (doorKey === '开' || doorKey === '休') {
-      f.push('Xing Sheng');
-    }
+
     return f;
   }
 
@@ -466,6 +644,29 @@
       const palaces = {};
       const matrixOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
+      // 7-Star Path (北斗七星 1-7, 8th palace = 0)
+      const sevenStars = {};
+      const chiefRingIdx = RING_8.indexOf(targetStarPalace);
+      RING_8.forEach((p, idx) => {
+        const step = isYangDun 
+          ? (idx - chiefRingIdx + 8) % 8 
+          : (chiefRingIdx - idx + 8) % 8;
+        sevenStars[p] = (step < 7) ? (step + 1) : 0;
+      });
+
+      // 28 Constellations (二十八宿)
+      // Anchor: 2024-01-01 was 室 (Shi, index 12 in 0-indexed MANSIONS_28_DATA)
+      const constellationIdx = ((10 + diffDays) % 28 + 28) % 28;
+      const dayMansion = MANSIONS_28_DATA[constellationIdx];
+      const constellationName = `${dayMansion.idx} - ${dayMansion.en} (${dayMansion.zh}宿)`;
+
+      const palaceConstellations = {};
+      RING_8.forEach((p, idx) => {
+        const cIdx = (constellationIdx + idx * (isYangDun ? 1 : 27)) % 28;
+        const m = MANSIONS_28_DATA[cIdx];
+        palaceConstellations[p] = `${m.idx} ${m.en} ${m.element} ${m.dir}`;
+      });
+
       matrixOrder.forEach(pNum => {
         const info = PALACE_INFO[pNum];
 
@@ -506,14 +707,8 @@
         const isHorse = (hourHorse.palace === pNum);
         const isEnvoy = (doorKey === envoyDoorKey && pNum === envoyPalace);
 
-        const formations = checkFormations(hStemChar, eStemChar, doorKey, isEnvoy);
-        const hex = HEXAGRAM_LOOKUP[pNum] ? {
-          stem: hStemChar,
-          gua1: HEXAGRAM_LOOKUP[pNum].gua1,
-          branch: HEXAGRAM_LOOKUP[pNum].branch,
-          gua2: HEXAGRAM_LOOKUP[pNum].gua2,
-          name: HEXAGRAM_LOOKUP[pNum].name
-        } : null;
+        const formations = checkFormations(hStemChar, eStemChar, doorKey, pNum, isEnvoy, deityKey);
+        const hex = getPalaceHexagram(hStemChar, eStemChar, pNum);
 
         let baseScore = (doorKey === '生' || doorKey === '开' || doorKey === '休') ? 85 : (doorKey === '景' || doorKey === '杜') ? 68 : 48;
         if (deityKey === '符' || deityKey === '天' || deityKey === '合') baseScore += 8;
@@ -526,7 +721,7 @@
           dirZh: info.dirZh,
           dirEn: info.dirEn,
           num: pNum,
-          numCorner: info.numCorner,
+          numCorner: sevenStars[pNum] !== undefined ? sevenStars[pNum] : 0,
           color: info.color,
           tag: info.tag,
           isKongWang: isKongWang,
@@ -550,7 +745,7 @@
           },
           hexagram: hex,
           formations: formations,
-          constellation: CONSTELLATION_LOOKUP[pNum] || '',
+          constellation: palaceConstellations[pNum] || '',
           score: score,
           advice: getPalaceAdvice(pNum, doorKey, deityKey, isKongWang, isHorse)
         };
@@ -572,9 +767,6 @@
         '辰': 'Dog (จอ)', '巳': 'Pig (กุน)', '午': 'Rat (ชวด)', '未': 'Ox (ฉลู)',
         '申': 'Tiger (ขาล)', '酉': 'Rabbit (เถาะ)', '戌': 'Dragon (มะโรง)', '亥': 'Snake (มะเส็ง)'
       };
-
-      const constellationIdx = ((23 + diffDays) % 28 + 28) % 28;
-      const constellationName = CONSTELLATIONS_28[constellationIdx];
 
       return {
         date: now,
