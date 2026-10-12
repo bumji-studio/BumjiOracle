@@ -8669,7 +8669,8 @@ body.is-mobile .synthesis-box-body {
    ========================================================================== */
 
 /* ==========================================================================
-   PURPLE & PINK (ม่วง-ชมพู) THEME FOR AUTHENTICATION & GATEKEEPER
+   DESTINY ARCANA - MY CAT & I MODERN HEALING THEME (สไตล์โมเดิร์นฮีลใจ)
+   Vibrant Purple-to-Pink Gradient (#8525e0 -> #ea2b8d), Soft Clean Pastel
    ========================================================================== */
 
 /* Header Auth Button */
@@ -8677,9 +8678,9 @@ body.is-mobile .synthesis-box-body {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1.5px solid #f0abfc;
-  color: #701a75;
+  background: #ffffff;
+  border: 1.5px solid #fce7f3;
+  color: #8525e0;
   padding: 6px 14px;
   border-radius: 9999px;
   font-family: 'Prompt', sans-serif;
@@ -8687,43 +8688,43 @@ body.is-mobile .synthesis-box-body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 8px rgba(217, 70, 239, 0.12);
+  box-shadow: 0 2px 8px rgba(234, 43, 141, 0.1);
 }
 .auth-btn:hover {
-  background: linear-gradient(135deg, #fdf4ff, #fce7f3);
-  border-color: #ec4899;
-  color: #9d174d;
+  background: #fdf4ff;
+  border-color: #ea2b8d;
+  color: #ea2b8d;
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);
+  box-shadow: 0 4px 14px rgba(234, 43, 141, 0.25);
 }
 .auth-btn.logged-in {
-  background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
-  border-color: #d946ef;
-  color: #701a75;
-  box-shadow: 0 2px 10px rgba(217, 70, 239, 0.2);
+  background: linear-gradient(135deg, #fdf4ff 0%, #fdf2f8 100%);
+  border-color: #fbcfe8;
+  color: #831843;
+  box-shadow: 0 2px 10px rgba(234, 43, 141, 0.15);
 }
 .auth-mini-avatar {
   width: 22px;
   height: 22px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid #ec4899;
+  border: 1.5px solid #ea2b8d;
 }
 .auth-mini-letter {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  background: linear-gradient(135deg, #8525e0, #ea2b8d);
   color: #ffffff;
   font-size: 11px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 4px rgba(217, 70, 239, 0.3);
+  box-shadow: 0 1px 4px rgba(234, 43, 141, 0.3);
 }
 .auth-vip-tag {
-  background: linear-gradient(135deg, #9333ea, #ec4899);
+  background: linear-gradient(135deg, #8525e0, #ea2b8d);
   color: #ffffff;
   font-size: 9.5px;
   font-weight: 800;
@@ -8731,41 +8732,41 @@ body.is-mobile .synthesis-box-body {
   border-radius: 4px;
   margin-left: 2px;
   letter-spacing: 0.5px;
-  box-shadow: 0 1px 4px rgba(236, 72, 153, 0.35);
+  box-shadow: 0 1px 4px rgba(234, 43, 141, 0.35);
 }
 
-/* Nav Lock Badges (ม่วง-ชมพู) */
+/* Nav Lock Badges - Modern Healing Match */
 .nav-lock-badge {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: 2px 7px;
+  border-radius: 6px;
   margin-left: 6px;
   font-weight: 700;
   transition: all 0.2s ease;
   line-height: 1.2;
 }
 .nav-lock-badge.locked {
-  background: rgba(217, 70, 239, 0.14);
-  color: #a21caf;
-  border: 1px solid rgba(217, 70, 239, 0.45);
-  box-shadow: 0 1px 4px rgba(217, 70, 239, 0.15);
+  background: #fdf2f8;
+  color: #db2777;
+  border: 1px solid #fbcfe8;
+  box-shadow: 0 1px 3px rgba(219, 39, 119, 0.1);
 }
 .nav-lock-badge.unlocked {
-  background: rgba(168, 85, 247, 0.16);
-  color: #6b21a8;
-  border: 1px solid rgba(168, 85, 247, 0.4);
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
 }
 
-/* Auth Modal Overlay - Cosmic Deep Violet Blur */
+/* Auth Modal Overlay - Soft Modern Blur */
 .auth-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(26, 11, 46, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 99999;
   display: flex;
   align-items: center;
@@ -8780,17 +8781,17 @@ body.is-mobile .synthesis-box-body {
   visibility: visible;
 }
 
-/* Auth Modal Card - Purple Pink Mystical Aura */
+/* Auth Modal Card - Modern Healing Aesthetic */
 .auth-modal-card {
   background: #ffffff;
-  border-radius: 20px;
+  border-radius: 22px;
   width: 100%;
   max-width: 520px;
   max-height: 92vh;
   display: flex;
   flex-direction: column;
-  border: 1.5px solid rgba(217, 70, 239, 0.45);
-  box-shadow: 0 25px 60px -10px rgba(74, 14, 78, 0.55), 0 0 35px rgba(236, 72, 153, 0.25);
+  border: 1.5px solid #fbcfe8;
+  box-shadow: 0 25px 60px -10px rgba(133, 37, 224, 0.35), 0 0 35px rgba(234, 43, 141, 0.2);
   overflow: hidden;
   animation: authModalSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -8805,149 +8806,155 @@ body.is-mobile .synthesis-box-body {
   }
 }
 
-/* Modal Header - Mystical Deep Violet to Magenta Gradient */
+/* Modal Header - My Cat & I Vibrant Signature Gradient */
 .auth-modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 22px;
-  background: linear-gradient(135deg, #2e0854 0%, #4a0e4e 55%, #701a75 100%);
+  padding: 18px 24px;
+  background: linear-gradient(135deg, #8525e0 0%, #b827ba 50%, #ea2b8d 100%);
   color: #ffffff;
-  border-bottom: 1px solid rgba(240, 171, 252, 0.3);
   position: relative;
-}
-.auth-modal-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #a855f7, #ec4899, #f43f5e);
+  box-shadow: 0 4px 14px rgba(234, 43, 141, 0.25);
 }
 .auth-modal-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
-.auth-modal-title i.logo-spin {
-  font-size: 26px;
-  color: #f472b6;
-  text-shadow: 0 0 12px rgba(244, 114, 182, 0.7);
-  animation: spinSlow 20s linear infinite;
+.auth-cat-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  animation: catPulse 3s ease-in-out infinite alternate;
 }
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@keyframes catPulse {
+  from { transform: scale(1); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
+  to { transform: scale(1.05); box-shadow: 0 6px 16px rgba(255, 255, 255, 0.25); }
 }
 .auth-modal-title h2 {
   font-family: 'Cinzel', 'Outfit', serif;
-  font-size: 16.5px;
+  font-size: 18px;
   font-weight: 800;
-  letter-spacing: 1px;
-  color: #fdf2f8;
+  letter-spacing: 1.5px;
+  color: #ffffff;
   margin: 0;
   line-height: 1.2;
-  text-shadow: 0 0 12px rgba(244, 114, 182, 0.4);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
-.auth-modal-title span {
+.auth-cat-subtitle {
   font-size: 11.5px;
-  color: #f5d0fe;
+  color: #ffe4f3;
   display: block;
-  font-weight: 400;
-  margin-top: 2px;
+  font-weight: 500;
+  margin-top: 3px;
+  letter-spacing: 0.3px;
 }
 .auth-modal-close {
-  background: transparent;
-  border: none;
-  color: #f0abfc;
-  font-size: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  padding: 0 4px;
-  transition: all 0.15s ease;
+  padding: 0;
+  transition: all 0.2s ease;
 }
 .auth-modal-close:hover {
-  color: #ffffff;
-  transform: scale(1.1);
-  text-shadow: 0 0 10px #f472b6;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1) rotate(90deg);
 }
 
-/* Gate Alert Box - Soft Pink-Lavender Alert */
+/* Locked Notice Banner (เมื่อผู้ใช้แตะเมนูที่ล็อก) */
 .auth-locked-notice {
-  background: linear-gradient(135deg, #fdf4ff 0%, #fce7f3 100%);
-  border-bottom: 1.5px solid #f5d0fe;
-  padding: 11px 18px;
+  background: linear-gradient(135deg, #fdf4ff 0%, #fdf2f8 100%);
+  border-bottom: 1.5px solid #fce7f3;
+  padding: 12px 20px;
 }
 .auth-gate-alert {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  color: #701a75;
+  gap: 12px;
+  color: #831843;
 }
 .auth-gate-alert i {
-  font-size: 18px;
-  color: #db2777;
+  font-size: 20px;
+  color: #ea2b8d;
   margin-top: 2px;
-  filter: drop-shadow(0 2px 4px rgba(219, 39, 119, 0.25));
+  filter: drop-shadow(0 2px 4px rgba(234, 43, 141, 0.25));
 }
 .auth-gate-alert strong {
-  font-size: 13px;
+  font-size: 13.5px;
   display: block;
-  color: #701a75;
+  color: #9d174d;
 }
 .auth-gate-alert p {
   font-size: 12px;
   margin: 3px 0 0 0;
-  color: #86198f;
-  line-height: 1.4;
+  color: #701a75;
+  line-height: 1.45;
 }
 
-/* Tabs Bar (ม่วง-ชมพู) */
+/* Tabs Switcher Bar */
 .auth-tabs-bar {
   display: flex;
-  background: linear-gradient(180deg, #faf5ff 0%, #fdf4ff 100%);
-  border-bottom: 1.5px solid #f0abfc;
-  padding: 6px 12px 0;
-  gap: 6px;
+  background: #ffffff;
+  border-bottom: 1.5px solid #fce7f3;
+  padding: 8px 16px 0;
+  gap: 8px;
 }
 .auth-tab-btn {
   flex: 1;
   background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
-  padding: 10px 8px;
+  padding: 11px 8px;
   font-family: 'Prompt', sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #7e22ce;
+  color: #64748b;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   transition: all 0.2s ease;
 }
 .auth-tab-btn:hover {
-  color: #c026d3;
+  color: #8525e0;
 }
 .auth-tab-btn.active {
-  color: #a21caf;
-  border-bottom-color: #d946ef;
-  background: #ffffff;
-  border-radius: 10px 10px 0 0;
+  color: #ea2b8d;
+  border-bottom-color: #ea2b8d;
+  background: transparent;
   font-weight: 700;
-  box-shadow: 0 -2px 8px rgba(217, 70, 239, 0.08);
 }
 .auth-tab-btn.active i {
-  color: #ec4899;
+  color: #ea2b8d;
 }
 
 /* Modal Body */
 .auth-modal-body {
-  padding: 22px;
+  padding: 24px;
   overflow-y: auto;
-  max-height: calc(92vh - 145px);
+  max-height: calc(92vh - 150px);
   background: #ffffff;
 }
 .auth-tab-content {
@@ -8957,7 +8964,7 @@ body.is-mobile .synthesis-box-body {
   display: block;
 }
 
-/* Google 1-Click Button - Purple Pink Touch */
+/* Google 1-Click Button - Modern Clean Card */
 .btn-google-auth {
   width: 100%;
   display: flex;
@@ -8965,22 +8972,22 @@ body.is-mobile .synthesis-box-body {
   justify-content: center;
   gap: 12px;
   background: #ffffff;
-  border: 1.5px solid #e9d5ff;
-  color: #3b0764;
-  padding: 11px 16px;
-  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  color: #1e293b;
+  padding: 12px 18px;
+  border-radius: 14px;
   font-family: 'Prompt', sans-serif;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(217, 70, 239, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .btn-google-auth:hover {
   background: #fdf4ff;
-  border-color: #d946ef;
-  color: #701a75;
-  box-shadow: 0 4px 16px rgba(217, 70, 239, 0.22);
+  border-color: #ea2b8d;
+  color: #8525e0;
+  box-shadow: 0 4px 16px rgba(234, 43, 141, 0.2);
   transform: translateY(-1px);
 }
 .google-svg-icon {
@@ -8989,54 +8996,53 @@ body.is-mobile .synthesis-box-body {
   flex-shrink: 0;
 }
 
-/* Divider - Purple Pink */
+/* Divider */
 .auth-divider {
   display: flex;
   align-items: center;
   text-align: center;
-  margin: 16px 0;
-  color: #a855f7;
-  font-size: 11.5px;
+  margin: 18px 0;
+  color: #94a3b8;
+  font-size: 12px;
   font-weight: 500;
 }
 .auth-divider::before,
 .auth-divider::after {
   content: '';
   flex: 1;
-  border-bottom: 1px solid #f0abfc;
+  border-bottom: 1px solid #f1f5f9;
 }
 .auth-divider span {
-  padding: 0 10px;
+  padding: 0 12px;
 }
 
-/* Info Banner - Soft Lavender Pink */
+/* Info Banner - Healing Style */
 .auth-info-banner {
-  background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
-  border: 1.5px solid #f0abfc;
-  border-radius: 10px;
-  padding: 9px 13px;
+  background: linear-gradient(135deg, #fdf4ff 0%, #fdf2f8 100%);
+  border: 1.5px solid #fbcfe8;
+  border-radius: 12px;
+  padding: 10px 14px;
   margin-bottom: 14px;
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #701a75;
-  font-size: 12px;
+  gap: 10px;
+  color: #831843;
+  font-size: 12.5px;
   line-height: 1.4;
-  box-shadow: 0 2px 8px rgba(217, 70, 239, 0.08);
 }
 .auth-info-banner i {
-  color: #d946ef;
-  font-size: 15px;
+  color: #ea2b8d;
+  font-size: 16px;
 }
 .auth-info-banner strong {
-  color: #86198f;
+  color: #9d174d;
 }
 
 /* Form Fields */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 13px;
 }
 .auth-grid-2 {
   display: grid;
@@ -9051,30 +9057,30 @@ body.is-mobile .synthesis-box-body {
 .auth-field {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   text-align: left;
 }
 .auth-field label {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 600;
-  color: #581c87;
+  color: #334155;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 .auth-field label i {
-  color: #d946ef;
-  font-size: 11px;
+  color: #ea2b8d;
+  font-size: 12px;
 }
 .auth-field input,
 .auth-field select {
-  padding: 9px 12px;
-  border: 1.5px solid #e9d5ff;
-  border-radius: 9px;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
   font-family: 'Prompt', sans-serif;
-  font-size: 13px;
-  color: #3b0764;
-  background: #faf5ff;
+  font-size: 13.5px;
+  color: #1e293b;
+  background: #f8fafc;
   transition: all 0.2s ease;
   box-sizing: border-box;
   width: 100%;
@@ -9082,86 +9088,86 @@ body.is-mobile .synthesis-box-body {
 .auth-field input:focus,
 .auth-field select:focus {
   outline: none;
-  border-color: #d946ef;
+  border-color: #ea2b8d;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.22);
+  box-shadow: 0 0 0 3.5px rgba(234, 43, 141, 0.18);
 }
 
-/* Astrology Card - Glowing Soft Violet-Rose Border */
+/* Astrology Card - Soft Violet-Rose Healing Card */
 .auth-astrology-card {
-  background: linear-gradient(135deg, #faf5ff 0%, #fdf2f8 100%);
-  border: 1.5px solid #f5d0fe;
-  border-radius: 12px;
-  padding: 13px;
-  margin: 4px 0;
-  box-shadow: inset 0 0 14px rgba(217, 70, 239, 0.08);
+  background: linear-gradient(135deg, #fdf4ff 0%, #fdf2f8 100%);
+  border: 1.5px solid #fbcfe8;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 6px 0;
+  box-shadow: inset 0 0 16px rgba(234, 43, 141, 0.05);
 }
 .auth-astro-header {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
-  color: #86198f;
-  margin-bottom: 8px;
+  color: #9d174d;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 .auth-astro-header i {
-  color: #ec4899;
-  text-shadow: 0 0 6px rgba(236, 72, 153, 0.4);
+  color: #ea2b8d;
+  text-shadow: 0 0 8px rgba(234, 43, 141, 0.4);
 }
 
-/* Submit Buttons - Radiant Purple to Pink Gradient */
+/* Submit Buttons - Vibrant Purple-to-Pink Gradient */
 .auth-submit-btn {
-  background: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #ec4899 100%);
+  background: linear-gradient(135deg, #8525e0 0%, #c026d3 50%, #ea2b8d 100%);
   color: #ffffff;
   border: none;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 13px;
+  border-radius: 14px;
   font-family: 'Prompt', sans-serif;
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 16px rgba(217, 70, 239, 0.4);
+  gap: 9px;
+  box-shadow: 0 6px 20px rgba(234, 43, 141, 0.35);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  margin-top: 6px;
+  margin-top: 8px;
 }
 .auth-submit-btn:hover {
-  background: linear-gradient(135deg, #6d28d9 0%, #a21caf 50%, #db2777 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 22px rgba(236, 72, 153, 0.55);
+  background: linear-gradient(135deg, #751ad0 0%, #a81eb8 50%, #d81b7a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(234, 43, 141, 0.48);
 }
 .auth-footer-text {
   text-align: center;
-  font-size: 12.5px;
-  color: #6b21a8;
-  margin: 6px 0 0;
+  font-size: 13px;
+  color: #64748b;
+  margin: 8px 0 0;
 }
 .auth-footer-text a {
-  color: #c026d3;
+  color: #ea2b8d;
   font-weight: 700;
   text-decoration: underline;
   cursor: pointer;
   transition: color 0.15s ease;
 }
 .auth-footer-text a:hover {
-  color: #ec4899;
+  color: #8525e0;
 }
 
-/* Profile Card - Purple Pink VIP Style */
+/* Profile Card - Healing VIP Style */
 .auth-user-card {
   display: flex;
   align-items: center;
   gap: 16px;
-  background: linear-gradient(135deg, #faf5ff 0%, #fdf4ff 100%);
-  border: 1.5px solid #f0abfc;
-  border-radius: 16px;
-  padding: 16px;
+  background: linear-gradient(135deg, #fdf4ff 0%, #fdf2f8 100%);
+  border: 1.5px solid #fbcfe8;
+  border-radius: 18px;
+  padding: 18px;
   margin-bottom: 16px;
-  box-shadow: 0 4px 14px rgba(217, 70, 239, 0.1);
+  box-shadow: 0 4px 14px rgba(234, 43, 141, 0.08);
 }
 .auth-avatar-box {
   display: flex;
@@ -9170,47 +9176,47 @@ body.is-mobile .synthesis-box-body {
   gap: 6px;
 }
 .auth-avatar-img {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2.5px solid #d946ef;
-  box-shadow: 0 0 14px rgba(217, 70, 239, 0.35);
+  border: 2.5px solid #ea2b8d;
+  box-shadow: 0 0 16px rgba(234, 43, 141, 0.35);
 }
 .auth-avatar-letter {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  background: linear-gradient(135deg, #8525e0 0%, #ea2b8d 100%);
   color: #ffffff;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(217, 70, 239, 0.4);
+  box-shadow: 0 4px 16px rgba(234, 43, 141, 0.35);
 }
 .auth-vip-badge {
-  background: linear-gradient(135deg, #fdf4ff, #fae8ff);
-  color: #86198f;
-  font-size: 10px;
+  background: #ffffff;
+  color: #ea2b8d;
+  font-size: 10.5px;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 999px;
-  border: 1px solid #f0abfc;
+  border: 1px solid #fbcfe8;
   white-space: nowrap;
-  box-shadow: 0 1px 4px rgba(217, 70, 239, 0.2);
+  box-shadow: 0 2px 6px rgba(234, 43, 141, 0.15);
 }
 .auth-user-meta h3 {
   margin: 0;
-  font-size: 17px;
-  color: #3b0764;
+  font-size: 18px;
+  color: #1e293b;
   font-weight: 700;
 }
 .auth-user-meta .email {
   margin: 2px 0 8px;
-  font-size: 12px;
-  color: #7e22ce;
+  font-size: 12.5px;
+  color: #64748b;
 }
 .auth-birth-summary {
   display: flex;
@@ -9219,11 +9225,11 @@ body.is-mobile .synthesis-box-body {
 }
 .auth-birth-summary .pill {
   background: #ffffff;
-  border: 1px solid #e9d5ff;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 11px;
-  color: #581c87;
+  border: 1px solid #fbcfe8;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  color: #831843;
   font-weight: 500;
 }
 .auth-profile-actions {
@@ -9232,63 +9238,63 @@ body.is-mobile .synthesis-box-body {
   gap: 10px;
 }
 .auth-btn-sync {
-  background: linear-gradient(135deg, #7c3aed 0%, #c026d3 50%, #ec4899 100%);
+  background: linear-gradient(135deg, #8525e0 0%, #c026d3 50%, #ea2b8d 100%);
   color: #ffffff;
   border: none;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 13px;
+  border-radius: 14px;
   font-family: 'Prompt', sans-serif;
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 16px rgba(217, 70, 239, 0.35);
+  gap: 9px;
+  box-shadow: 0 6px 18px rgba(234, 43, 141, 0.35);
   transition: all 0.2s ease;
 }
 .auth-btn-sync:hover {
-  background: linear-gradient(135deg, #6d28d9 0%, #a21caf 50%, #db2777 100%);
-  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.45);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #751ad0 0%, #a81eb8 50%, #d81b7a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(234, 43, 141, 0.45);
 }
 .auth-btn-logout {
   background: #fdf2f8;
-  color: #be185d;
+  color: #e11d48;
   border: 1px solid #fbcfe8;
-  padding: 10px;
-  border-radius: 12px;
+  padding: 11px;
+  border-radius: 14px;
   font-family: 'Prompt', sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 .auth-btn-logout:hover {
-  background: #fce7f3;
-  color: #9d174d;
-  border-color: #f472b6;
+  background: #ffe4e6;
+  color: #be123c;
+  border-color: #f43f5e;
 }
 
-/* Toast Notifications - Purple Pink Neon Glow */
+/* Toast Notifications - Modern Healing Neon Glow */
 .auth-toast {
   position: fixed;
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(40px);
-  background: linear-gradient(135deg, #2e1065, #4a0e4e);
-  color: #fdf4ff;
-  border: 1.5px solid #d946ef;
-  padding: 10px 20px;
+  background: linear-gradient(135deg, #8525e0, #ea2b8d);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  padding: 11px 22px;
   border-radius: 999px;
   font-family: 'Prompt', sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 10px 30px rgba(112, 26, 117, 0.5), 0 0 15px rgba(236, 72, 153, 0.3);
+  gap: 9px;
+  box-shadow: 0 10px 30px rgba(234, 43, 141, 0.45);
   z-index: 100000;
   opacity: 0;
   visibility: hidden;
@@ -9300,29 +9306,26 @@ body.is-mobile .synthesis-box-body {
   visibility: visible;
 }
 .auth-toast.success { 
-  background: linear-gradient(135deg, #3b0764, #701a75); 
-  border-color: #f472b6; 
-  color: #fdf2f8; 
+  background: linear-gradient(135deg, #8525e0, #ea2b8d); 
 }
 .auth-toast.error { 
-  background: linear-gradient(135deg, #4c0519, #881337); 
-  border-color: #fb7185; 
-  color: #ffe4e6; 
+  background: linear-gradient(135deg, #e11d48, #be123c); 
 }
 .auth-toast.warning { 
-  background: linear-gradient(135deg, #451a03, #78350f); 
-  border-color: #fbbf24; 
-  color: #fef3c7; 
+  background: linear-gradient(135deg, #d97706, #b45309); 
 }
 
 /* Mobile Adaptations */
 @media (max-width: 600px) {
   .auth-modal-card {
     max-height: 96vh;
-    border-radius: 16px;
+    border-radius: 18px;
+  }
+  .auth-modal-header {
+    padding: 14px 16px;
   }
   .auth-modal-body {
-    padding: 14px 12px;
+    padding: 16px 14px;
   }
   .auth-grid-2 {
     grid-template-columns: 1fr;

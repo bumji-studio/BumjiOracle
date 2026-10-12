@@ -511,13 +511,15 @@
         <div id="authModalOverlay" class="auth-modal-overlay">
           <div class="auth-modal-card">
             
-            <!-- Header -->
+            <!-- Header - My Cat & I Modern Healing Theme -->
             <div class="auth-modal-header">
               <div class="auth-modal-title">
-                <i class="fa-solid fa-yin-yang logo-spin"></i>
+                <div class="auth-cat-logo">
+                  <i class="fa-solid fa-cat"></i>
+                </div>
                 <div>
-                  <h2>DESTINY ARCANA MEMBER</h2>
-                  <span>ระบบสมาชิกและผูกผังดวงชะตาส่วนบุคคล</span>
+                  <h2>DESTINY ARCANA</h2>
+                  <span class="auth-cat-subtitle">✨ ดูดวงไพ่ออราเคิล My Cat &amp; I (61 ใบ) • สไตล์โมเดิร์นฮีลใจ</span>
                 </div>
               </div>
               <button class="auth-modal-close" id="authModalCloseBtn" aria-label="ปิดหน้าต่าง">&times;</button>
