@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261012_qimen_renxing_v11">
+  <link rel="stylesheet" href="styles.css?v=20261012_auth_gate_v12">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -499,6 +499,11 @@
         <img id="lineUserAvatar" src="" class="line-user-avatar" alt="LINE Avatar">
         <span id="lineUserName" class="line-user-name">LINE User</span>
       </div>
+      <!-- User Auth Button / Badge -->
+      <button class="auth-btn" id="headerAuthBtn" title="บัญชีสมาชิก / เข้าสู่ระบบ">
+        <span id="headerAuthAvatar"><i class="fa-solid fa-circle-user"></i></span>
+        <span id="authBtnLabel">เข้าสู่ระบบ / สมัคร</span>
+      </button>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูนำทาง" aria-expanded="false" title="เมนูหลัก">
         <i class="fa-solid fa-bars"></i>
       </button>
@@ -1779,7 +1784,8 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load App scripts -->
-  <script src="app.js?v=20261012_qimen_renxing_v11"></script>
+  <script src="auth.js?v=20261012_auth_v12"></script>
+  <script src="app.js?v=20261012_auth_gate_v12"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>

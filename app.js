@@ -937,6 +937,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function setActiveAppMode(mode, updateHash = true) {
+    // Check gatekeeper if tab is locked for members
+    if (window.AuthManager && window.AuthManager.isTabLocked(mode)) {
+      window.AuthManager.openModal('login', mode);
+      return;
+    }
+
     // Close mobile menu if open
     toggleMobileMenu(true);
 
