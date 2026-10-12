@@ -39,6 +39,39 @@
           }
         });
       }
+
+      // Hybrid Date Picker (Text input for typing on mobile + Icon button for native calendar)
+      const dateInput = document.getElementById('personalityBirthDate');
+      const pickerBtn = document.getElementById('personalityDatePickerBtn');
+      const hiddenPicker = document.getElementById('personalityHiddenDatePicker');
+
+      if (pickerBtn && hiddenPicker) {
+        pickerBtn.addEventListener('click', () => {
+          if (dateInput && dateInput.value) {
+            const norm = this.normalizeDateString(dateInput.value);
+            if (/^\d{4}-\d{2}-\d{2}$/.test(norm)) {
+              hiddenPicker.value = norm;
+            }
+          }
+          if (typeof hiddenPicker.showPicker === 'function') {
+            try {
+              hiddenPicker.showPicker();
+            } catch (err) {
+              hiddenPicker.focus();
+              hiddenPicker.click();
+            }
+          } else {
+            hiddenPicker.focus();
+            hiddenPicker.click();
+          }
+        });
+
+        hiddenPicker.addEventListener('change', () => {
+          if (dateInput && hiddenPicker.value) {
+            dateInput.value = hiddenPicker.value;
+          }
+        });
+      }
     },
 
     populateArchetypeDropdown: function () {
@@ -97,18 +130,51 @@
       }
     },
 
+    normalizeDateString: function (str) {
+      if (!str) return '';
+      str = String(str).trim();
+      // 1. YYYY-MM-DD or YYYY/MM/DD
+      let m = str.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/);
+      if (m) {
+        return `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+      }
+      // 2. 2 numbers and a 4-digit year: can be DD/MM/YYYY or MM/DD/YYYY
+      m = str.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+      if (m) {
+        let n1 = parseInt(m[1], 10);
+        let n2 = parseInt(m[2], 10);
+        const y = m[3];
+        // If n1 > 12 -> must be Day / Month / Year (e.g. 23/07/1977)
+        if (n1 > 12 && n2 <= 12) {
+          return `${y}-${String(n2).padStart(2, '0')}-${String(n1).padStart(2, '0')}`;
+        }
+        // If n2 > 12 -> must be Month / Day / Year (e.g. 07/23/1977)
+        if (n2 > 12 && n1 <= 12) {
+          return `${y}-${String(n1).padStart(2, '0')}-${String(n2).padStart(2, '0')}`;
+        }
+        // Default to DD/MM/YYYY
+        return `${y}-${String(n2).padStart(2, '0')}-${String(n1).padStart(2, '0')}`;
+      }
+      return str;
+    },
+
     calculateFromInputs: function () {
       const name = (document.getElementById('personalityName')?.value || 'คุณ').trim();
-      const birthDate = document.getElementById('personalityBirthDate')?.value;
+      const rawDate = document.getElementById('personalityBirthDate')?.value;
+      const birthDate = this.normalizeDateString(rawDate);
       const birthHour = parseInt(document.getElementById('personalityBirthHour')?.value || '12', 10);
       const birthMinute = parseInt(document.getElementById('personalityBirthMinute')?.value || '0', 10);
       const gender = document.getElementById('personalityGender')?.value || 'female';
 
-      if (!birthDate) {
-        alert('กรุณาระบุวันเดือนปีเกิด เพื่อคำนวณเสาวัน 60 Jia Zi และโครงสร้างดวงชะตา');
+      if (!birthDate || !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) {
+        alert('กรุณาระบุวันเดือนปีเกิดให้ถูกต้อง เช่น 1977-07-23 หรือ 23/07/1977');
         document.getElementById('personalityBirthDate')?.focus();
         return;
       }
+
+      // Sync normalized date back to input
+      const dateInput = document.getElementById('personalityBirthDate');
+      if (dateInput) dateInput.value = birthDate;
 
       if (!window.BaziEngine || typeof window.BaziEngine.calculateChart !== 'function') {
         alert('ระบบ BaZi Engine กำลังโหลด กรุณารอสักครู่แล้วลองใหม่อีกครั้ง');
@@ -245,9 +311,9 @@
     generateRadarChartSVG: function (radarData) {
       if (!radarData || radarData.length !== 5) return '';
 
-      const cx = 175;
-      const cy = 175;
-      const r = 105;
+      const cx = 195;
+      const cy = 160;
+      const r = 88;
       const numAxes = 5;
 
       // 5 Angles (Starts top at -PI/2)
@@ -301,36 +367,36 @@
       let verticesSvg = '';
       dataPoints.forEach(p => {
         verticesSvg += `
-          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5" fill="#f43f5e" stroke="#fff" stroke-width="2" />
-          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="9" fill="none" stroke="rgba(244, 63, 94, 0.45)" stroke-width="1.5" />
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5" fill="#f43f5e" stroke="#fff" stroke-width="2" />
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8.5" fill="none" stroke="rgba(244, 63, 94, 0.45)" stroke-width="1.5" />
         `;
       });
 
-      // Axis Labels (Placed nicely around perimeter)
+      // Axis Labels (English only, carefully anchored to never clip on mobile)
       let labelsSvg = '';
       radarData.forEach((d, i) => {
         const a = angles[i];
-        const dist = r + 24;
+        const dist = (i === 0) ? (r + 18) : (r + 16);
         const lx = cx + dist * Math.cos(a);
         const ly = cy + dist * Math.sin(a);
 
-        // Text alignment based on x position
+        // Text alignment based on horizontal angle
         let textAnchor = 'middle';
-        if (Math.cos(a) > 0.3) textAnchor = 'start';
-        else if (Math.cos(a) < -0.3) textAnchor = 'end';
+        if (Math.cos(a) > 0.25) textAnchor = 'start';
+        else if (Math.cos(a) < -0.25) textAnchor = 'end';
 
         labelsSvg += `
-          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${textAnchor}" fill="#e2e8f0" font-family="'Prompt', sans-serif" font-size="11" font-weight="600">
-            ${d.labelTh}
+          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${textAnchor}" fill="#f8fafc" font-family="'Outfit', sans-serif" font-size="12" font-weight="700">
+            ${d.label}
           </text>
-          <text x="${lx.toFixed(1)}" y="${(ly + 13).toFixed(1)}" text-anchor="${textAnchor}" fill="${d.color}" font-family="'Outfit', sans-serif" font-size="12" font-weight="800">
+          <text x="${lx.toFixed(1)}" y="${(ly + 13.5).toFixed(1)}" text-anchor="${textAnchor}" fill="${d.color}" font-family="'Outfit', sans-serif" font-size="12" font-weight="800">
             ${d.value}%
           </text>
         `;
       });
 
       return `
-        <svg class="radar-svg-canvas" viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg">
+        <svg class="radar-svg-canvas" viewBox="0 0 390 330" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="radarAreaGradient" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#ec4899" stop-opacity="0.55" />
@@ -355,7 +421,7 @@
           <!-- Vertices -->
           ${verticesSvg}
 
-          <!-- Axis Labels -->
+          <!-- Axis Labels (English Only) -->
           ${labelsSvg}
         </svg>
       `;
@@ -584,7 +650,7 @@
                 <i class="fa-solid fa-chart-pie"></i>
               </div>
               <div class="p-header-titles">
-                <h3>กราฟใยแมงมุมแสดงจุดแข็ง 5 Structures (Joey Yap)</h3>
+                <h3>จุดแข็ง 5 Structures (Joey Yap)</h3>
                 <span class="p-header-sub">วิเคราะห์ศักยภาพและรูปแบบพลังงานการขับเคลื่อนชีวิตทั้ง 5 มิติ</span>
               </div>
             </div>
@@ -601,7 +667,7 @@
                   <div class="d-guild-tag">STRUCTURE อันดับ 1 ของคุณ</div>
                   <div class="d-guild-title">
                     <i class="fa-solid ${primaryG.icon}" style="color: ${primaryG.color};"></i>
-                    <span>${primaryG.nameTh} (${primaryG.nameZh})</span>
+                    <span>${primaryG.nameEn || 'The Supporters'}</span>
                   </div>
                   <p class="d-guild-desc">${primaryG.desc}</p>
                 </div>
@@ -610,7 +676,7 @@
                   ${catData.radarData.map(d => `
                     <div class="s-progress-item">
                       <div class="s-prog-head">
-                        <span class="s-label"><i class="fa-solid ${d.icon}" style="color: ${d.color};"></i> ${d.labelTh} (${d.label})</span>
+                        <span class="s-label"><i class="fa-solid ${d.icon}" style="color: ${d.color};"></i> ${d.label}</span>
                         <span class="s-pct" style="color: ${d.color}; font-weight: 800;">${d.value}%</span>
                       </div>
                       <div class="s-track">
@@ -658,7 +724,7 @@
                 <div class="cat-char-badge-header">
                   <span class="cat-char-tag">[Character ${composite.breedShort}]</span>
                   <span class="cat-guild-tag" style="background: ${guild.bg}; color: ${guild.color};">
-                    <i class="fa-solid ${guild.icon}"></i> ${guild.nameTh}
+                    <i class="fa-solid ${guild.icon}"></i> ${guild.nameEn || 'The Supporters'}
                   </span>
                 </div>
 

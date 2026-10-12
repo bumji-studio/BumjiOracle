@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261012_nav_fix_v23">
+  <link rel="stylesheet" href="styles.css?v=20261012_mobile_radar_v24">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -1754,9 +1754,15 @@
                 <input type="text" id="personalityName" placeholder="เช่น คุณส้ม หรือ ตัวฉัน" value="ฉัน">
               </div>
 
-              <div class="p-field">
+              <div class="p-field date-field-wrapper">
                 <label for="personalityBirthDate"><i class="fa-solid fa-calendar-day"></i> วันเดือนปีเกิด (ค.ศ.) *</label>
-                <input type="date" id="personalityBirthDate" required>
+                <div class="p-date-input-group">
+                  <input type="text" id="personalityBirthDate" placeholder="YYYY-MM-DD เช่น 1977-07-23" inputmode="numeric" autocomplete="bday" required>
+                  <button type="button" class="btn-picker-trigger" id="personalityDatePickerBtn" title="เปิดปฏิทินเลือกวันเดือนปีเกิด">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </button>
+                  <input type="date" id="personalityHiddenDatePicker" class="hidden-native-picker" tabindex="-1" aria-hidden="true">
+                </div>
               </div>
 
               <div class="p-field time-field">
@@ -1986,7 +1992,7 @@
   <script src="bazi.js?v=20261011_bazi_v17"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
-  <script src="data/cat-profiles.js?v=20261012_cat_composite_v3"></script>
-  <script src="personality.js?v=20261012_minute_0_59_v4"></script>
+  <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
+  <script src="personality.js?v=20261012_mobile_radar_v5"></script>
 </body>
 </html>

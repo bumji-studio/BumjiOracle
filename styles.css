@@ -9754,6 +9754,63 @@ body.is-mobile .synthesis-box-body {
   background: rgba(15, 23, 42, 0.95);
 }
 
+/* Hybrid Date Input Group */
+.p-date-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.p-date-input-group input[type="text"] {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.btn-picker-trigger {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(236, 72, 153, 0.25);
+  border: 1px solid rgba(236, 72, 153, 0.6);
+  color: #f472b6;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.25);
+}
+
+.btn-picker-trigger:hover,
+.btn-picker-trigger:active {
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  color: #fff;
+  border-color: #ec4899;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.hidden-native-picker {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border: 0;
+  padding: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.85;
+}
+
 .p-time-inputs {
   display: flex;
   align-items: center;
@@ -12074,6 +12131,7 @@ body.is-mobile .synthesis-box-body {
   }
   .radar-content-flex {
     flex-direction: column;
+    gap: 18px;
   }
   .jiazi-main-content {
     flex-direction: column;
@@ -12086,6 +12144,154 @@ body.is-mobile .synthesis-box-body {
   .seal-chars {
     font-size: 34px;
   }
+
+  /* Mobile Overflow Prevention for Personality & Cat Persona */
+  .personality-container,
+  .personality-calc-card,
+  .personality-section-box,
+  .cat-mapping-full-box,
+  .structure-radar-box {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 16px 12px;
+    border-radius: 18px;
+    overflow: hidden;
+  }
+
+  /* Radar Mobile Fit */
+  .radar-visual-pane {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .radar-svg-canvas {
+    width: 100%;
+    max-width: 390px;
+    height: auto;
+    overflow: visible;
+  }
+
+  .radar-legend-pane {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* Cat Hero Composite Mobile Fit */
+  .cat-composite-hero {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .cat-composite-char-col,
+  .cat-composite-stats-col {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .cat-visual-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 16px;
+  }
+
+  .cat-portrait-wrap {
+    width: 100%;
+    max-width: 100%;
+    max-height: 320px;
+    box-sizing: border-box;
+  }
+
+  .cat-portrait-img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 280px;
+    display: block;
+    object-fit: cover;
+  }
+
+  .cat-composite-title {
+    font-size: 19px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .cat-composite-narrative-box {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .c-narrative-text {
+    font-size: 12.5px;
+    line-height: 1.6;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .cat-composite-stats-col {
+    padding: 14px 10px;
+    border-radius: 16px;
+  }
+
+  .mini-profile-item {
+    padding: 6px 8px;
+    gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .m-item-left {
+    min-width: 0;
+    flex: 1.3;
+    gap: 6px;
+    overflow: hidden;
+  }
+
+  .m-names {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .m-profile-name {
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .m-cat-sub {
+    font-size: 9.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .m-item-mid {
+    flex: 1;
+    min-width: 32px;
+  }
+
+  .m-item-right {
+    min-width: 32px;
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -12095,6 +12301,12 @@ body.is-mobile .synthesis-box-body {
   .mother-cat-advice-card {
     flex-direction: column;
     text-align: center;
+  }
+  .p-header-titles h3 {
+    font-size: 16px;
+  }
+  .dominant-guild-card {
+    padding: 12px 14px;
   }
 }
 

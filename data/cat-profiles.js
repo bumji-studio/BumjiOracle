@@ -12,6 +12,7 @@
     const CAT_GUILDS = {
       supporters: {
         key: 'supporters',
+        nameEn: 'The Supporters',
         nameZh: '名望型 (Influence / Supporters)',
         nameTh: 'กิลด์ผู้พิทักษ์แห่งบารมีและเกียรติยศ (The Supporters)',
         elementRole: 'power',
@@ -23,6 +24,7 @@
       },
       thinkers: {
         key: 'thinkers',
+        nameEn: 'The Thinkers',
         nameZh: '智慧型 (Resource / Thinkers)',
         nameTh: 'กิลด์ปราชญ์ผู้นุ่มฟู (The Thinkers)',
         elementRole: 'resource',
@@ -34,6 +36,7 @@
       },
       connectors: {
         key: 'connectors',
+        nameEn: 'The Connectors',
         nameZh: '交際型 (Companion / Connectors)',
         nameTh: 'กิลด์มิตรสหายแห่งสายใย (The Connectors)',
         elementRole: 'companion',
@@ -45,6 +48,7 @@
       },
       managers: {
         key: 'managers',
+        nameEn: 'The Managers',
         nameZh: '管理型 (Wealth / Managers)',
         nameTh: 'กิลด์ผู้บริหารจัดการทรัพย์สิน (The Managers)',
         elementRole: 'wealth',
@@ -56,6 +60,7 @@
       },
       creators: {
         key: 'creators',
+        nameEn: 'The Creators',
         nameZh: '創作型 (Output / Creators)',
         nameTh: 'กิลด์ผู้เนรมิตสุนทรีย์ (The Creators)',
         elementRole: 'output',
