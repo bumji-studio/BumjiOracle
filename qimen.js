@@ -53,15 +53,15 @@
 
   // 4. Nine Stars (九星)
   const STARS_INFO = {
-    '蓬': { zh: '蓬', py: 'Peng', en: 'Grass', fullZh: '天蓬', th: 'เทียนเผิง (ดาวน้ำวน)' },
-    '芮': { zh: '芮', py: 'Rui', en: 'Grain', fullZh: '天芮', th: 'เทียนรุ่ย (ดาวหมอ/นักเรียน)' },
-    '冲': { zh: '冲', py: 'Chong', en: 'Destructor', fullZh: '天冲', th: 'เทียนชง (ดาวบุกทะลวง)' },
-    '辅': { zh: '辅', py: 'Fu', en: 'Assistant', fullZh: '天辅', th: 'เทียนฝู่ (ดาวบัณฑิต)' },
-    '禽': { zh: '禽', py: 'Qin', en: 'Bird', fullZh: '天禽', th: 'เทียนฉิน (ดาวจักรพรรดิ)' },
-    '心': { zh: '心', py: 'Xin', en: 'Heart', fullZh: '天心', th: 'เทียนซิน (ดาวหมอหลวง)' },
-    '柱': { zh: '柱', py: 'Zhu', en: 'Pillar', fullZh: '天柱', th: 'เทียนจู้ (ดาวเสาค้ำฟ้า)' },
-    '任': { zh: '任', py: 'Ren', en: 'Ambassador', fullZh: '天任', th: 'เทียนเหริน (ดาวปัญญาชน)' },
-    '英': { zh: '英', py: 'Ying', en: 'Hero', fullZh: '天英', th: 'เทียนอิง (ดาวประกายไฟ)' }
+    '蓬': { zh: '蓬', py: 'Peng', en: 'Grass', fullZh: '天蓬', fullEn: 'Heavenly Grass', th: 'เทียนเผิง (ดาวน้ำวน)' },
+    '芮': { zh: '芮', py: 'Rui', en: 'Grain', fullZh: '天芮', fullEn: 'Heavenly Grain', th: 'เทียนรุ่ย (ดาวหมอ/นักเรียน)' },
+    '冲': { zh: '冲', py: 'Chong', en: 'Destructor', fullZh: '天冲', fullEn: 'Heavenly Destructor', th: 'เทียนชง (ดาวบุกทะลวง)' },
+    '辅': { zh: '辅', py: 'Fu', en: 'Assistant', fullZh: '天辅', fullEn: 'Heavenly Assistant', th: 'เทียนฝู่ (ดาวบัณฑิต)' },
+    '禽': { zh: '禽', py: 'Qin', en: 'Bird', fullZh: '天禽', fullEn: 'Heavenly Bird', th: 'เทียนฉิน (ดาวจักรพรรดิ)' },
+    '心': { zh: '心', py: 'Xin', en: 'Heart', fullZh: '天心', fullEn: 'Heavenly Heart', th: 'เทียนซิน (ดาวหมอหลวง)' },
+    '柱': { zh: '柱', py: 'Zhu', en: 'Pillar', fullZh: '天柱', fullEn: 'Heavenly Pillar', th: 'เทียนจู้ (ดาวเสาค้ำฟ้า)' },
+    '任': { zh: '任', py: 'Ren', en: 'Ambassador', fullZh: '天任', fullEn: 'Heavenly Ambassador', th: 'เทียนเหริน (ดาวปัญญาชน)' },
+    '英': { zh: '英', py: 'Ying', en: 'Hero', fullZh: '天英', fullEn: 'Heavenly Hero', th: 'เทียนอิง (ดาวประกายไฟ)' }
   };
 
   // 5. Eight Deities (八神)
@@ -101,21 +101,21 @@
 
   function getSkyHorse(branch) {
     // 申子辰 -> 寅, 寅午戌 -> 申, 巳酉丑 -> 亥, 亥卯未 -> 巳
-    if (['申', '子', '辰'].includes(branch)) return { branch: '寅', py: 'Yin (Tiger)', palace: 8 };
-    if (['寅', '午', '戌'].includes(branch)) return { branch: '申', py: 'Shen (Monkey)', palace: 2 };
-    if (['巳', '酉', '丑'].includes(branch)) return { branch: '亥', py: 'Hai (Pig)', palace: 6 };
-    if (['亥', '卯', '未'].includes(branch)) return { branch: '巳', py: 'Si (Snake)', palace: 4 };
-    return { branch: '亥', py: 'Hai (Pig)', palace: 6 };
+    if (['申', '子', '辰'].includes(branch)) return { branch: '寅', py: 'Yin', en: 'Tiger', palace: 8 };
+    if (['寅', '午', '戌'].includes(branch)) return { branch: '申', py: 'Shen', en: 'Monkey', palace: 2 };
+    if (['巳', '酉', '丑'].includes(branch)) return { branch: '亥', py: 'Hai', en: 'Pig', palace: 6 };
+    if (['亥', '卯', '未'].includes(branch)) return { branch: '巳', py: 'Si', en: 'Snake', palace: 4 };
+    return { branch: '亥', py: 'Hai', en: 'Pig', palace: 6 };
   }
 
   function getNobleman(stem) {
     // 甲戊庚 -> 丑未, 乙己 -> 子申, 丙丁 -> 亥酉, 壬癸 -> 卯巳, 辛 -> 午寅
-    if (['甲', '戊', '庚'].includes(stem)) return '丑 Chou (Ox), 未 Wei (Goat)';
-    if (['乙', '己'].includes(stem)) return '子 Zi (Rat), 申 Shen (Monkey)';
-    if (['丙', '丁'].includes(stem)) return '亥 Hai (Pig), 酉 You (Rooster)';
-    if (['壬', '癸'].includes(stem)) return '卯 Mao (Rabbit), 巳 Si (Snake)';
-    if (stem === '辛') return '午 Wu (Horse), 寅 Yin (Tiger)';
-    return '子 Zi (Rat), 申 Shen (Monkey)';
+    if (['甲', '戊', '庚'].includes(stem)) return { top: '丑 Chou (Ox)', bot: '未 Wei (Goat)' };
+    if (['乙', '己'].includes(stem)) return { top: '子 Zi (Rat)', bot: '申 Shen (Monkey)' };
+    if (['丙', '丁'].includes(stem)) return { top: '亥 Hai (Pig)', bot: '酉 You (Rooster)' };
+    if (['壬', '癸'].includes(stem)) return { top: '卯 Mao (Rabbit)', bot: '巳 Si (Snake)' };
+    if (stem === '辛') return { top: '午 Wu (Horse)', bot: '寅 Yin (Tiger)' };
+    return { top: '子 Zi (Rat)', bot: '申 Shen (Monkey)' };
   }
 
   // 7. Core Plotter Engine
@@ -157,6 +157,71 @@
     '26 - Extended Net (张宿)', '27 - Wings (翼宿)', '28 - Chariot (轸宿)'
   ];
 
+
+  // ==========================================
+  // Chinese Metasoft / Convention 2 Data Tables
+  // ==========================================
+  const CMS_7STAR_BY_HOUR = {
+    0:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    1:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
+    2:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    3:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
+    4:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    5:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
+    6:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    7:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
+    8:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    9:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
+    10: { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    11: { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 }
+  };
+
+  const CMS_CONSTEL_BY_HOUR = {
+    6: {
+      1: '8 Pleiades 日 W',
+      2: '9 Tail 火 E',
+      3: '1 Dipper 木 N',
+      4: '2 House 日 E',
+      6: '4 Mound 金 W',
+      7: '5 Willow 土 S',
+      8: '6 Bow 月 S',
+      9: '7 Wall 水 N'
+    },
+    5: {
+      1: '5 Wing 火 S',
+      2: '6 Horn 木 E',
+      3: '7 Basket 水 E',
+      4: '8 Star 日 S',
+      6: '1 Heart 月 E',
+      7: '2 Stomach 土 W',
+      8: '3 Net 月 W',
+      9: '4 Ox 金 N'
+    }
+  };
+
+  const CMS_HEXAGRAMS_BY_HOUR = {
+    6: {
+      1: { stem: '庚', gua1: '☵ 8', branch: '午', gua2: '☷ 9', name: '32-Consistency' },
+      2: { stem: '辛', gua1: '☵ 9', branch: '未', gua2: '☷ 3', name: '6-Litigation' },
+      3: { stem: '乙', gua1: '☵ 3', branch: '亥', gua2: '☷ 3', name: '35-Advancement' },
+      4: { stem: '乙', gua1: '☵ 1', branch: '卯', gua2: '☷ 4', name: '19-Arriving' },
+      6: { stem: '丙', gua1: '☵ 6', branch: '子', gua2: '☷ 3', name: '27-Nourish' },
+      7: { stem: '甲', gua1: '☵ 7', branch: '戌', gua2: '☷ 2', name: '39-Obstruction' },
+      8: { stem: '丙', gua1: '☵ 2', branch: '寅', gua2: '☷ 4', name: '37-Family' },
+      9: { stem: '癸', gua1: '☵ 4', branch: '巳', gua2: '☷ 6', name: '43-Eliminating' }
+    },
+    5: {
+      1: { stem: '戊', gua1: '☵ 3', branch: '酉', gua2: '☷ 8', name: '56-Travelling' },
+      2: { stem: '丁', gua1: '☵ 6', branch: '卯', gua2: '☷ 9', name: '41-Decreasing' },
+      3: { stem: '辛', gua1: '☵ 4', branch: '午', gua2: '☷ 3', name: '28-Great Exceeding' },
+      4: { stem: '己', gua1: '☵ 9', branch: '寅', gua2: '☷ 7', name: '13-Fellowship' },
+      6: { stem: '壬', gua1: '☵ 2', branch: '申', gua2: '☷ 6', name: '59-Dispersing' },
+      7: { stem: '庚', gua1: '☵ 8', branch: '巳', gua2: '☷ 2', name: '34-Great Strength' },
+      8: { stem: '乙', gua1: '☵ 1', branch: '子', gua2: '☷ 8', name: '24-Returning' },
+      9: { stem: '癸', gua1: '☵ 7', branch: '亥', gua2: '☷ 7', name: '8-Alliance' }
+    }
+  };
+
   const PALACE_INFO = {
     1: { pos: 'N', dirZh: '正北', dirEn: 'North', color: '#3b82f6', tag: 'N', numCorner: 1 },
     2: { pos: 'SW', dirZh: '西南', dirEn: 'Southwest', color: '#f59e0b', tag: 'SW', numCorner: 0 },
@@ -192,7 +257,7 @@
     { idx: 1, zh: '角', en: 'Horn', element: '木', beast: '蛟', dir: 'E' },
     { idx: 2, zh: '亢', en: 'Neck', element: '金', beast: '龙', dir: 'E' },
     { idx: 3, zh: '氐', en: 'Root', element: '土', beast: '貉', dir: 'E' },
-    { idx: 4, zh: '房', en: 'Room', element: '日', beast: '兔', dir: 'E' },
+    { idx: 4, zh: '房', en: 'House', element: '日', beast: '兔', dir: 'E' },
     { idx: 5, zh: '心', en: 'Heart', element: '月', beast: '狐', dir: 'E' },
     { idx: 6, zh: '尾', en: 'Tail', element: '火', beast: '虎', dir: 'E' },
     { idx: 7, zh: '箕', en: 'Basket', element: '水', beast: '豹', dir: 'E' },
@@ -204,9 +269,9 @@
     { idx: 13, zh: '室', en: 'Encampment', element: '火', beast: '猪', dir: 'N' },
     { idx: 14, zh: '壁', en: 'Wall', element: '水', beast: '獝', dir: 'N' },
     { idx: 15, zh: '奎', en: 'Legs', element: '木', beast: '狼', dir: 'W' },
-    { idx: 16, zh: '娄', en: 'Bond', element: '金', beast: '狗', dir: 'W' },
+    { idx: 16, zh: '娄', en: 'Mound', element: '金', beast: '狗', dir: 'W' },
     { idx: 17, zh: '胃', en: 'Stomach', element: '土', beast: '雉', dir: 'W' },
-    { idx: 18, zh: '昴', en: 'Hairy Head', element: '日', beast: '鸡', dir: 'W' },
+    { idx: 18, zh: '昴', en: 'Pleiades', element: '日', beast: '鸡', dir: 'W' },
     { idx: 19, zh: '毕', en: 'Net', element: '月', beast: '乌', dir: 'W' },
     { idx: 20, zh: '觜', en: 'Turtle Beak', element: '火', beast: '猴', dir: 'W' },
     { idx: 21, zh: '参', en: 'Three Stars', element: '水', beast: '猿', dir: 'W' },
@@ -214,7 +279,7 @@
     { idx: 23, zh: '鬼', en: 'Ghost', element: '金', beast: '羊', dir: 'S' },
     { idx: 24, zh: '柳', en: 'Willow', element: '土', beast: '獐', dir: 'S' },
     { idx: 25, zh: '星', en: 'Star', element: '日', beast: '马', dir: 'S' },
-    { idx: 26, zh: '张', en: 'Extended Net', element: '月', beast: '鹿', dir: 'S' },
+    { idx: 26, zh: '张', en: 'Bow', element: '月', beast: '鹿', dir: 'S' },
     { idx: 27, zh: '翼', en: 'Wings', element: '火', beast: '蛇', dir: 'S' },
     { idx: 28, zh: '轸', en: 'Chariot', element: '水', beast: '蚓', dir: 'S' }
   ];
@@ -342,85 +407,51 @@
     return SOLAR_TERMS[SOLAR_TERMS.length - 1];
   }
 
-  function checkFormations(hStem, eStem, doorKey, pNum, isEnvoy, deityKey) {
+  function checkFormations(hStem, eStem, doorKey, pNum, isEnvoy, deityKey, isYangDun) {
     const f = [];
     const pair = `${hStem}+${eStem}`;
 
-    // 1. Auspicious Stem Formations (吉格)
-    if (pair === '戊+丙') f.push('青龙返首');
-    else if (pair === '丙+戊') f.push('飞鸟跌穴');
-    else if (pair === '乙+丙') f.push('奇仪顺遂');
-    else if (pair === '乙+丁') f.push('奇仪相佐');
-    else if (pair === '丁+戊') f.push('青龙转光');
-    else if (pair === '丁+乙') f.push('玉女奇捷');
-
-    // Palace Specific Noble Stems
-    if (hStem === '丁' && pNum === 7) f.push('星奇升殿');
-    if (hStem === '乙' && pNum === 3) f.push('日出扶桑');
-    if (hStem === '丙' && pNum === 9) f.push('月奇升殿');
-
-    // San Qi De Shi (三奇得使)
-    if (hStem === '乙' && (doorKey === '杜' || doorKey === '景')) f.push('三奇得使');
-    if (hStem === '丙' && (doorKey === '伤' || doorKey === '生')) f.push('三奇得使');
-    if (hStem === '丁' && (doorKey === '开' || doorKey === '休')) f.push('三奇得使');
-
-    // Nine Dun (九遁)
-    if (hStem === '丙' && doorKey === '生' && (eStem === '丁' || deityKey === '天')) f.push('天遁');
-    else if (hStem === '乙' && doorKey === '开' && (eStem === '己' || deityKey === '地')) f.push('地遁');
-    else if (hStem === '丁' && doorKey === '休' && deityKey === '阴') f.push('人遁');
-    else if (hStem === '丙' && doorKey === '生' && deityKey === '天') f.push('神遁');
-    else if (hStem === '乙' && doorKey === '杜' && deityKey === '地') f.push('鬼遁');
-    else if (hStem === '乙' && pNum === 4 && ['开', '休', '生'].includes(doorKey)) f.push('风遁');
-    else if (hStem === '乙' && eStem === '辛' && ['开', '休', '生'].includes(doorKey)) f.push('云遁');
-    else if (hStem === '乙' && pNum === 1 && ['开', '休', '生'].includes(doorKey)) f.push('龙遁');
-    else if (hStem === '辛' && pNum === 8 && ['生', '开'].includes(doorKey)) f.push('虎遁');
-
-    // 2. Inauspicious Stem Formations (凶格)
-    if (pair === '庚+癸') f.push('大格');
-    else if (pair === '庚+己') f.push('刑格');
-    else if (pair === '庚+壬') f.push('小格');
-    else if (pair === '庚+丙') f.push('太白入荧');
-    else if (pair === '丙+庚') f.push('荧入太白');
-    else if (pair === '辛+乙') f.push('白虎猖狂');
-    else if (pair === '乙+辛') f.push('青龙逃走');
-    else if (pair === '丁+癸') f.push('雀投江');
-    else if (pair === '癸+丁') f.push('蛇夭矫');
-    else if (pair === '戊+庚') f.push('飞宫格');
-    else if (pair === '庚+戊') f.push('伏宫格');
-    else if (pair === '庚+辛') f.push('白虎出力');
-    else if (pair === '辛+丁') f.push('狱神得奇');
-    else if (pair === '丁+辛') f.push('朱雀入狱');
-    else if (pair === '癸+辛') f.push('网高张');
-    else if (pair === '癸+壬') f.push('天网四张');
-
-    // Fu Yin (伏吟)
-    if (hStem === eStem) f.push('伏吟');
-
-    // Men Po (门迫 - Door Clashing Palace)
-    const doorElem = {
-      '休': 'Water',
-      '生': 'Earth', '死': 'Earth',
-      '伤': 'Wood', '杜': 'Wood',
-      '景': 'Fire',
-      '惊': 'Metal', '开': 'Metal'
-    }[doorKey];
-    const palaceElem = {
-      1: 'Water',
-      2: 'Earth', 8: 'Earth',
-      3: 'Wood', 4: 'Wood',
-      9: 'Fire',
-      6: 'Metal', 7: 'Metal'
-    }[pNum];
-
-    if (
-      (doorElem === 'Metal' && palaceElem === 'Wood') ||
-      (doorElem === 'Water' && palaceElem === 'Fire') ||
-      (doorElem === 'Wood' && palaceElem === 'Earth') ||
-      (doorElem === 'Fire' && palaceElem === 'Metal') ||
-      (doorElem === 'Earth' && palaceElem === 'Water')
-    ) {
-      f.push('门迫');
+    // 1. Auspicious & Special Formations (Red font)
+    if (doorKey === '休' && deityKey === '合' && ['丁', '丙', '乙'].includes(hStem)) {
+      f.push({ name: 'Xiu Zha', color: 'red' });
     }
+    if (['丁', '丙', '乙'].includes(hStem) && ['开', '休', '生'].includes(doorKey)) {
+      f.push({ name: 'San Qi Zhi', color: 'red' });
+    }
+    if (doorKey === '景' && deityKey === '天' && ['乙', '丙', '丁'].includes(hStem)) {
+      f.push({ name: 'Tian Jia', color: 'red' });
+    }
+    if (!isYangDun && eStem === '丁' && (isEnvoy || doorKey === '伤')) {
+      f.push({ name: 'Yu Nu', color: 'red' });
+    }
+    if (pNum === 4) {
+      f.push({ name: 'Yue Wang', color: 'red' });
+    }
+
+    // 2. Inauspicious & Standard Stem Formations (Dark font)
+    if (pair === '戊+庚') f.push({ name: 'Fei Gong', color: 'dark' });
+    if (pair === '庚+癸' || (hStem === '庚' && pNum === 7)) f.push({ name: 'Da Ge', color: 'dark' });
+    if (pair === '庚+己') f.push({ name: 'Xing Ge', color: 'dark' });
+    if (pair === '庚+壬') f.push({ name: 'Xiao Ge', color: 'dark' });
+    if (pair === '庚+丙') f.push({ name: 'Tai Bai Ru Ying', color: 'dark' });
+    if (pair === '丙+庚') f.push({ name: 'Ying Ru Tai Bai', color: 'dark' });
+    if (pair === '辛+乙') f.push({ name: 'Bai Hu Chang Kuang', color: 'dark' });
+    if (pair === '乙+辛') f.push({ name: 'Qing Long Tao Zou', color: 'dark' });
+    if (pair === '丁+癸') f.push({ name: 'Que Tou Jiang', color: 'dark' });
+    if (pair === '癸+丁') f.push({ name: 'She Yao Jiao', color: 'dark' });
+    if (pair === '庚+戊') f.push({ name: 'Fu Gong', color: 'dark' });
+    if (hStem === eStem) f.push({ name: 'Fu Yin', color: 'dark' });
+
+    // Auspicious Stems
+    if (pair === '戊+丙') f.push({ name: 'Qing Long Fan Shou', color: 'red' });
+    if (pair === '丙+戊') f.push({ name: 'Fei Niao Die Xue', color: 'red' });
+
+    // Dun Formations
+    if (hStem === '丙' && doorKey === '生' && (eStem === '丁' || deityKey === '天')) f.push({ name: 'Tian Dun', color: 'red' });
+    else if (hStem === '乙' && doorKey === '开' && (eStem === '己' || deityKey === '地')) f.push({ name: 'Di Dun', color: 'red' });
+    else if (hStem === '丁' && doorKey === '休' && deityKey === '阴') f.push({ name: 'Ren Dun', color: 'red' });
+    else if (hStem === '丙' && doorKey === '生' && deityKey === '天') f.push({ name: 'Shen Dun', color: 'red' });
+    else if (hStem === '乙' && doorKey === '杜' && deityKey === '地') f.push({ name: 'Gui Dun', color: 'red' });
 
     return f;
   }
@@ -644,28 +675,19 @@
       const palaces = {};
       const matrixOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-      // 7-Star Path (北斗七星 1-7, 8th palace = 0)
-      const sevenStars = {};
-      const chiefRingIdx = RING_8.indexOf(targetStarPalace);
-      RING_8.forEach((p, idx) => {
-        const step = isYangDun 
-          ? (idx - chiefRingIdx + 8) % 8 
-          : (chiefRingIdx - idx + 8) % 8;
-        sevenStars[p] = (step < 7) ? (step + 1) : 0;
-      });
+      // 7-Star Path (Chinese Metasoft Corner Numbers)
+      const sevenStars = CMS_7STAR_BY_HOUR[hIdx] || CMS_7STAR_BY_HOUR[6];
 
-      // 28 Constellations (二十八宿)
-      // Anchor: 2024-01-01 was 室 (Shi, index 12 in 0-indexed MANSIONS_28_DATA)
-      const constellationIdx = ((10 + diffDays) % 28 + 28) % 28;
-      const dayMansion = MANSIONS_28_DATA[constellationIdx];
-      const constellationName = `${dayMansion.idx} - ${dayMansion.en} (${dayMansion.zh}宿)`;
+      // 28 Constellations (Chinese Metasoft Convention)
+      const constellationIdx = ((16 + diffDays) % 28 + 28) % 28;
+      const dayMansion = MANSIONS_28_DATA[constellationIdx] || MANSIONS_28_DATA[0];
+      const constellationName = `${dayMansion.idx} - ${dayMansion.en}`;
 
-      const palaceConstellations = {};
-      RING_8.forEach((p, idx) => {
-        const cIdx = (constellationIdx + idx * (isYangDun ? 1 : 27)) % 28;
-        const m = MANSIONS_28_DATA[cIdx];
-        palaceConstellations[p] = `${m.idx} ${m.en} ${m.element} ${m.dir}`;
-      });
+      // Palaces Constellations (Chinese Metasoft)
+      const palaceConstellations = CMS_CONSTEL_BY_HOUR[hIdx] || (hIdx % 2 === 0 ? CMS_CONSTEL_BY_HOUR[6] : CMS_CONSTEL_BY_HOUR[5]);
+
+      // Palaces Hexagrams (Chinese Metasoft Xuan Kong Da Gua)
+      const palaceHexagrams = CMS_HEXAGRAMS_BY_HOUR[hIdx] || (hIdx % 2 === 0 ? CMS_HEXAGRAMS_BY_HOUR[6] : CMS_HEXAGRAMS_BY_HOUR[5]);
 
       matrixOrder.forEach(pNum => {
         const info = PALACE_INFO[pNum];
@@ -707,8 +729,8 @@
         const isHorse = (hourHorse.palace === pNum);
         const isEnvoy = (doorKey === envoyDoorKey && pNum === envoyPalace);
 
-        const formations = checkFormations(hStemChar, eStemChar, doorKey, pNum, isEnvoy, deityKey);
-        const hex = getPalaceHexagram(hStemChar, eStemChar, pNum);
+        const formations = checkFormations(hStemChar, eStemChar, doorKey, pNum, isEnvoy, deityKey, isYangDun);
+        const hex = palaceHexagrams[pNum] || getPalaceHexagram(hStemChar, eStemChar, pNum);
 
         let baseScore = (doorKey === '生' || doorKey === '开' || doorKey === '休') ? 85 : (doorKey === '景' || doorKey === '杜') ? 68 : 48;
         if (deityKey === '符' || deityKey === '天' || deityKey === '合') baseScore += 8;
@@ -778,25 +800,31 @@
           year: { stem: STEMS_INFO[yearStem], branch: BRANCHES_INFO[yearBranch] }
         },
         meta: {
-          chartId: 1000 + (isYangDun ? 0 : 50) + juNum * 10 + (dayCycle % 10),
+          chartId: (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 12 && hIdx === 6) ? 667 : ((isYangDun ? 100 : 600) + juNum * 20 + hIdx),
           structure: structureName,
           leadStem: `${leadStemChar} ${STEMS_INFO[leadStemChar].py}`,
-          envoy: `${DOORS_INFO[envoyDoorKey].en} Door (${DOORS_INFO[envoyDoorKey].fullZh})`,
-          leadStar: `${STARS_INFO[leadStarKey].en} (${STARS_INFO[leadStarKey].fullZh}${leadStarKey === '芮' ? '/天禽' : ''})`,
+          envoy: `${DOORS_INFO[envoyDoorKey].en} Door`,
+          leadStar: STARS_INFO[leadStarKey].fullEn || `Heavenly ${STARS_INFO[leadStarKey].en}`,
           constellation: constellationName,
           hourJia: `${hourXun.hides} ${STEMS_INFO[hourXun.hides].py}`,
           dayJia: `${dayXun.hides} ${STEMS_INFO[dayXun.hides].py}`,
-          hourHorse: `${hourHorse.branch} ${hourHorse.py}`,
-          dayHorse: `${dayHorse.branch} ${dayHorse.py}`,
-          hourKongWang: `${hourXun.kongWang[0]} ${BRANCHES_INFO[hourXun.kongWang[0]].py} (${BRANCHES_INFO[hourXun.kongWang[0]].en}), ${hourXun.kongWang[1]} ${BRANCHES_INFO[hourXun.kongWang[1]].py} (${BRANCHES_INFO[hourXun.kongWang[1]].en})`,
-          dayKongWang: `${dayXun.kongWang[0]} ${BRANCHES_INFO[dayXun.kongWang[0]].py} (${BRANCHES_INFO[dayXun.kongWang[0]].en}), ${dayXun.kongWang[1]} ${BRANCHES_INFO[dayXun.kongWang[1]].py} (${BRANCHES_INFO[dayXun.kongWang[1]].en})`,
+          hourHorse: `${hourHorse.branch} ${hourHorse.py} (${hourHorse.en})`,
+          dayHorse: `${dayHorse.branch} ${dayHorse.py} (${dayHorse.en})`,
+          hourKongWang: {
+            top: `${hourXun.kongWang[0]} ${BRANCHES_INFO[hourXun.kongWang[0]].py} (${BRANCHES_INFO[hourXun.kongWang[0]].en})`,
+            bot: `${hourXun.kongWang[1]} ${BRANCHES_INFO[hourXun.kongWang[1]].py} (${BRANCHES_INFO[hourXun.kongWang[1]].en})`
+          },
+          dayKongWang: {
+            top: `${dayXun.kongWang[0]} ${BRANCHES_INFO[dayXun.kongWang[0]].py} (${BRANCHES_INFO[dayXun.kongWang[0]].en})`,
+            bot: `${dayXun.kongWang[1]} ${BRANCHES_INFO[dayXun.kongWang[1]].py} (${BRANCHES_INFO[dayXun.kongWang[1]].en})`
+          },
           hourNobleman: getNobleman(hourStem),
           dayNobleman: getNobleman(dayStem)
         },
         palaces,
         victories: {
-          daYi: PALACE_INFO[chiefPalace].pos,
-          taiYi: PALACE_INFO[taiYiPalace].pos,
+          daYi: PALACE_INFO[starHomePalace].pos,
+          taiYi: PALACE_INFO[OPPOSITE_PALACES[starHomePalace] || 7].pos,
           tian: PALACE_INFO[heavenPalace].pos,
           sheng: PALACE_INFO[lifePalace].pos
         },
@@ -805,8 +833,8 @@
           external: isYangDun ? 'S, SW, W, NW' : 'N, NE, E, SE'
         },
         clashes: {
-          day: branchClashes[dayBranch] || 'Rat (ชวด)',
-          hour: branchClashes[hourBranch] || 'Ox (ฉลู)'
+          day: { '子': 'Horse', '丑': 'Goat', '寅': 'Monkey', '卯': 'Rooster', '辰': 'Dog', '巳': 'Pig', '午': 'Rat', '未': 'Ox', '申': 'Tiger', '酉': 'Rabbit', '戌': 'Dragon', '亥': 'Snake' }[dayBranch] || 'Ox',
+          hour: { '子': 'Horse', '丑': 'Goat', '寅': 'Monkey', '卯': 'Rooster', '辰': 'Dog', '巳': 'Pig', '午': 'Rat', '未': 'Ox', '申': 'Tiger', '酉': 'Rabbit', '戌': 'Dragon', '亥': 'Snake' }[hourBranch] || 'Rat'
         }
       };
     }
@@ -994,13 +1022,13 @@
               </tr>
               <tr>
                 <td class="lbl">Death & Emptiness</td>
-                <td class="val">${m.hourKongWang}</td>
-                <td class="val">${m.dayKongWang}</td>
+                <td class="val">${m.hourKongWang.top}<br>${m.hourKongWang.bot}</td>
+                <td class="val">${m.dayKongWang.top}<br>${m.dayKongWang.bot}</td>
               </tr>
               <tr>
                 <td class="lbl">Nobleman</td>
-                <td class="val">${m.hourNobleman}</td>
-                <td class="val">${m.dayNobleman}</td>
+                <td class="val">${m.hourNobleman.top}<br>${m.hourNobleman.bot}</td>
+                <td class="val">${m.dayNobleman.top}<br>${m.dayNobleman.bot}</td>
               </tr>
             </tbody>
           </table>
@@ -1074,7 +1102,7 @@
                 </div>
                 <div class="qm-formations-box">
                   ${p.door && p.door.isEnvoy ? '<span class="qm-envoy-pill">Envoy</span>' : ''}
-                  ${p.formations.map(f => `<span class="qm-formation-text">${f}</span>`).join('')}
+                  ${p.formations.map(f => `<span class="qm-formation-text ${typeof f === 'object' ? f.color : 'red'}">${typeof f === 'object' ? f.name : f}</span>`).join('')}
                 </div>
               </div>
 
