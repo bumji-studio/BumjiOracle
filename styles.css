@@ -6277,29 +6277,232 @@ body.is-mobile .synthesis-box-body {
 .qm-act-pill i { color: #f59e0b; }
 .qm-act-pill strong { color: #0f172a; }
 
-/* Responsive */
+/* Responsive Qi Men Dun Jia (Professional Proportions on Mobile) */
 @media (max-width: 900px) {
+  #qiMenAppView:not(.hidden) {
+    padding: 10px 8px 60px 8px !important;
+    overflow-x: hidden !important;
+  }
+  .qimen-app-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    gap: 10px !important;
+    overflow-x: hidden !important;
+  }
+  .qm-toolbar-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    padding: 8px 10px !important;
+  }
+  .qm-toolbar-left {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .qm-btn-realtime {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    padding: 8px 10px !important;
+  }
+  .qm-picker-box {
+    width: 100% !important;
+    padding: 4px 6px !important;
+  }
+  .qm-picker-box input,
+  .qm-picker-box select {
+    width: 100% !important;
+    font-size: 11.5px !important;
+  }
   .qm-upper-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
   }
   .qm-main-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+    width: 100% !important;
   }
   .qm-detail-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
 
 @media (max-width: 600px) {
-  .qm-int-cell {
-    min-height: 125px;
-    padding: 3px 4px;
+  #qiMenAppView:not(.hidden) {
+    padding: 8px 6px 60px 6px !important;
+    overflow-x: hidden !important;
   }
-  .qm-char-big { font-size: 16px; }
-  .qm-char-med { font-size: 13px; }
-  .qm-char-door { font-size: 15px; }
+
+  /* Four Pillars Table Compact */
+  .qm-bazi-box, .qm-meta-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+  }
+  .qm-bazi-table th {
+    padding: 4px 2px !important;
+    font-size: 11px !important;
+  }
+  .qm-bazi-date-row td {
+    padding: 3px 2px !important;
+    font-size: 11px !important;
+  }
+  .qm-bazi-stem-row td,
+  .qm-bazi-branch-row td {
+    padding: 4px 2px !important;
+  }
+  .qm-bazi-char {
+    font-size: 22px !important;
+  }
+  .qm-bazi-py {
+    font-size: 11px !important;
+  }
+  .qm-bazi-en {
+    font-size: 9px !important;
+  }
+  .qm-bazi-animal {
+    font-size: 10px !important;
+  }
+
+  /* Chart Card & 9-Palace Matrix Proportions */
+  .qm-chart-card {
+    padding: 4px !important;
+    border-radius: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .qm-int-matrix {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 2px !important;
+    padding: 2px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border-width: 1.5px !important;
+  }
+
+  .qm-int-cell {
+    min-height: 112px !important;
+    padding: 2px 3px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  .qm-cell-header-bar {
+    padding: 1px 3px !important;
+    font-size: 9.5px !important;
+    margin: -2px -3px 2px -3px !important;
+  }
+  .qm-badge-kong, .qm-badge-horse {
+    font-size: 8.5px !important;
+  }
+
+  .qm-int-row.top-row {
+    gap: 2px !important;
+    justify-content: space-between !important;
+  }
+
+  .qm-elem-stem {
+    min-width: 0 !important;
+  }
+  .qm-char-big {
+    font-size: 15px !important;
+    line-height: 1 !important;
+  }
+  .qm-char-big .extra {
+    font-size: 10px !important;
+  }
+
+  .qm-elem-star,
+  .qm-elem-deity {
+    min-width: 0 !important;
+  }
+  .qm-char-med {
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+  .qm-char-med .extra {
+    font-size: 9.5px !important;
+  }
+
+  .qm-corner-num {
+    font-size: 10.5px !important;
+  }
+  .qm-py-sm, .qm-py-xs {
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+  .qm-en-xs {
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+  }
+
+  .qm-int-row.mid-row {
+    min-height: 22px !important;
+    margin: 1px 0 !important;
+  }
+  .qm-hex-line {
+    font-size: 8.5px !important;
+    line-height: 1 !important;
+  }
+  .qm-hex-name {
+    font-size: 7px !important;
+    line-height: 1 !important;
+  }
+  .qm-envoy-pill {
+    font-size: 7.5px !important;
+    padding: 0 2px !important;
+  }
+  .qm-formation-text {
+    font-size: 8px !important;
+    line-height: 1 !important;
+  }
+
+  .qm-int-row.bot-row {
+    gap: 2px !important;
+    align-items: flex-end !important;
+  }
+  .qm-elem-door {
+    min-width: 0 !important;
+  }
+  .qm-char-door {
+    font-size: 13.5px !important;
+    line-height: 1 !important;
+  }
+  .qm-elem-constellation {
+    font-size: 7.5px !important;
+    line-height: 1 !important;
+  }
+
+  /* Center Cell */
+  .qm-c-stem {
+    font-size: 18px !important;
+  }
+  .qm-c-py {
+    font-size: 8.5px !important;
+  }
+
+  .qm-chart-footer {
+    font-size: 9.5px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+    padding-top: 4px !important;
+  }
+
   .qm-detail-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 }
 
