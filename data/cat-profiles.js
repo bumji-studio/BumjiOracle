@@ -546,12 +546,19 @@
         guildPercentages[k] = Math.round((v / totalGuildScore) * 100);
       }
 
+      // Calculate Total 10 Profile Scores & Percentages (Joey Yap 10 Profiles)
+      const totalProfileScore = Object.values(profileScores).reduce((a, b) => a + b, 0) || 1;
+      const profilePercentages = {};
+      for (const [tg, score] of Object.entries(profileScores)) {
+        profilePercentages[tg] = Math.round((score / totalProfileScore) * 100);
+      }
+
       // Find Primary Guild (highest %)
       const sortedGuilds = Object.keys(guildScores).sort((a, b) => guildScores[b] - guildScores[a]);
       const primaryGuildKey = sortedGuilds[0];
       const primaryGuild = CAT_GUILDS[primaryGuildKey];
 
-      // Find Primary Cat Profile (highest Ten God score)
+      // Find Primary & Secondary Cat Profiles (highest Ten God scores)
       const sortedProfiles = Object.keys(profileScores).sort((a, b) => profileScores[b] - profileScores[a]);
       const primaryTenGod = sortedProfiles[0] || '正印';
       const secondaryTenGod = sortedProfiles[1] || '食神';
@@ -559,12 +566,49 @@
       const primaryCat = CAT_PROFILES[primaryTenGod];
       const secondaryCat = CAT_PROFILES[secondaryTenGod];
 
+      // Build Ranked 10 Profiles List
+      const rankedProfiles = sortedProfiles.map((tg, idx) => {
+        const catInfo = CAT_PROFILES[tg];
+        const gKey = catInfo.guildKey;
+        const guildInfo = CAT_GUILDS[gKey];
+        return {
+          rank: idx + 1,
+          tenGodZh: tg,
+          tenGodPy: catInfo.tenGodPy,
+          tenGodTh: catInfo.tenGodTh,
+          percentage: profilePercentages[tg] || 0,
+          rawScore: Math.round(profileScores[tg] * 10) / 10,
+          catBreed: catInfo.catBreed,
+          catEmoji: catInfo.catEmoji,
+          title: catInfo.title,
+          archetype: catInfo.archetype,
+          guildKey: gKey,
+          guildName: guildInfo.nameTh,
+          color: guildInfo.color,
+          isPrimary: idx === 0,
+          isSecondary: idx === 1
+        };
+      });
+
+      // 5 Structures Radar Chart Datasets
+      const radarData = [
+        { key: 'creators', label: 'The Creators', labelTh: 'ผู้เนรมิตสุนทรีย์', zh: '食傷', value: guildPercentages.creators || 0, color: '#ec4899', icon: 'fa-wand-magic-sparkles' },
+        { key: 'managers', label: 'The Managers', labelTh: 'ผู้พิทักษ์แห่งวินัย', zh: '官殺', value: guildPercentages.managers || 0, color: '#8b5cf6', icon: 'fa-chess-rook' },
+        { key: 'financiers', label: 'The Financiers', labelTh: 'จอมเวทแห่งทรัพย์สิน', zh: '財星', value: guildPercentages.financiers || 0, color: '#f59e0b', icon: 'fa-coins' },
+        { key: 'thinkers', label: 'The Thinkers', labelTh: 'ปราชญ์ผู้นุ่มฟู', zh: '印星', value: guildPercentages.thinkers || 0, color: '#3b82f6', icon: 'fa-brain' },
+        { key: 'connectors', label: 'The Connectors', labelTh: 'มิตรสหายแห่งสายใย', zh: '比劫', value: guildPercentages.connectors || 0, color: '#10b981', icon: 'fa-heart-circle-bolt' }
+      ];
+
       return {
         primaryCat,
         secondaryCat,
         primaryGuild,
         guildScores,
         guildPercentages,
+        profileScores,
+        profilePercentages,
+        rankedProfiles,
+        radarData,
         dominantTenGod: primaryTenGod,
         secondaryTenGod: secondaryTenGod,
         allGuilds: CAT_GUILDS

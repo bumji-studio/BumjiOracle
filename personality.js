@@ -1,7 +1,7 @@
 /**
  * ============================================================================
- * แม่หมอติ๊ดติ๊ด (DESTINY ARCANA) - PERSONALITY & CAT ARCHETYPE ENGINE
- * Eastern MBTI & 10 Cat Profiles & 5 Structures & 60 Jia Zi System
+ * แม่หมอติ๊ดติ๊ด (DESTINY ARCANA) - 60 JIA ZI & CAT ARCHETYPE ENGINE
+ * Flow: 60 Jia Zi Day Pillar -> 5 Structures Spider Chart -> 10 Profiles % -> Cat Archetype Mapping
  * ============================================================================
  */
 
@@ -16,7 +16,7 @@
     init: function () {
       this.bindEvents();
       this.populateArchetypeDropdown();
-      console.log('[PersonalityApp] Initialized successfully with Cat Archetypes.');
+      console.log('[PersonalityApp] Initialized with 60 Jia Zi & Cat Archetype Flow.');
     },
 
     bindEvents: function () {
@@ -45,11 +45,11 @@
       const select = document.getElementById('personalityArchetypeSelect');
       if (!select || !window.JIAZI_PROFILES) return;
 
-      select.innerHTML = '<option value="">-- หรือเลือกดู Archetype 60 เจี่ยจื่อ ทั้งหมดโดยตรง --</option>';
+      select.innerHTML = '<option value="">-- หรือเลือกดู 60 เจี่ยจื่อ (Jia Zi) ทั้งหมดโดยตรง --</option>';
       window.JIAZI_PROFILES.forEach((p, idx) => {
         const opt = document.createElement('option');
         opt.value = p.key;
-        opt.textContent = `${idx + 1}. ${p.zh} (${p.thaiName} - ${p.zodiacTitle}) • ${p.mbtiEquiv} • ${p.archetype.split('(')[0].trim()}`;
+        opt.textContent = `${idx + 1}. ${p.zh} (${p.stemPy} ${p.branchPy} - ${p.zodiacTitle}) • ${p.mbtiEquiv} • ${p.archetype.split('(')[0].trim()}`;
         select.appendChild(opt);
       });
     },
@@ -105,7 +105,7 @@
       const gender = document.getElementById('personalityGender')?.value || 'female';
 
       if (!birthDate) {
-        alert('กรุณาระบุวันเดือนปีเกิด เพื่อถอดรหัสตัวตน 60 Jia Zi และโปรไฟล์แมว');
+        alert('กรุณาระบุวันเดือนปีเกิด เพื่อคำนวณเสาวัน 60 Jia Zi และโครงสร้างดวงชะตา');
         document.getElementById('personalityBirthDate')?.focus();
         return;
       }
@@ -139,7 +139,7 @@
         return;
       }
 
-      // 3. Resolve 10 Cat Profiles & 5 Structures
+      // 3. Resolve 5 Structures & 10 Profiles & Cat Archetypes
       let catData = null;
       if (window.CatProfileEngine && typeof window.CatProfileEngine.resolveCatProfile === 'function') {
         catData = window.CatProfileEngine.resolveCatProfile(chart);
@@ -149,56 +149,14 @@
       this.currentProfile = profile;
       this.currentCatData = catData;
 
-      // 4. Fine-tune DISC scores with actual Five Elements percentages
-      const dynamicDisc = this.computeDynamicDisc(profile.disc, chart.elementPercentages);
-
-      // 5. Render
-      this.renderProfileCard(profile, dynamicDisc, chart, catData, {
+      // 4. Render New Dedicated Flow
+      this.renderFullResultScreen(profile, chart, catData, {
         name,
         birthDate,
         birthHour,
         birthMinute,
         gender
       });
-    },
-
-    computeDynamicDisc: function (baseDisc, elPct) {
-      if (!baseDisc) return { D: 50, I: 50, S: 50, C: 50 };
-      if (!elPct) return { ...baseDisc };
-
-      let d = baseDisc.D || 50;
-      let i = baseDisc.I || 50;
-      let s = baseDisc.S || 50;
-      let c = baseDisc.C || 50;
-
-      const woodDelta = ((elPct.wood || 20) - 20) * 0.35;
-      d += woodDelta * 0.6;
-      i += woodDelta * 0.4;
-
-      const fireDelta = ((elPct.fire || 20) - 20) * 0.35;
-      i += fireDelta * 0.7;
-      d += fireDelta * 0.3;
-
-      const earthDelta = ((elPct.earth || 20) - 20) * 0.35;
-      s += earthDelta * 0.8;
-      c += earthDelta * 0.2;
-
-      const metalDelta = ((elPct.metal || 20) - 20) * 0.35;
-      c += metalDelta * 0.7;
-      d += metalDelta * 0.3;
-
-      const waterDelta = ((elPct.water || 20) - 20) * 0.35;
-      c += waterDelta * 0.5;
-      s += waterDelta * 0.5;
-
-      const clamp = val => Math.round(Math.max(15, Math.min(98, val)));
-
-      return {
-        D: clamp(d),
-        I: clamp(i),
-        S: clamp(s),
-        C: clamp(c)
-      };
     },
 
     showDirectArchetype: function (key) {
@@ -210,7 +168,7 @@
       this.currentChart = null;
       this.currentCatData = null;
 
-      this.renderProfileCard(profile, profile.disc, null, null, {
+      this.renderFullResultScreen(profile, null, null, {
         name: 'ตัวอย่าง Archetype',
         birthDate: null
       });
@@ -281,6 +239,128 @@
       }
     },
 
+    /**
+     * Generate Pure SVG Spider / Radar Chart for 5 Structures
+     */
+    generateRadarChartSVG: function (radarData) {
+      if (!radarData || radarData.length !== 5) return '';
+
+      const cx = 175;
+      const cy = 175;
+      const r = 105;
+      const numAxes = 5;
+
+      // 5 Angles (Starts top at -PI/2)
+      const angles = [];
+      for (let i = 0; i < numAxes; i++) {
+        angles.push(-Math.PI / 2 + (i * 2 * Math.PI) / numAxes);
+      }
+
+      // Background Concentric Pentagons (20%, 40%, 60%, 80%, 100%)
+      const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
+      let gridLinesSvg = '';
+
+      levels.forEach(lvl => {
+        const polyPoints = angles.map(a => {
+          const x = cx + r * lvl * Math.cos(a);
+          const y = cy + r * lvl * Math.sin(a);
+          return `${x.toFixed(1)},${y.toFixed(1)}`;
+        }).join(' ');
+
+        gridLinesSvg += `
+          <polygon points="${polyPoints}" fill="${lvl === 1.0 ? 'rgba(255,255,255,0.02)' : 'none'}" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+        `;
+      });
+
+      // Axis Spoke Lines
+      let spokesSvg = '';
+      angles.forEach(a => {
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        spokesSvg += `
+          <line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,3" />
+        `;
+      });
+
+      // Calculate Maximum Value for Scaling
+      const maxVal = Math.max(...radarData.map(d => d.value), 35);
+
+      // Data Polygon Vertices
+      const dataPoints = radarData.map((d, i) => {
+        const a = angles[i];
+        // Normalize between 15% and 100% of radius so small values stay visible
+        const ratio = Math.max(0.12, Math.min(1.0, d.value / maxVal));
+        const x = cx + r * ratio * Math.cos(a);
+        const y = cy + r * ratio * Math.sin(a);
+        return { x, y, data: d };
+      });
+
+      const polyString = dataPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+      // Vertex Circles & Values
+      let verticesSvg = '';
+      dataPoints.forEach(p => {
+        verticesSvg += `
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="5" fill="#f43f5e" stroke="#fff" stroke-width="2" />
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="9" fill="none" stroke="rgba(244, 63, 94, 0.45)" stroke-width="1.5" />
+        `;
+      });
+
+      // Axis Labels (Placed nicely around perimeter)
+      let labelsSvg = '';
+      radarData.forEach((d, i) => {
+        const a = angles[i];
+        const dist = r + 24;
+        const lx = cx + dist * Math.cos(a);
+        const ly = cy + dist * Math.sin(a);
+
+        // Text alignment based on x position
+        let textAnchor = 'middle';
+        if (Math.cos(a) > 0.3) textAnchor = 'start';
+        else if (Math.cos(a) < -0.3) textAnchor = 'end';
+
+        labelsSvg += `
+          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${textAnchor}" fill="#e2e8f0" font-family="'Prompt', sans-serif" font-size="11" font-weight="600">
+            ${d.labelTh}
+          </text>
+          <text x="${lx.toFixed(1)}" y="${(ly + 13).toFixed(1)}" text-anchor="${textAnchor}" fill="${d.color}" font-family="'Outfit', sans-serif" font-size="12" font-weight="800">
+            ${d.value}%
+          </text>
+        `;
+      });
+
+      return `
+        <svg class="radar-svg-canvas" viewBox="0 0 350 350" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="radarAreaGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ec4899" stop-opacity="0.55" />
+              <stop offset="70%" stop-color="#8b5cf6" stop-opacity="0.35" />
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.15" />
+            </radialGradient>
+            <filter id="radarGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          <!-- Background Rings -->
+          ${gridLinesSvg}
+
+          <!-- Axis Spokes -->
+          ${spokesSvg}
+
+          <!-- Filled Data Polygon -->
+          <polygon points="${polyString}" fill="url(#radarAreaGradient)" stroke="#ec4899" stroke-width="2.5" filter="url(#radarGlow)" />
+
+          <!-- Vertices -->
+          ${verticesSvg}
+
+          <!-- Axis Labels -->
+          ${labelsSvg}
+        </svg>
+      `;
+    },
+
     copyProfileSummary: function () {
       if (!this.currentProfile) {
         alert('กรุณาคำนวณโปรไฟล์ก่อนคัดลอก');
@@ -293,41 +373,40 @@
       const guild = this.currentCatData?.primaryGuild;
       const name = document.getElementById('personalityName')?.value || 'คุณ';
 
-      let text = `✨ ถอดรหัสตัวตน 60 Jia Zi & Cat Archetype • แม่หมอติ๊ดติ๊ด ✨\n`;
+      let text = `✨ ถอดรหัส 60 Jia Zi & แมวตัวตน • แม่หมอติ๊ดติ๊ด ✨\n`;
       text += `━━━━━━━━━━━━━━━━━━━━━\n`;
       text += `👤 เจ้าชะตา: ${name}\n`;
-      if (cat) {
-        text += `🐱 แมวประจำตัวตน: ${cat.catEmoji} ${cat.catBreed} (${cat.title})\n`;
-        text += `🏰 กิลด์พลังชีวิต: ${guild?.nameTh || '-'}\n`;
-        text += `🐾 นิยามแมว: "${cat.tagline}"\n`;
-      }
-      text += `🔮 เสาวัน (Soul Core): ${p.zh} (${p.thaiName} - ${p.zodiacTitle})\n`;
+      text += `🔮 เสาวัน (Day Pillar): ${p.zh} (${p.stemPy} ${p.branchPy} - ${p.thaiName})\n`;
       text += `👑 Archetype: ${p.archetype}\n`;
-      text += `🧠 Eastern MBTI: ${p.mbtiEquiv} | DISC: ${p.discType}\n`;
-      text += `🪙 ธาตุนาอิม: ${p.nayin}\n\n`;
+      text += `🪙 ธาตุนาอิม: ${p.nayin}\n`;
+      text += `📜 คำจำกัดความ: "${p.tagline}"\n\n`;
 
-      text += `⚡ พลังพิเศษ (Superpowers):\n`;
+      if (cat) {
+        text += `🐱 แมวตัวแทนตามหลักแม่หมอติ๊ดติ๊ด:\n`;
+        text += `  • สายพันธุ์หลัก: ${cat.catEmoji} ${cat.catBreed} (${cat.title})\n`;
+        text += `  • กิลด์พลังชีวิต: ${guild?.nameTh || '-'}\n`;
+        text += `  • นิยามแมว: "${cat.tagline}"\n`;
+        text += `  • แมวคู่แท้: ${cat.catChemistry.bestPartner}\n\n`;
+      }
+
+      if (this.currentCatData?.rankedProfiles) {
+        text += `📊 อันดับ 10 Profiles (Joey Yap):\n`;
+        this.currentCatData.rankedProfiles.slice(0, 5).forEach(rp => {
+          text += `  #${rp.rank} ${rp.tenGodZh} (${rp.tenGodTh}): ${rp.percentage}% [${rp.catBreed}]\n`;
+        });
+        text += `\n`;
+      }
+
+      text += `⚡ พลังพิเศษ:\n`;
       p.superpowers.forEach(s => text += `  • ${s}\n`);
 
-      text += `\n⚠️ จุดบอดที่ควรระวัง (Blindspots):\n`;
-      p.blindspots.forEach(b => text += `  • ${b}\n`);
-
-      if (cat) {
-        text += `\n☀️ โหมดเฉิดฉาย (Awakened): ${cat.awakenedMode}\n`;
-        text += `🛋️ โหมดชาร์จแบต (Recharge): ${cat.rechargeMode}\n`;
-        text += `💕 แมวคู่แท้: ${cat.catChemistry.bestPartner}\n`;
-      }
-
-      text += `\n💖 ความรักและคู่แท้: ${p.love}\n`;
-      text += `💼 การงานและการเงิน: ${p.career}\n`;
-      text += `🎨 สีเสริมพลัง: ${p.powerColors.join(', ')}\n\n`;
-      text += `🐱 ${p.healingAdvice}\n`;
+      text += `\n🐱 ${p.healingAdvice}\n`;
       text += `━━━━━━━━━━━━━━━━━━━━━\n`;
       text += `ถอดรหัสตัวตนของคุณได้ที่: แม่หมอติ๊ดติ๊ด (Destiny Arcana)`;
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-          this.showToast('📋 คัดลอกสรุปโปรไฟล์และแมวประจำตัวสำเร็จแล้ว!');
+          this.showToast('📋 คัดลอกสรุปโปรไฟล์สำเร็จแล้ว!');
         }).catch(() => {
           this.fallbackCopyText(text);
         });
@@ -343,7 +422,7 @@
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      this.showToast('📋 คัดลอกสรุปโปรไฟล์และแมวประจำตัวสำเร็จแล้ว!');
+      this.showToast('📋 คัดลอกสรุปโปรไฟล์สำเร็จแล้ว!');
     },
 
     showToast: function (msg) {
@@ -360,10 +439,7 @@
     },
 
     openStoryModal: function () {
-      if (!this.currentProfile) {
-        alert('กรุณาคำนวณโปรไฟล์ก่อนบันทึกการ์ด Story');
-        return;
-      }
+      if (!this.currentProfile) return;
 
       let modal = document.getElementById('personalityStoryModal');
       if (!modal) {
@@ -376,7 +452,6 @@
       const p = this.currentProfile;
       const cat = this.currentCatData?.primaryCat;
       const guild = this.currentCatData?.primaryGuild;
-      const name = document.getElementById('personalityName')?.value || 'คุณ';
 
       modal.innerHTML = `
         <div class="modal-card story-modal-card">
@@ -402,13 +477,11 @@
               <div class="story-seal-wrap">
                 <div class="story-seal">${p.zh}</div>
                 <div class="story-title-info">
-                  <div class="story-archetype-name">${p.archetype}</div>
+                  <div class="story-archetype-name">${p.stemPy} ${p.branchPy} (${p.thaiName})</div>
                   <div class="story-meta-tags">
                     <span>${p.mbtiEquiv}</span>
                     <span>•</span>
-                    <span>DISC: ${p.discType}</span>
-                    <span>•</span>
-                    <span>${p.thaiName}</span>
+                    <span>${p.archetype}</span>
                   </div>
                 </div>
               </div>
@@ -427,7 +500,7 @@
               </div>
 
               <div class="story-footer">
-                <span>ค้นพบจิตวิญญาณแมวของคุณที่: แม่หมอติ๊ดติ๊ด</span>
+                <span>ค้นพบตัวตนและจิตวิญญาณแมวของคุณที่: แม่หมอติ๊ดติ๊ด</span>
               </div>
             </div>
           </div>
@@ -446,141 +519,269 @@
       modal.classList.remove('hidden');
     },
 
-    renderProfileCard: function (p, disc, chart, catData, inputData) {
+    /**
+     * RENDER DEDICATED RESULT SCREEN
+     * Order:
+     * 1. 60 Jia Zi Day Pillar Hero (e.g. Xin Si)
+     * 2. 5 Structures Spider Chart (Joey Yap)
+     * 3. 10 Profiles % Rankings (Joey Yap Ten Gods)
+     * 4. Mapping กับ แมวตามหลักการของแม่หมอติ๊ดติ๊ด
+     * 5. Actions Bar
+     */
+    renderFullResultScreen: function (p, chart, catData, inputData) {
       const resultContainer = document.getElementById('personalityResultContainer');
       if (!resultContainer) return;
 
-      const getDiscDesc = (type, val) => {
-        if (type === 'D') return val >= 70 ? 'ผู้นำที่เด็ดขาด ลุยตรงเป้าหมาย ตัดสินใจฉับไว' : val >= 50 ? 'มีเป้าหมายชัดเจน พร้อมรับความท้าทาย' : 'เน้นการประนีประนอม ไม่ชอบความขัดแย้ง';
-        if (type === 'I') return val >= 70 ? 'มีเสน่ห์ดึงดูด พูดจาโน้มน้าวเก่ง พลังบวกกระจาย' : val >= 50 ? 'เข้าสังคมได้ดี อัธยาศัยน่ารัก เป็นมิตร' : 'สงวนท่าที ชอบความสัมพันธ์ลึกซึ้งเฉพาะกลุ่ม';
-        if (type === 'S') return val >= 70 ? 'นิ่ง มั่นคง อดทนสูงมาก เป็นผู้ฟังและที่พึ่งที่ดี' : val >= 50 ? 'รักความสงบ ทำงานเป็นทีมได้ดี เชื่อถือได้' : 'ชอบความเปลี่ยนแปลง ไม่ชอบอยู่นิ่ง ปรับตัวเร็ว';
-        if (type === 'C') return val >= 70 ? 'รอบคอบ ละเอียด ประณีต ตรรกะเป๊ะ มาตรฐานสูง' : val >= 50 ? 'มีระบบ ระเบียบ วางแผนก่อนลงมือทำ' : 'ยืดหยุ่น เน้นผลลัพธ์ภาพรวม ไม่ติดกรอบ';
-        return '';
-      };
+      // 4 Pillars mini-summary if chart exists
+      let pillarsSummaryHtml = '';
+      if (chart && chart.pillars) {
+        pillarsSummaryHtml = `
+          <div class="p-pillars-row">
+            <div class="p-pillar-chip">
+              <span class="chip-label">เสาปี (Year)</span>
+              <span class="chip-chars">${chart.pillars.year.stem.zh}${chart.pillars.year.branch.zh}</span>
+            </div>
+            <div class="p-pillar-chip">
+              <span class="chip-label">เสาเดือน (Month)</span>
+              <span class="chip-chars">${chart.pillars.month.stem.zh}${chart.pillars.month.branch.zh}</span>
+            </div>
+            <div class="p-pillar-chip active-day-chip">
+              <span class="chip-label">เสาวัน (Day Core) ⭐</span>
+              <span class="chip-chars">${chart.pillars.day.stem.zh}${chart.pillars.day.branch.zh}</span>
+              <span class="chip-pinyin">${p.stemPy} ${p.branchPy}</span>
+            </div>
+            <div class="p-pillar-chip">
+              <span class="chip-label">เสายาม (Hour)</span>
+              <span class="chip-chars">${chart.pillars.hour.stem.zh}${chart.pillars.hour.branch.zh}</span>
+            </div>
+            <div class="p-pillar-chip strength-chip">
+              <span class="chip-label">สภาพดิถี</span>
+              <span class="chip-val">${chart.strengthText}</span>
+            </div>
+          </div>
+        `;
+      }
 
-      // 1. Cat Archetype Hero Banner Section
-      let catSectionHtml = '';
+      // SECTION 2: 5 Structures Spider Chart HTML
+      let radarSectionHtml = '';
+      if (catData && catData.radarData) {
+        const radarSvg = this.generateRadarChartSVG(catData.radarData);
+        const primaryG = catData.primaryGuild;
+
+        radarSectionHtml = `
+          <div class="personality-section-box structure-radar-box">
+            <div class="personality-section-header">
+              <div class="p-header-icon-badge" style="background: rgba(139, 92, 246, 0.2); color: #c084fc;">
+                <i class="fa-solid fa-chart-pie"></i>
+              </div>
+              <div class="p-header-titles">
+                <h3>กราฟใยแมงมุมแสดงจุดแข็ง 5 Structures (Joey Yap)</h3>
+                <span class="p-header-sub">วิเคราะห์ศักยภาพและรูปแบบพลังงานการขับเคลื่อนชีวิตทั้ง 5 มิติ</span>
+              </div>
+            </div>
+
+            <div class="radar-content-flex">
+              <!-- Left: Spider/Radar SVG Canvas -->
+              <div class="radar-visual-pane">
+                ${radarSvg}
+              </div>
+
+              <!-- Right: 5 Structures Breakdown Cards -->
+              <div class="radar-legend-pane">
+                <div class="dominant-guild-card" style="border-left: 4px solid ${primaryG.color};">
+                  <div class="d-guild-tag">STRUCTURE อันดับ 1 ของคุณ</div>
+                  <div class="d-guild-title">
+                    <i class="fa-solid ${primaryG.icon}" style="color: ${primaryG.color};"></i>
+                    <span>${primaryG.nameTh} (${primaryG.nameZh})</span>
+                  </div>
+                  <p class="d-guild-desc">${primaryG.desc}</p>
+                </div>
+
+                <div class="structures-progress-list">
+                  ${catData.radarData.map(d => `
+                    <div class="s-progress-item">
+                      <div class="s-prog-head">
+                        <span class="s-label"><i class="fa-solid ${d.icon}" style="color: ${d.color};"></i> ${d.labelTh} (${d.label})</span>
+                        <span class="s-pct" style="color: ${d.color}; font-weight: 800;">${d.value}%</span>
+                      </div>
+                      <div class="s-track">
+                        <div class="s-fill" style="width: ${d.value}%; background: ${d.color};"></div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // SECTION 3: 10 Profiles Rankings HTML
+      let tenProfilesSectionHtml = '';
+      if (catData && catData.rankedProfiles) {
+        const profiles = catData.rankedProfiles;
+
+        tenProfilesSectionHtml = `
+          <div class="personality-section-box ten-profiles-box">
+            <div class="personality-section-header">
+              <div class="p-header-icon-badge" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">
+                <i class="fa-solid fa-list-ol"></i>
+              </div>
+              <div class="p-header-titles">
+                <h3>สัดส่วน % ของ 10 Profiles (十神 Profiling)</h3>
+                <span class="p-header-sub">จัดอันดับขุนพลพลังงานประจำตัว 10 ด้าน ตามหลักวิชา BaZi Profiling ของ Joey Yap</span>
+              </div>
+            </div>
+
+            <div class="profiles-rank-grid">
+              ${profiles.map(rp => `
+                <div class="profile-rank-card ${rp.isPrimary ? 'primary-card' : ''} ${rp.isSecondary ? 'secondary-card' : ''}">
+                  <div class="profile-card-top">
+                    <div class="profile-badge-num ${rp.isPrimary ? 'rank-1' : rp.isSecondary ? 'rank-2' : ''}">
+                      ${rp.isPrimary ? '⭐ #1' : rp.isSecondary ? '✨ #2' : '#' + rp.rank}
+                    </div>
+                    <div class="profile-god-zh" style="color: ${rp.color};">
+                      ${rp.tenGodZh}
+                    </div>
+                    <div class="profile-pct-val" style="color: ${rp.color};">
+                      ${rp.percentage}%
+                    </div>
+                  </div>
+
+                  <div class="profile-card-mid">
+                    <h4 class="profile-title-text">${rp.archetype}</h4>
+                    <span class="profile-god-th">${rp.tenGodTh}</span>
+                  </div>
+
+                  <div class="profile-card-cat-tag">
+                    <span class="cat-chip"><i class="fa-solid fa-cat"></i> ${rp.catEmoji} ${rp.catBreed}</span>
+                  </div>
+
+                  <div class="profile-bar-track">
+                    <div class="profile-bar-fill" style="width: ${rp.percentage}%; background: ${rp.color};"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      // SECTION 4: Mapping กับ แมวตามหลักการของแม่หมอติ๊ดติ๊ด
+      let catMappingSectionHtml = '';
       if (catData && catData.primaryCat) {
         const cat = catData.primaryCat;
         const subCat = catData.secondaryCat;
         const guild = catData.primaryGuild;
-        const pcts = catData.guildPercentages;
 
-        catSectionHtml = `
-          <!-- CAT ARCHETYPE HERO CARD -->
-          <div class="cat-archetype-card animate-fade-in">
-            <div class="cat-card-header-bar">
-              <span class="cat-ip-badge"><i class="fa-solid fa-cat"></i> THE MAEMOR TIDTID CAT ARCHETYPE</span>
-              <span class="cat-guild-pill" style="background: ${guild.bg}; color: ${guild.color}; border: 1px solid ${guild.color};">
-                <i class="fa-solid ${guild.icon}"></i> ${guild.nameTh}
-              </span>
+        catMappingSectionHtml = `
+          <div class="personality-section-box cat-mapping-full-box">
+            <div class="personality-section-header">
+              <div class="p-header-icon-badge" style="background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff;">
+                <i class="fa-solid fa-cat"></i>
+              </div>
+              <div class="p-header-titles">
+                <h3>แมวประจำตัวตนตามหลักการของแม่หมอติ๊ดติ๊ด (The Cat Persona)</h3>
+                <span class="p-header-sub">ถอดรหัสพฤติกรรม จิตวิทยา และสัญชาตญาณของจิตวิญญาณแมวในตัวคุณ</span>
+              </div>
             </div>
 
-            <div class="cat-hero-body">
-              <div class="cat-avatar-emblem">
-                <span class="cat-big-emoji">${cat.catEmoji}</span>
-                <span class="cat-breed-tag">${cat.catBreed}</span>
+            <!-- Cat Hero Emblem -->
+            <div class="cat-mapping-hero">
+              <div class="cat-emblem-large">
+                <span class="big-cat-emoji">${cat.catEmoji}</span>
+                <span class="emblem-breed-name">${cat.catBreed}</span>
+                <span class="emblem-guild-tag" style="background: ${guild.bg}; color: ${guild.color};">
+                  ${guild.nameTh}
+                </span>
               </div>
 
-              <div class="cat-hero-info">
-                <div class="cat-role-tag">${cat.tenGodTh}</div>
-                <h2 class="cat-title-text">${cat.title}</h2>
-                <div class="cat-sub-title">Archetype: <strong>${cat.archetype}</strong></div>
-                <p class="cat-tagline-quote">“${cat.tagline}”</p>
-                
+              <div class="cat-details-col">
+                <div class="cat-role-badge">
+                  <span>${cat.tenGodTh}</span>
+                  <span class="bullet">•</span>
+                  <span>DISC Style: ${cat.discTendency}</span>
+                  <span class="bullet">•</span>
+                  <span>MBTI: ${cat.mbtiMatch}</span>
+                </div>
+                <h2 class="cat-headline">${cat.title} (${cat.archetype})</h2>
+                <p class="cat-quote-callout">“${cat.tagline}”</p>
+
                 ${subCat ? `
-                  <div class="companion-cat-badge">
-                    <i class="fa-solid fa-shield-cat"></i> 
-                    <span>แมวเพื่อนแท้ซ่อนเร้น (Companion Cat): <strong>${subCat.catEmoji} ${subCat.catBreed}</strong></span>
+                  <div class="companion-cat-pill">
+                    <i class="fa-solid fa-shield-cat"></i>
+                    <span>แมวเพื่อนแท้ซ่อนเร้น (Companion Cat): <strong>${subCat.catEmoji} ${subCat.catBreed}</strong> (${subCat.title})</span>
                   </div>
                 ` : ''}
               </div>
             </div>
 
-            <!-- 5 Structures Guild Gauges (Joey Yap 5 Structures Breakdown) -->
-            <div class="cat-structures-box">
-              <div class="cat-structures-title">
-                <i class="fa-solid fa-chart-column" style="color: #8b5cf6;"></i>
-                <span>สัดส่วนพลัง 5 กิลด์แห่งชีวิต (5 Structures Energy Breakdown)</span>
+            <!-- Superpowers & Shadows -->
+            <div class="cat-duo-traits-grid">
+              <div class="trait-box power-style">
+                <div class="t-box-head">
+                  <i class="fa-solid fa-sparkles" style="color: #10b981;"></i>
+                  <h4>พลังวิเศษและสัญชาตญาณเด่น (Cat Superpowers)</h4>
+                </div>
+                <ul>
+                  ${cat.superpowers.map(s => `<li><i class="fa-solid fa-circle-check"></i> <span>${s}</span></li>`).join('')}
+                </ul>
               </div>
 
-              <div class="guild-gauges-grid">
-                <div class="guild-gauge-item">
-                  <div class="g-gauge-head">
-                    <span><i class="fa-solid fa-brain" style="color: #3b82f6;"></i> ปราชญ์ (Thinkers)</span>
-                    <strong>${pcts.thinkers || 0}%</strong>
-                  </div>
-                  <div class="g-track"><div class="g-fill" style="width: ${pcts.thinkers || 0}%; background: #3b82f6;"></div></div>
+              <div class="trait-box shadow-style">
+                <div class="t-box-head">
+                  <i class="fa-solid fa-shield-cat" style="color: #f59e0b;"></i>
+                  <h4>จุดบอดและสิ่งที่ทำให้แมวงอน (Cat Quirks &amp; Shadows)</h4>
                 </div>
-
-                <div class="guild-gauge-item">
-                  <div class="g-gauge-head">
-                    <span><i class="fa-solid fa-chess-rook" style="color: #8b5cf6;"></i> ผู้นำ (Managers)</span>
-                    <strong>${pcts.managers || 0}%</strong>
-                  </div>
-                  <div class="g-track"><div class="g-fill" style="width: ${pcts.managers || 0}%; background: #8b5cf6;"></div></div>
-                </div>
-
-                <div class="guild-gauge-item">
-                  <div class="g-gauge-head">
-                    <span><i class="fa-solid fa-wand-magic-sparkles" style="color: #ec4899;"></i> ผู้เนรมิต (Creators)</span>
-                    <strong>${pcts.creators || 0}%</strong>
-                  </div>
-                  <div class="g-track"><div class="g-fill" style="width: ${pcts.creators || 0}%; background: #ec4899;"></div></div>
-                </div>
-
-                <div class="guild-gauge-item">
-                  <div class="g-gauge-head">
-                    <span><i class="fa-solid fa-coins" style="color: #f59e0b;"></i> จอมเวททรัพย์ (Financiers)</span>
-                    <strong>${pcts.financiers || 0}%</strong>
-                  </div>
-                  <div class="g-track"><div class="g-fill" style="width: ${pcts.financiers || 0}%; background: #f59e0b;"></div></div>
-                </div>
-
-                <div class="guild-gauge-item">
-                  <div class="g-gauge-head">
-                    <span><i class="fa-solid fa-heart-circle-bolt" style="color: #10b981;"></i> มิตรสหาย (Connectors)</span>
-                    <strong>${pcts.connectors || 0}%</strong>
-                  </div>
-                  <div class="g-track"><div class="g-fill" style="width: ${pcts.connectors || 0}%; background: #10b981;"></div></div>
-                </div>
+                <ul>
+                  ${cat.shadows.map(s => `<li><i class="fa-solid fa-circle-exclamation"></i> <span>${s}</span></li>`).join('')}
+                </ul>
               </div>
             </div>
 
-            <!-- Awakened Light vs Cozy Recharge Mode -->
-            <div class="cat-dual-modes-grid">
-              <div class="cat-mode-card mode-light">
-                <div class="cat-mode-head">
+            <!-- Awakened Light vs Cozy Recharge -->
+            <div class="cat-modes-duo-grid">
+              <div class="mode-box light-box">
+                <div class="mode-head">
                   <i class="fa-solid fa-sun" style="color: #fbbf24;"></i>
-                  <h4>โหมดแมวเปล่งประกาย (Awakened Light)</h4>
+                  <h4>☀️ โหมดแมวเปล่งประกาย (Awakened Light Mode)</h4>
                 </div>
                 <p>${cat.awakenedMode}</p>
               </div>
 
-              <div class="cat-mode-card mode-recharge">
-                <div class="cat-mode-head">
+              <div class="mode-box recharge-box">
+                <div class="mode-head">
                   <i class="fa-solid fa-couch" style="color: #c084fc;"></i>
-                  <h4>โหมดแมวพักชาร์จแบต (Cozy Recharge)</h4>
+                  <h4>🛋️ โหมดแมวพักชาร์จแบต (Cozy Recharge Mode)</h4>
                 </div>
                 <p>${cat.rechargeMode}</p>
               </div>
             </div>
 
             <!-- Cat Chemistry -->
-            <div class="cat-chemistry-box">
-              <div class="cat-chem-item">
+            <div class="cat-chem-banner">
+              <div class="chem-col">
                 <i class="fa-solid fa-heart" style="color: #ec4899;"></i>
                 <div>
                   <strong>แมวคู่แท้เคมีลงตัว (Best Partner):</strong>
-                  <span>${cat.catChemistry.bestPartner}</span>
+                  <p>${cat.catChemistry.bestPartner}</p>
                 </div>
               </div>
-              <div class="cat-chem-item">
+              <div class="chem-col">
                 <i class="fa-solid fa-bolt" style="color: #3b82f6;"></i>
                 <div>
                   <strong>แมวคู่ท้าทายช่วยให้เติบโต (Growth Partner):</strong>
-                  <span>${cat.catChemistry.growthPartner}</span>
+                  <p>${cat.catChemistry.growthPartner}</p>
                 </div>
+              </div>
+            </div>
+
+            <!-- Mother Cat Healing Note -->
+            <div class="mother-cat-advice-card">
+              <div class="m-avatar"><i class="fa-solid fa-cat"></i></div>
+              <div class="m-text">
+                <h4>คำแนะนำฮีลใจจากแม่หมอติ๊ดติ๊ด 🐱💖</h4>
+                <p>${cat.healingAdvice}</p>
               </div>
             </div>
 
@@ -588,199 +789,65 @@
         `;
       }
 
-      // 2. Element balance tag if chart is available
-      let chartBadgeHtml = '';
-      if (chart && chart.pillars) {
-        chartBadgeHtml = `
-          <div class="personality-bazi-pills">
-            <span class="p-pill"><strong>เสาปี:</strong> ${chart.pillars.year.stem.zh}${chart.pillars.year.branch.zh}</span>
-            <span class="p-pill"><strong>เสาเดือน:</strong> ${chart.pillars.month.stem.zh}${chart.pillars.month.branch.zh}</span>
-            <span class="p-pill active-day"><strong>เสาวัน (Soul Core):</strong> ${chart.pillars.day.stem.zh}${chart.pillars.day.branch.zh}</span>
-            <span class="p-pill"><strong>เสายาม:</strong> ${chart.pillars.hour.stem.zh}${chart.pillars.hour.branch.zh}</span>
-            <span class="p-pill strength">${chart.strengthText}</span>
-          </div>
-        `;
-      }
-
+      // Assemble the Full Result Screen
       resultContainer.innerHTML = `
         <div class="personality-card-wrapper animate-fade-in">
           
-          ${catSectionHtml}
-
-          <!-- 60 Jia Zi Soul Core Hero Banner -->
-          <div class="personality-hero-banner">
-            <div class="personality-hero-left">
-              <div class="personality-jiazi-seal">
-                <span class="seal-zh">${p.zh}</span>
-                <span class="seal-th">${p.thaiName}</span>
-              </div>
-              <div class="personality-hero-titles">
-                <div class="personality-sub-badge">
-                  <span>${p.zodiacTitle}</span>
-                  <span class="bullet">•</span>
-                  <span>${p.stemEl} + ${p.branchEl}</span>
-                  <span class="bullet">•</span>
-                  <span>${p.nayin}</span>
-                </div>
-                <h2 class="personality-archetype-name">${p.archetype}</h2>
-                <p class="personality-tagline">“${p.tagline}”</p>
-                ${chartBadgeHtml}
-              </div>
+          <!-- ============================================================== -->
+          <!-- 1. 60 JIA ZI DAY PILLAR HERO SECTION (เสาวันเกิด)             -->
+          <!-- ============================================================== -->
+          <div class="jiazi-day-pillar-card">
+            <div class="jiazi-header-badge-row">
+              <span class="j-badge"><i class="fa-solid fa-yin-yang"></i> เสาวัน (DAY PILLAR) • จิตวิญญาณแก่นแท้</span>
+              <span class="j-nayin"><i class="fa-solid fa-shield-halved"></i> ${p.nayin}</span>
             </div>
 
-            <div class="personality-hero-right">
-              <div class="personality-badge-group">
-                <div class="mbti-badge" title="ประเภทบุคลิกภาพเทียบเคียง Western MBTI">
-                  <span class="badge-label">EASTERN MBTI</span>
-                  <span class="badge-val">${p.mbtiEquiv}</span>
-                </div>
-                <div class="disc-badge" title="DISC Style">
-                  <span class="badge-label">DISC STYLE</span>
-                  <span class="badge-val">${p.discType}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- DISC Energy Matrix (Interactive Bar Gauges) -->
-          <div class="personality-section-box">
-            <div class="personality-section-header">
-              <i class="fa-solid fa-chart-pie" style="color: #ec4899;"></i>
-              <h3>ระดับพลังงาน 4 มิติ (Dynamic DISC Energy Matrix)</h3>
-              <span class="personality-section-tip">คำนวณผสานพลังธาตุในสี่แถวชะตาเฉพาะตัว</span>
-            </div>
-
-            <div class="disc-matrix-grid">
-              <div class="disc-matrix-card disc-d">
-                <div class="disc-card-head">
-                  <div class="disc-letter-badge">D</div>
-                  <div class="disc-title-wrap">
-                    <span class="disc-title">Dominance (ภาวะผู้นำ & การตัดสินใจ)</span>
-                    <span class="disc-sub">${getDiscDesc('D', disc.D)}</span>
-                  </div>
-                  <div class="disc-score">${disc.D}%</div>
-                </div>
-                <div class="disc-progress-track">
-                  <div class="disc-progress-fill fill-d" style="width: ${disc.D}%;"></div>
-                </div>
+            <div class="jiazi-main-content">
+              <!-- Giant Chinese Characters Seal -->
+              <div class="jiazi-big-seal">
+                <span class="seal-chars">${p.zh}</span>
+                <span class="seal-pinyin">${p.stemPy} ${p.branchPy}</span>
+                <span class="seal-thai">${p.thaiName}</span>
               </div>
 
-              <div class="disc-matrix-card disc-i">
-                <div class="disc-card-head">
-                  <div class="disc-letter-badge">I</div>
-                  <div class="disc-title-wrap">
-                    <span class="disc-title">Influence (เสน่ห์ มนุษยสัมพันธ์ & พลังดึงดูด)</span>
-                    <span class="disc-sub">${getDiscDesc('I', disc.I)}</span>
-                  </div>
-                  <div class="disc-score">${disc.I}%</div>
+              <div class="jiazi-text-info">
+                <div class="jiazi-elements-pill">
+                  <span>${p.stemEl}</span>
+                  <span class="sep">+</span>
+                  <span>${p.branchEl}</span>
+                  <span class="sep">•</span>
+                  <span>สัตว์ประจำเสา: ${p.zodiacTitle}</span>
+                  <span class="sep">•</span>
+                  <span>MBTI: ${p.mbtiEquiv}</span>
                 </div>
-                <div class="disc-progress-track">
-                  <div class="disc-progress-fill fill-i" style="width: ${disc.I}%;"></div>
-                </div>
-              </div>
 
-              <div class="disc-matrix-card disc-s">
-                <div class="disc-card-head">
-                  <div class="disc-letter-badge">S</div>
-                  <div class="disc-title-wrap">
-                    <span class="disc-title">Steadiness (ความมั่นคง อดทน & การประนีประนอม)</span>
-                    <span class="disc-sub">${getDiscDesc('S', disc.S)}</span>
-                  </div>
-                  <div class="disc-score">${disc.S}%</div>
-                </div>
-                <div class="disc-progress-track">
-                  <div class="disc-progress-fill fill-s" style="width: ${disc.S}%;"></div>
-                </div>
-              </div>
+                <h1 class="jiazi-archetype-title">${p.archetype}</h1>
+                <p class="jiazi-poetic-tagline">“${p.tagline}”</p>
 
-              <div class="disc-matrix-card disc-c">
-                <div class="disc-card-head">
-                  <div class="disc-letter-badge">C</div>
-                  <div class="disc-title-wrap">
-                    <span class="disc-title">Conscientiousness (ความรอบคอบ ละเอียด & แผนงาน)</span>
-                    <span class="disc-sub">${getDiscDesc('C', disc.C)}</span>
-                  </div>
-                  <div class="disc-score">${disc.C}%</div>
-                </div>
-                <div class="disc-progress-track">
-                  <div class="disc-progress-fill fill-c" style="width: ${disc.C}%;"></div>
-                </div>
+                <!-- 4 Pillars mini summary -->
+                ${pillarsSummaryHtml}
               </div>
             </div>
           </div>
 
-          <!-- Two Columns: Superpowers vs Blindspots -->
-          <div class="personality-duo-grid">
-            <div class="personality-section-box power-box">
-              <div class="personality-section-header">
-                <i class="fa-solid fa-sparkles" style="color: #10b981;"></i>
-                <h3>จุดแข็ง & ซูเปอร์พาวเวอร์ (Superpowers)</h3>
-              </div>
-              <ul class="personality-trait-list">
-                ${p.superpowers.map(s => `
-                  <li>
-                    <i class="fa-solid fa-circle-check trait-icon check"></i>
-                    <span>${s}</span>
-                  </li>
-                `).join('')}
-              </ul>
-            </div>
+          <!-- ============================================================== -->
+          <!-- 2. SPIDER CHART 5 STRUCTURES (JOEY YAP)                         -->
+          <!-- ============================================================== -->
+          ${radarSectionHtml}
 
-            <div class="personality-section-box shadow-box">
-              <div class="personality-section-header">
-                <i class="fa-solid fa-shield-cat" style="color: #f59e0b;"></i>
-                <h3>จุดบอด & ข้อควรระวัง (Blindspots & Shadows)</h3>
-              </div>
-              <ul class="personality-trait-list">
-                ${p.blindspots.map(b => `
-                  <li>
-                    <i class="fa-solid fa-circle-exclamation trait-icon alert"></i>
-                    <span>${b}</span>
-                  </li>
-                `).join('')}
-              </ul>
-            </div>
-          </div>
+          <!-- ============================================================== -->
+          <!-- 3. 10 PROFILES RANKING PERCENTAGES (JOEY YAP)                  -->
+          <!-- ============================================================== -->
+          ${tenProfilesSectionHtml}
 
-          <!-- Life Blueprint: Love & Career -->
-          <div class="personality-duo-grid" style="margin-top: 18px;">
-            <div class="personality-section-box love-box">
-              <div class="personality-section-header">
-                <i class="fa-solid fa-heart" style="color: #ec4899;"></i>
-                <h3>ความรัก & พาร์ทเนอร์เคมีคู่แท้ (Soul Chemistry)</h3>
-              </div>
-              <p class="blueprint-desc">${p.love}</p>
-              <div class="love-tip">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-                <span>เสน่ห์ธรรมชาติของคุณจะเปล่งประกายที่สุดเมื่อคุณมีความสุขและเป็นตัวของตัวเองอย่างเต็มร้อย</span>
-              </div>
-            </div>
+          <!-- ============================================================== -->
+          <!-- 4. CAT ARCHETYPE MAPPING (แม่หมอติ๊ดติ๊ด)                      -->
+          <!-- ============================================================== -->
+          ${catMappingSectionHtml}
 
-            <div class="personality-section-box career-box">
-              <div class="personality-section-header">
-                <i class="fa-solid fa-briefcase" style="color: #8b5cf6;"></i>
-                <h3>การงาน การเงิน & พื้นที่สร้างความสำเร็จ (Career & Wealth)</h3>
-              </div>
-              <p class="blueprint-desc"><strong>เส้นทางที่ส่งเสริมพลัง:</strong> ${p.career}</p>
-              <div class="colors-pill-wrap">
-                <span class="color-lead"><i class="fa-solid fa-palette"></i> สีมงคลเสริมออร่า:</span>
-                ${p.powerColors.map(c => `<span class="color-tag">${c}</span>`).join('')}
-              </div>
-            </div>
-          </div>
-
-          <!-- Healing Message from Mother Cat Therapist -->
-          <div class="personality-healing-card">
-            <div class="healing-avatar">
-              <i class="fa-solid fa-cat cat-icon"></i>
-            </div>
-            <div class="healing-content">
-              <h4>คำแนะนำฮีลใจจากแม่หมอติ๊ดติ๊ด 🐱💖</h4>
-              <p>${p.healingAdvice}</p>
-            </div>
-          </div>
-
-          <!-- Action Buttons Bar -->
+          <!-- ============================================================== -->
+          <!-- 5. ACTION TOOLBAR                                              -->
+          <!-- ============================================================== -->
           <div class="personality-actions-bar">
             <button type="button" class="p-btn-action primary" id="personalityCopyBtn">
               <i class="fa-solid fa-clipboard-check"></i> คัดลอกสรุปโปรไฟล์
@@ -813,6 +880,7 @@
         newJumpBtn.addEventListener('click', () => this.jumpToBazi());
       }
 
+      // Smooth scroll to results
       resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
