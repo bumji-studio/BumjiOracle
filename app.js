@@ -869,10 +869,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabTongShuBtn = document.getElementById('tabTongShuBtn');
   const tabQiMenBtn = document.getElementById('tabQiMenBtn');
   const tabBaziBtn = document.getElementById('tabBaziBtn');
+  const tabPersonalityBtn = document.getElementById('tabPersonalityBtn');
   const readingAppView = document.getElementById('readingAppView');
   const tongShuAppView = document.getElementById('tongShuAppView');
   const qiMenAppView = document.getElementById('qiMenAppView');
   const baziAppView = document.getElementById('baziAppView');
+  const personalityAppView = document.getElementById('personalityAppView');
 
   // Mobile Hamburger Menu Navigation Toggle
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -951,13 +953,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tabTongShuBtn) tabTongShuBtn.classList.toggle('active', mode === 'tongshu');
     if (tabQiMenBtn) tabQiMenBtn.classList.toggle('active', mode === 'qimen');
     if (tabBaziBtn) tabBaziBtn.classList.toggle('active', mode === 'bazi');
+    if (tabPersonalityBtn) tabPersonalityBtn.classList.toggle('active', mode === 'personality');
 
     // View containers visibility - strictly enforce 1 active view
     const views = [
       { el: readingAppView, modeKey: 'reading' },
       { el: tongShuAppView, modeKey: 'tongshu' },
       { el: qiMenAppView, modeKey: 'qimen' },
-      { el: baziAppView, modeKey: 'bazi' }
+      { el: baziAppView, modeKey: 'bazi' },
+      { el: personalityAppView, modeKey: 'personality' }
     ];
 
     views.forEach(v => {
@@ -988,7 +992,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mode === 'bazi' && window.BaziApp) {
       window.BaziApp.onTabShow();
     }
+    // Trigger Personality live update when activated
+    if (mode === 'personality' && window.PersonalityApp) {
+      window.PersonalityApp.onTabShow();
+    }
   }
+
+  // Expose setActiveAppMode globally for cross-tab navigation
+  window.setActiveAppMode = setActiveAppMode;
 
   if (tabReadingBtn) {
     tabReadingBtn.addEventListener('click', () => setActiveAppMode('reading'));
@@ -1001,6 +1012,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (tabBaziBtn) {
     tabBaziBtn.addEventListener('click', () => setActiveAppMode('bazi'));
+  }
+  if (tabPersonalityBtn) {
+    tabPersonalityBtn.addEventListener('click', () => setActiveAppMode('personality'));
   }
 
   // Aliases mapping for external direct links (e.g. ?tab=bazi or #bazi)
@@ -1019,7 +1033,12 @@ document.addEventListener('DOMContentLoaded', () => {
     'dunjia': 'qimen',
     'bazi': 'bazi',
     'fourpillars': 'bazi',
-    'destiny': 'bazi'
+    'destiny': 'bazi',
+    'personality': 'personality',
+    'mbti': 'personality',
+    'disc': 'personality',
+    'jiazi': 'personality',
+    'archetype': 'personality'
   };
 
   function parseTargetTabFromUrl() {

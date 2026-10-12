@@ -34,6 +34,7 @@
       #tongShuAppView.hidden,
       #qiMenAppView.hidden,
       #baziAppView.hidden,
+      #personalityAppView.hidden,
       .hidden {
         display: none !important;
       }
@@ -491,6 +492,9 @@
       <button class="nav-tab" id="tabBaziBtn">
         <i class="fa-solid fa-yin-yang"></i> ดูดวง Bazi (八字)
       </button>
+      <button class="nav-tab" id="tabPersonalityBtn">
+        <i class="fa-solid fa-fingerprint"></i> ถอดรหัสตัวตน 60 Jia Zi
+      </button>
     </div>
 
     <div class="header-actions">
@@ -675,8 +679,11 @@
             <div class="bazi-dm-card-info">
               <h3 id="baziDmTitle">Bumji • ดิถีธาตุ 丁 (เต็ง - ไฟหยิน)</h3>
               <p id="baziDmDesc">ดวงประทีป เปลวเทียน อ่อนโยนแต่ทรงพลัง รอบรู้ มีสติปัญญา</p>
-              <div style="margin-top: 8px;">
+              <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
                 <span id="baziDmStrengthBadge" class="bazi-badge badge-strong">ดิถีแข็งแรง (身強 - Strong Day Master)</span>
+                <button type="button" class="bazi-btn-personality-link" id="baziOpenPersonalityCardBtn" onclick="window.PersonalityApp && window.PersonalityApp.openFromBazi()" title="ดูโปรไฟล์ Eastern MBTI &amp; DISC ของดวงนี้">
+                  <i class="fa-solid fa-sparkles"></i> ถอดรหัสตัวตน (Eastern MBTI)
+                </button>
               </div>
             </div>
           </div>
@@ -1708,6 +1715,130 @@
     </div>
   </div>
 
+  <!-- VIEW 5: PERSONALITY & 60 JIA ZI ARCHETYPES (EASTERN MBTI / DISC) -->
+  <div id="personalityAppView" class="view-container hidden">
+    <div class="personality-app-container">
+      
+      <!-- HERO HEADER -->
+      <header class="personality-page-header">
+        <div class="personality-header-badge">
+          <i class="fa-solid fa-fingerprint"></i> Eastern MBTI &amp; DISC • 60 Jia Zi
+        </div>
+        <h1 class="personality-page-title">
+          ถอดรหัสตัวตน 60 Jia Zi <span class="gradient-text">(六十甲子)</span>
+        </h1>
+        <p class="personality-page-subtitle">
+          ค้นพบตัวตนแก่นแท้ สไตล์ DISC พลังจิตใต้สำนึก จุดแข็ง ซูเปอร์พาวเวอร์ เคมีความรัก และคำแนะนำฮีลใจจากแม่หมอติ๊ดติ๊ด
+        </p>
+      </header>
+
+      <!-- INPUT CALCULATOR BAR -->
+      <section class="personality-input-section">
+        <div class="personality-input-card">
+          <div class="personality-input-title">
+            <div class="p-title-left">
+              <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
+              <span>ระบุข้อมูลวันเกิดเพื่อถอดรหัสตัวตน</span>
+            </div>
+            <button type="button" class="btn-use-my-profile" id="personalityUseMyProfileBtn" title="ดึงข้อมูลวันเกิดจากโปรไฟล์สมาชิก">
+              <i class="fa-solid fa-user-check"></i> ใช้วันเกิดของฉัน
+            </button>
+          </div>
+
+          <form id="personalityForm" class="personality-form" onsubmit="event.preventDefault(); window.PersonalityApp && window.PersonalityApp.calculateFromInputs();">
+            <div class="p-form-grid">
+              <div class="p-field">
+                <label for="personalityName"><i class="fa-solid fa-user"></i> ชื่อ / ฉายา</label>
+                <input type="text" id="personalityName" placeholder="เช่น คุณส้ม หรือ ตัวฉัน" value="ฉัน">
+              </div>
+
+              <div class="p-field">
+                <label for="personalityBirthDate"><i class="fa-solid fa-calendar-day"></i> วันเดือนปีเกิด (ค.ศ.) *</label>
+                <input type="date" id="personalityBirthDate" required>
+              </div>
+
+              <div class="p-field time-field">
+                <label><i class="fa-solid fa-clock"></i> เวลาเกิด (ชั่วโมง:นาที)</label>
+                <div class="p-time-inputs">
+                  <select id="personalityBirthHour">
+                    <option value="0">00 น.</option>
+                    <option value="1">01 น.</option>
+                    <option value="2">02 น.</option>
+                    <option value="3">03 น.</option>
+                    <option value="4">04 น.</option>
+                    <option value="5">05 น.</option>
+                    <option value="6">06 น.</option>
+                    <option value="7">07 น.</option>
+                    <option value="8">08 น.</option>
+                    <option value="9">09 น.</option>
+                    <option value="10">10 น.</option>
+                    <option value="11">11 น.</option>
+                    <option value="12" selected>12 น. (เที่ยงวัน)</option>
+                    <option value="13">13 น.</option>
+                    <option value="14">14 น.</option>
+                    <option value="15">15 น.</option>
+                    <option value="16">16 น.</option>
+                    <option value="17">17 น.</option>
+                    <option value="18">18 น.</option>
+                    <option value="19">19 น.</option>
+                    <option value="20">20 น.</option>
+                    <option value="21">21 น.</option>
+                    <option value="22">22 น.</option>
+                    <option value="23">23 น.</option>
+                  </select>
+                  <span class="colon">:</span>
+                  <select id="personalityBirthMinute">
+                    <option value="0" selected>00 นาที</option>
+                    <option value="15">15 นาที</option>
+                    <option value="30">30 นาที</option>
+                    <option value="45">45 นาที</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="p-field">
+                <label for="personalityGender"><i class="fa-solid fa-venus-mars"></i> เพศสภาพ</label>
+                <select id="personalityGender">
+                  <option value="female" selected>หญิง (Female)</option>
+                  <option value="male">ชาย (Male)</option>
+                  <option value="other">ไม่ระบุ / อิสระ</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="p-form-actions">
+              <button type="submit" class="p-btn-calc" id="personalityCalcBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณรหัสตัวตน 60 Jia Zi
+              </button>
+            </div>
+          </form>
+
+          <!-- Direct Archetype Selector Dropdown -->
+          <div class="p-direct-selector">
+            <div class="p-direct-divider">
+              <span>หรือเลือกดู Archetype ที่สนใจโดยตรง</span>
+            </div>
+            <select id="personalityArchetypeSelect" class="p-select-archetype">
+              <option value="">-- กำลังโหลดรายชื่อทั้ง 60 เจี่ยจื่อ... --</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULT CONTAINER (Dynamic Profile Card) -->
+      <section id="personalityResultContainer" class="personality-result-section">
+        <div class="personality-empty-state">
+          <div class="empty-icon-wrap">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <h3>พร้อมค้นพบพลังแก่นแท้ของคุณแล้วหรือยัง?</h3>
+          <p>กรอกวันเกิดด้านบน หรือกดปุ่ม <strong>"ใช้วันเกิดของฉัน"</strong> เพื่อถอดรหัสตัวตน 60 Jia Zi x DISC ได้ทันที ✨</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
   <!-- MODAL: MANUAL CARD SELECTOR FOR PHYSICAL DECK -->
   <div class="modal-overlay hidden" id="cardSelectModal">
     <div class="modal-card">
@@ -1795,5 +1926,8 @@
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
   <script src="bazi.js?v=20261011_bazi_v17"></script>
+  <!-- Load 60 Jia Zi Personality Archetypes & Eastern MBTI -->
+  <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
+  <script src="personality.js?v=20261012_personality_v1"></script>
 </body>
 </html>
