@@ -11,7 +11,7 @@
   'use strict';
 
   const STORAGE_KEY = 'jiutian_arcana_user_session';
-  const LOCKED_TABS = ['qimen', 'bazi']; // Menus requiring membership
+  const LOCKED_TABS = ['tongshu', 'qimen', 'bazi']; // Menus requiring membership (TongShu, QiMen, BaZi)
 
   const AuthManager = {
     currentUser: null,
@@ -269,7 +269,11 @@
       const noticeBox = document.getElementById('authLockedNotice');
       if (noticeBox) {
         if (intendedTab && LOCKED_TABS.includes(intendedTab)) {
-          const tabNames = { qimen: 'ผังฉีเหมิน (Qi Men Dun Jia)', bazi: 'ดูดวงจีน (BaZi 八字)' };
+          const tabNames = {
+            tongshu: 'ปฏิทินฤกษ์ยาม TongShu (通書)',
+            qimen: 'ผังฉีเหมิน (Qi Men Dun Jia)',
+            bazi: 'ดูดวงจีน (BaZi 八字)'
+          };
           noticeBox.innerHTML = `
             <div class="auth-gate-alert">
               <i class="fa-solid fa-lock"></i>
@@ -393,7 +397,7 @@
 
       // 2. Update Nav Lock Badges
       LOCKED_TABS.forEach(tab => {
-        const btnId = tab === 'qimen' ? 'tabQiMenBtn' : tab === 'bazi' ? 'tabBaziBtn' : null;
+        const btnId = tab === 'tongshu' ? 'tabTongShuBtn' : tab === 'qimen' ? 'tabQiMenBtn' : tab === 'bazi' ? 'tabBaziBtn' : null;
         if (!btnId) return;
         const btn = document.getElementById(btnId);
         if (!btn) return;
