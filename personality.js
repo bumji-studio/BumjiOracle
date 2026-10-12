@@ -184,11 +184,11 @@
       if (document.getElementById('personalityBirthDate') && bDate) {
         document.getElementById('personalityBirthDate').value = bDate;
       }
-      if (document.getElementById('personalityBirthHour') && bHour) {
-        document.getElementById('personalityBirthHour').value = bHour;
+      if (document.getElementById('personalityBirthHour') && bHour !== undefined) {
+        document.getElementById('personalityBirthHour').value = String(parseInt(bHour, 10));
       }
-      if (document.getElementById('personalityBirthMinute') && bMin) {
-        document.getElementById('personalityBirthMinute').value = bMin;
+      if (document.getElementById('personalityBirthMinute') && bMin !== undefined) {
+        document.getElementById('personalityBirthMinute').value = String(parseInt(bMin, 10));
       }
       if (document.getElementById('personalityGender') && bGender) {
         document.getElementById('personalityGender').value = bGender;
