@@ -164,19 +164,29 @@
   const CMS_7STAR_BY_HOUR = {
     0:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
     1:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
-    2:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
-    3:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
-    4:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    2:  { 1: 6, 2: 5, 3: 1, 4: 2, 6: 7, 7: 4, 8: 0, 9: 3 },
+    3:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
+    4:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
     5:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
     6:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
-    7:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
+    7:  { 1: 6, 2: 5, 3: 1, 4: 2, 6: 7, 7: 4, 8: 0, 9: 3 },
     8:  { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
     9:  { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 },
-    10: { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 },
-    11: { 1: 1, 2: 0, 3: 4, 4: 5, 6: 2, 7: 7, 8: 3, 9: 6 }
+    10: { 1: 6, 2: 5, 3: 1, 4: 2, 6: 7, 7: 4, 8: 0, 9: 3 },
+    11: { 1: 4, 2: 3, 3: 5, 4: 6, 6: 7, 7: 0, 8: 1, 9: 2 }
   };
 
   const CMS_CONSTEL_BY_HOUR = {
+    7: {
+      1: '8 Net 月 W',
+      2: '9 Basket 水 E',
+      3: '1 Ox 金 N',
+      4: '2 Heart 月 E',
+      6: '4 Stomach 土 W',
+      7: '5 Star 日 S',
+      8: '6 Wing 火 S',
+      9: '7 Horn 木 E'
+    },
     6: {
       1: '8 Pleiades 日 W',
       2: '9 Tail 火 E',
@@ -200,6 +210,16 @@
   };
 
   const CMS_HEXAGRAMS_BY_HOUR = {
+    7: {
+      1: { stem: '壬', gua1: '☵ 4', branch: '卯', gua2: '☷ 4', name: '45-Gathering' },
+      2: { stem: '庚', gua1: '☵ 2', branch: '子', gua2: '☷ 9', name: '42-Increasing' },
+      3: { stem: '己', gua1: '☵ 7', branch: '巳', gua2: '☷ 3', name: '5-Waiting' },
+      4: { stem: '庚', gua1: '☵ 6', branch: '申', gua2: '☷ 2', name: '4-Striking' },
+      6: { stem: '辛', gua1: '☵ 1', branch: '丑', gua2: '☷ 3', name: '36-Dimming Light' },
+      7: { stem: '戊', gua1: '☵ 3', branch: '午', gua2: '☷ 4', name: '50-The Cauldron' },
+      8: { stem: '戊', gua1: '☵ 9', branch: '辰', gua2: '☷ 6', name: '10-Tread' },
+      9: { stem: '辛', gua1: '☵ 8', branch: '酉', gua2: '☷ 3', name: '62-Lesser Exceeding' }
+    },
     6: {
       1: { stem: '庚', gua1: '☵ 8', branch: '午', gua2: '☷ 9', name: '32-Consistency' },
       2: { stem: '辛', gua1: '☵ 9', branch: '未', gua2: '☷ 3', name: '6-Litigation' },
@@ -424,8 +444,14 @@
     if (!isYangDun && eStem === '丁' && (isEnvoy || doorKey === '伤')) {
       f.push({ name: 'Yu Nu', color: 'red' });
     }
-    if (pNum === 4) {
+    if (hStem === '壬' && pNum === 4) {
+      f.push({ name: 'Ren Xing', color: 'red' });
+    } else if (pNum === 4 && !['壬'].includes(hStem)) {
       f.push({ name: 'Yue Wang', color: 'red' });
+    }
+    if (hStem === '丁' && pNum === 8 && doorKey === '惊') {
+      f.push({ name: 'Xing Shi', color: 'red' });
+      f.push({ name: 'Xing Wei', color: 'red' });
     }
 
     // 2. Inauspicious & Standard Stem Formations (Dark font)
@@ -800,7 +826,7 @@
           year: { stem: STEMS_INFO[yearStem], branch: BRANCHES_INFO[yearBranch] }
         },
         meta: {
-          chartId: (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 12 && hIdx === 6) ? 667 : ((isYangDun ? 100 : 600) + juNum * 20 + hIdx),
+          chartId: (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 12) ? (667 + (hIdx - 6)) : ((isYangDun ? 100 : 600) + juNum * 20 + hIdx),
           structure: structureName,
           leadStem: `${leadStemChar} ${STEMS_INFO[leadStemChar].py}`,
           envoy: `${DOORS_INFO[envoyDoorKey].en} Door`,
