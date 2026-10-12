@@ -16,14 +16,15 @@
 (function () {
   'use strict';
 
-  // ค่าคอนฟิกเริ่มต้น (สามารถแก้ไขที่นี่ หรือวางในหน้าต่างตั้งค่าของเว็บได้)
+  // ค่าคอนฟิกจริงจาก Firebase Project: maemortidtid-a5437
   const DEFAULT_CONFIG = {
-    apiKey: "AIzaSyYOUR_ACTUAL_API_KEY_HERE",
-    authDomain: "your-project-id.firebaseapp.com",
-    projectId: "your-project-id",
-    storageBucket: "your-project-id.appspot.com",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abcdef1234567890"
+    apiKey: "AIzaSyDWJDnHl1VOL6oh2wbo159Cm_LhgNGc4kk",
+    authDomain: "maemortidtid-a5437.firebaseapp.com",
+    projectId: "maemortidtid-a5437",
+    storageBucket: "maemortidtid-a5437.firebasestorage.app",
+    messagingSenderId: "952971706899",
+    appId: "1:952971706899:web:e7c470a878643ceea6b5e6",
+    measurementId: "G-37KGY925HC"
   };
 
   // ตรวจสอบค่าที่บันทึกไว้ในเบราว์เซอร์
