@@ -881,8 +881,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Responsive Viewport & Device Detector
   function updateResponsiveViewMode() {
-    const isMobile = window.innerWidth <= 768 || 
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isMobile = window.innerWidth <= 880 || 
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches && window.innerWidth <= 1024);
     
     document.documentElement.classList.toggle('is-mobile', isMobile);
     document.documentElement.classList.toggle('is-desktop', !isMobile);
