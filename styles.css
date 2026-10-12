@@ -10479,4 +10479,477 @@ body.is-mobile .synthesis-box-body {
   }
 }
 
+/* ==========================================================================
+   THE MAEMOR TIDTID CAT ARCHETYPE & 5 STRUCTURES STYLES
+   ========================================================================== */
+
+.cat-archetype-card {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.88), rgba(67, 24, 114, 0.75), rgba(46, 16, 101, 0.85));
+  border: 1px solid rgba(236, 72, 153, 0.38);
+  border-radius: 22px;
+  padding: 24px 26px;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.4), 0 0 24px rgba(236, 72, 153, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cat-card-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.cat-ip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: #f472b6;
+  background: rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(236, 72, 153, 0.35);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.cat-guild-pill {
+  font-family: var(--font-thai-header);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 4px 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cat-hero-body {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.cat-avatar-emblem {
+  width: 90px;
+  height: 90px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.3));
+  border: 2px solid #ec4899;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+}
+
+.cat-big-emoji {
+  font-size: 44px;
+  line-height: 1;
+}
+
+.cat-breed-tag {
+  font-family: var(--font-thai-body);
+  font-size: 10px;
+  color: #fbcfe8;
+  font-weight: 600;
+  margin-top: 2px;
+  text-align: center;
+}
+
+.cat-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 260px;
+}
+
+.cat-role-tag {
+  font-family: var(--font-thai-body);
+  font-size: 12.5px;
+  color: #c084fc;
+  font-weight: 600;
+}
+
+.cat-title-text {
+  font-family: var(--font-thai-header);
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.cat-sub-title {
+  font-family: var(--font-thai-body);
+  font-size: 13.5px;
+  color: #e2e8f0;
+}
+
+.cat-tagline-quote {
+  font-family: var(--font-thai-body);
+  font-size: 13.5px;
+  color: #fbcfe8;
+  font-style: italic;
+  margin: 2px 0 6px 0;
+}
+
+.companion-cat-badge {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-family: var(--font-thai-body);
+  font-size: 12px;
+  color: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+}
+
+/* 5 Structures Guild Gauges */
+.cat-structures-box {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px 18px;
+}
+
+.cat-structures-title {
+  font-family: var(--font-thai-header);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.guild-gauges-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.guild-gauge-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.g-gauge-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-thai-body);
+  font-size: 11.5px;
+  color: #cbd5e1;
+}
+
+.g-gauge-head strong {
+  font-family: 'Outfit', sans-serif;
+  color: #fff;
+  font-size: 12.5px;
+}
+
+.g-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.g-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+/* Dual Modes */
+.cat-dual-modes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.cat-mode-card {
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cat-mode-card.mode-light {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+}
+
+.cat-mode-card.mode-recharge {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+}
+
+.cat-mode-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cat-mode-head h4 {
+  font-family: var(--font-thai-header);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.cat-mode-card p {
+  font-family: var(--font-thai-body);
+  font-size: 12.5px;
+  color: #e2e8f0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Cat Chemistry */
+.cat-chemistry-box {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cat-chem-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--font-thai-body);
+  font-size: 12.5px;
+  color: #cbd5e1;
+}
+
+.cat-chem-item strong {
+  color: #fbcfe8;
+}
+
+.story-btn {
+  background: linear-gradient(135deg, #a855f7, #6366f1);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+}
+
+.story-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.5);
+}
+
+/* Story Modal 9:16 Poster Card */
+.story-modal-card {
+  max-width: 440px;
+  background: rgba(15, 23, 42, 0.98);
+}
+
+.story-preview-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.story-poster-card {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(160deg, #1e1b4b 0%, #2e1065 40%, #581c87 75%, #831843 100%);
+  border: 2px solid rgba(236, 72, 153, 0.5);
+  border-radius: 20px;
+  padding: 22px 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(236, 72, 153, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: #fff;
+  text-align: center;
+}
+
+.story-header-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.story-brand-badge {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #f472b6;
+}
+
+.story-card-type {
+  font-family: var(--font-thai-header);
+  font-size: 10px;
+  color: #cbd5e1;
+}
+
+.story-cat-avatar-box {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.story-cat-emoji {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.story-cat-breed {
+  font-family: var(--font-thai-header);
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.story-cat-guild {
+  font-family: var(--font-thai-body);
+  font-size: 11px;
+  color: #fbcfe8;
+}
+
+.story-seal-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.story-seal {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 900;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: #4c1d95;
+  border: 1px solid #ec4899;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fbcfe8;
+  flex-shrink: 0;
+}
+
+.story-title-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.story-archetype-name {
+  font-family: var(--font-thai-header);
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.story-meta-tags {
+  font-family: var(--font-thai-body);
+  font-size: 11px;
+  color: #cbd5e1;
+  display: flex;
+  gap: 4px;
+}
+
+.story-tagline {
+  font-family: var(--font-thai-body);
+  font-size: 12px;
+  color: #fbcfe8;
+  font-style: italic;
+  padding: 0 8px;
+}
+
+.story-powers-box {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.story-box-title {
+  font-family: var(--font-thai-header);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #10b981;
+  margin-bottom: 4px;
+}
+
+.story-powers-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.story-powers-box li {
+  font-family: var(--font-thai-body);
+  font-size: 11.5px;
+  color: #e2e8f0;
+  line-height: 1.35;
+}
+
+.story-cat-quote {
+  font-family: var(--font-thai-body);
+  font-size: 11.5px;
+  color: #fde047;
+  line-height: 1.4;
+  padding: 0 4px;
+}
+
+.story-footer {
+  font-family: var(--font-thai-body);
+  font-size: 10.5px;
+  color: #94a3b8;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  padding-top: 8px;
+}
+
+.story-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (max-width: 860px) {
+  .guild-gauges-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cat-dual-modes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 
