@@ -3,7 +3,7 @@ import sys
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-reader = pypdf.PdfReader(r"c:\BumjiJob\JiuTianArcana\คู่มือไพ่เทพจีน v4.pdf")
+reader = pypdf.PdfReader(r"c:\BumjiJob\MaeMorTidTid\คู่มือไพ่เทพจีน v4.pdf")
 print(f"Total pypdf pages: {len(reader.pages)}")
 
 for i in range(4, 9):

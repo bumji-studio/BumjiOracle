@@ -5,7 +5,7 @@ import sys
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-pdf_path = r"c:\BumjiJob\JiuTianArcana\คู่มือไพ่เทพจีน v4.pdf"
+pdf_path = r"c:\BumjiJob\MaeMorTidTid\คู่มือไพ่เทพจีน v4.pdf"
 doc = pymupdf.open(pdf_path)
 
 def fix_thai_tone_marks(text):
@@ -242,7 +242,7 @@ if len(cards) == 94:
 
 js_content = f"// Authentic cards database extracted from คู่มือไพ่เทพจีน v4.pdf (96 cards)\nconst defaultCards = {json.dumps(cards, ensure_ascii=False, indent=2)};\n\nwindow.DEFAULT_CARDS = defaultCards;\nconsole.log(`[SUCCESS] Loaded ${{window.DEFAULT_CARDS.length}} authentic cards into window.DEFAULT_CARDS`);\n"
 
-with open(r"c:\BumjiJob\JiuTianArcana\data\default-cards.js", "w", encoding="utf-8") as f:
+with open(r"c:\BumjiJob\MaeMorTidTid\data\default-cards.js", "w", encoding="utf-8") as f:
     f.write(js_content)
 
 print(f"[SUCCESS] Wrote {len(cards)} authentic cards with clean Thai text to data/default-cards.js")

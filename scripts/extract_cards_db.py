@@ -5,7 +5,7 @@ import re
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-reader = pypdf.PdfReader(r"c:\BumjiJob\JiuTianArcana\คู่มือไพ่เทพจีน v4.pdf")
+reader = pypdf.PdfReader(r"c:\BumjiJob\MaeMorTidTid\คู่มือไพ่เทพจีน v4.pdf")
 
 cards = []
 

@@ -1,7 +1,7 @@
 {
-  "name": "jiutian-guidebook-generator",
+  "name": "maemortidtid",
   "version": "1.0.0",
-  "description": "Generator for a 94-page A4 card guidebook with copy-protection",
+  "description": "MaeMorTidTid - ระบบดูดวงไพ่ออนไลน์",
   "main": "scripts/build-pdf.js",
   "type": "module",
   "scripts": {

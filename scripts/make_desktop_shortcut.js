@@ -12,9 +12,9 @@ if (!fs.existsSync(desktopDir)) {
 }
 
 // 1. Create .url Internet Shortcut
-const urlShortcutPath = path.join(desktopDir, 'Destiny Arcana - ดูดวงไพ่ออนไลน์.url');
+const urlShortcutPath = path.join(desktopDir, 'MaeMorTidTid - ดูดวงไพ่ออนไลน์.url');
 const urlContent = `[InternetShortcut]
-URL=file:///C:/BumjiJob/JiuTianArcana/index.html
+URL=file:///C:/BumjiJob/MaeMorTidTid/index.html
 IconIndex=237
 IconFile=%SystemRoot%\\System32\\shell32.dll
 `;
@@ -24,13 +24,13 @@ console.log('[SUCCESS] Created URL shortcut at:', urlShortcutPath);
 
 // 2. Create .lnk Windows Shortcut via WScript.Shell
 try {
-  const lnkPath = path.join(desktopDir, 'Destiny Arcana - ดูดวงไพ่ออนไลน์.lnk');
+  const lnkPath = path.join(desktopDir, 'MaeMorTidTid - ดูดวงไพ่ออนไลน์.lnk');
   const psScript = `
     $wscript = New-Object -ComObject WScript.Shell
     $shortcut = $wscript.CreateShortcut("${lnkPath.replace(/\\/g, '\\\\')}")
-    $shortcut.TargetPath = "c:\\\\BumjiJob\\\\JiuTianArcana\\\\index.html"
-    $shortcut.WorkingDirectory = "c:\\\\BumjiJob\\\\JiuTianArcana"
-    $shortcut.Description = "Destiny Arcana Tarot"
+    $shortcut.TargetPath = "c:\\\\BumjiJob\\\\MaeMorTidTid\\\\index.html"
+    $shortcut.WorkingDirectory = "c:\\\\BumjiJob\\\\MaeMorTidTid"
+    $shortcut.Description = "MaeMorTidTid ดูดวงไพ่ออนไลน์"
     $shortcut.Save()
   `;
   const base64 = Buffer.from(psScript, 'utf16le').toString('base64');

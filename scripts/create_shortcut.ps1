@@ -1,4 +1,4 @@
-﻿$code = @"
+$code = @"
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -45,12 +45,12 @@ public class ShortcutCreator {
 Add-Type -TypeDefinition $code -ErrorAction SilentlyContinue
 
 $desktop = [Environment]::GetFolderPath([Environment+SpecialFolder]::Desktop)
-$targetHtml = "c:\BumjiJob\JiuTianArcana\index.html"
-$workingDir = "c:\BumjiJob\JiuTianArcana"
-$shortcutName = "Destiny Arcana - ดูดวงไพ่ออนไลน์.lnk"
+$targetHtml = "c:\BumjiJob\MaeMorTidTid\index.html"
+$workingDir = "c:\BumjiJob\MaeMorTidTid"
+$shortcutName = "MaeMorTidTid - ดูดวงไพ่ออนไลน์.lnk"
 $shortcutPath = [System.IO.Path]::Combine($desktop, $shortcutName)
 
-[ShortcutCreator]::Create($shortcutPath, $targetHtml, $workingDir, "Destiny Arcana - ระบบดูดวงด้วยไพ่ออนไลน์")
+[ShortcutCreator]::Create($shortcutPath, $targetHtml, $workingDir, "MaeMorTidTid - ระบบดูดวงด้วยไพ่ออนไลน์")
 
 if (Test-Path $shortcutPath) {
     Write-Host "[SUCCESS] Shortcut created at: $shortcutPath"

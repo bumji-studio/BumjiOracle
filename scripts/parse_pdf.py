@@ -5,8 +5,8 @@ import os
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-os.makedirs(r"c:\BumjiJob\JiuTianArcana\scratch", exist_ok=True)
-pdf_path = r"c:\BumjiJob\JiuTianArcana\คู่มือไพ่เทพจีน v4.pdf"
+os.makedirs(r"c:\BumjiJob\MaeMorTidTid\scratch", exist_ok=True)
+pdf_path = r"c:\BumjiJob\MaeMorTidTid\คู่มือไพ่เทพจีน v4.pdf"
 doc = pymupdf.open(pdf_path)
 
 cards_data = []
@@ -24,7 +24,7 @@ for page_idx in range(4, 98):
         'full_text': page_text
     })
 
-output_file = r"c:\BumjiJob\JiuTianArcana\scratch\parsed_raw_pdf.json"
+output_file = r"c:\BumjiJob\MaeMorTidTid\scratch\parsed_raw_pdf.json"
 with open(output_file, "w", encoding="utf-8") as f:
     json.dump(cards_data, f, ensure_ascii=False, indent=2)
 
