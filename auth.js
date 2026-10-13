@@ -220,23 +220,24 @@
       // Demo Simulation Fallback (When Firebase config is not yet plugged in)
       this.showToast('กำลังทดสอบล็อกอิน Google (โหมดจำลอง)...', 'info');
       setTimeout(() => {
+        const existing = self.getStoredAccounts().find(a => a.email === 'cat.destiny@gmail.com');
         const mockGoogleUser = {
-          id: 'goog_' + Date.now(),
-          uid: 'goog_' + Date.now(),
+          id: existing?.id || 'goog_' + Date.now(),
+          uid: existing?.uid || 'goog_' + Date.now(),
           email: 'cat.destiny@gmail.com',
-          name: 'คุณผู้ใช้ (Google Member)',
-          firstName: 'ผู้ใช้กูเกิล',
-          lastName: 'สายมู',
+          name: existing?.name || 'คุณผู้ใช้ (Google Member)',
+          firstName: existing?.firstName || 'ผู้ใช้กูเกิล',
+          lastName: existing?.lastName || 'สายมู',
           photoURL: 'https://lh3.googleusercontent.com/a/default-user=s96-c',
           provider: 'demo-google',
-          birthDate: '1996-08-15',
-          birthTime: '10:30',
-          gender: 'female',
+          birthDate: existing?.birthDate || '',
+          birthTime: existing?.birthTime || '',
+          gender: existing?.gender || 'female',
           isMember: true,
-          createdAt: new Date().toISOString()
+          createdAt: existing?.createdAt || new Date().toISOString()
         };
         self.saveSession(mockGoogleUser);
-        self.showToast('✨ เข้าสู่ระบบด้วย Google สำเร็จแล้ว (โหมดจำลอง)!', 'success');
+        self.showToast('✨ เข้าสู่ระบบด้วย Google สำเร็จแล้ว!', 'success');
         self.onAuthSuccess(mockGoogleUser);
       }, 600);
     },
@@ -419,27 +420,46 @@
       return true;
     },
 
-    // Update birth info to Firestore
-    updateBirthProfile: async function (birthDate, birthTime, gender) {
+    // Update birth info to Firestore & Local Storage
+    updateBirthProfile: async function (birthDate, birthTime, gender, name = null) {
       if (!this.currentUser) return;
       this.currentUser.birthDate = birthDate;
       this.currentUser.birthTime = birthTime;
       this.currentUser.gender = gender;
+      if (name) {
+        this.currentUser.name = name;
+        this.currentUser.firstName = name.split(' ')[0] || name;
+      }
       this.saveSession(this.currentUser);
+
+      // Also persist to stored accounts list if in local demo mode
+      try {
+        const accounts = this.getStoredAccounts();
+        const idx = accounts.findIndex(a => a.email === this.currentUser.email || a.id === this.currentUser.id);
+        if (idx >= 0) {
+          accounts[idx] = { ...accounts[idx], ...this.currentUser };
+        } else {
+          accounts.push(this.currentUser);
+        }
+        localStorage.setItem('jiutian_arcana_accounts', JSON.stringify(accounts));
+      } catch (err) {}
 
       if (this.isFirebaseReady && firebase.firestore && this.currentUser.uid) {
         try {
-          await firebase.firestore().collection('users').doc(this.currentUser.uid).update({
+          const updateData = {
             birthDate: birthDate,
             birthTime: birthTime,
             gender: gender,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
+          };
+          if (name) updateData.name = name;
+          await firebase.firestore().collection('users').doc(this.currentUser.uid).update(updateData);
           this.showToast('บันทึกข้อมูลดวงชะตาขึ้น Cloud เรียบร้อย', 'success');
         } catch (e) {
           console.warn('Update birth profile cloud err:', e);
         }
       }
+      this.autoFillHoroscopes(this.currentUser);
     },
 
     getStoredAccounts: function () {
@@ -472,8 +492,16 @@
     },
 
     onAuthSuccess: function (user) {
-      this.closeModal();
       this.autoFillHoroscopes(user);
+
+      // If user does not have birthDate configured yet (fresh Google login), keep modal on Profile tab
+      if (!user.birthDate) {
+        this.openModal('profile');
+        this.showToast('✨ ยินดีต้อนรับ! กรุณาระบุวันเดือนปีเกิดเพื่อเริ่มคำนวณดวงชะตาเฉพาะบุคคล', 'info');
+        return;
+      }
+
+      this.closeModal();
 
       // Seamless redirect to user's intended menu
       if (this.pendingTabRedirect && typeof window.setActiveAppMode === 'function') {
@@ -486,7 +514,7 @@
       }
     },
 
-    // Auto-fill user's birth data into BaZi and QiMen
+    // Auto-fill user's birth data into BaZi, QiMen, and Personality
     autoFillHoroscopes: function (user) {
       if (!user) return;
 
@@ -513,6 +541,11 @@
           const hIdx = Math.floor((h + 1) % 24 / 2);
           qmHour.value = String(hIdx);
         }
+      }
+
+      // 3. Fill Personality Form
+      if (window.PersonalityApp && typeof window.PersonalityApp.fillFromCurrentUser === 'function') {
+        window.PersonalityApp.fillFromCurrentUser(false);
       }
     },
 
@@ -581,6 +614,7 @@
       }
 
       const isLiveCloud = this.isFirebaseReady && u.provider !== 'demo' && u.provider !== 'demo-email';
+      const hasBirthDate = !!(u.birthDate && u.birthDate.trim());
 
       container.innerHTML = `
         <div class="auth-user-card">
@@ -596,12 +630,62 @@
               ${isLiveCloud ? 'เชื่อมต่อ Firebase Cloud จริง' : 'โหมดบันทึกในเครื่อง (Local)'}
             </div>
             <div class="auth-birth-summary">
-              <div class="pill"><i class="fa-solid fa-cake-candles"></i> วันเกิด: <strong>${u.birthDate || 'ไม่ระบุ'}</strong></div>
-              <div class="pill"><i class="fa-solid fa-clock"></i> เวลาเกิด: <strong>${u.birthTime || 'ไม่ระบุ'}</strong></div>
+              <div class="pill"><i class="fa-solid fa-cake-candles"></i> วันเกิด: <strong>${u.birthDate || 'ยังไม่ได้ระบุ'}</strong></div>
+              <div class="pill"><i class="fa-solid fa-clock"></i> เวลาเกิด: <strong>${u.birthTime || 'ยังไม่ได้ระบุ'}</strong></div>
               <div class="pill"><i class="fa-solid fa-venus-mars"></i> เพศ: <strong>${u.gender === 'male' ? 'ชาย' : 'หญิง'}</strong></div>
             </div>
           </div>
         </div>
+
+        ${!hasBirthDate ? `
+          <div class="auth-birth-missing-alert">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <div>
+              <strong>ยินดีต้อนรับคุณ ${u.firstName || u.name || 'สมาชิก'}!</strong>
+              <p>คุณยังไม่ได้ระบุวันเกิด กรุณากรอกวันเดือนปีเกิดและเวลาเกิดด้านล่างนี้ เพื่อปลดล็อกผังดวง BaZi, ฉีเหมิน และถอดรหัสตัวตน 60 Jia Zi อัตโนมัติค่ะ ✨</p>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Edit Profile & Birth Chart Form -->
+        <div class="auth-edit-profile-card">
+          <div class="auth-edit-profile-header">
+            <h4><i class="fa-solid fa-user-pen"></i> แก้ไขข้อมูลส่วนตัว &amp; วันเดือนปีเกิด</h4>
+            <span class="auth-badge-subtle">บันทึกอัตโนมัติ</span>
+          </div>
+
+          <form id="authEditProfileForm" class="auth-form auth-edit-form">
+            <div class="auth-field">
+              <label for="editProfileName"><i class="fa-solid fa-user"></i> ชื่อ / ฉายา:</label>
+              <input type="text" id="editProfileName" value="${u.name || ''}" placeholder="ระบุชื่อหรือฉายาของคุณ" required>
+            </div>
+
+            <div class="auth-grid-2">
+              <div class="auth-field">
+                <label for="editProfileBirthDate"><i class="fa-solid fa-calendar-day"></i> วันเดือนปีเกิด (ค.ศ.): *</label>
+                <input type="date" id="editProfileBirthDate" value="${u.birthDate || ''}" required>
+              </div>
+
+              <div class="auth-field">
+                <label for="editProfileBirthTime"><i class="fa-solid fa-clock"></i> เวลาเกิด (น.):</label>
+                <input type="time" id="editProfileBirthTime" value="${u.birthTime || '12:00'}">
+              </div>
+            </div>
+
+            <div class="auth-field">
+              <label for="editProfileGender"><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
+              <select id="editProfileGender">
+                <option value="female" ${u.gender === 'female' ? 'selected' : ''}>หญิง (Female)</option>
+                <option value="male" ${u.gender === 'male' ? 'selected' : ''}>ชาย (Male)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="auth-btn-save-profile" id="btnSaveProfile">
+              <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลวันเกิด &amp; อัปเดตผังดวง
+            </button>
+          </form>
+        </div>
+
         <div class="auth-profile-actions">
           <button class="auth-btn-sync" id="btnSyncProfileCharts">
             <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังดวง BaZi และ Qi Men ของฉันทันที
@@ -612,10 +696,58 @@
         </div>
       `;
 
+      // Event listener for edit profile form
+      const editForm = document.getElementById('authEditProfileForm');
+      if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const newName = (document.getElementById('editProfileName')?.value || '').trim();
+          const newBirthDate = document.getElementById('editProfileBirthDate')?.value || '';
+          const newBirthTime = document.getElementById('editProfileBirthTime')?.value || '';
+          const newGender = document.getElementById('editProfileGender')?.value || 'female';
+
+          if (!newBirthDate) {
+            this.showToast('กรุณาระบุวันเดือนปีเกิด', 'warning');
+            return;
+          }
+
+          const btnSave = document.getElementById('btnSaveProfile');
+          if (btnSave) {
+            btnSave.disabled = true;
+            btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...';
+          }
+
+          try {
+            await this.updateBirthProfile(newBirthDate, newBirthTime, newGender, newName);
+            this.showToast('✨ บันทึกข้อมูลวันเกิดและผูกดวงชะตาเรียบร้อยแล้วค่ะ!', 'success');
+            this.renderProfileCard();
+
+            // If user came with intended redirect, fulfill it
+            if (this.pendingTabRedirect && typeof window.setActiveAppMode === 'function') {
+              const target = this.pendingTabRedirect;
+              this.pendingTabRedirect = null;
+              setTimeout(() => {
+                this.closeModal();
+                window.setActiveAppMode(target);
+                this.showToast(`✨ ปลดล็อกเมนู ${target.toUpperCase()} เรียบร้อยแล้ว`, 'success');
+              }, 400);
+            }
+          } catch (err) {
+            console.error('Error saving profile:', err);
+            this.showToast('บันทึกไม่สำเร็จ: ' + err.message, 'error');
+          } finally {
+            if (btnSave) {
+              btnSave.disabled = false;
+              btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลวันเกิด &amp; อัปเดตผังดวง';
+            }
+          }
+        });
+      }
+
       const btnSync = document.getElementById('btnSyncProfileCharts');
       if (btnSync) {
         btnSync.addEventListener('click', () => {
-          this.autoFillHoroscopes(u);
+          this.autoFillHoroscopes(this.currentUser);
           this.closeModal();
           this.showToast('ซิงค์ข้อมูลดวงชะตาเข้าสู่ BaZi และ Qi Men เรียบร้อยแล้วค่ะ', 'success');
           if (typeof window.setActiveAppMode === 'function') {
