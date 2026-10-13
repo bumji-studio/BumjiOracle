@@ -11857,8 +11857,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-family: var(--font-thai-body);
   font-size: 13.5px;
   color: #e2e8f0;
-  line-height: 1.6;
+  line-height: 1.7;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  white-space: pre-wrap;
+}
+
+.c-narrative-row {
+  line-height: 1.7;
+  word-break: break-word;
 }
 
 .c-narrative-text strong {

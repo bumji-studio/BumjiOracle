@@ -570,7 +570,23 @@
 
         compositeTitle = compositeTitle.replace(/\s+/g, ' ').trim();
 
-        const compositeNarrative = `จิตวิญญาณหลักคือ **${t1.breedShort}** (${top1.archetype.split(' (')[0]} ${top1.percentage}%) ผู้${t1.adjective} ผสานพลังหนุนจาก **${top2.archetype.split(' (')[0]}** (${top2.percentage}%) ${t2.secondaryPhrase} พร้อมขับเคลื่อนด้วย **${top3.archetype.split(' (')[0]}** (${top3.percentage}%) ${t3.tertiaryPhrase}`;
+        const top1Name = top1.archetype.split(' (')[0];
+        const top2Name = top2.archetype.split(' (')[0];
+        const top3Name = top3.archetype.split(' (')[0];
+
+        let desc1 = (t1.adjective || '').trim();
+        if (desc1 && !desc1.startsWith('ผู้') && !desc1.startsWith('มี') && !desc1.startsWith('ที่')) {
+          desc1 = 'ผู้' + desc1;
+        }
+
+        let desc2 = (t2.secondaryPhrase || top2.title || '').replace(/^ที่มี\s*/, 'มี').replace(/^ที่\s*/, '').trim();
+        let desc3 = (t3.tertiaryPhrase || top3.title || '').replace(/^ที่มี\s*/, 'มี').replace(/^ที่\s*/, '').trim();
+
+        const line1 = `จิตวิญญาณหลัก :  ${top1Name} (${top1.percentage}%) ${desc1}`;
+        const line2 = `จิตวิญญาณสนับสนุน : ${top2Name} (${top2.percentage}%) ${desc2}`;
+        const line3 = `จิตวิญญาณแฝง : ${top3Name}  (${top3.percentage}%) ${desc3}`;
+
+        const compositeNarrative = `${line1}\n${line2}\n${line3}`;
 
         return {
           breedShort: t1.breedShort,

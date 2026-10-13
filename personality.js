@@ -759,7 +759,9 @@
                       <i class="fa-solid fa-wand-magic-sparkles" style="color: #f472b6;"></i>
                       <span>เอกลักษณ์ย่อยตาม Profile หลัก-รอง:</span>
                     </div>
-                    <p class="c-narrative-text">${composite.compositeNarrative}</p>
+                    <div class="c-narrative-text">
+                      ${composite.compositeNarrative.split('\n').map(line => `<div class="c-narrative-row">${line}</div>`).join('')}
+                    </div>
                   </div>
                 </div>
               </div>
