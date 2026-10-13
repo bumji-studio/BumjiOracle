@@ -47,10 +47,10 @@ Add-Type -TypeDefinition $code -ErrorAction SilentlyContinue
 $desktop = [Environment]::GetFolderPath([Environment+SpecialFolder]::Desktop)
 $targetHtml = "c:\BumjiJob\MaeMorTidTid\index.html"
 $workingDir = "c:\BumjiJob\MaeMorTidTid"
-$shortcutName = "MaeMorTidTid - ดูดวงไพ่ออนไลน์.lnk"
+$shortcutName = "MaeMorTidTid.lnk"
 $shortcutPath = [System.IO.Path]::Combine($desktop, $shortcutName)
 
-[ShortcutCreator]::Create($shortcutPath, $targetHtml, $workingDir, "MaeMorTidTid - ระบบดูดวงด้วยไพ่ออนไลน์")
+[ShortcutCreator]::Create($shortcutPath, $targetHtml, $workingDir, "MaeMorTidTid - Destiny Oracle")
 
 if (Test-Path $shortcutPath) {
     Write-Host "[SUCCESS] Shortcut created at: $shortcutPath"

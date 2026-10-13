@@ -24,13 +24,13 @@ console.log('[SUCCESS] Created URL shortcut at:', urlShortcutPath);
 
 // 2. Create .lnk Windows Shortcut via WScript.Shell
 try {
-  const lnkPath = path.join(desktopDir, 'MaeMorTidTid - ดูดวงไพ่ออนไลน์.lnk');
+  const lnkPath = path.join(desktopDir, 'MaeMorTidTid.lnk');
   const psScript = `
     $wscript = New-Object -ComObject WScript.Shell
     $shortcut = $wscript.CreateShortcut("${lnkPath.replace(/\\/g, '\\\\')}")
     $shortcut.TargetPath = "c:\\\\BumjiJob\\\\MaeMorTidTid\\\\index.html"
     $shortcut.WorkingDirectory = "c:\\\\BumjiJob\\\\MaeMorTidTid"
-    $shortcut.Description = "MaeMorTidTid ดูดวงไพ่ออนไลน์"
+    $shortcut.Description = "MaeMorTidTid Tarot"
     $shortcut.Save()
   `;
   const base64 = Buffer.from(psScript, 'utf16le').toString('base64');
