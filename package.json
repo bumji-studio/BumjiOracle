@@ -5,6 +5,7 @@
   "main": "scripts/build-pdf.js",
   "type": "module",
   "scripts": {
+    "start": "node scripts/server.js",
     "build": "node scripts/build-pdf.js",
     "protect": "node scripts/protect-pdf.js",
     "generate": "node scripts/build-pdf.js && node scripts/protect-pdf.js",
