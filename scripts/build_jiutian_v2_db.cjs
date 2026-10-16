@@ -275,9 +275,8 @@ for (let id = 1; id <= 96; id++) {
     mdParsed = parseMarkdownCard(mdContent);
   }
 
-  // Only preserve the 10 original human-curated cards in v2; for all other cards, parse fresh
-  const ORIGINAL_CURATED_IDS = new Set(['M00', 'M01', 'M03', 'M04', 'M05', 'M07', 'M08', 'M11', 'M12', 'M14']);
-  const existingV2Card = ORIGINAL_CURATED_IDS.has(cardId) ? existingV2CardsMap.get(cardId) : null;
+  // Preserve all existing cards in v2 DB so manual edits in jiutian-arcana-database-v2.json are never lost
+  const existingV2Card = existingV2CardsMap.get(cardId) || (existingV2.cards || []).find(c => c.id === id);
 
   const elemNorm = normalizeElement(mdParsed?.elementRaw || master.element);
 
