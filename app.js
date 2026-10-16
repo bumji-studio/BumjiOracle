@@ -2506,11 +2506,6 @@ document.addEventListener('DOMContentLoaded', () => {
               ${elemInfo.icon} ธาตุ${baseElem} ${elemInfo.cn ? `(${elemInfo.cn})` : ''}
             </span>
           </div>
-          ${card.deity_message ? `
-            <div style="margin-top: 8px; font-size: 11.5px; color: #334155; background: #f8fafc; border-radius: 6px; padding: 6px 8px; border-left: 3px solid #0284c7; text-align: left; line-height: 1.4;">
-              <strong style="color: #0284c7;"><i class="fa-solid fa-feather"></i> โอวาท:</strong> ${card.deity_message}
-            </div>
-          ` : ''}
         </div>
       `;
 
