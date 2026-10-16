@@ -9,6 +9,8 @@
     "build": "node scripts/build-pdf.js",
     "protect": "node scripts/protect-pdf.js",
     "generate": "node scripts/build-pdf.js && node scripts/protect-pdf.js",
+    "build:v2": "node scripts/build_jiutian_v2_db.cjs",
+    "export:excel": "node scripts/build_jiutian_dataset.cjs && node scripts/export_jiutian_excel.cjs",
     "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create_shortcut.ps1"
   },
   "dependencies": {

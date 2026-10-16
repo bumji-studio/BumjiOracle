@@ -1067,12 +1067,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Single Deck: "My Cat & I" (61 Cards from คู่มือไพ่CAT61.xlsx)
   // ==========================================================================
 
-  // Stepper Elements (3 Steps)
+  // Stepper Elements (2 Steps)
   const stepperFill = document.getElementById('stepperFill');
   const stepIndicators = [
     document.getElementById('stepIndicator1'),
-    document.getElementById('stepIndicator2'),
-    document.getElementById('stepIndicator3')
+    document.getElementById('stepIndicator2')
   ];
 
   // Pinned Context Bar
@@ -1113,9 +1112,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const printResultReportBtn = document.getElementById('printResultReportBtn');
   const resultQuestionTitle = document.getElementById('resultQuestionTitle');
   const resultDeckBadge = document.getElementById('resultDeckBadge');
+  const resultSpreadBadge = document.getElementById('resultSpreadBadge');
   const resultDateBadge = document.getElementById('resultDateBadge');
   const resultCardsBoard = document.getElementById('resultCardsBoard');
   const resultSynthesisContainer = document.getElementById('resultSynthesisContainer');
+
+  // Spread Selection DOM Elements
+  const spreadTab3Cards = document.getElementById('spreadTab3Cards');
+  const spreadTab5Cards = document.getElementById('spreadTab5Cards');
+  const patterns3CardsWrap = document.getElementById('patterns3CardsWrap');
+  const spread5CardsWrap = document.getElementById('spread5CardsWrap');
+  const patternChipsGroup = document.getElementById('patternChipsGroup');
+  const patternInfoBanner = document.getElementById('patternInfoBanner');
+  const step2IndicatorLabel = document.getElementById('step2IndicatorLabel');
+  const step2HeaderTitle = document.getElementById('step2HeaderTitle');
+  const pickSlotsContainer = document.getElementById('pickSlotsContainer');
+  const autoDrawCardsBtnText = document.getElementById('autoDrawCardsBtnText');
+  const revealBannerTitle = document.getElementById('revealBannerTitle');
+  const smartPatternBox = document.getElementById('smartPatternBox');
+  const smartPatternTitle = document.getElementById('smartPatternTitle');
+  const smartPatternDesc = document.getElementById('smartPatternDesc');
 
   // Modal Picker Elements
   const cardSelectModal = document.getElementById('cardSelectModal');
@@ -1126,52 +1142,688 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalFilterTabs = document.getElementById('modalFilterTabs');
   let currentModalFilter = 'all';
 
-  // Spread Position Metadata (3-Card Trinity Spread)
-  const POSITIONS = [
-    {
-      index: 0,
-      title: 'ใบที่ 1: สถานการณ์ปัจจุบัน',
-      shortName: 'ปัจจุบัน',
-      desc: 'สะท้อนต้นเหตุ พลังงาน และสถานการณ์ที่กำลังเผชิญ ณ ขณะนี้'
+  // --------------------------------------------------------------------------
+  // SPREAD CONFIGURATIONS (3-CARD 5 PATTERNS + 5-CARD STRATEGIC SPREAD)
+  // --------------------------------------------------------------------------
+  const SPREAD_CONFIGS = {
+    '3cards': {
+      id: '3cards',
+      name: 'ไพ่ 3 ใบ (Trinity Spread)',
+      cardCount: 3,
+      patterns: {
+        'pattern1': {
+          id: 'pattern1',
+          patternNum: 1,
+          title: 'แบบที่ 1: อดีต - ปัจจุบัน - อนาคต',
+          shortTitle: 'อดีต - ปัจจุบัน - อนาคต',
+          desc: 'ใช้ดูพัฒนาการของเรื่อง ตั้งแต่สิ่งที่นำมาสู่สถานการณ์ปัจจุบัน ไปจนถึงแนวโน้มข้างหน้า',
+          positions: [
+            { index: 0, title: 'ใบที่ 1: อดีต / สิ่งที่นำมา', shortName: 'อดีต', desc: 'สิ่งที่นำพามาสู่สถานการณ์ปัจจุบัน ต้นเหตุหรือรากฐานเดิม' },
+            { index: 1, title: 'ใบที่ 2: ปัจจุบัน / สภาวะจริง', shortName: 'ปัจจุบัน', desc: 'สถานการณ์และพลังงานที่เป็นอยู่ ณ ขณะนี้' },
+            { index: 2, title: 'ใบที่ 3: อนาคต / แนวโน้ม', shortName: 'อนาคต', desc: 'แนวโน้มพัฒนาการข้างหน้าที่จะเกิดขึ้น' }
+          ]
+        },
+        'pattern2': {
+          id: 'pattern2',
+          patternNum: 2,
+          title: 'แบบที่ 2: สถานการณ์ - อุปสรรค - ทางออก',
+          shortTitle: 'สถานการณ์ - อุปสรรค - ทางออก',
+          desc: 'ใช้เมื่อผู้ถามต้องการเข้าใจปัญหาและหาทางจัดการ เหมาะกับเรื่องงาน ความสัมพันธ์ และการตัดสินใจ',
+          positions: [
+            { index: 0, title: 'ใบที่ 1: สถานการณ์', shortName: 'สถานการณ์', desc: 'ภาพรวมของเรื่องที่กำลังเผชิญ สภาวะความเป็นจริง' },
+            { index: 1, title: 'ใบที่ 2: อุปสรรค / สิ่งกีดขวาง', shortName: 'อุปสรรค', desc: 'จุดติดขัด แรงต้าน หรือความท้าทายที่ต้องก้าวข้าม' },
+            { index: 2, title: 'ใบที่ 3: ทางออก / กลยุทธ์แก้ไข', shortName: 'ทางออก', desc: 'กลยุทธ์ วิธีปฏิบัติ และทางสว่างในการคลี่คลายปัญหา' }
+          ]
+        },
+        'pattern3': {
+          id: 'pattern3',
+          patternNum: 3,
+          title: 'แบบที่ 3: สิ่งที่เกิดขึ้น - สิ่งที่ซ่อนอยู่ - แนวโน้มผลลัพธ์',
+          shortTitle: 'สิ่งที่เกิด - สิ่งที่ซ่อน - แนวโน้มผล',
+          desc: 'ใช้เจาะสถานการณ์ที่ยังไม่เข้าใจ เช่น อีกฝ่ายคิดอย่างไร หรือองค์กรกำลังดำเนินเรื่องไปในทิศทางใด (พึงตระหนักว่าเป็นการอ่านสัญลักษณ์สะท้อนใจ ไม่ใช่การตัดสินแทนผู้อื่น)',
+          positions: [
+            { index: 0, title: 'ใบที่ 1: สิ่งที่เกิดขึ้น', shortName: 'สิ่งที่เกิดขึ้น', desc: 'ภาพเบื้องหน้า ข้อเท็จจริงที่มองเห็นได้ชัดเจน' },
+            { index: 1, title: 'ใบที่ 2: สิ่งที่ซ่อนอยู่', shortName: 'สิ่งที่ซ่อนอยู่', desc: 'เบื้องลึก จิตใต้สำนึก หรือปัจจัยที่ยังไม่เปิดเผย' },
+            { index: 2, title: 'ใบที่ 3: แนวโน้มผลลัพธ์', shortName: 'แนวโน้มผลลัพธ์', desc: 'ทิศทางที่สถานการณ์กำลังดำเนินไปสู่' }
+          ]
+        },
+        'pattern4': {
+          id: 'pattern4',
+          patternNum: 4,
+          title: 'แบบที่ 4: ตัวเลือก A - ตัวเลือก B - คำแนะนำ',
+          shortTitle: 'ตัวเลือก A - ตัวเลือก B - คำแนะนำ',
+          desc: 'ใช้เมื่อผู้ถามต้องเลือกระหว่างสองแนวทาง โดยเปรียบเทียบข้อดี ข้อเสีย และความเสี่ยงร่วมกับคำแนะนำ',
+          positions: [
+            { index: 0, title: 'ใบที่ 1: ตัวเลือก A', shortName: 'ตัวเลือก A', desc: 'สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทาง A' },
+            { index: 1, title: 'ใบที่ 2: ตัวเลือก B', shortName: 'ตัวเลือก B', desc: 'สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทาง B' },
+            { index: 2, title: 'ใบที่ 3: คำแนะนำ / ทางสายกลาง', shortName: 'คำแนะนำ', desc: 'คำชี้แนะจากปัญญาญาณเพื่อประกอบการตัดสินใจอย่างมีสติ' }
+          ]
+        },
+        'pattern5': {
+          id: 'pattern5',
+          patternNum: 5,
+          title: 'แบบที่ 5: เงื่อนไข - กระบวนการ - ผลลัพธ์',
+          shortTitle: 'เงื่อนไข - กระบวนการ - ผลลัพธ์',
+          desc: 'ใช้ดูว่าเรื่องหนึ่งจะดำเนินไปอย่างไร โดยเฉพาะคำถามเกี่ยวกับการสมัครงาน การเจรจา การอนุมัติ และการเปลี่ยนแปลงในองค์กร',
+          positions: [
+            { index: 0, title: 'ใบที่ 1: เงื่อนไข / ปัจจัยตั้งต้น', shortName: 'เงื่อนไข', desc: 'ข้อกำหนด ปัจจัยตั้งต้น หรือเงื่อนไขสำคัญ' },
+            { index: 1, title: 'ใบที่ 2: กระบวนการ / การดำเนินการ', shortName: 'กระบวนการ', desc: 'ขั้นตอนการดำเนินงาน สิ่งที่จะเกิดขึ้นระหว่างทาง และการปฏิบัติ' },
+            { index: 2, title: 'ใบที่ 3: ผลลัพธ์ / ปลายทาง', shortName: 'ผลลัพธ์', desc: 'ผลลัพธ์สุดท้ายของการดำเนินกระบวนการนั้น' }
+          ]
+        }
+      }
     },
-    {
-      index: 1,
-      title: 'ใบที่ 2: กลยุทธ์ / สิ่งที่ควรทำ',
-      shortName: 'กลยุทธ์',
-      desc: 'แนวทางปฏิบัติ มุมมองที่ควรปรับ หรือสิ่งที่ควรโฟกัสเพื่อรับมือ'
-    },
-    {
-      index: 2,
-      title: 'ใบที่ 3: ผลลัพธ์ / บทสรุปอนาคต',
-      shortName: 'ผลลัพธ์',
-      desc: 'แนวโน้มผลลัพธ์ที่จะเกิดขึ้น และบทเรียนล้ำค่าที่จะได้รับ'
+    '5cards': {
+      id: '5cards',
+      name: 'ไพ่ 5 ใบ (ทางเลือกและผลลัพธ์เชิงกลยุทธ์)',
+      cardCount: 5,
+      title: 'ไพ่ 5 ใบ: ทางเลือกและผลลัพธ์เชิงกลยุทธ์',
+      desc: 'วิเคราะห์ทางออก เปรียบเทียบผลลัพธ์ของการลงมือทำ vs ไม่ทำ และสำรวจแนวโน้มการตัดสินใจในใจ',
+      positions: [
+        { index: 0, title: 'ใบที่ 1: สถานการณ์ปัจจุบัน (Current)', shortName: 'ปัจจุบัน (Current)', desc: 'สภาพการณ์ปัจจุบัน ปัจจัยที่เผชิญ แรงส่ง แรงต้าน หรือสภาวะคงตัว' },
+        { index: 1, title: 'ใบที่ 2: ทางออก / วิธีการ (How to)', shortName: 'ทางออก (How to)', desc: 'แนวทาง การกระทำ หรือวิธีรับมือกับสถานการณ์' },
+        { index: 2, title: 'ใบที่ 3: ผลถ้าลงมือทำ (Do)', shortName: 'ผลถ้าทำ (Do)', desc: 'ผลลัพธ์ที่จะเกิดขึ้นเมื่อเลือกลงมือปฏิบัติตามแนวทาง' },
+        { index: 3, title: 'ใบที่ 4: ผลถ้าไม่ทำ (Don\'t)', shortName: 'ผลถ้าไม่ทำ', desc: 'ผลลัพธ์ที่จะเกิดขึ้นหากปล่อยไว้ หรือเลือกไม่ลงมือทำ' },
+        { index: 4, title: 'ใบที่ 5: สิ่งที่อยู่ในใจที่ไพ่มองเห็น', shortName: 'สิ่งที่อยู่ในใจ', desc: 'สิ่งที่ซ่อนอยู่ในใจลึกๆ จิตใต้สำนึกที่ไพ่ช่วยสะท้อนให้มองเห็นชัดเจน' }
+      ]
     }
-  ];
+  };
 
-  function getActiveCardsPool() {
-    if (typeof myCatCards !== 'undefined' && Array.isArray(myCatCards) && myCatCards.length > 0) {
-      return myCatCards;
-    }
-    if (typeof bumjiCards !== 'undefined' && Array.isArray(bumjiCards) && bumjiCards.length > 0) {
-      return bumjiCards;
-    }
-    return [];
+  // --------------------------------------------------------------------------
+  // FIVE ELEMENTS ENGINE (เบญจธาตุ: ไม้ ไฟ ดิน ทอง น้ำ)
+  // --------------------------------------------------------------------------
+  const ELEMENT_INFO = {
+    'ไม้': { name: 'ไม้', cn: '木 (Mù)', color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0', icon: '🌱' },
+    'ไฟ': { name: 'ไฟ', cn: '火 (Huǒ)', color: '#dc2626', bg: '#fef2f2', border: '#fecaca', icon: '🔥' },
+    'ดิน': { name: 'ดิน', cn: '土 (Tǔ)', color: '#d97706', bg: '#fffbeb', border: '#fde68a', icon: '⛰️' },
+    'ทอง': { name: 'ทอง', cn: '金 (Jīn)', color: '#ca8a04', bg: '#fefce8', border: '#fef08a', icon: '⚔️' },
+    'น้ำ': { name: 'น้ำ', cn: '水 (Shuǐ)', color: '#0284c7', bg: '#f0f9ff', border: '#bae6fd', icon: '💧' }
+  };
+
+  const GENERATING_MAP = {
+    'ไม้': { target: 'ไฟ', reason: 'ไม้เป็นเชื้อให้ไฟลุก โหมพลังสร้างความสว่างไสว' },
+    'ไฟ': { target: 'ดิน', reason: 'ไฟก่อให้เกิดเถ้าถ่านกลับสู่ดิน ก่อกำเนิดความอุดมสมบูรณ์' },
+    'ดิน': { target: 'ทอง', reason: 'แร่ธาตุและโลหะมีค่าสะสมตัวอยู่ใต้ผืนดิน' },
+    'ทอง': { target: 'น้ำ', reason: 'โลหะหลอมเหลวหรือควบแน่นก่อเกิดละอองน้ำ คล่องตัวและลื่นไหล' },
+    'น้ำ': { target: 'ไม้', reason: 'น้ำหล่อเลี้ยงรากและต้นไม้ให้เติบโตผลิดอกออกผล' }
+  };
+
+  const CONTROLLING_MAP = {
+    'ไม้': { target: 'ดิน', reason: 'รากไม้ชอนไชยึดดิน ควบคุมและกำหนดรูปทรง' },
+    'ดิน': { target: 'น้ำ', reason: 'คันดินและเขื่อนกั้นน้ำ จัดระเบียบป้องกันการท่วมล้น' },
+    'น้ำ': { target: 'ไฟ', reason: 'น้ำดับไฟ ดับความร้อนรนและควบคุมเปลวเพลิง' },
+    'ไฟ': { target: 'ทอง', reason: 'ไฟหลอมโลหะ เคี่ยวกรำให้เปลี่ยนรูปทรงเป็นเครื่องมือทรงคุณค่า' },
+    'ทอง': { target: 'ไม้', reason: 'คมขวานทองตัดแต่งไม้ ตัดสิ่งเกินพอดีเพื่อนำไปใช้ประโยชน์' }
+  };
+
+  function getBaseElement(elemStr) {
+    if (!elemStr) return 'ดิน';
+    if (elemStr.includes('ไม้') || elemStr.toLowerCase().includes('wood')) return 'ไม้';
+    if (elemStr.includes('ไฟ') || elemStr.toLowerCase().includes('fire')) return 'ไฟ';
+    if (elemStr.includes('ดิน') || elemStr.toLowerCase().includes('earth')) return 'ดิน';
+    if (elemStr.includes('ทอง') || elemStr.toLowerCase().includes('metal')) return 'ทอง';
+    if (elemStr.includes('น้ำ') || elemStr.toLowerCase().includes('water')) return 'น้ำ';
+    return 'ดิน';
   }
 
-  // App State for Fortune Telling
+  function getElementRelation(elemA, elemB) {
+    const a = getBaseElement(elemA);
+    const b = getBaseElement(elemB);
+
+    if (a === b) {
+      return {
+        type: 'same',
+        typeTh: 'ธาตุเดียวกัน (比和)',
+        symbol: '=',
+        color: '#0284c7',
+        bg: '#f0f9ff',
+        border: '#bae6fd',
+        headline: `${a} สะท้อน ${b}: สอดคล้องและเน้นย้ำพลังเดิม`,
+        detail: `เป็นธาตุ${a}เหมือนกัน สะท้อนถึงความสอดคล้อง การตอกย้ำสภาวะเดิม หรือความต่อเนื่องที่ทรงพลัง (ไม่สรุปว่าดีหรือร้ายจากความเหมือนเพียงอย่างเดียว ให้อ่านเนื้อหาไพ่ประกอบ)`
+      };
+    }
+
+    if (GENERATING_MAP[a] && GENERATING_MAP[a].target === b) {
+      return {
+        type: 'generating',
+        typeTh: 'วงจรส่งเสริม (相生)',
+        symbol: '→',
+        color: '#16a34a',
+        bg: '#f0fdf4',
+        border: '#bbf7d0',
+        headline: `${a} ส่งเสริม ${b}: มีแรงหนุน เกื้อกูล และส่งพลังต่อเนื่อง`,
+        detail: `${GENERATING_MAP[a].reason} สะท้อนว่าพลังงานส่งต่อได้อย่างราบรื่น มีแรงสนับสนุนที่ดีและช่วยขับเคลื่อนไปข้างหน้า`
+      };
+    }
+
+    if (GENERATING_MAP[b] && GENERATING_MAP[b].target === a) {
+      return {
+        type: 'draining',
+        typeTh: 'ธาตุลูกถ่ายเทแรง (泄气)',
+        symbol: '←',
+        color: '#854d0e',
+        bg: '#fefce8',
+        border: '#fef08a',
+        headline: `${b} ดึงพลังจาก ${a}: ถ่ายเทแรง ต้องระวังหมดกำลัง`,
+        detail: `${b} เป็นธาตุที่ได้รับแรงหล่อเลี้ยงจาก ${a} จึงอาจทำให้ ${a} ต้องทุ่มเทกำลังหรือปรับตัวรองรับ`
+      };
+    }
+
+    if (CONTROLLING_MAP[a] && CONTROLLING_MAP[a].target === b) {
+      return {
+        type: 'controlling',
+        typeTh: 'วงจรควบคุม (相克)',
+        symbol: '⚔️',
+        color: '#c2410c',
+        bg: '#fff7ed',
+        border: '#ffedd5',
+        headline: `${a} ควบคุม ${b}: มีวินัย บริหารจัดการ หรือแรงต้าน`,
+        detail: `${CONTROLLING_MAP[a].reason} การควบคุมไม่ได้แปลว่าเป็นผลร้ายเสมอไป แต่อาจหมายถึงการจัดระเบียบ การจำกัดปัญหา วินัย หรือการใช้ความเด็ดขาดเอาชนะอุปสรรค`
+      };
+    }
+
+    if (CONTROLLING_MAP[b] && CONTROLLING_MAP[b].target === a) {
+      return {
+        type: 'counter_control',
+        typeTh: 'แรงควบคุมย้อนกลับ (反克)',
+        symbol: '🛡️',
+        color: '#b91c1c',
+        bg: '#fef2f2',
+        border: '#fecaca',
+        headline: `${b} พยายามควบคุม ${a}: มีแรงเสียดทานหรือข้อจำกัด`,
+        detail: `สภาวะที่ต้องเผชิญกับข้อจำกัด หรือต้องปรับกลยุทธ์เพื่อไม่ให้เกิดการปะทะโดยตรง`
+      };
+    }
+
+    return {
+      type: 'neutral',
+      typeTh: 'สมดุลทั่วไป',
+      symbol: '•',
+      color: '#64748b',
+      bg: '#f8fafc',
+      border: '#e2e8f0',
+      headline: 'พลังงานสมดุล',
+      detail: 'ดำเนินไปตามธรรมชาติ'
+    };
+  }
+
+  function getActiveCardsPool() {
+    let pool = [];
+    if (typeof window !== 'undefined' && window.JIUTIAN_DATABASE_V2 && Array.isArray(window.JIUTIAN_DATABASE_V2.cards) && window.JIUTIAN_DATABASE_V2.cards.length > 0) {
+      pool = window.JIUTIAN_DATABASE_V2.cards;
+    } else if (typeof jiutianDatabaseV2 !== 'undefined' && jiutianDatabaseV2 && Array.isArray(jiutianDatabaseV2.cards) && jiutianDatabaseV2.cards.length > 0) {
+      pool = jiutianDatabaseV2.cards;
+    } else if (typeof jiutianCards !== 'undefined' && Array.isArray(jiutianCards) && jiutianCards.length > 0) {
+      pool = jiutianCards;
+    } else if (typeof window !== 'undefined' && window.THEP_MEOW_CARDS && Array.isArray(window.THEP_MEOW_CARDS) && window.THEP_MEOW_CARDS.length > 0) {
+      pool = window.THEP_MEOW_CARDS;
+    } else if (typeof window !== 'undefined' && window.JIUTIAN_CARDS && Array.isArray(window.JIUTIAN_CARDS) && window.JIUTIAN_CARDS.length > 0) {
+      pool = window.JIUTIAN_CARDS;
+    } else if (typeof myCatCards !== 'undefined' && Array.isArray(myCatCards) && myCatCards.length > 0) {
+      pool = myCatCards;
+    }
+
+    // ตอนสุ่มไพ่: ใช้เฉพาะ 92 ใบแรก (ไฟล์ 1-92.png) ส่วน 93.png คือภาพหลังไพ่ ไม่นำมาสุ่ม
+    return pool.filter(c => {
+      if (!c) return false;
+      const numId = parseInt(c.id, 10);
+      if (!isNaN(numId) && numId > 92) return false;
+      const cardImg = c.image || '';
+      if (cardImg.includes('93.png') || /JiuTianCardImage\/(9[3-9]|\d{3,})\.png/i.test(cardImg)) return false;
+      return true;
+    });
+  }
+
+  // App State for Fortune Telling (Single Unified Deck: ไพ่เทพเหมียว 92 ใบ)
   const fortuneState = {
     step: 1,
     question: '',
-    deckId: 'mycat',
+    deckId: 'thepmeow',
+    deckName: 'ไพ่เทพเหมียว (92 ใบ)',
+    spreadType: '3cards', // Default: ไพ่ 3 ใบ (Auto-detected 1 of 5 patterns)
+    patternId: 'pattern2',
     activeCardsPool: getActiveCardsPool(),
     drawnCards: [null, null, null],
     currentPickSlot: 0,
     modalTargetSlot: 0
   };
 
+  function parseQuestionChoices(question) {
+    if (!question || typeof question !== 'string') {
+      return { choiceA: 'ตัวเลือก A', choiceB: 'ตัวเลือก B', hasExplicitChoices: false };
+    }
+    const clean = question.trim();
+    const separators = [' vs ', ' VS ', ' หรือ ', ' หรือว่า ', ' / ', '/', ' . ', '.', ' , ', ',', ' - '];
+    for (const sep of separators) {
+      if (clean.includes(sep)) {
+        const parts = clean.split(sep).map(p => p.trim()).filter(Boolean);
+        if (parts.length >= 2) {
+          return {
+            choiceA: parts[0],
+            choiceB: parts[1],
+            hasExplicitChoices: true
+          };
+        }
+      }
+    }
+    return { choiceA: 'ตัวเลือก A', choiceB: 'ตัวเลือก B', hasExplicitChoices: false };
+  }
+
+  function getCardConsideration(card, choiceName, baseElem) {
+    const name = card.name_th || card.name || '';
+    const elem = getBaseElement(baseElem || card.element);
+    return interpretCardInContext({
+      card,
+      posRole: 'CHOICE_CONSIDERATION',
+      posTitle: `ทางเลือก ${choiceName}`,
+      question: fortuneState.question,
+      choiceLabel: choiceName
+    });
+  }
+
   // --------------------------------------------------------------------------
-  // STEPPER & NAVIGATION CONTROLLER (3-STEP SYSTEM)
-  // 1: Question Input -> 2: Pick 3 Cards -> 3: Divination Results
+  // CONTEXTUAL DIVINATION INTERPRETATION ENGINE (แม่หมอติ๊ดติ๊ด ปัญญาญาณ)
+  // วิเคราะห์แก่นไพ่ เบญจธาตุ และบทบาทประจำตำแหน่ง สังเคราะห์เป็นคำทำนายบริบทจริง
+  // ไม่ดึงข้อมูล raw Excel ซ้ำซ้อน แต่ตีความตามคำถามและตำแหน่งอย่างลึกซึ้ง
+  // --------------------------------------------------------------------------
+
+  // --------------------------------------------------------------------------
+  // INTELLIGENT QUESTION PATTERN CLASSIFIER (5 PATTERNS AUTO-DETECTION)
+  // --------------------------------------------------------------------------
+  function detectBestPatternForQuestion(questionText) {
+    const q = (questionText || '').trim().toLowerCase();
+    if (!q) {
+      return 'pattern2'; // default: สถานการณ์ - อุปสรรค - ทางออก
+    }
+
+    // แบบที่ 4: ตัวเลือก A - ตัวเลือก B - คำแนะนำ
+    // ใช้เมื่อผู้ถามต้องเลือกระหว่างสองแนวทาง โดยเปรียบเทียบข้อดี ข้อเสีย และความเสี่ยงร่วมกับคำแนะนำ
+    const choiceMarkers = ['หรือ', 'หรือว่า', ' vs ', ' vs. ', ' vs', 'vs ', ' / ', 'ระหว่าง', 'ดีกว่า', 'อันไหน', 'แบบไหน', 'เลือกอัน', 'เลือกทาง', 'สองจิตสองใจ', 'ชั่งใจ'];
+    const hasChoiceKeyword = choiceMarkers.some(m => q.includes(m)) ||
+      ((q.includes('ดีไหม') || q.includes('ดีมั้ย')) && (q.includes('หรือ') || q.includes('ถ้า') || q.includes('กับ')));
+    if (hasChoiceKeyword) {
+      return 'pattern4';
+    }
+
+    // แบบที่ 5: เงื่อนไข - กระบวนการ - ผลลัพธ์
+    // ใช้ดูว่าเรื่องหนึ่งจะดำเนินไปอย่างไร โดยเฉพาะคำถามเกี่ยวกับการสมัครงาน การเจรจา การอนุมัติ และการเปลี่ยนแปลงในองค์กร
+    const processMarkers = [
+      'สมัครงาน', 'สัมภาษณ์', 'ผ่านโปร', 'โปรเบชั่น', 'เจรจา', 'สัญญา', 'เซ็นสัญญา',
+      'อนุมัติ', 'ขั้นตอน', 'กระบวนการ', 'ดำเนินเรื่อง', 'วีซ่า', 'กู้เงิน', 'สินเชื่อ',
+      'ยื่นกู้', 'สอบ', 'สอบผ่าน', 'ประเมิน', 'ปรับโครงสร้าง', 'ย้ายแผนก', 'ย้ายสาขา',
+      'ประมูล', 'เงื่อนไข', 'ดีล', 'ขอทุน', 'จะผ่านไหม', 'ผ่านไหม', 'จะได้ไหม', 'สำเร็จไหม'
+    ];
+    if (processMarkers.some(m => q.includes(m))) {
+      return 'pattern5';
+    }
+
+    // แบบที่ 3: สิ่งที่เกิดขึ้น - สิ่งที่ซ่อนอยู่ - แนวโน้มผลลัพธ์
+    // ใช้เจาะสถานการณ์ที่ยังไม่เข้าใจ เช่น อีกฝ่ายคิดอย่างไร หรือองค์กรกำลังดำเนินเรื่องไปในทิศทางใด โดยต้องระวังไม่ถือว่าไพ่ยืนยันความคิดของบุคคลอื่นได้จริง
+    const hiddenMarkers = [
+      'คิดอย่างไร', 'คิดยังไง', 'คิดอะไร', 'รู้สึกอย่างไร', 'รู้สึกยังไง', 'รู้สึกอะไร',
+      'ในใจ', 'ความในใจ', 'ซ่อนอยู่', 'ซ่อน', 'แอบ', 'เบื้องหลัง', 'ความจริง', 'จริงใจ',
+      'จริงจัง', 'หลอก', 'มีคนอื่น', 'นอกใจ', 'ลับหลัง', 'เจตนา', 'หวังดี', 'ทิศทางองค์กร',
+      'องค์กรกำลัง', 'บริษัทกำลัง', 'นโยบาย', 'ลับ', 'ปิดบัง', 'อีกฝ่าย', 'เขาคิด', 'เธอคิด', 'หัวหน้าคิด', 'เพื่อนร่วมงานคิด'
+    ];
+    if (hiddenMarkers.some(m => q.includes(m))) {
+      return 'pattern3';
+    }
+
+    // แบบที่ 1: อดีต - ปัจจุบัน - อนาคต
+    // ใช้ดูพัฒนาการของเรื่อง ตั้งแต่สิ่งที่นำมาสู่สถานการณ์ปัจจุบัน ไปจนถึงแนวโน้มข้างหน้า
+    const timelineMarkers = [
+      'อดีต', 'ปัจจุบัน', 'อนาคต', 'พัฒนาการ', 'แนวโน้ม', 'จากนี้', 'ต่อไปนี้', 'ข้างหน้า',
+      'ระยะยาว', 'ปีนี้', 'ปีหน้า', 'ช่วงนี้', 'ที่ผ่านมา', 'จะเป็นอย่างไรต่อไป', 'จะเป็นยังไงต่อไป',
+      'เติบโต', 'พัฒนา', 'ทิศทางชีวิต', 'ดวงปี', 'ดวงชะตาชีวิต', 'ภาพรวม'
+    ];
+    if (timelineMarkers.some(m => q.includes(m))) {
+      return 'pattern1';
+    }
+
+    // แบบที่ 2: สถานการณ์ - อุปสรรค - ทางออก (Default)
+    // ใช้เมื่อผู้ถามต้องการเข้าใจปัญหาและหาทางจัดการ เหมาะกับเรื่องงาน ความสัมพันธ์ และการตัดสินใจ
+    return 'pattern2';
+  }
+
+  function detectQuestionTopic(questionText) {
+    const q = (questionText || '').trim().toLowerCase();
+    if (!q) {
+      return {
+        topic: 'general',
+        label: 'ภาพรวมชีวิต & ทางออกของปัญหา',
+        focusNoun: 'สถานการณ์และเรื่องราวนี้',
+        actionVerb: 'คลี่คลายปัญหาและเปิดทางสว่าง'
+      };
+    }
+
+    // Career / Business
+    if (/งาน|ลาออก|ย้ายงาน|หางาน|ตำแหน่ง|โปรเจกต์|เจ้านาย|หัวหน้า|ลูกน้อง|เพื่อนร่วมงาน|บริษัท|องค์กร|ออฟฟิศ|สัญญา|ทำงาน|อาชีพ|ธุรกิจ|ค้าขาย|กิจการ|สตาร์ทอัพ|ลูกค้า|สัมภาษณ์/.test(q)) {
+      return {
+        topic: 'career',
+        label: 'การงาน & ทิศทางอาชีพ',
+        focusNoun: 'หน้าที่การงานและภารกิจนี้',
+        actionVerb: 'บริหารจัดการงานและเป้าหมายความสำเร็จ'
+      };
+    }
+
+    // Love / Relationship
+    if (/รัก|แฟน|คนรัก|คนคุย|แอบชอบ|นอกใจ|มือที่สาม|เลิก|คืนดี|แต่งงาน|คู่ครอง|โสด|ความสัมพันธ์|แฟนเก่า|จีบ/.test(q)) {
+      return {
+        topic: 'love',
+        label: 'ความรัก & ความสัมพันธ์',
+        focusNoun: 'สายใยความสัมพันธ์และความรู้สึกนี้',
+        actionVerb: 'ปรับความเข้าใจและรักษาความผูกพัน'
+      };
+    }
+
+    // Finance / Wealth
+    if (/เงิน|หนี้|หนี้สิน|รายได้|โชคลาภ|เงินเก็บ|รวย|ทรัพย์|ค่าใช้จ่าย|ลงทุน|กู้|กระเป๋าเงิน|กำไร|ขาดทุน/.test(q)) {
+      return {
+        topic: 'finance',
+        label: 'การเงิน & โชคลาภทรัพย์สิน',
+        focusNoun: 'สภาพคล่องและการเงินนี้',
+        actionVerb: 'บริหารจัดการทรัพย์สินและความมั่นคง'
+      };
+    }
+
+    // Decision / Dilemma
+    if (/เลือก|ตัดสินใจ|ทางแยก|ลังเล|เอาไงดี|ดีไหม|ควรทำไหม|ทางไหน|a หรือ b|ลาออกดีไหม/.test(q)) {
+      return {
+        topic: 'decision',
+        label: 'การตัดสินใจ & ทางแพร่งชีวิต',
+        focusNoun: 'การตัดสินใจครั้งสำคัญนี้',
+        actionVerb: 'เลือกเส้นทางที่ดีที่สุดให้กับตนเอง'
+      };
+    }
+
+    // Health / Stress / Burnout
+    if (/สุขภาพ|เครียด|เหนื่อย|หมดไฟ|กังวล|ซึมเศร้า|นอนไม่หลับ|ป่วย|ร่างกาย|พักผ่อน|ท้อ/.test(q)) {
+      return {
+        topic: 'health',
+        label: 'สุขภาพ & พลังใจ',
+        focusNoun: 'สุขภาพกายและสภาวะจิตใจนี้',
+        actionVerb: 'ฟื้นฟูพลังชีวิตและสร้างสมดุลใจ'
+      };
+    }
+
+    return {
+      topic: 'general',
+      label: 'ภาพรวมชีวิต & ทางออกของปัญหา',
+      focusNoun: 'สถานการณ์และสิ่งที่คุณกำลังเผชิญ',
+      actionVerb: 'คลี่คลายปัญหาและเปิดทางสว่าง'
+    };
+  }
+
+  function extractCleanEssence(card) {
+    const raw = card.concept || card.core_meaning || '';
+    if (!raw) return 'การปรับสมดุลและขับเคลื่อนไปข้างหน้าอย่างมีสติ';
+    const sentences = raw.split(/[.!?\n]+/).map(s => s.trim()).filter(Boolean);
+    if (sentences.length > 1 && sentences[0] === sentences[1]) {
+      return sentences[0];
+    }
+    return raw.replace(/แม่หมอแนะนำว่า.*$/, '').trim();
+  }
+
+  // Archetype library for key Chinese oracle cards
+  const CARD_ARCHETYPES = {
+    'ยืนหยัดต่อสู้': {
+      situation: 'ในสถานการณ์ปัจจุบันของ{focusNoun} ไพ่สะท้อนภาพที่คุณกำลังต้องตั้งการ์ดสู้ยิบตาเพื่อปกป้องสิทธิ ขอบเขต หรือพื้นที่ของตนเองค่ะ อาจมีแรงกดดันจากรอบข้างหรือสภาวะที่ทำให้รู้สึกว่าหากยอมถอยแม้แต่ก้าวเดียวจะถูกเอาเปรียบทันที แม้จะเหนื่อยล้าแต่แม่หมอเห็นไฟในหัวใจของคุณที่ยังคงมุ่งมั่นและไม่ยอมจำนนง่ายๆ',
+      action: 'ทางออกสำหรับ{focusNoun}คือ คุณต้อง “ตั้งการ์ดให้มั่นและยืนหยัดในจุดยืนที่ถูกต้อง” ค่ะ อย่าเพิ่งยอมจำนนหรือถอยหนีเพียงเพราะความเกรงใจหรือแรงกดดัน จงสร้างขอบเขต (Boundary) ให้ชัดเจน รักษามาตรฐานความเป็นมืออาชีพไว้เป็นเกราะคุ้มกันตนเอง',
+      outcome_action: 'หากคุณยืนหยัดตามแนวทางนี้ ผลลัพธ์คือคุณจะสามารถปกป้องพื้นที่และสิทธิ์อันชอบธรรมของตนเองไว้ได้อย่างสง่างาม คนรอบข้างจะเริ่มเกรงใจและยอมรับในความหนักแน่นของคุณ',
+      outcome_inaction: 'หากคุณเลือกที่จะยอมแพ้หรือไม่กล้าลุกขึ้นปกป้องตนเอง คุณจะสูญเสียขอบเขตที่ปลอดภัย และจะถูกรุมเร้าด้วยความรับผิดชอบที่ไม่เป็นธรรมจนเหนื่อยล้าเกินเยียวยา',
+      heart: 'ลึกๆ ในก้นบึ้งหัวใจ คุณรู้สึกว่าสิ่งที่ตนเองยึดถือนั้นถูกต้อง และพร้อมจะยืนหยัดปกป้องศักดิ์ศรีและความเป็นธรรมของตนเองอย่างถึงที่สุดค่ะ'
+    },
+    'จิ่วเทียนเสวียนหนี่ว์': {
+      situation: 'สภาวะปัจจุบันมีความซับซ้อนและมีมิติทางจิตวิทยาซ่อนอยู่เบื้องหลัง ดั่งมีเกมที่มองไม่เห็นด้วยตาเปล่า การมองเพียงสิ่งที่ปรากฏภายนอกอาจทำให้ประเมินสถานการณ์ผิดพลาดได้',
+      action: 'นี่คือกุญแจชี้ขาดที่แม่หมอติ๊ดติ๊ดอยากสะกิดเตือนเลยค่ะ! สำหรับ{focusNoun}นี้ “อย่าใช้เพียงแรงปะทะหรืออารมณ์ร้อนเข้าชนเด็ดขาด” แต่จงอัญเชิญพลังปัญญาญาณของ “จิ่วเทียนเสวียนหนี่ว์ (ธาตุน้ำ)” มาใช้ นั่นคือการใช้ “จิตวิทยา สัญชาตญาณ และการอ่านใจคน” สังเกตการณ์อย่างสุขุม มองทะลุแรงจูงใจเบื้องลึกของทุกฝ่าย แล้ววางหมากแก้เกมอย่างแยบยล นิ่งดั่งสายน้ำแต่เฉียบคมทุกการเคลื่อนไหว',
+      outcome_action: 'เมื่อคุณนำปัญญาญาณและความเยือกเย็นมาใช้ คุณจะมองทะลุเกม อ่านทางออกได้อย่างทะลุปรุโปร่ง สามารถพลิกสถานการณ์กลับมาคุมเกมได้โดยไม่ต้องเปลืองแรงปะทะแม้แต่น้อย',
+      outcome_inaction: 'หากด่วนตัดสินใจด้วยความหุนหันและขาดการวิเคราะห์เชิงลึก คุณอาจติดกับดักทางจิตวิทยาและตกเป็นเบี้ยล่างในเกมของผู้อื่นได้ง่ายๆ ค่ะ',
+      heart: 'สัญชาตญาณในใจกำลังกระซิบเตือนคุณว่ามีบางสิ่งยังไม่เปิดเผย คุณอยากเพ่งพินิจเพื่อค้นหาแก่นแท้และความจริงที่ซ่อนอยู่เบื้องหลังเรื่องนี้'
+    },
+    'นาจา': {
+      situation: 'สถานการณ์กำลังต้องการความรวดเร็วและเด็ดขาด มีพลังขับเคลื่อนสูงและแรงกระตุ้นที่พร้อมจะพุ่งไปข้างหน้า',
+      action: 'ทางออกคือการ “ตัดสินใจให้ฉับไวและลงมือทำอย่างกล้าหาญ” อย่ายืดเยื้อหรือปล่อยให้ความลังเลมาฉุดรั้ง พุ่งตรงสู่เป้าหมายด้วยความมุ่งมั่นเต็มร้อย',
+      outcome_action: 'หากคุณลงมือทำตามกลยุทธ์ปัญญาญาณของใบที่ 2 ผลลัพธ์จะระเบิดพลังดั่ง “นาจา (ธาตุไฟ)” ทันทีค่ะ! สถานการณ์จะพลิกกลับมาขับเคลื่อนอย่างรวดเร็วปานสายฟ้าแลบ ปัญหาที่เคยคาราคาซังจะถูกปลดล็อก คุณจะฝ่าด่านอุปสรรคได้อย่างคล่องแคล่ว สะใจ และพุ่งทะยานสู่เป้าหมายด้วยชัยชนะอันเด็ดเดี่ยว',
+      outcome_inaction: 'หากไม่ยอมขยับตัว พลังความเร่งด่วนจะแปรเปลี่ยนเป็นความใจร้อน อึดอัด และความตึงเครียดที่สร้างแรงกดดันอยู่ภายใน',
+      heart: 'หัวใจของคุณเปี่ยมด้วยความกล้าหาญและความกระตือรือร้น คุณอยากพุ่งทะยานไปข้างหน้าให้พ้นจากความอึดอัดนี้โดยเร็วที่สุด'
+    },
+    'มหาเทพจู๋หรง': {
+      situation: 'คุณกำลังอยู่ในตำแหน่งที่ต้องแบกรับความรับผิดชอบหลัก เป็นศูนย์กลางที่ทุกคนคาดหวังและรอคอยการตัดสินใจจากคุณ',
+      action: 'จงแสดงภาวะผู้นำ กล้าตัดสินใจอย่างเด็ดเดี่ยว คุมพลังงานและทิศทางของทีมหรือตนเองให้มุ่งตรงสู่เป้าหมายโดยไม่วอกแวก',
+      outcome_action: 'คุณจะได้รับการยอมรับในฐานะผู้นำที่มีบารมี มีอำนาจในการจัดการเรื่องราวได้เบ็ดเสร็จเด็ดขาด',
+      outcome_inaction: 'นี่คือจุดเตือนสติที่สำคัญมากค่ะ! หากคุณไม่ปรับกลยุทธ์ตามใบที่ 2 ผลลัพธ์จะกลายเป็น “มหาเทพจู๋หรง (ธาตุไฟ)” ในด้านความกดดัน... คุณจะต้องแบกรับภาระอันหนักอึ้งไว้บนบ่าคนเดียว ความรับผิดชอบที่สะสมจะบีบให้คุณต้องคุมทุกอย่างไว้ด้วยความตึงเครียดสูง และไฟในตัวอาจเผาผลาญจนหมดพลังใจในที่สุด',
+      heart: 'ในใจของคุณตระหนักดีถึงความรับผิดชอบอันยิ่งใหญ่ และต้องการที่จะควบคุมชะตาชีวิตของตนเองให้อยู่ในมือ'
+    },
+    'เฉลิมฉลองร่วมกัน': {
+      situation: 'มีบรรยากาศแห่งความหวัง หรือกำลังมองหาจุดพักใจเพื่อผ่อนคลายจากความตึงเครียดที่สะสมมา',
+      action: 'จงเปิดใจรับความสุข มองหาบรรยากาศที่อบอุ่นเป็นมิตร สร้างความร่วมมือและรอยยิ้มร่วมกับคนรอบข้าง ลดความตึงเครียดลง',
+      outcome_action: 'เรื่องราวจะจบลงด้วยความชื่นมื่น บรรยากาศแห่งการเฉลิมฉลอง ความสำเร็จ และรอยยิ้มที่อบอุ่นจะกลับคืนมา',
+      outcome_inaction: 'คุณอาจพลาดช่วงเวลาแห่งความสุข และต้องติดอยู่กับความตึงเครียดต่อไปโดยไม่จำเป็น',
+      heart: 'ลึกๆ ในก้นบึ้งหัวใจ สิ่งที่คุณต้องการอย่างแท้จริงคือ “ความสุข ความอบอุ่น และความผ่อนคลาย” ค่ะ คุณไม่ได้ต้องการการต่อสู้อันยืดเยื้อหรือชัยชนะที่โดดเดี่ยว แต่หัวใจของคุณอยากให้เรื่องนี้จบลงด้วยดี เพื่อจะได้กลับมามีรอยยิ้ม ร่วมยินดี และเฉลิมฉลองกับคนรอบข้างอีกครั้ง'
+    },
+    'ผานกู่': {
+      situation: 'สถานการณ์กำลังอยู่ในช่วงบุกเบิกและลงแรงอย่างหนัก ทุกสิ่งต้องสร้างด้วยน้ำพักน้ำแรงของตนเอง มีแรงผลักดันสูงที่จะทำให้เป้าหมายสำเร็จ',
+      action: 'จงสร้างรากฐานที่มั่นคง วางโครงสร้างให้ชัดเจน แต่ต้องระวังไม่ให้ความหนักแน่นกลายเป็นการแบกโลกทั้งใบไว้คนเดียว',
+      outcome_action: 'ความพยายามของคุณจะผลิดอกออกผลเป็นความสำเร็จที่มั่นคงดั่งภูเขาหินผา',
+      outcome_inaction: 'อุปสรรคเกิดจากความพยายามที่จะแบกรับและควบคุมทุกอย่างไว้ในกำมือคนเดียว หรือกำลังเผชิญหน้ากับโครงสร้างหรือบุคคลที่มีความแข็งกร้าว มั่นคงดั่งภูเขาหิน ไม่ยอมผ่อนปรน ทำให้รู้สึกหนักอึ้งดั่งการแบกฟ้าค้ำดินจนแทบขยับตัวไม่ได้',
+      heart: 'คุณมีความมุ่งมั่นสูงที่จะบุกเบิกและสร้างความสำเร็จด้วยตนเอง แต่อาจเริ่มล้าจากการแบกรับทุกสิ่ง'
+    },
+    'หนิวหลาง': {
+      action: 'ทางออกไม่ใช่การใช้ไม้แข็งหรือการหักดิบ แต่คือ “การสร้างสะพานเชื่อมใจ” ดั่งการข้ามสะพานนกกาเหว่า! จงใช้ความอ่อนโยน ความจริงใจ ความอดทน และการให้เกียรติซึ่งกันและกัน ค่อยๆ ประสานรอยร้าว และรอคอยจังหวะเวลาที่สุกงอม'
+    },
+    'กุศโลบาย': {
+      situation: 'คุณไม่ได้นิ่งเฉยหรือยอมจำนนต่อปัญหา แต่กำลังระดมความคิด วางแผน และใช้ปฏิภาณไหวพริบอย่างเต็มที่เพื่อหาทางพลิกสถานการณ์ มีการคิดคำนวณอย่างรอบคอบและมองหาแต้มต่อ',
+      action: 'จงใช้ปฏิภาณไหวพริบและกุศโลบายอันแยบยล วางแผนอย่างมีชั้นเชิง ปรับตัวตามสถานการณ์ และอย่าแสดงไพ่ในมือให้คู่แข่งเห็นทั้งหมด',
+      outcome_action: 'คุณจะสามารถพลิกแพลงสถานการณ์และคว้าความได้เปรียบมาครองได้อย่างแยบยล',
+      outcome_inaction: 'ระวังความซับซ้อนของการวางแผนที่อาจมากเกินไป หรือการระแวดระวังจนเกิดความตึงเครียด'
+    },
+    'ร่วมมือประสานใจ': {
+      action: 'ทางออกที่สำคัญที่สุดคือ “อย่าทำหรือแบกคนเดียวเด็ดขาด!” จงเปิดใจสื่อสาร ขอความช่วยเหลือจากทีมหรือคนรอบข้าง สร้างพันธมิตร และร่วมมือประสานใจเพื่อคลี่คลายสถานการณ์'
+    },
+    'หวงแหนสมบัติ': {
+      situation: 'สะท้อนถึงการถอยกลับมาอยู่ใน Safe Zone เพื่อปกป้องพลังงาน รักษาสิทธิ์ และรักษาทรัพยากรของตนเองไว้ แต่ต้องระวังไม่ให้ความระมัดระวังกลายเป็นการปิดกั้นโอกาสใหม่ๆ'
+    },
+    'ภาระจากความสำเร็จ': {
+      situation: 'สะท้อนว่าคุณมีผลงานและความสามารถที่เป็นที่ยอมรับ แต่ต้องแลกมาด้วยความเหนื่อยล้าสาหัส ภาระหน้าที่ที่ล้นมือทำให้พลังใจเริ่มถดถอยและเสี่ยงต่อภาวะหมดไฟ'
+    }
+  };
+
+  // Universal contextual interpretation engine powered by jiutian-arcana-database-v2.json
+  function interpretCardInContext({ card, posRole, posTitle, question, drawn, posIndex, choiceLabel }) {
+    const name = card.name_th || card.name || '';
+    const elem = getBaseElement(card.element);
+    const qTopic = detectQuestionTopic(question);
+    const essence = extractCleanEssence(card);
+
+    // V2 Database Fields
+    const domains = card.meanings?.domains || {};
+    let domainReading = '';
+    if (qTopic.topic === 'career') domainReading = domains.career;
+    else if (qTopic.topic === 'love') domainReading = domains.love;
+    else if (qTopic.topic === 'finance') domainReading = domains.finance;
+    else if (qTopic.topic === 'health') domainReading = domains.health;
+    else domainReading = domains.personality || domains.career || card.meanings?.core || '';
+
+    const lightSide = card.meanings?.light_side || '';
+    const shadowSide = card.meanings?.shadow_side || '';
+    const strategy = card.strategy || '';
+    const deityMsg = card.deity_message || '';
+    const deityTitle = card.deity?.title || '';
+
+    // 1. Check known archetypes
+    for (const [key, arch] of Object.entries(CARD_ARCHETYPES)) {
+      if (name.includes(key)) {
+        let text = '';
+        if (posRole === 'CURRENT_SITUATION' && arch.situation) text = arch.situation;
+        else if (posRole === 'ACTION_SOLUTION' && arch.action) text = arch.action;
+        else if (posRole === 'OUTCOME_ACTION' && arch.outcome_action) text = arch.outcome_action;
+        else if (posRole === 'OUTCOME_INACTION' && arch.outcome_inaction) text = arch.outcome_inaction;
+        else if (posRole === 'HEART_INCLINATION' && arch.heart) text = arch.heart;
+        else if (posRole === 'OBSTACLE' && (arch.outcome_inaction || arch.situation)) text = arch.outcome_inaction || arch.situation;
+        else if ((posRole === 'CHOICE_A' || posRole === 'CHOICE_B') && (arch.situation || arch.action)) text = arch.situation || arch.action;
+
+        if (text) {
+          return text.replace(/{focusNoun}/g, qTopic.focusNoun);
+        }
+      }
+    }
+
+    // 2. Dynamic element & role synthesis for ALL cards
+    const elemDynamics = {
+      'ไฟ': {
+        nature: 'ความมุ่งมั่น แรงผลักดัน ความกระตือรือร้น หรือความร้อนรุ่มที่ต้องการการระบาย',
+        actionVerb: 'จุดประกายความกล้าหาญ ลงมือทำอย่างมีเป้าหมาย และแสดงจุดยืนให้ชัดเจน',
+        warning: 'ความใจร้อน อารมณ์ที่พลุ่งพล่าน หรือแรงกดดันที่อาจเผาผลาญพลังงานตนเอง',
+        gift: 'พลังขับเคลื่อนที่จะทะยานไปข้างหน้าอย่างรวดเร็วและเด็ดเดี่ยว'
+      },
+      'น้ำ': {
+        nature: 'สัญชาตญาณ ความยืดหยุ่น การปรับตัวตามกระแส และความลึกซึ้งทางอารมณ์',
+        actionVerb: 'ใช้ความนุ่มนวลสยบความแข็งกร้าว สังเกตการณ์อย่างสุขุม และรอคอยจังหวะเวลาที่เหมาะสม',
+        warning: 'ความคลุมเครือ ไม่แน่นอน หรือการปล่อยให้อารมณ์ความรู้สึกพัดพาจนเสียทิศทาง',
+        gift: 'ปัญญาญาณที่มองทะลุถึงแก่นแท้และความสัมพันธ์ที่แน่นแฟ้น'
+      },
+      'ดิน': {
+        nature: 'ความมั่นคง ความหนักแน่น การรักษาผลประโยชน์ และการปักหลักในพื้นที่ปลอดภัย',
+        actionVerb: 'ตั้งหลักบนความสุขุมรอบคอบ วางรากฐานให้แน่นหนา และบริหารจัดการทรัพยากรที่มีอยู่',
+        warning: 'ความยึดติดในกรอบเดิมๆ ความกลัวการเปลี่ยนแปลง หรือการแบกรับภาระไว้คนเดียว',
+        gift: 'ผลลัพธ์ที่เป็นรูปธรรม ความมั่นคงในระยะยาว และความปลอดภัย'
+      },
+      'ทอง': {
+        nature: 'ความเฉียบคม ความถูกต้องเป็นธรรม ระเบียบวินัย และการตัดสินใจเชิงกลยุทธ์',
+        actionVerb: 'ใช้เหตุผลและข้อเท็จจริง จัดระเบียบ ตัดสิ่งที่ไม่จำเป็นออกไป และตัดสินใจอย่างเด็ดขาด',
+        warning: 'ความแข็งกร้าว กฎเกณฑ์ที่เข้มงวดเกินไป หรือการใช้ไม้แข็งจนเกิดแรงเสียดทาน',
+        gift: 'ความชัดเจน ความโปร่งใส และการปลดล็อกพันธนาการได้อย่างตรงจุด'
+      },
+      'ไม้': {
+        nature: 'การเติบโต การเรียนรู้ การขยายโอกาส และความคิดสร้างสรรค์',
+        actionVerb: 'เปิดรับมุมมองใหม่ๆ พัฒนาทักษะ และสร้างการเติบโตร่วมกับผู้อื่นอย่างเป็นขั้นเป็นตอน',
+        warning: 'ภาระหน้าที่ที่งอกเงยจนล้นมือ หรือความคาดหวังที่เติบโตเร็วกว่ากำลังที่มี',
+        gift: 'การต่อยอดที่ยั่งยืน โอกาสใหม่ๆ และพัฒนาการที่งดงาม'
+      }
+    };
+
+    const ed = elemDynamics[elem] || elemDynamics['น้ำ'];
+
+    if (posRole === 'CURRENT_SITUATION') {
+      const situationBody = domainReading || essence;
+      return `สำหรับ${qTopic.focusNoun} ไพ่ “${name}” (ธาตุ${elem}${deityTitle ? ` — ${deityTitle}` : ''}) สะท้อนสภาวะปัจจุบันว่า: ${situationBody} พลังของธาตุ${elem}บ่งชี้ว่าคุณกำลังอยู่ในช่วงที่${ed.nature} ซึ่งต้องอาศัยสติและความเข้าใจในการประคองสถานการณ์`;
+    } else if (posRole === 'ACTION_SOLUTION') {
+      return `ทางออกและกลยุทธ์ที่แม่หมอขอชี้แนะคือ: ${strategy ? `“${strategy}” ` : ''}จงน้อมนำพลังของ “${name}” มาเป็นแนวทาง นั่นคือ ${ed.actionVerb} ${lightSide ? `(จุดแข็ง: ${lightSide})` : ''} ปรับใช้อย่างยืดหยุ่นเพื่อคลี่คลายปัญหา`;
+    } else if (posRole === 'OUTCOME_ACTION') {
+      const outcomeBody = lightSide || domainReading || essence;
+      return `หากคุณปฏิบัติตามแนวทางนี้ ผลลัพธ์ของ${qTopic.focusNoun}จะนำพาไปสู่: ${ed.gift} ปัญหาที่สะสมจะได้รับการคลี่คลาย และเปิดทางให้ “${outcomeBody}” ปรากฏขึ้นอย่างงดงาม`;
+    } else if (posRole === 'OUTCOME_INACTION') {
+      const warningBody = shadowSide || ed.warning;
+      return `ข้อพึงระวังหากปล่อยผ่านหรือไม่ปรับเปลี่ยนวิธี: ด้านเงาของไพ่เตือนถึง ${warningBody} ซึ่งจะทำให้สถานการณ์กลายเป็นแรงกดดันที่สะสมยืดเยื้อต่อไป`;
+    } else if (posRole === 'HEART_INCLINATION') {
+      const heartBody = domains.personality || essence;
+      return `ลึกๆ ในก้นบึ้งหัวใจของคุณ ไพ่ใบนี้สะท้อนว่าจิตใต้สำนึกกำลังโน้มเอียงไปทาง “${heartBody}” คุณปรารถนาความมั่นคงตามพลังของธาตุ${elem} ${deityMsg ? `พร้อมด้วยโอวาทเตือนใจ: “${deityMsg}”` : ''}`;
+    } else if (posRole === 'OBSTACLE') {
+      return `จุดที่ทำให้เรื่องนี้ติดขัดเกิดจาก: ${shadowSide || ed.warning} หรือการยึดติดในกรอบเดิมมากเกินไปจนขาดความสมดุล`;
+    } else if (posRole === 'CHOICE_A' || posRole === 'CHOICE_B') {
+      const cLabel = choiceLabel || 'เส้นทางนี้';
+      const choiceBody = domainReading || essence;
+      return `หากเลือกเส้นทาง “${cLabel}” บรรยากาศและผลลัพธ์จะขับเคลื่อนด้วยพลังของ “${name} (${elem})”: ${choiceBody} โดยมีทั้ง ${ed.gift} ${shadowSide ? `แต่ก็ต้องพึงระวังด้านเงา (${shadowSide}) ไว้ด้วยค่ะ` : ''}`;
+    } else if (posRole === 'PAST') {
+      return `ในอดีตหรือรากเหง้าที่นำพามาสู่จุดนี้ของ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” สะท้อนว่า ${domainReading || essence} ซึ่งได้หล่อหลอมและส่งผลต่อเนื่องมาถึงปัจจุบัน`;
+    } else if (posRole === 'FUTURE') {
+      return `แนวโน้มพัฒนาการข้างหน้าที่จะเกิดขึ้นกับ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” นำพา ${ed.gift} ${domainReading || essence}`;
+    } else if (posRole === 'SURFACE_REALITY') {
+      return `สิ่งที่ปรากฏให้เห็นภายนอกอย่างชัดเจนสำหรับ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” สะท้อนว่า ${domainReading || essence} ซึ่งเป็นภาพจริงเบื้องหน้าที่ทุกคนรับรู้ได้`;
+    } else if (posRole === 'HIDDEN_FACTOR') {
+      const hiddenBody = shadowSide || domains.personality || essence;
+      return `เบื้องลึกหรือสิ่งที่ซ่อนอยู่ใต้ผิวน้ำ ไพ่ “${name}” ชี้ให้เห็นถึง: ${hiddenBody} พลังของธาตุ${elem}บ่งบอกถึงสภาวะจิตใต้สำนึก หรือแรงผลักดันที่ยังไม่ได้เปิดเผยออกมา`;
+    } else if (posRole === 'PROJECTED_OUTCOME') {
+      return `ทิศทางที่สถานการณ์กำลังดำเนินไปสู่ สำหรับเรื่อง “${question || fortuneState.question}”: พลังของ “${name} (${elem})” ชี้ว่า ${domainReading || essence} จะเป็นผลลัพธ์ที่จะค่อยๆ ชัดเจนขึ้นตามกาลเวลา`;
+    } else if (posRole === 'PREREQUISITE') {
+      return `เงื่อนไขสำคัญหรือปัจจัยตั้งต้นที่ต้องมี/ต้องรู้สำหรับ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” สะท้อนว่า ${domainReading || strategy || essence} คุณต้องเตรียมความพร้อมและตั้งหลักบนพื้นฐานนี้`;
+    } else if (posRole === 'PROCESS') {
+      return `ในขั้นตอนการดำเนินงานจริง สิ่งที่จะต้องปฏิบัติและเผชิญระหว่างทางคือ: ${strategy ? `“${strategy}” ` : ''}${domainReading || essence} นั่นคือ ${ed.actionVerb} เพื่อขับเคลื่อนเรื่องนี้ให้คืบหน้า`;
+    }
+
+    return `ไพ่ “${name}” ในตำแหน่ง${posTitle || ''} สะท้อนว่า: ${domainReading || essence} จงใช้พลังของธาตุ${elem}เพื่อนำพา${qTopic.actionVerb}อย่างมีสติ`;
+  }
+
+  function getCardSituationInterpretation(card, baseElem, question) {
+    return interpretCardInContext({
+      card,
+      posRole: 'CURRENT_SITUATION',
+      posTitle: 'สถานการณ์ปัจจุบัน',
+      question: question || fortuneState.question
+    });
+  }
+
+  function getCardObstacleInterpretation(card, baseElem, question) {
+    return interpretCardInContext({
+      card,
+      posRole: 'OBSTACLE',
+      posTitle: 'อุปสรรค / สิ่งกีดขวาง',
+      question: question || fortuneState.question
+    });
+  }
+
+  function getCardSolutionInterpretation(card, baseElem, question) {
+    return interpretCardInContext({
+      card,
+      posRole: 'ACTION_SOLUTION',
+      posTitle: 'ทางออก / กลยุทธ์แก้ไข',
+      question: question || fortuneState.question
+    });
+  }
+
+  function getCardWisdomGuidance(card, question) {
+    return interpretCardInContext({
+      card,
+      posRole: 'ACTION_SOLUTION',
+      posTitle: 'คำแนะนำจากปัญญาญาณ',
+      question: question || fortuneState.question
+    });
+  }
+
+  function getActivePositions() {
+    if (fortuneState.spreadType === '5cards') {
+      return SPREAD_CONFIGS['5cards'].positions;
+    }
+    const pat = SPREAD_CONFIGS['3cards'].patterns[fortuneState.patternId] || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
+    if (fortuneState.patternId === 'pattern4') {
+      const { choiceA, choiceB } = parseQuestionChoices(fortuneState.question);
+      return [
+        { 
+          index: 0, 
+          title: `ใบที่ 1: ตัวเลือก A (${choiceA})`, 
+          shortName: `ตัวเลือก A (${choiceA})`, 
+          choiceLabel: choiceA,
+          desc: `สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทาง: ${choiceA}` 
+        },
+        { 
+          index: 1, 
+          title: `ใบที่ 2: ตัวเลือก B (${choiceB})`, 
+          shortName: `ตัวเลือก B (${choiceB})`, 
+          choiceLabel: choiceB,
+          desc: `สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทาง: ${choiceB}` 
+        },
+        { 
+          index: 2, 
+          title: 'ใบที่ 3: คำแนะนำจากปัญญาญาณ', 
+          shortName: 'คำแนะนำ', 
+          desc: 'คำชี้แนะจากปัญญาญาณเพื่อประกอบการตัดสินใจอย่างมีสติ' 
+        }
+      ];
+    }
+    return pat.positions;
+  }
+
+  function getActiveSpreadTitle() {
+    if (fortuneState.spreadType === '5cards') {
+      return 'ไพ่ 5 ใบ (ทางเลือกและผลลัพธ์เชิงกลยุทธ์)';
+    }
+    const pat = SPREAD_CONFIGS['3cards'].patterns[fortuneState.patternId] || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
+    return `ไพ่ 3 ใบ (${pat.shortTitle})`;
+  }
+
+  // --------------------------------------------------------------------------
+  // STEPPER & NAVIGATION CONTROLLER (2-STEP STREAMLINED SYSTEM)
+  // 1: Question Input & Pick 3 Cards -> 2: Divination Results
   // --------------------------------------------------------------------------
   function setStep(targetStep) {
     fortuneState.step = targetStep;
@@ -1181,10 +1833,10 @@ document.addEventListener('DOMContentLoaded', () => {
       fortuneState.activeCardsPool = getActiveCardsPool();
     }
 
-    // Update Stepper Progress Bar (0%, 50%, 100%)
-    const fillPercents = [0, 50, 100];
+    // Update Stepper Progress Bar (0% for Step 1, 100% for Step 2)
+    const fillPercents = [0, 100];
     if (stepperFill) {
-      stepperFill.style.width = `${fillPercents[targetStep - 1]}%`;
+      stepperFill.style.width = `${fillPercents[targetStep - 1] || 0}%`;
     }
 
     // Update Stepper Step Badges
@@ -1199,26 +1851,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Toggle Step Containers
-    if (readingStep1) readingStep1.classList.toggle('hidden', targetStep !== 1);
-    if (readingStep2) readingStep2.classList.add('hidden'); // Legacy screen hidden
-    if (readingStep3) readingStep3.classList.toggle('hidden', targetStep !== 2);
-    if (readingStep4) readingStep4.classList.toggle('hidden', targetStep !== 3);
+    // Toggle Step Containers: Step 1 is readingStep3 (integrated screen), Step 2 is readingStep4 (results)
+    if (readingStep1) readingStep1.classList.add('hidden');
+    if (readingStep2) readingStep2.classList.add('hidden');
+    if (readingStep3) readingStep3.classList.toggle('hidden', targetStep !== 1);
+    if (readingStep4) readingStep4.classList.toggle('hidden', targetStep !== 2);
 
-    // Pinned Context Bar visibility
+    // Keep pinnedContextBar hidden on Step 1 (since question box is right on this screen)
     if (pinnedContextBar) {
-      if (targetStep >= 2) {
-        pinnedContextBar.classList.remove('hidden');
-        if (pinnedQuestionText) {
-          pinnedQuestionText.textContent = fortuneState.question || 'ภาพรวมดวงชะตาและพลังงานชีวิต';
-        }
-        if (pinnedDeckItem && pinnedDeckText) {
-          pinnedDeckItem.classList.remove('hidden');
-          pinnedDeckText.textContent = 'My Cat & I (61 ใบ)';
-        }
-      } else {
-        pinnedContextBar.classList.add('hidden');
-      }
+      pinnedContextBar.classList.add('hidden');
     }
 
     // Smooth scroll to top
@@ -1228,12 +1869,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // STEP 1: QUESTION INPUT LOGIC
+  // LIVE QUESTION INPUT & SMART PATTERN DETECTION
   // --------------------------------------------------------------------------
+  function updateSmartPatternPreview() {
+    const q = userQuestionInput ? userQuestionInput.value.trim() : '';
+    fortuneState.question = q;
+    const patId = detectBestPatternForQuestion(q);
+    fortuneState.patternId = patId;
+    const patConfig = SPREAD_CONFIGS['3cards'].patterns[patId];
+    if (smartPatternTitle && patConfig) {
+      smartPatternTitle.textContent = patConfig.title;
+    }
+    if (smartPatternDesc && patConfig) {
+      smartPatternDesc.textContent = patConfig.desc;
+    }
+
+    // Dynamically update slot badges according to the detected pattern
+    const positions = getActivePositions();
+    positions.forEach((pos, i) => {
+      const slotEl = document.getElementById(`slotCard${i}`);
+      if (slotEl) {
+        const badgeEl = slotEl.querySelector('.slot-pos-badge');
+        if (badgeEl) {
+          badgeEl.setAttribute('title', pos.title);
+          badgeEl.innerHTML = `<span class="badge-num">${i + 1}</span>`;
+        }
+      }
+    });
+
+    // Update instruction text
+    if (pickCurrentInstruction && fortuneState.currentPickSlot < positions.length) {
+      const pos = positions[fortuneState.currentPickSlot];
+      const isMobile = window.innerWidth <= 880;
+      const targetLabel = isMobile ? `ใบที่ ${fortuneState.currentPickSlot + 1}: ${pos.shortName || pos.title}` : pos.title;
+      pickCurrentInstruction.innerHTML = `
+        <i class="fa-solid fa-hand-pointer text-gold animate-bounce"></i> 
+        <span>คลิกเลือกไพ่สำหรับ <strong>${targetLabel}</strong></span>
+      `;
+    }
+  }
+
+  if (userQuestionInput) {
+    userQuestionInput.addEventListener('input', updateSmartPatternPreview);
+  }
+
   if (clearQuestionBtn && userQuestionInput) {
     clearQuestionBtn.addEventListener('click', () => {
       userQuestionInput.value = '';
       userQuestionInput.focus();
+      updateSmartPatternPreview();
     });
   }
 
@@ -1244,15 +1928,90 @@ document.addEventListener('DOMContentLoaded', () => {
       if (userQuestionInput && q) {
         userQuestionInput.value = q;
         userQuestionInput.focus();
+        updateSmartPatternPreview();
       }
     });
   });
 
-  // Step 1 Proceed Button -> Direct to Step 2 (Pick 3 Cards)
+  // --------------------------------------------------------------------------
+  // SPREAD SELECTION LOGIC (STEP 1)
+  // --------------------------------------------------------------------------
+  function updateSpreadUI() {
+    const is5Cards = fortuneState.spreadType === '5cards';
+
+    // Tabs toggle
+    if (spreadTab3Cards) spreadTab3Cards.classList.toggle('active', !is5Cards);
+    if (spreadTab5Cards) spreadTab5Cards.classList.toggle('active', is5Cards);
+
+    // Pattern container toggle
+    if (patterns3CardsWrap) patterns3CardsWrap.classList.toggle('hidden', is5Cards);
+    if (spread5CardsWrap) spread5CardsWrap.classList.toggle('hidden', !is5Cards);
+
+    // Update proceed button text
+    if (proceedToStep2Btn) {
+      proceedToStep2Btn.innerHTML = is5Cards 
+        ? 'ไปเลือกไพ่เทพเหมียว 5 ใบกันเลย ✨ <i class="fa-solid fa-arrow-right"></i>'
+        : 'ไปเลือกไพ่เทพเหมียว 3 ใบกันเลย ✨ <i class="fa-solid fa-arrow-right"></i>';
+    }
+
+    // Update stepper label
+    if (step2IndicatorLabel) {
+      step2IndicatorLabel.textContent = is5Cards ? '2. เลือกไพ่ 5 ใบ' : '2. เลือกไพ่ 3 ใบ';
+    }
+
+    // Update Step 2 header title
+    if (step2HeaderTitle) {
+      step2HeaderTitle.innerHTML = '<i class="fa-solid fa-hand-sparkles"></i> ตั้งจิตอธิษฐานให้ "ไพ่เทพเหมียว" ช่วยนำทาง';
+    }
+
+    // Update auto draw button text
+    if (autoDrawCardsBtnText) {
+      autoDrawCardsBtnText.textContent = 'สุ่มไพ่';
+    }
+  }
+
+  if (spreadTab3Cards) {
+    spreadTab3Cards.addEventListener('click', () => {
+      fortuneState.spreadType = '3cards';
+      updateSpreadUI();
+    });
+  }
+
+  if (spreadTab5Cards) {
+    spreadTab5Cards.addEventListener('click', () => {
+      fortuneState.spreadType = '5cards';
+      updateSpreadUI();
+    });
+  }
+
+  // 3-Card Pattern Pill Buttons Click
+  if (patternChipsGroup) {
+    const patternPills = patternChipsGroup.querySelectorAll('.pattern-pill-btn');
+    patternPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        patternPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const patId = pill.getAttribute('data-pattern');
+        fortuneState.patternId = patId;
+
+        const patConfig = SPREAD_CONFIGS['3cards'].patterns[patId];
+        if (patternInfoBanner && patConfig) {
+          patternInfoBanner.innerHTML = `
+            <strong style="color: #0284c7;"><i class="fa-solid fa-circle-info"></i> ${patConfig.title}</strong><br>
+            <span>${patConfig.desc}</span>
+          `;
+        }
+      });
+    });
+  }
+
+  // Step 1 Proceed Button -> Direct to Step 2 (Pick Cards)
   if (proceedToStep2Btn && userQuestionInput) {
     proceedToStep2Btn.addEventListener('click', () => {
       const q = userQuestionInput.value.trim();
       fortuneState.question = q || 'ภาพรวมดวงชะตา พลังงานชีวิต และคำแนะนำในปัจจุบัน';
+      fortuneState.spreadType = '3cards';
+      fortuneState.patternId = detectBestPatternForQuestion(fortuneState.question);
       fortuneState.activeCardsPool = getActiveCardsPool();
       resetPicks();
       setStep(2);
@@ -1269,7 +2028,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // STEP 2: PICK 3 CARDS LOGIC
+  // STEP 2: PICK CARDS LOGIC (3 OR 5 CARDS DYNAMIC)
   // --------------------------------------------------------------------------
   if (backToStep2Btn) {
     backToStep2Btn.addEventListener('click', () => {
@@ -1278,13 +2037,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function resetPicks() {
-    fortuneState.drawnCards = [null, null, null];
+    const cardCount = fortuneState.spreadType === '5cards' ? 5 : 3;
+    fortuneState.drawnCards = new Array(cardCount).fill(null);
     fortuneState.currentPickSlot = 0;
     if (revealTriggerBanner) revealTriggerBanner.classList.add('hidden');
+    renderPickSlots();
+  }
+
+  function renderPickSlots() {
+    if (!pickSlotsContainer) return;
+    pickSlotsContainer.innerHTML = '';
+    const positions = getActivePositions();
+    const count = positions.length;
+
+    if (count === 5) {
+      pickSlotsContainer.classList.add('slots-count-5');
+    } else {
+      pickSlotsContainer.classList.remove('slots-count-5');
+    }
+
+    positions.forEach((pos, i) => {
+      const slotEl = document.createElement('div');
+      slotEl.className = 'pick-target-slot';
+      slotEl.id = `slotCard${i}`;
+      slotEl.setAttribute('data-slot', i);
+
+      slotEl.innerHTML = `
+        <div class="slot-pos-badge" title="${pos.title}">
+          <span class="badge-num">${i + 1}</span>
+        </div>
+        <div class="slot-card-holder" id="slotHolder${i}">
+          <div class="slot-placeholder">
+            <i class="fa-solid fa-circle-plus"></i>
+            <span>แตะเลือก</span>
+          </div>
+        </div>
+      `;
+
+      slotEl.addEventListener('click', () => {
+        fortuneState.currentPickSlot = i;
+        updateSlotVisuals();
+      });
+
+      pickSlotsContainer.appendChild(slotEl);
+    });
   }
 
   function getDeckBackImage() {
-    return 'assets/card_back_bumji.jpg';
+    return 'JiuTianCardImage/93.png';
   }
 
   function renderFanDeck() {
@@ -1326,12 +2126,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleFanCardPick(cardEl) {
-    if (fortuneState.currentPickSlot >= 3) return;
+    const totalSlots = fortuneState.drawnCards.length;
+    if (fortuneState.currentPickSlot >= totalSlots) return;
     if (cardEl.classList.contains('card-picked')) return;
 
     cardEl.classList.add('card-picked');
 
-    // Pick random unpicked card from pool of 61 cards
+    // Pick random unpicked card from pool
     const pool = fortuneState.activeCardsPool;
     const available = pool.filter(c => !fortuneState.drawnCards.some(dc => dc && dc.id === c.id));
     const randomCard = available.length > 0 
@@ -1342,7 +2143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Find next unfilled slot
     const nextSlot = fortuneState.drawnCards.findIndex(c => c === null);
-    fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : 3;
+    fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : totalSlots;
 
     updateSlotVisuals();
   }
@@ -1351,16 +2152,22 @@ document.addEventListener('DOMContentLoaded', () => {
     fortuneState.drawnCards[slotIndex] = card;
     updateSlotVisuals();
 
-    // Check if all 3 are filled
+    // Check if all are filled
     const allFilled = fortuneState.drawnCards.every(c => c !== null);
     if (allFilled && revealTriggerBanner) {
+      if (revealBannerTitle) {
+        revealBannerTitle.textContent = `เลือกไพ่ครบ ${fortuneState.drawnCards.length} ใบเรียบร้อยแล้ว!`;
+      }
       revealTriggerBanner.classList.remove('hidden');
       revealTriggerBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   }
 
   function updateSlotVisuals() {
-    for (let i = 0; i < 3; i++) {
+    const positions = getActivePositions();
+    const count = positions.length;
+
+    for (let i = 0; i < count; i++) {
       const slotEl = document.getElementById(`slotCard${i}`);
       const holderEl = document.getElementById(`slotHolder${i}`);
       if (!slotEl || !holderEl) continue;
@@ -1369,14 +2176,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (card) {
         slotEl.classList.add('slot-filled');
         slotEl.classList.remove('active-pick');
+
         holderEl.innerHTML = `
-          <div class="slot-card-wrapper cat-card-frame" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden;">
-            <img src="${card.image || getDeckBackImage()}" class="slot-filled-card-img" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
-            <div class="card-front-overlay">
-              <div class="overlay-card-num">No. ${String(card.id).padStart(2, '0')}</div>
-              <div class="overlay-card-name-en">${card.name_en || ''}</div>
-              <div class="overlay-card-name-th">${card.name_th || ''}</div>
-            </div>
+          <div class="slot-card-wrapper" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden;">
+            <img src="${card.image || getDeckBackImage()}" class="slot-filled-card-img" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px;" alt="${card.name_th || card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
           </div>
         `;
       } else {
@@ -1397,34 +2200,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update instruction text
     if (pickCurrentInstruction) {
-      if (fortuneState.currentPickSlot < 3) {
-        const pos = POSITIONS[fortuneState.currentPickSlot];
+      if (fortuneState.currentPickSlot < count) {
+        const pos = positions[fortuneState.currentPickSlot];
         const isMobile = window.innerWidth <= 880;
         const targetLabel = isMobile ? `ใบที่ ${fortuneState.currentPickSlot + 1}: ${pos.shortName || pos.title}` : pos.title;
         pickCurrentInstruction.innerHTML = `
-          <i class="fa-solid fa-arrow-down-long text-gold animate-bounce"></i> 
-          <span>คลิกเลือกไพ่จากสำรับด้านล่างสำหรับ <strong>${targetLabel}</strong></span>
+          <i class="fa-solid fa-hand-pointer text-gold animate-bounce"></i> 
+          <span>คลิกเลือกไพ่สำหรับ <strong>${targetLabel}</strong></span>
         `;
       } else {
         pickCurrentInstruction.innerHTML = `
           <i class="fa-solid fa-circle-check text-gold"></i> 
-          <span>เลือกไพ่ครบทั้ง 3 ใบเรียบร้อยแล้ว! กดปุ่มทำนายด้านล่างได้เลย ✨</span>
+          <span>เลือกไพ่ครบทั้ง ${count} ใบเรียบร้อยแล้ว! กดปุ่มทำนายด้านล่างได้เลย ✨</span>
         `;
       }
     }
   }
 
-  // Auto Draw 3 Cards with silky staggered animation
+  // Auto Draw Cards with silky staggered animation
   if (autoDraw3CardsBtn) {
     autoDraw3CardsBtn.addEventListener('click', () => {
       const pool = fortuneState.activeCardsPool;
       if (!pool || pool.length === 0) return;
 
+      const totalSlots = fortuneState.drawnCards.length;
       const fanCards = deckFanWrapper ? Array.from(deckFanWrapper.querySelectorAll('.fan-card-item:not(.card-picked)')) : [];
       const shuffled = [...pool].sort(() => 0.5 - Math.random());
       
       let delay = 0;
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < totalSlots; i++) {
         if (fortuneState.drawnCards[i] === null) {
           setTimeout(() => {
             const avail = shuffled.filter(c => !fortuneState.drawnCards.some(dc => dc && dc.id === c.id));
@@ -1436,44 +2240,46 @@ document.addEventListener('DOMContentLoaded', () => {
               }
             }
             const nextSlot = fortuneState.drawnCards.findIndex(c => c === null);
-            fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : 3;
+            fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : totalSlots;
             updateSlotVisuals();
           }, delay);
-          delay += 180;
+          delay += 160;
         }
       }
     });
   }
 
-  // Shuffle Deck Button
+  // Shuffle Deck Button with authentic animation
   if (shuffleDeckCardsBtn) {
     shuffleDeckCardsBtn.addEventListener('click', () => {
-      renderFanDeck();
+      if (!deckFanWrapper || deckFanWrapper.classList.contains('is-shuffling')) return;
+      deckFanWrapper.classList.add('is-shuffling');
+      shuffleDeckCardsBtn.disabled = true;
+      const icon = shuffleDeckCardsBtn.querySelector('i');
+      if (icon) icon.classList.add('fa-spin');
+
+      setTimeout(() => {
+        deckFanWrapper.classList.remove('is-shuffling');
+        shuffleDeckCardsBtn.disabled = false;
+        if (icon) icon.classList.remove('fa-spin');
+        renderFanDeck();
+      }, 750);
     });
   }
 
   // Manual Card Selector Modal
   if (openManualPickerBtn) {
     openManualPickerBtn.addEventListener('click', () => {
-      openCardSelectModal(fortuneState.currentPickSlot < 3 ? fortuneState.currentPickSlot : 0);
+      const totalSlots = fortuneState.drawnCards.length;
+      openCardSelectModal(fortuneState.currentPickSlot < totalSlots ? fortuneState.currentPickSlot : 0);
     });
-  }
-
-  // Target Slot Click to replace or select
-  for (let i = 0; i < 3; i++) {
-    const slotEl = document.getElementById(`slotCard${i}`);
-    if (slotEl) {
-      slotEl.addEventListener('click', () => {
-        fortuneState.currentPickSlot = i;
-        updateSlotVisuals();
-      });
-    }
   }
 
   function openCardSelectModal(slotIndex) {
     fortuneState.modalTargetSlot = slotIndex;
-    if (modalPositionName) {
-      modalPositionName.textContent = POSITIONS[slotIndex].title;
+    const positions = getActivePositions();
+    if (modalPositionName && positions[slotIndex]) {
+      modalPositionName.textContent = positions[slotIndex].title;
     }
     if (modalCardSearchInput) modalCardSearchInput.value = '';
     currentModalFilter = 'all';
@@ -1515,16 +2321,39 @@ document.addEventListener('DOMContentLoaded', () => {
     modalCardsGrid.innerHTML = '';
 
     const pool = fortuneState.activeCardsPool;
+
     const filtered = pool.filter(c => {
-      // Query filter
+      // Category / Element Tab filter
+      if (currentModalFilter && currentModalFilter !== 'all') {
+        if (currentModalFilter === 'major') {
+          if (c.type !== 'major' && (c.id < 1 || c.id > 22)) return false;
+        } else if (currentModalFilter === 'wood') {
+          if (c.element_type !== 'wood' && !(c.element && c.element.includes('ไม้'))) return false;
+        } else if (currentModalFilter === 'fire') {
+          if (c.element_type !== 'fire' && !(c.element && c.element.includes('ไฟ'))) return false;
+        } else if (currentModalFilter === 'earth') {
+          if (c.element_type !== 'earth' && !(c.element && c.element.includes('ดิน'))) return false;
+        } else if (currentModalFilter === 'metal') {
+          if (c.element_type !== 'metal' && !(c.element && c.element.includes('ทอง'))) return false;
+        } else if (currentModalFilter === 'water') {
+          if (c.element_type !== 'water' && !(c.element && c.element.includes('น้ำ'))) return false;
+        } else if (currentModalFilter === 'special') {
+          if (c.type !== 'special' && c.id < 93) return false;
+        }
+      }
+
+      // Search Query filter
       if (query) {
         const matchName = c.name && c.name.toLowerCase().includes(query);
         const matchNameEn = c.name_en && c.name_en.toLowerCase().includes(query);
         const matchNameTh = c.name_th && c.name_th.toLowerCase().includes(query);
+        const matchNameCn = c.name_cn && c.name_cn.toLowerCase().includes(query);
         const matchId = String(c.id) === query;
         const matchKeywords = c.keywords && c.keywords.some(k => k.toLowerCase().includes(query));
-        const matchCore = c.core_meaning && c.core_meaning.toLowerCase().includes(query);
-        if (!(matchName || matchNameEn || matchNameTh || matchId || matchKeywords || matchCore)) {
+        const matchKeywordsTh = c.keywords_th && c.keywords_th.some(k => k.toLowerCase().includes(query));
+        const matchCore = (c.core_meaning || c.concept) && (c.core_meaning || c.concept).toLowerCase().includes(query);
+        const matchElem = c.element && c.element.toLowerCase().includes(query);
+        if (!(matchName || matchNameEn || matchNameTh || matchNameCn || matchId || matchKeywords || matchKeywordsTh || matchCore || matchElem)) {
           return false;
         }
       }
@@ -1534,24 +2363,36 @@ document.addEventListener('DOMContentLoaded', () => {
     filtered.forEach(card => {
       const itemEl = document.createElement('div');
       itemEl.className = 'modal-card-item';
+
+      const metaHtml = `
+        <strong style="font-size: 13.5px; color: #1e293b;">${card.id}. ${card.name_cn ? card.name_cn + ' ' : ''}${card.name_th || card.name}</strong>
+        <span style="font-size: 11.5px; color: ${card.element_color || '#0284c7'}; margin-top: 3px; font-weight: 600;">
+          ${card.element_icon || '🎴'} ${card.element || ''} (${card.suit_name_th || ''})
+        </span>
+        <span style="font-size: 11px; color: #475569; margin-top: 2px;">
+          ✨ ${(card.concept || card.core_meaning || '').slice(0, 48)}${(card.concept || card.core_meaning || '').length > 48 ? '...' : ''}
+        </span>
+        <span style="font-size: 11px; color: #64748b; margin-top: 2px;">
+          🏷️ ${card.keywords_th && card.keywords_th.length ? card.keywords_th.slice(0, 3).join(', ') : (card.keywords ? card.keywords.slice(0, 3).join(', ') : '')}
+        </span>
+      `;
+
       itemEl.innerHTML = `
         <div class="modal-card-thumb" style="position: relative;">
-          <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
+          <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
           <span class="modal-card-num-badge">#${card.id}</span>
         </div>
         <div class="modal-card-meta">
-          <strong style="font-size: 13.5px; color: #1e293b;">${card.id}. ${card.name_en} (${card.name_th})</strong>
-          <span style="font-size: 11.5px; color: #059669; margin-top: 3px;">☀️ ${card.light}</span>
-          <span style="font-size: 11px; color: #d97706; margin-top: 2px;">🌙 ${card.shadow}</span>
-          <span style="font-size: 11px; color: #64748b; margin-top: 2px;">🏷️ ${card.keywords_th ? card.keywords_th.slice(0, 3).join(', ') : ''}</span>
+          ${metaHtml}
         </div>
       `;
 
       itemEl.addEventListener('click', () => {
         assignCardToSlot(fortuneState.modalTargetSlot, card);
         if (cardSelectModal) cardSelectModal.classList.add('hidden');
+        const totalSlots = fortuneState.drawnCards.length;
         const nextSlot = fortuneState.drawnCards.findIndex(c => c === null);
-        fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : 3;
+        fortuneState.currentPickSlot = nextSlot !== -1 ? nextSlot : totalSlots;
         updateSlotVisuals();
       });
 
@@ -1559,21 +2400,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Reveal Divination Button -> Go to Step 3 (Results)
+  // Reveal Divination Button -> Go to Step 2 (Results)
   if (revealDivinationBtn) {
     revealDivinationBtn.addEventListener('click', () => {
+      const totalSlots = fortuneState.drawnCards.length;
       const allFilled = fortuneState.drawnCards.every(c => c !== null);
       if (!allFilled) {
-        alert('กรุณาเลือกไพ่ให้ครบทั้ง 3 ใบก่อนกดทำนายครับ');
+        alert(`กรุณาเลือกไพ่ให้ครบทั้ง ${totalSlots} ใบก่อนกดทำนายครับ`);
         return;
       }
+      const q = userQuestionInput ? userQuestionInput.value.trim() : '';
+      fortuneState.question = q || 'ภาพรวมดวงชะตา พลังงานชีวิต และคำแนะนำในปัจจุบัน';
+      fortuneState.patternId = detectBestPatternForQuestion(fortuneState.question);
       renderDivinationResults();
-      setStep(3);
+      setStep(2);
     });
   }
 
   // --------------------------------------------------------------------------
-  // STEP 3: DIVINATION RESULTS & SYNTHESIS LOGIC (MY CAT & I ORACLE)
+  // STEP 3: DIVINATION RESULTS & SYNTHESIS CONTROLLER (ไพ่เทพเหมียว)
   // --------------------------------------------------------------------------
   function renderDivinationResults() {
     const drawn = fortuneState.drawnCards;
@@ -1583,8 +2428,11 @@ document.addEventListener('DOMContentLoaded', () => {
       resultQuestionTitle.textContent = `“${fortuneState.question}”`;
     }
     if (resultDeckBadge) {
-      resultDeckBadge.textContent = 'My Cat & I Oracle (61 ใบ)';
-      resultDeckBadge.className = 'badge-deck deck-cat';
+      resultDeckBadge.textContent = 'ไพ่เทพเหมียว (92 ใบ)';
+      resultDeckBadge.className = 'badge-deck badge-jiutian';
+    }
+    if (resultSpreadBadge) {
+      resultSpreadBadge.textContent = getActiveSpreadTitle();
     }
     if (resultDateBadge) {
       const now = new Date();
@@ -1593,74 +2441,410 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Render 3 Result Cards
-    if (resultCardsBoard) {
-      resultCardsBoard.innerHTML = '';
-
-      drawn.forEach((card, idx) => {
-        const pos = POSITIONS[idx];
-        const cardEl = document.createElement('article');
-        cardEl.className = 'result-card-item';
-
-        let positionMeaning = '';
-        let quoteText = card.advice || 'จงเริ่มต้นด้วยใจที่เปิดกว้างและมีสติ';
-
-        if (idx === 0) {
-          positionMeaning = `
-            <p><strong>สภาวะปัจจุบัน:</strong> ${card.core_meaning}</p>
-            <p style="margin-top: 6px; color: #059669;"><strong><i class="fa-solid fa-sun"></i> พลังแสงสว่าง (Light):</strong> ${card.light}</p>
-            <p style="margin-top: 4px; color: #d97706;"><strong><i class="fa-solid fa-moon"></i> จุดควรระวัง (Shadow):</strong> ${card.shadow}</p>
-          `;
-        } else if (idx === 1) {
-          positionMeaning = `
-            <p><strong>คำแนะนำสำคัญ (Advice):</strong> ${card.advice}</p>
-            <p style="margin-top: 6px; color: #059669;"><strong><i class="fa-solid fa-bolt"></i> พลังเกื้อหนุน (Light):</strong> ${card.light}</p>
-            <p style="margin-top: 4px; color: #d97706;"><strong><i class="fa-solid fa-shield-halved"></i> สิ่งที่ต้องเลี่ยง (Shadow):</strong> ${card.shadow}</p>
-          `;
-        } else {
-          positionMeaning = `
-            <p><strong>แนวโน้มผลลัพธ์:</strong> เมื่อนำคำแนะนำของไพ่ไปปรับใช้ สถานการณ์จะพัฒนาไปสู่ความสำเร็จ <em>“${card.light}”</em></p>
-            <p style="margin-top: 6px;"><strong>แก่นสาระสำคัญ:</strong> ${card.core_meaning}</p>
-          `;
-        }
-
-        cardEl.innerHTML = `
-          <div class="result-pos-header">
-            <span class="badge-num">${idx + 1}</span>
-            <h3 class="result-pos-title">${pos.title}</h3>
-          </div>
-          <div class="result-card-media cat-card-frame">
-            <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.src='${getDeckBackImage()}'">
-            <div class="card-front-overlay">
-              <div class="overlay-card-num">No. ${String(card.id).padStart(2, '0')}</div>
-              <div class="overlay-card-name-en">${card.name_en || ''}</div>
-              <div class="overlay-card-name-th">${card.name_th || ''}</div>
-            </div>
-          </div>
-          <div class="result-card-details">
-            <h4 class="result-card-name">${card.id}. ${card.name_en} (${card.name_th})</h4>
-            <div class="result-tag-row">
-              <span class="result-tag"><i class="fa-solid fa-cat"></i> My Cat &amp; I</span>
-              ${card.keywords_th ? card.keywords_th.slice(0, 3).map(kw => `<span class="result-tag">${kw}</span>`).join('') : ''}
-            </div>
-            <div class="result-pos-meaning">
-              ${positionMeaning}
-            </div>
-            <div class="result-card-quote">
-              <i class="fa-solid fa-quote-left"></i>
-              <span>“${quoteText}”</span>
-            </div>
-          </div>
-        `;
-
-        resultCardsBoard.appendChild(cardEl);
-      });
-    }
-
-    // Render Synthesis Section
+    renderThepMeowResults(drawn);
     if (resultSynthesisContainer) {
-      renderMyCatSynthesis(drawn);
+      renderThepMeowSynthesis(drawn);
     }
+  }
+
+  // Render Revealed Cards for ไพ่เทพเหมียว (Clean Visual Card Deck - No Clutter)
+  function renderThepMeowResults(drawn) {
+    if (!resultCardsBoard) return;
+    resultCardsBoard.innerHTML = '';
+
+    const positions = getActivePositions();
+    const count = drawn.length;
+
+    if (count === 5) {
+      resultCardsBoard.classList.add('board-5-cards');
+    } else {
+      resultCardsBoard.classList.remove('board-5-cards');
+    }
+
+    drawn.forEach((card, idx) => {
+      const pos = positions[idx] || { title: `ใบที่ ${idx + 1}`, shortName: `ใบที่ ${idx + 1}`, desc: '' };
+      const cardEl = document.createElement('article');
+      cardEl.className = 'result-card-item';
+
+      const baseElem = getBaseElement(card.element);
+      const elemInfo = ELEMENT_INFO[baseElem] || { name: baseElem, cn: '', color: '#0284c7', bg: '#f0f9ff', icon: '🎴' };
+
+      cardEl.innerHTML = `
+        <div class="result-pos-header">
+          <span class="badge-num" style="background: #0284c7;">${idx + 1}</span>
+          <h3 class="result-pos-title">${pos.title}</h3>
+        </div>
+        <div class="result-card-media">
+          <img src="${card.image || getDeckBackImage()}" alt="${card.name_th || card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
+        </div>
+        <div class="result-card-details" style="text-align: center; padding: 4px 6px 10px 6px;">
+          <h4 class="result-card-name" style="text-align: center; color: #0f172a; font-size: 18px; font-weight: 800; margin: 4px 0 2px 0; width: 100%;">
+            ${card.name_th || card.name} ${card.name_cn ? `<small style="font-size: 13.5px; color: #64748b; font-weight: 600;">(${card.name_cn})</small>` : ''}
+          </h4>
+          ${card.deity?.title ? `<div style="font-size: 12px; color: #b45309; font-weight: 600; margin-bottom: 6px; line-height: 1.3;">“${card.deity.title}”</div>` : ''}
+          <div style="display: flex; justify-content: center;">
+            <span class="elem-badge-small" style="background: ${elemInfo.bg}; color: ${elemInfo.color}; border: 1px solid ${elemInfo.border || elemInfo.color}; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
+              ${elemInfo.icon} ธาตุ${baseElem} ${elemInfo.cn ? `(${elemInfo.cn})` : ''}
+            </span>
+          </div>
+          ${card.deity_message ? `
+            <div style="margin-top: 8px; font-size: 11.5px; color: #334155; background: #f8fafc; border-radius: 6px; padding: 6px 8px; border-left: 3px solid #0284c7; text-align: left; line-height: 1.4;">
+              <strong style="color: #0284c7;"><i class="fa-solid fa-feather"></i> โอวาท:</strong> ${card.deity_message}
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      resultCardsBoard.appendChild(cardEl);
+    });
+  }
+
+  // --------------------------------------------------------------------------
+  // REDESIGNED 3-LAYER DIVINATION REPORT (EDITORIAL CONSULTATION DOSSIER)
+  // 1. ความหมายประจำตำแหน่งและสภาวะของแต่ละใบ (Positional Readings)
+  // 2. วิเคราะห์ปฏิสัมพันธ์เบญจธาตุรายคู่ พร้อมไฮไลท์คู่ชี้ขาด (Five Elements)
+  // 3. บทสรุปฟันธง & แผนการปฏิบัติเชิงกลยุทธ์ (Synthesis & Action Plan)
+  // --------------------------------------------------------------------------
+  // Clean raw card text from markdown artifacts and harsh vocabulary
+  function cleanThepMeowCardText(text) {
+    if (!text) return '';
+    return text
+      .replace(/\*\*.*?\*\*/g, (m) => m.replace(/\*\*/g, ''))
+      .replace(/[\*\#\-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .replace(/(ยะโส|เล่ห์เหลี่ยม|ทรยศ|เอาแต่ใจ|ก้าวร้าว|ดื้อดึง|ความโลภ|ความดื้อรั้น)/g, 'ความตึงเครียดหรือความเร่งร้อน')
+      .trim();
+  }
+
+  // Extract core positive wisdom and healing advice from card
+  function getThepMeowCardCore(card) {
+    if (!card) return 'พลังแห่งการเริ่มต้นใหม่และความหวัง';
+    if (card.summary) return cleanThepMeowCardText(card.summary);
+    if (card.keywords && card.keywords.length > 0) return card.keywords.slice(0, 3).join(' • ');
+    if (card.meanings && card.meanings.light_side) return cleanThepMeowCardText(card.meanings.light_side);
+    return cleanThepMeowCardText(card.core_meaning || card.name_th || card.name);
+  }
+
+  // Extract gentle caution without harsh words
+  function getThepMeowCardCaution(card) {
+    if (!card) return 'ค่อยๆ คิด ค่อยๆ ก้าว ไม่ต้องกดดันตัวเอง';
+    if (card.meanings && card.meanings.shadow_side) {
+      const clean = cleanThepMeowCardText(card.meanings.shadow_side);
+      const parts = clean.split(/[.,;\n]/);
+      return parts[0]?.trim() || 'อย่าเพิ่งใจร้อนหรือคาดหวังผลลัพธ์เร็วเกินไป';
+    }
+    if (card.warning) return cleanThepMeowCardText(card.warning);
+    return 'ระวังความกังวลใจล่วงหน้าที่จะมาบั่นทอนพลังใจของคุณ';
+  }
+
+  // Detect user's question intent
+  function detectQuestionIntent(question) {
+    const q = (question || '').toLowerCase();
+    if (/จะ.*ไหม|จะ.*หรือเปล่า|ผ่านไหม|ได้ไหม|สำเร็จไหม|มีโอกาสไหม|รอดไหม|สมหวังไหม|จะดีไหม/.test(q)) {
+      return 'will_it_happen';
+    }
+    if (/ทำยังไง|อย่างไร|วิธี|แนวทาง|ทางออก|ควรทำ|แก้ไข|เริ่มยังไง|แบบไหนดี/.test(q)) {
+      return 'how_to';
+    }
+    if (/เลือก|อันไหน|ทางไหน|หรือ|ดีกว่า/.test(q)) {
+      return 'choices';
+    }
+    if (/รัก|แฟน|คนคุย|คู่|ความสัมพันธ์|เขาคิด|เลิก|คืนดี|ใจ/.test(q)) {
+      return 'relationship';
+    }
+    if (/งาน|เงิน|บริษัท|สัมภาษณ์|สอบ|ย้าย|ลงทุน|ธุรกิจ|ขาย|เงินทอง|โชคลาภ/.test(q)) {
+      return 'career_finance';
+    }
+    return 'general';
+  }
+
+  // 1. Direct Verdict Builder
+  function buildThepMeowVerdict({ question, drawn, patternId, intent }) {
+    const cardLast = drawn[drawn.length - 1];
+    const outcomeName = cardLast ? (cardLast.name_th || cardLast.name) : 'ไพ่แห่งโชคชะตา';
+    const outcomeElem = cardLast ? getBaseElement(cardLast.element) : 'ดิน';
+
+    let verdictLead = '';
+    let verdictDetail = '';
+
+    if (intent === 'will_it_happen') {
+      verdictLead = 'มีแนวโน้มสำเร็จและเปิดทางสว่างสดใสให้คุณอย่างแน่นอนค่ะ';
+      verdictDetail = `พลังจากไพ่ <strong>“${outcomeName}”</strong> ชี้ชัดว่าสิ่งที่คุณกำลังตั้งจิตถามเรื่อง <em>'${question}'</em> มีโอกาสสมหวังสูงมาก ขอเพียงรักษาความสม่ำเสมอและก้าวไปด้วยความมั่นใจ รับรองว่าผลลัพธ์ที่รออยู่จะทำให้คุณยิ้มได้กว้างเลยค่ะ เมี๊ยววว~ 🐾✨`;
+    } else if (intent === 'how_to') {
+      verdictLead = 'กุญแจสำคัญคือการ “วางความกังวลลง แล้วเริ่มจากก้าวเล็กๆ ที่จัดการได้จริงในวันนี้”';
+      verdictDetail = `สำหรับคำถาม <em>'${question}'</em> เทพเหมียวมองเห็นว่าทางออกไม่ได้ซับซ้อนเลยค่ะ ไพ่ <strong>“${outcomeName}”</strong> บอกให้คุณปรับสมดุลธาตุ${outcomeElem}ในตัว โฟกัสกับสิ่งที่มีอำนาจตัดสินใจในมือ และอย่าเพิ่งแบกรับเรื่องราวทั้งหมดไว้คนเดียว ค่อยๆ ก้าวทีละสเต็ป จะราบรื่นและคลี่คลายได้สวยงามแน่นอนค่ะ เมี๊ยววว~ 🐾✨`;
+    } else if (intent === 'choices') {
+      verdictLead = 'เส้นทางที่มีพลังเกื้อหนุนและให้ความสบายใจในระยะยาวคือตัวเลือกที่ดีที่สุด';
+      verdictDetail = `ในเรื่อง <em>'${question}'</em> เทพเหมียวอยากให้คุณสังเกตว่าทางไหนที่คิดถึงแล้วรู้สึกโล่งอกและมีพลังใจมากกว่า นั่นคือเสียงนำทางที่แท้จริง ไพ่ <strong>“${outcomeName}”</strong> ยืนยันว่าเมื่อคุณเลือกด้วยความสงบในใจ จะเกิดความมั่นคงและความก้าวหน้าที่ยั่งยืนค่ะ เมี๊ยววว~ 🐾✨`;
+    } else if (intent === 'relationship') {
+      verdictLead = 'เรื่องของหัวใจกำลังเรียกร้อง “ความเข้าใจและการสื่อสารที่นุ่มนวลจริงใจ”';
+      verdictDetail = `พลังงานความสัมพันธ์ในคำถาม <em>'${question}'</em> มีการเชื่อมต่อของคลื่นอารมณ์ที่ลึกซึ้ง ไพ่ <strong>“${outcomeName}”</strong> แนะนำให้ใช้ความอ่อนโยนเป็นสะพานเชื่อม ไม่ต้องเร่งรัดคำตอบหรือจับผิดกัน แล้วความอบอุ่นจะค่อยๆ หวนกลับมาเบ่งบานอีกครั้งค่ะ เมี๊ยววว~ 🐾✨`;
+    } else if (intent === 'career_finance') {
+      verdictLead = 'จังหวะโอกาสทองกำลังเปิดกว้าง เตรียมตัวให้พร้อมแล้วลงมืออย่างมั่นใจ';
+      verdictDetail = `สำหรับเรื่องงานและโอกาสก้าวหน้าใน <em>'${question}'</em> ไพ่ <strong>“${outcomeName}”</strong> ส่งพลังสนับสนุนอย่างเต็มที่ ทุกความพยายามที่สะสมมาจะไม่สูญเปล่า สิ่งสำคัญคือกล้าแสดงศักยภาพของตัวเองออกมา เทพเหมียวเอาใจช่วยสุดตัวเลยค่ะ เมี๊ยววว~ 🐾✨`;
+    } else {
+      verdictLead = 'สถานการณ์กำลังเปลี่ยนผ่านไปสู่จุดที่คลี่คลายและสบายใจยิ่งขึ้น';
+      verdictDetail = `เทพเหมียวสัมผัสได้ถึงความตั้งใจจริงในคำถาม <em>'${question}'</em> ของคุณ ไพ่ <strong>“${outcomeName}”</strong> มอบคำตอบว่าทุกสิ่งที่พบเจอคือจังหวะชีวิตที่กำลังจัดสรรสิ่งดีๆ เข้ามา ขอให้วางใจในตัวเองและก้าวต่อไปอย่างเบิกบานนะคะ เมี๊ยววว~ 🐾✨`;
+    }
+
+    return `
+      <div class="thepmeow-verdict-box">
+        <div class="thepmeow-verdict-top">
+          <span class="thepmeow-avatar-badge">
+            <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์
+          </span>
+          <span class="thepmeow-verdict-tag">
+            <i class="fa-solid fa-star"></i> คำตอบชัดเจนตรงประเด็น
+          </span>
+        </div>
+        <h3 class="thepmeow-verdict-question">
+          “${question}”
+        </h3>
+        <p class="thepmeow-verdict-speech">
+          “เทพเหมียวตั้งจิตอ่านพลังงานให้คุณแล้วนะคะ... <strong>${verdictLead}</strong> ${verdictDetail}”
+        </p>
+      </div>
+    `;
+  }
+
+  // 2. Connected Story Stream Builder (The 3-Card Journey)
+  function buildThepMeowStoryStream({ question, drawn, patternId, intent, positions }) {
+    let stepsHtml = '';
+
+    drawn.forEach((card, idx) => {
+      const pos = positions[idx] || { title: `ใบที่ ${idx + 1}`, role: 'INSIGHT' };
+      const elem = getBaseElement(card.element);
+      const elemInfo = ELEMENT_INFO[elem] || { icon: '🐾', color: '#ec4899', name: elem };
+      const cardName = card.name_th || card.name;
+      const coreWisdom = getThepMeowCardCore(card);
+      const caution = getThepMeowCardCaution(card);
+      const stepNum = idx + 1;
+
+      let storyIntro = '';
+      let catNote = '';
+
+      if (drawn.length === 3) {
+        if (idx === 0) {
+          storyIntro = `<strong>จุดเริ่มต้นและรากฐานของเรื่อง:</strong> ไพ่ใบแรกเปิดขึ้นมาด้วยพลังของ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) สะท้อนว่าที่ผ่านมาคุณได้สั่งสมประสบการณ์และเผชิญสิ่งต่างๆ มาด้วยความพยายาม สิ่งที่ไพ่บอกคือ <em>${coreWisdom}</em>`;
+          catNote = 'เทพเหมียวสัมผัสได้ว่าคุณเก่งมากแล้วนะที่ผ่านมาถึงจุดนี้ได้ เมี๊ยววว~ 🐾';
+        } else if (idx === 1) {
+          storyIntro = `<strong>สภาวะใจกลางและการประคองสมดุล:</strong> เมื่อมาถึงไพ่ใบที่สอง <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) ได้เข้ามาบอกจุดโฟกัสสำคัญในตอนนี้ คือ <em>${coreWisdom}</em> โดยข้อควรระวังเบาๆ คือ ${caution}`;
+          catNote = 'ตรงนี้ให้ใจเย็นๆ ไม่ต้องเร่งรีบ ค่อยๆ หายใจลึกๆ นะคะ เมี๊ยววว~ 🐾';
+        } else {
+          storyIntro = `<strong>ปลายทางและทิศทางข้างหน้า:</strong> บทสรุปปิดท้ายด้วยไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) เผยให้เห็นแนวโน้มที่กำลังจะผลิดอกออกผล คือ <em>${coreWisdom}</em> หากคุณประคองใจตามคำแนะนำ ทุกอย่างจะลงตัวอย่างงดงามค่ะ`;
+          catNote = 'ปลายทางสดใสรออยู่แน่นอน เชื่อมั่นในตัวเองเข้าไว้นะคะ เมี๊ยววว~ 🐾✨';
+        }
+      } else {
+        storyIntro = `<strong>${pos.title}:</strong> พลังของไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) กำลังสื่อสารกับคุณว่า: ${coreWisdom}`;
+        catNote = `เทพเหมียวอยากให้คุณนำพลังธาตุ${elem}นี้มาเสริมความมั่นใจนะคะ เมี๊ยววว~ 🐾`;
+      }
+
+      stepsHtml += `
+        <div class="thepmeow-step-card step-card-${stepNum}">
+          <div class="step-card-header">
+            <div class="step-card-pill">
+              <span class="step-num-badge">${stepNum}</span>
+              <span>${cardName}</span>
+              <span style="font-size: 12px; color: ${elemInfo.color}; font-weight: 600;">
+                (${elemInfo.icon} ธาตุ${elem})
+              </span>
+            </div>
+            <span class="step-role-label">
+              <i class="fa-solid fa-sparkles" style="color: #f59e0b; margin-right: 4px;"></i>${pos.title}
+            </span>
+          </div>
+          <p class="step-card-text">
+            ${storyIntro}
+          </p>
+          <div style="margin-top: 10px; font-size: 13px; color: #ec4899; font-weight: 600; background: #fdf2f8; padding: 6px 12px; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-comment-dots"></i> ${catNote}
+          </div>
+        </div>
+      `;
+    });
+
+    return `
+      <div class="thepmeow-story-stream">
+        <div class="thepmeow-stream-header">
+          <h3 class="thepmeow-stream-title">
+            <i class="fa-solid fa-compass" style="color: #ec4899;"></i> การเดินทางของคลื่นพลังงาน (Story Journey)
+          </h3>
+          <p class="thepmeow-stream-sub">
+            เทพเหมียวร้อยเรียงเรื่องราวจากไพ่ทั้งสำรับเป็นหนึ่งเดียว เพื่อให้คุณเห็นภาพชัดเจนที่สุด
+          </p>
+        </div>
+        ${stepsHtml}
+      </div>
+    `;
+  }
+
+  // 3. 3 Practical Actions Builder (Mindset, Action, Release)
+  function buildThepMeowActions({ question, drawn, intent }) {
+    const cardMid = drawn[1] || drawn[0];
+    const cardLast = drawn[drawn.length - 1];
+    const cautionText = getThepMeowCardCaution(cardMid);
+    const coreAction = getThepMeowCardCore(cardLast);
+
+    return `
+      <div class="thepmeow-action-box">
+        <h3 class="thepmeow-action-heading">
+          <i class="fa-solid fa-list-check"></i> 3 สเต็ปฮีลใจและแผนปฏิบัติจริง โดย เทพเหมียว
+        </h3>
+        <div class="thepmeow-action-items">
+          <div class="thepmeow-action-row">
+            <div class="action-row-icon icon-mind">
+              <i class="fa-solid fa-brain"></i>
+            </div>
+            <div class="action-row-text">
+              <strong>สเต็ปที่ 1: ปรับคลื่นใจให้สงบและเชื่อมั่น (Mindset)</strong><br />
+              วางความกังวลในอนาคตที่ยังมาไม่ถึงลงก่อน บอกตัวเองทุกเช้าว่า <em>“ฉันทำดีที่สุดในจุดนี้ และฉันคู่ควรกับสิ่งที่ดีงาม”</em> ไม่เปรียบเทียบตัวเองกับใคร เมี๊ยววว~ 🐾
+            </div>
+          </div>
+
+          <div class="thepmeow-action-row">
+            <div class="action-row-icon icon-act">
+              <i class="fa-solid fa-paw"></i>
+            </div>
+            <div class="action-row-text">
+              <strong>สเต็ปที่ 2: เริ่มลงมือทำก้าวเล็กๆ ทันที (Practical Action)</strong><br />
+              นำพลังจากไพ่มาขับเคลื่อน: โฟกัสที่ <strong>“${coreAction}”</strong> เริ่มจากสิ่งที่ทำได้ง่ายที่สุด 1 อย่างในวันนี้ ความสม่ำเสมอเพียงเล็กน้อยจะสร้างปาฏิหาริย์ที่ยิ่งใหญ่ค่ะ เมี๊ยววว~ 🐾
+            </div>
+          </div>
+
+          <div class="thepmeow-action-row">
+            <div class="action-row-icon icon-let">
+              <i class="fa-solid fa-feather-pointed"></i>
+            </div>
+            <div class="action-row-text">
+              <strong>สเต็ปที่ 3: ปล่อยวางและระวังจุดสะดุด (Release & Care)</strong><br />
+              สิ่งที่ควรระวังคือ <strong>“${cautionText}”</strong> อย่ากดดันตัวเองจนตึงเกินไป หากเหนื่อยให้พัก ดื่มน้ำอุ่น กอดน้องแมว หรือทำสิ่งที่ทำให้ยิ้มได้ แล้วค่อยลุยต่อนะคะ เมี๊ยววว~ 🐾
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Empowerment Blessing Builder
+  function buildThepMeowBlessing({ question, drawn }) {
+    const quotes = [
+      '“เมื่อใจของคุณสงบและมั่นคง ทางเดินข้างหน้าจะสว่างไสวเสมอ ขอให้เชื่อมั่นในแสงสว่างในตัวคุณนะคะ”',
+      '“ทุกการเดินทางมีจังหวะเวลาที่งดงามเสมอ สิ่งดีๆ กำลังเดินทางมาหาคุณตามเวลาที่เหมาะสมที่สุดค่ะ”',
+      '“คุณมีความเข้มแข็งและน่ารักในแบบของตัวเอง อย่าลืมใจดีกับตัวเองให้มากๆ ในทุกๆ วันนะคะ”',
+      '“ท้องฟ้าหลังสายฝนสดใสเสมอ และคลื่นลมในใจคุณกำลังจะกลับมาสงบราบรื่นแล้วค่ะ”'
+    ];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+    return `
+      <div class="thepmeow-blessing-card">
+        <div class="thepmeow-blessing-badge">
+          <i class="fa-solid fa-sparkles"></i> พรเสริมมงคลจากเทพเหมียว
+        </div>
+        <p class="thepmeow-blessing-quote">
+          ${randomQuote}
+        </p>
+        <p class="thepmeow-blessing-author">
+          — ส่งพลังรัก ปัดเป่าความกังวล และส่งอ้อมกอดอุ่นๆ โดย เทพเหมียว เมี๊ยววว~ 🐾💖
+        </p>
+      </div>
+    `;
+  }
+
+  // --------------------------------------------------------------------------
+  // MAIN SYNTHESIS DISPATCHER
+  // --------------------------------------------------------------------------
+  function renderThepMeowSynthesis(drawn) {
+    if (!resultSynthesisContainer) return;
+    const question = (fortuneState.question || 'สิ่งที่อยู่ในใจ').trim();
+    const intent = detectQuestionIntent(question);
+    const patternId = fortuneState.patternId || 'pattern1';
+    const positions = getActivePositions();
+
+    const verdictHtml = buildThepMeowVerdict({ question, drawn, patternId, intent });
+    const storyHtml = buildThepMeowStoryStream({ question, drawn, patternId, intent, positions });
+    const actionHtml = buildThepMeowActions({ question, drawn, intent });
+    const blessingHtml = buildThepMeowBlessing({ question, drawn });
+
+    resultSynthesisContainer.innerHTML = `
+      <div class="thepmeow-dossier">
+        <!-- Layer 1: ฟันธงชัดเจน ตอบตรงคำถาม -->
+        ${verdictHtml}
+
+        <!-- Layer 2: การเดินทางของไพ่ 3 ใบ (Connected Narrative) -->
+        ${storyHtml}
+
+        <!-- Layer 3: 3 สเต็ปฮีลใจและแนวทางปฏิบัติ -->
+        ${actionHtml}
+
+        <!-- Layer 4: พรเสริมมงคลจากเทพเหมียว -->
+        ${blessingHtml}
+      </div>
+    `;
+  }
+
+  // Render 3 Cards for My Cat & I Oracle
+  function renderMyCatResults(drawn) {
+    if (!resultCardsBoard) return;
+    resultCardsBoard.innerHTML = '';
+
+    drawn.forEach((card, idx) => {
+      const pos = POSITIONS[idx];
+      const cardEl = document.createElement('article');
+      cardEl.className = 'result-card-item';
+
+      let positionMeaning = '';
+      const quoteText = card.advice || 'จงเริ่มต้นด้วยใจที่เปิดกว้างและมีสติ';
+
+      if (idx === 0) {
+        positionMeaning = `
+          <p><strong>สภาวะปัจจุบัน:</strong> ${card.core_meaning}</p>
+          <p style="margin-top: 6px; color: #059669;"><strong><i class="fa-solid fa-sun"></i> พลังแสงสว่าง (Light):</strong> ${card.light}</p>
+          <p style="margin-top: 4px; color: #d97706;"><strong><i class="fa-solid fa-moon"></i> จุดควรระวัง (Shadow):</strong> ${card.shadow}</p>
+        `;
+      } else if (idx === 1) {
+        positionMeaning = `
+          <p><strong>คำแนะนำสำคัญ (Advice):</strong> ${card.advice}</p>
+          <p style="margin-top: 6px; color: #059669;"><strong><i class="fa-solid fa-bolt"></i> พลังเกื้อหนุน (Light):</strong> ${card.light}</p>
+          <p style="margin-top: 4px; color: #d97706;"><strong><i class="fa-solid fa-shield-halved"></i> สิ่งที่ต้องเลี่ยง (Shadow):</strong> ${card.shadow}</p>
+        `;
+      } else {
+        positionMeaning = `
+          <p><strong>แนวโน้มผลลัพธ์:</strong> เมื่อนำคำแนะนำของไพ่ไปปรับใช้ สถานการณ์จะพัฒนาไปสู่ความสำเร็จ <em>“${card.light}”</em></p>
+          <p style="margin-top: 6px;"><strong>แก่นสาระสำคัญ:</strong> ${card.core_meaning}</p>
+        `;
+      }
+
+      cardEl.innerHTML = `
+        <div class="result-pos-header">
+          <span class="badge-num">${idx + 1}</span>
+          <h3 class="result-pos-title">${pos.title}</h3>
+        </div>
+        <div class="result-card-media cat-card-frame">
+          <img src="${card.image || getDeckBackImage()}" alt="${card.name}" onerror="this.onerror=null; this.src='${getDeckBackImage()}';">
+          <div class="card-front-overlay">
+            <div class="overlay-card-num">No. ${String(card.id).padStart(2, '0')}</div>
+            <div class="overlay-card-name-en">${card.name_en || ''}</div>
+            <div class="overlay-card-name-th">${card.name_th || ''}</div>
+          </div>
+        </div>
+        <div class="result-card-details">
+          <h4 class="result-card-name">${card.id}. ${card.name_en} (${card.name_th})</h4>
+          <div class="result-tag-row">
+            <span class="result-tag"><i class="fa-solid fa-cat"></i> My Cat &amp; I</span>
+            ${card.keywords_th ? card.keywords_th.slice(0, 3).map(kw => `<span class="result-tag">${kw}</span>`).join('') : ''}
+          </div>
+          <div class="result-pos-meaning">
+            ${positionMeaning}
+          </div>
+          <div class="result-card-quote">
+            <i class="fa-solid fa-quote-left"></i>
+            <span>“${quoteText}”</span>
+          </div>
+        </div>
+      `;
+
+      resultCardsBoard.appendChild(cardEl);
+    });
   }
 
   function renderMyCatSynthesis(drawn) {
@@ -1724,16 +2908,25 @@ document.addEventListener('DOMContentLoaded', () => {
   if (newReadingBtn) {
     newReadingBtn.addEventListener('click', () => {
       resetPicks();
-      if (userQuestionInput) userQuestionInput.value = '';
+      if (userQuestionInput) {
+        userQuestionInput.value = '';
+        userQuestionInput.focus();
+      }
+      fortuneState.question = '';
+      fortuneState.patternId = 'pattern2';
       setStep(1);
+      renderFanDeck();
+      renderPickSlots();
+      updateSlotVisuals();
     });
   }
 
   if (redrawCurrentCardsBtn) {
     redrawCurrentCardsBtn.addEventListener('click', () => {
       resetPicks();
-      setStep(2);
+      setStep(1);
       renderFanDeck();
+      renderPickSlots();
       updateSlotVisuals();
     });
   }
@@ -1750,25 +2943,88 @@ document.addEventListener('DOMContentLoaded', () => {
   if (copyResultTextBtn) {
     copyResultTextBtn.addEventListener('click', () => {
       const drawn = fortuneState.drawnCards;
-      let text = `🔮 === ผลคำทำนายไพ่: My Cat & I Oracle (61 ใบ) ===\n`;
-      text += `❓ คำถาม: ${fortuneState.question}\n`;
-      text += `📅 วันที่ทำนาย: ${new Date().toLocaleDateString('th-TH')}\n\n`;
+      const positions = getActivePositions();
+      const spreadTitle = getActiveSpreadTitle();
+      const isPattern4 = fortuneState.spreadType === '3cards' && fortuneState.patternId === 'pattern4';
+      const is5Cards = drawn.length === 5;
+      const { choiceA, choiceB } = parseQuestionChoices(fortuneState.question);
 
+      let text = `🔮 === ผลคำทำนายไพ่: ไพ่เทพเหมียว (92 ใบ) ===\n`;
+      text += `❓ คำถาม: ${fortuneState.question}\n`;
+      text += `🎴 รูปแบบการอ่าน: ${spreadTitle}\n`;
+      text += `📅 วันที่ทำนาย: ${new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}\n\n`;
+
+      text += `🐱 【ชั้นที่ 1: ความหมายประจำตำแหน่ง & สภาวะของแต่ละใบ】\n`;
       drawn.forEach((c, idx) => {
-        const pos = POSITIONS[idx];
-        text += `[${pos.title}]\n`;
-        text += `ไพ่: No. ${c.id} - ${c.name_en} (${c.name_th})\n`;
-        text += `แก่นความหมาย: ${c.core_meaning || ''}\n`;
-        if (c.light) text += `แสงสว่าง (Light): ${c.light}\n`;
-        if (c.shadow) text += `ด้านเงา (Shadow): ${c.shadow}\n`;
-        if (c.advice) text += `คำแนะนำ (Advice): ${c.advice}\n`;
+        const pos = positions[idx] || { title: `ใบที่ ${idx + 1}` };
+        const baseElem = getBaseElement(c.element);
+        text += `• ${pos.title}: ไพ่ "${c.name_th || c.name}" (ธาตุ${baseElem})\n`;
+        if (isPattern4) {
+          if (idx === 0) {
+            text += `  - สภาวะหากเลือก "${choiceA}": ${c.concept || c.core_meaning || ''}\n`;
+            text += `  - จุดที่ต้องพิจารณา: ${getCardConsideration(c, choiceA, baseElem)}\n`;
+          } else if (idx === 1) {
+            text += `  - สภาวะหากเลือก "${choiceB}": ${c.concept || c.core_meaning || ''}\n`;
+            text += `  - จุดที่ต้องพิจารณา: ${getCardConsideration(c, choiceB, baseElem)}\n`;
+          } else {
+            text += `  - คำชี้แนะจากปัญญาญาณ: ${getCardWisdomGuidance(c)}\n`;
+            text += `  - แก่นธรรมประจำใบ: ${c.concept || c.core_meaning || ''}\n`;
+          }
+        } else {
+          text += `  - แก่นสาระประจำใบ: ${c.concept || c.core_meaning || ''}\n`;
+          if (c.advice) text += `  - คำแนะนำ/กลยุทธ์: ${c.advice}\n`;
+        }
         text += `\n`;
       });
 
-      text += `✨ ขอให้พลังแห่งความสุขและคำแนะนำของไพ่นำทางให้คุณสมหวังในทุกสิ่ง! ✨\n`;
+      text += `⚡ 【ชั้นที่ 2: วิเคราะห์ปฏิสัมพันธ์เบญจธาตุ (Five Elements Relations)】\n`;
+      if (isPattern4) {
+        const elemA = getBaseElement(drawn[0].element);
+        const elemB = getBaseElement(drawn[1].element);
+        const advElem = getBaseElement(drawn[2].element);
+        const relAB = getElementRelation(drawn[0].element, drawn[1].element);
+        const relBAdv = getElementRelation(drawn[2].element, drawn[1].element);
+        const relAAdv = getElementRelation(drawn[0].element, drawn[2].element);
+
+        text += `1) คู่ที่ 1: ตัวเลือก A (${choiceA}: ${drawn[0].name_th}) ↔ ตัวเลือก B (${choiceB}: ${drawn[1].name_th})\n`;
+        text += `   - ความสัมพันธ์: ${relAB.typeTh} (${relAB.headline})\n\n`;
+
+        text += `2) ✨ คู่ที่ 2 (จุดชี้ขาด): ตัวเลือก B (${choiceB}: ${drawn[1].name_th}) ↔ คำแนะนำ (${drawn[2].name_th})\n`;
+        text += `   - ความสัมพันธ์: ${relBAdv.typeTh} (${relBAdv.headline})\n`;
+        if (GENERATING_MAP[advElem] && GENERATING_MAP[advElem].target === elemB) {
+          text += `   - คำแนะนำ (${advElem}) ส่งเสริมตัวเลือก B (${elemB}) โดยตรง (相生)! ปัญหาแก้ไขได้ด้วยพลังคำแนะนำ\n\n`;
+        } else {
+          text += `   - วิเคราะห์ความสอดคล้องระหว่างคำแนะนำกับตัวเลือก B\n\n`;
+        }
+
+        text += `3) คู่ที่ 3: ตัวเลือก A (${choiceA}: ${drawn[0].name_th}) ↔ คำแนะนำ (${drawn[2].name_th})\n`;
+        text += `   - ความสัมพันธ์: ${relAAdv.typeTh} (${relAAdv.headline})\n\n`;
+      } else {
+        text += `สายธารพลังงานธาตุ: ${drawn.map(c => `${c.name_th} (${getBaseElement(c.element)})`).join(' → ')}\n\n`;
+      }
+
+      text += `💡 【ชั้นที่ 3: บทสรุปฟันธง & แผนการปฏิบัติเชิงกลยุทธ์】\n`;
+      if (isPattern4) {
+        const elemA = getBaseElement(drawn[0].element);
+        const elemB = getBaseElement(drawn[1].element);
+        const advElem = getBaseElement(drawn[2].element);
+        const adviceSupportsB = GENERATING_MAP[advElem] && GENERATING_MAP[advElem].target === elemB;
+        if (adviceSupportsB) {
+          text += `• บทสรุปฟันธง: พลังคำแนะนำ “${drawn[2].name_th} (${advElem})” ส่งเสริมทางเลือก “${choiceB} (${drawn[1].name_th} - ${elemB})” โดยตรง (相生) ชี้ชัดว่าภาระงานแก้ไขได้ด้วยการปรับวิธีทำงาน\n`;
+          text += `• 1. แนวทางที่ดีที่สุดในตอนนี้: อยู่ต่อ/เลือก ${choiceB} แต่ต้อง "กระจายภาระ" อย่าแบกคนเดียว ใช้พลังร่วมมือประสานใจ\n`;
+          text += `• 2. ข้อพิจารณาสำรอง: หากต้องเลือก ${choiceA} อย่ากักตัวอยู่เฉยๆ ให้ใช้พลังคำแนะนำมองหาทีมสนับสนุนและคอนเนกชันใหม่\n\n`;
+        }
+      }
+      text += `📜 【กฎทอง 6 ประการของสำรับไพ่เทพเหมียว】\n`;
+      text += `1. ยึดความหมายไพ่ตามคู่มือเป็นแกนหลัก\n`;
+      text += `2. ระบบธาตุเป็นเครื่องมือวิเคราะห์แรงส่ง\n`;
+      text += `3. ธาตุเกื้อหนุน (相生) ไม่ได้รับประกันผลดีเสมอไป\n`;
+      text += `4. ธาตุควบคุม (相克) ไม่ได้รับประกันผลเสียเสมอไป\n`;
+      text += `5. ไพ่เปรียบเทียบทางเลือก ชี้ให้เห็นผลลัพธ์ของแต่ละเส้นทาง\n`;
+      text += `6. ไพ่คำแนะนำเป็นเสมือนเข็มทิศชี้ทางเพื่อการตัดสินใจอย่างมีสติสัมปชัญญะ\n`;
 
       navigator.clipboard.writeText(text).then(() => {
-        alert('คัดลอกข้อความคำทำนายลง Clipboard เรียบร้อยแล้ว!');
+        alert('คัดลอกข้อความบทวิเคราะห์ 3 ชั้น ลง Clipboard เรียบร้อยแล้ว!');
       }).catch(err => {
         alert('ไม่สามารถคัดลอกได้: ' + err.message);
       });
@@ -1785,8 +3041,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('cardList')) {
     initApp();
   }
-  // Set default view to Tarot Reading App
+  // Set default view to Tarot Reading App Step 1 (Question Input + Cards Fan + 3 Slots)
+  fortuneState.spreadType = '3cards';
+  fortuneState.drawnCards = [null, null, null];
+  fortuneState.activeCardsPool = getActiveCardsPool();
   setStep(1);
+  renderFanDeck();
+  renderPickSlots();
+  updateSlotVisuals();
 });
 
 

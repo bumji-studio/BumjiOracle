@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>แม่หมอติ๊ดติ๊ด - ดูดวงไพ่ออราเคิล My Cat &amp; I (สไตล์โมเดิร์นฮีลใจ)</title>
+  <title>แม่หมอติ๊ดติ๊ด - ดูดวงไพ่เทพเหมียว (สไตล์โมเดิร์นฮีลใจ)</title>
   
   <!-- Google Fonts for premium Thai & English typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261012_mobile_radar_v24">
+  <link rel="stylesheet" href="styles.css?v=20261016_layout_v3">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -146,7 +146,7 @@
       .slot-card-holder {
         width: 100% !important;
         max-width: 96px !important;
-        aspect-ratio: 2 / 3 !important;
+        aspect-ratio: 826 / 1299 !important;
         height: auto !important;
         max-height: 140px !important;
         border-radius: 8px !important;
@@ -477,12 +477,12 @@
       <i class="fa-solid fa-wand-magic-sparkles logo-icon"></i>
       <div>
         <h1>แม่หมอติ๊ดติ๊ด</h1>
-        <span class="subtitle">✨ ดูดวงไพ่ออราเคิล My Cat &amp; I (61 ใบ) • สไตล์โมเดิร์นฮีลใจ</span>
+        <span class="subtitle">✨ ดูดวงไพ่เทพเหมียว (92 ใบ) • เบญจธาตุสัจธรรม ผสานสไตล์โมเดิร์นฮีลใจ</span>
       </div>
     </div>
     <!-- Mode Navigation Tabs -->
     <div class="header-nav-tabs" id="headerNavTabs">
-      <button class="nav-tab active" id="tabReadingBtn" title="ระบบทำนายไพ่ออราเคิล My Cat &amp; I">
+      <button class="nav-tab active" id="tabReadingBtn" title="ระบบทำนายไพ่เทพเหมียว">
         <i class="fa-solid fa-wand-magic-sparkles"></i> <span>ทำนายไพ่</span>
       </button>
       <button class="nav-tab" id="tabTongShuBtn" title="ปฏิทินและฤกษ์ยามมงคล TongShu">
@@ -989,27 +989,23 @@
   <div id="readingAppView" class="view-container">
     <div class="reading-app-container">
       
-      <!-- STEPPER PROGRESS BAR (3 STEPS) -->
+      <!-- STEPPER PROGRESS BAR (2 STEPS) -->
       <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง">
         <div class="stepper-track">
           <div class="stepper-fill" id="stepperFill" style="width: 0%;"></div>
         </div>
         <div class="stepper-step active" id="stepIndicator1" data-step="1">
-          <div class="step-num"><i class="fa-solid fa-pen-nib"></i></div>
-          <span class="step-label">1. กรอกคำถาม</span>
+          <div class="step-num"><i class="fa-solid fa-hand-sparkles"></i></div>
+          <span class="step-label">1. ตั้งคำถาม &amp; เลือกไพ่ 3 ใบ</span>
         </div>
         <div class="stepper-step" id="stepIndicator2" data-step="2">
-          <div class="step-num"><i class="fa-solid fa-hand-sparkles"></i></div>
-          <span class="step-label">2. เลือกไพ่ 3 ใบ</span>
-        </div>
-        <div class="stepper-step" id="stepIndicator3" data-step="3">
           <div class="step-num"><i class="fa-solid fa-star"></i></div>
-          <span class="step-label">3. แสดงคำตอบ</span>
+          <span class="step-label">2. คำทำนายดวงชะตา</span>
         </div>
       </nav>
 
-      <!-- PINNED CONTEXT BAR (Active in Step 2, 3, 4) -->
-      <div id="pinnedContextBar" class="pinned-context-bar hidden">
+      <!-- PINNED CONTEXT BAR (Hidden in 2-step single screen) -->
+      <div id="pinnedContextBar" class="pinned-context-bar hidden" style="display: none !important;">
         <div class="context-item context-question">
           <i class="fa-solid fa-circle-question icon-gold"></i>
           <div class="context-text">
@@ -1018,10 +1014,10 @@
           </div>
         </div>
         <div class="context-item context-deck hidden" id="pinnedDeckItem">
-          <i class="fa-solid fa-layer-group icon-gold"></i>
+          <i class="fa-solid fa-cat icon-gold"></i>
           <div class="context-text">
-            <span class="context-label">ชุดไพ่ที่เลือก:</span>
-            <strong id="pinnedDeckText" class="context-val">-</strong>
+            <span class="context-label">สำรับไพ่:</span>
+            <strong id="pinnedDeckText" class="context-val">ไพ่เทพเหมียว (92 ใบ)</strong>
           </div>
         </div>
         <button class="btn btn-secondary-sm" id="editQuestionQuickBtn" title="แก้ไขคำถาม">
@@ -1029,49 +1025,19 @@
         </button>
       </div>
 
-      <!-- ============================================================ -->
-      <!-- STEP 1: QUESTION INPUT -->
-      <!-- ============================================================ -->
-      <section id="readingStep1" class="reading-step-card animate-fade-in">
-        <div class="step1-hero">
-          <div class="sparkle-orbit">
-            <i class="fa-solid fa-wand-magic-sparkles step1-main-icon"></i>
-          </div>
-          <h2 class="step1-title">ถามอะไรก็ได้... ไพ่ My Cat &amp; I พร้อมตอบ 🔮✨</h2>
-          <p class="step1-desc">
-            แตะเลือกหัวข้อยอดฮิตด้านบน หรือพิมพ์เรื่องที่อยากรู้ในใจได้เลย สำรับ My Cat &amp; I (61 ใบ) พร้อมเปิดชะตาให้แล้ว!
-          </p>
-        </div>
+      <!-- LEGACY PLACEHOLDERS TO PREVENT SCRIPT NULL ERRORS -->
+      <div id="readingStep1" class="hidden" style="display: none !important;"></div>
+      <div id="readingStep2" class="hidden" style="display: none !important;"></div>
 
-        <div class="question-input-box-wrapper">
-          <!-- Quick Suggestion Topic Chips (Moved above question input) -->
-          <div class="suggestion-chips-area">
-            <span class="chips-label"><i class="fa-solid fa-fire text-pink"></i> หัวข้อฮิตวัยรุ่น อยากรู้เรื่องไหนจิ้มเลย:</span>
-            <div class="chips-grid">
-              <button type="button" class="chip-btn chip-pink" data-question="ความสัมพันธ์และความรักตอนนี้ เค้าคิดยังไงกับเรา? มีแนวโน้มพัฒนาไหม?">
-                <i class="fa-solid fa-heart"></i> 💖 เรื่องรัก &amp; คนคุย
-              </button>
-              <button type="button" class="chip-btn chip-purple" data-question="ทิศทางการงาน โปรเจกต์ หรือการสัมภาษณ์งานรอบนี้ จะปังไหม?">
-                <i class="fa-solid fa-bolt"></i> 💼 งาน &amp; โปรเจกต์ใหม่
-              </button>
-              <button type="button" class="chip-btn chip-cyan" data-question="การเงินและโชคลาภช่วงนี้ จะมีเงินเข้ามาเปย์ตัวเองรัวๆ ไหม?">
-                <i class="fa-solid fa-coins"></i> 💸 การเงิน &amp; โชคลาภ
-              </button>
-              <button type="button" class="chip-btn chip-amber" data-question="สภาพจิตใจและเอเนอร์จี้ช่วงนี้ มีคำแนะนำอะไรให้สดชื่นขึ้นบ้าง?">
-                <i class="fa-solid fa-cat"></i> 🐱 พักใจ &amp; บูสต์พลังบวก
-              </button>
-              <button type="button" class="chip-btn chip-green" data-question="ทางแก้และกลยุทธ์ที่ดีที่สุดในการผ่านอุปสรรคช่วงนี้ไปให้ได้">
-                <i class="fa-solid fa-compass"></i> ⚡ ทางออก &amp; กลยุทธ์
-              </button>
-              <button type="button" class="chip-btn chip-blue" data-question="ภาพรวมโชคชะตาและเรื่องดีๆ ที่กำลังจะวิ่งเข้ามาหาเรา">
-                <i class="fa-solid fa-sparkles"></i> 🚀 สรุปภาพรวมชะตา
-              </button>
-            </div>
-          </div>
-
-          <!-- Question Textarea Container -->
+      <!-- ============================================================ -->
+      <!-- MAIN SCREEN (STEP 1): QUESTION INPUT & PICK 3 CARDS -->
+      <!-- ============================================================ -->
+      <section id="readingStep3" class="reading-step-card animate-fade-in">
+        
+        <!-- Integrated Question Input Card at the Top -->
+        <div class="question-integrated-box">
           <div class="question-textarea-container">
-            <textarea id="userQuestionInput" class="question-textarea" rows="3" placeholder="พิมพ์คำถามที่อยากรู้ เช่น คนคุยคนนี้คิดยังไงกับเรา? / สัมภาษณ์งานรอบนี้จะผ่านไหม? / ปีนี้จะมีโชคมีเงินเปย์ตัวเองรัวๆ ไหม..."></textarea>
+            <textarea id="userQuestionInput" class="question-textarea" rows="2" placeholder="พิมพ์คำถามที่อยากรู้ เช่น ทิศทางการงาน โปรเจกต์ หรือการสัมภาษณ์งานรอบนี้ จะปังไหม?..."></textarea>
             <div class="textarea-actions">
               <button class="btn-clear-text" id="clearQuestionBtn" type="button" title="ล้างข้อความ">
                 <i class="fa-solid fa-xmark"></i> ล้าง
@@ -1079,193 +1045,60 @@
             </div>
           </div>
 
-          <div class="step1-action-row">
-            <button class="btn btn-primary btn-lg pulse-glow" id="proceedToStep2Btn">
-              ไปเลือกไพ่ 3 ใบกันเลย ✨ <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- STEP 2 (LEGACY DECK SELECTION - HIDDEN FOR SINGLE DECK MODE) -->
-      <section id="readingStep2" class="reading-step-card hidden animate-fade-in" style="display: none !important;">
-        <div class="step-header-with-back">
-          <button class="btn btn-secondary-sm" id="backToStep1Btn">
-            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปแก้ไขคำถาม
-          </button>
-          <div class="step-title-group">
-            <h2 class="step-title"><i class="fa-solid fa-layer-group"></i> เลือกสำรับที่ใช่สำหรับคำถามนี้</h2>
-            <p class="step-desc">ชอบสไตล์ไหนเลือกได้เลย: ไพ่เทพจีนสายกลยุทธ์คมชัด หรือ แก๊งแมวนุ่มฟูฮีลใจอบอุ่น</p>
-          </div>
-        </div>
-
-        <div class="collection-selection-grid">
-          
-          <!-- Collection 1: JiuTian Arcana (ไพ่เทพจีน) -->
-          <article class="collection-card deck-jiutian" data-deck-id="jiutian">
-            <div class="collection-badge badge-jiutian">
-              <i class="fa-solid fa-dragon"></i> ชุดที่ 1: JiuTian Arcana
+          <!-- Smart Pattern Recommendation Box (Hidden from UI, runs silently in background) -->
+          <div id="smartPatternBox" class="smart-pattern-box hidden" style="display: none !important;">
+            <div class="smart-pattern-header">
+              <span class="smart-pattern-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> แม่หมอวิเคราะห์คำถามและเลือกรูปแบบ 3 ใบให้:</span>
             </div>
-
-            <div class="collection-card-body">
-              <div class="collection-media-box">
-                <img src="assets/deck_jiutian_box.jpg" alt="JiuTian Arcana Tarot Deck" class="collection-box-img">
-                <div class="deck-count-badge">สำรับ 96 ใบ</div>
-              </div>
-
-              <div class="collection-info">
-                <h3 class="collection-name">JiuTian Arcana (ไพ่เทพจีน)</h3>
-                <p class="collection-tagline">มหาสำรับเทพเจ้าจีน ปรัชญาเต๋า และเบญจธาตุพลังจักรวาล</p>
-
-                <!-- แนวคำตอบ -->
-                <div class="collection-style-box style-jiutian">
-                  <div class="style-header">
-                    <i class="fa-solid fa-compass-drafting"></i> <strong>แนวคำตอบ:</strong> ชี้แนะแนวทาง &amp; กลยุทธ์เฉียบคม
-                  </div>
-                  <p class="style-desc">
-                    เน้นการวิเคราะห์เชิงลึก สะท้อนสมดุลเบญจธาตุ (ทอง ไม้ น้ำ ไฟ ดิน) และกลยุทธ์ตามคติธรรมเต๋า มอบโอวาทคำสอนจากทวยเทพจีนโบราณ เหมาะสำหรับคำถามที่ต้องการทางออก การวางแผนชีวิต และการตัดสินใจครั้งสำคัญ
-                  </p>
-                </div>
-
-                <ul class="collection-features">
-                  <li><i class="fa-solid fa-circle-check text-gold"></i> ไพ่เทพจีนและขุนพลสวรรค์ 96 ใบพร้อมภาพศิลปะงดงาม</li>
-                  <li><i class="fa-solid fa-circle-check text-gold"></i> ชี้แนะจังหวะชีวิต วิเคราะห์ทั้งธาตุเกื้อหนุนและธาตุข่ม</li>
-                  <li><i class="fa-solid fa-circle-check text-gold"></i> เหมาะกับการวางกลยุทธ์ การงาน ธุรกิจ และทางแก้ปัญหา</li>
-                </ul>
-
-                <button class="btn btn-primary btn-block select-deck-btn" data-deck-id="jiutian">
-                  <i class="fa-solid fa-wand-magic-sparkles"></i> เลือกชุด JiuTian Arcana
-                </button>
-              </div>
-            </div>
-          </article>
-
-          <!-- Collection 2: Bumji & The Gang (บุ๋มจิแอนด์เดอะแก๊งค์) -->
-          <article class="collection-card deck-bumji" data-deck-id="bumji">
-            <div class="collection-badge badge-bumji">
-              <i class="fa-solid fa-paw"></i> ชุดที่ 2: Bumji &amp; The Gang
-            </div>
-
-            <div class="collection-card-body">
-              <div class="collection-media-box">
-                <img src="assets/deck_bumji_box.jpg" alt="Bumji & The Gang Cat Tarot Deck" class="collection-box-img">
-                <div class="deck-count-badge badge-cat">สำรับแก๊งบุ๋มจิ</div>
-              </div>
-
-              <div class="collection-info">
-                <h3 class="collection-name">Bumji &amp; The Gang (บุ๋มจิแอนด์เดอะแก๊งค์)</h3>
-                <p class="collection-tagline">สำรับแก๊งเหมียวบุ๋มจิ อบอุ่น สบายใจ และเปี่ยมด้วยรอยยิ้ม</p>
-
-                <!-- แนวคำตอบ -->
-                <div class="collection-style-box style-bumji">
-                  <div class="style-header">
-                    <i class="fa-solid fa-cat"></i> <strong>แนวคำตอบ:</strong> ตีความง่ายๆ สบายใจ ด้วยพฤติกรรมแมว
-                  </div>
-                  <p class="style-desc">
-                    เน้นการถอดรหัสพฤติกรรมและความน่ารักของน้องแมว (เช่น ท่านอนก้อนขนมปัง, ซุกกล่องปลอดภัย, วิ่งซนตีสาม, เลียขนมฟิน) ภาษาเข้าใจง่าย อบอุ่น สบายใจ ปลอบประโลมจิตใจ และเติมพลังบวกในชีวิตประจำวัน
-                  </p>
-                </div>
-
-                <ul class="collection-features">
-                  <li><i class="fa-solid fa-circle-check text-paw"></i> ลายเส้นและตัวละครน้องแมวในแก๊งค์สุดน่ารัก นุ่มฟู</li>
-                  <li><i class="fa-solid fa-circle-check text-paw"></i> ตีความจากพฤติกรรมแมวสู่ข้อคิดเตือนใจ (Cat Wisdom)</li>
-                  <li><i class="fa-solid fa-circle-check text-paw"></i> เหมาะกับวันที่ต้องการกำลังใจ ผ่อนคลาย ไม่เครียด</li>
-                </ul>
-
-                <button class="btn btn-cat btn-block select-deck-btn" data-deck-id="bumji">
-                  <i class="fa-solid fa-paw"></i> เลือกชุด Bumji &amp; The Gang
-                </button>
-              </div>
-            </div>
-          </article>
-
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <!-- STEP 2: PICK 3 CARDS (MY CAT & I 61 CARDS) -->
-      <!-- ============================================================ -->
-      <section id="readingStep3" class="reading-step-card hidden animate-fade-in">
-        <div class="step-header-with-back">
-          <button class="btn btn-secondary-sm" id="backToStep2Btn">
-            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับไปแก้ไขคำถาม
-          </button>
-          <div class="step-title-group">
-            <h2 class="step-title"><i class="fa-solid fa-hand-sparkles"></i> เลือกไพ่ 3 ใบจากสำรับ My Cat &amp; I</h2>
-            <p class="step-desc" id="pickStepDesc">ตั้งจิตอธิษฐานถึงเรื่องที่ถาม แล้วคลิกเลือกไพ่ทีละใบจากสำรับ 61 ใบ หรือกดสุ่มเปิดอัตโนมัติ</p>
-          </div>
-        </div>
-
-        <!-- 3 Target Slots Row -->
-        <div class="pick-slots-container">
-          <!-- Slot 1 -->
-          <div class="pick-target-slot" id="slotCard0" data-slot="0">
-            <div class="slot-pos-badge"><span class="badge-num">1</span> ปัจจุบัน</div>
-            <div class="slot-card-holder" id="slotHolder0">
-              <div class="slot-placeholder">
-                <i class="fa-solid fa-circle-plus"></i>
-                <span>แตะเลือก</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slot 2 -->
-          <div class="pick-target-slot" id="slotCard1" data-slot="1">
-            <div class="slot-pos-badge"><span class="badge-num">2</span> กลยุทธ์</div>
-            <div class="slot-card-holder" id="slotHolder1">
-              <div class="slot-placeholder">
-                <i class="fa-solid fa-circle-plus"></i>
-                <span>แตะเลือก</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Slot 3 -->
-          <div class="pick-target-slot" id="slotCard2" data-slot="2">
-            <div class="slot-pos-badge"><span class="badge-num">3</span> ผลลัพธ์</div>
-            <div class="slot-card-holder" id="slotHolder2">
-              <div class="slot-placeholder">
-                <i class="fa-solid fa-circle-plus"></i>
-                <span>แตะเลือก</span>
-              </div>
+            <div class="smart-pattern-body">
+              <strong id="smartPatternTitle" class="smart-pattern-title">แบบที่ 2: สถานการณ์ - อุปสรรค - ทางออก</strong>
+              <p id="smartPatternDesc" class="smart-pattern-desc">ใช้เมื่อผู้ถามต้องการเข้าใจปัญหาและหาทางจัดการ เหมาะกับเรื่องงาน ความสัมพันธ์ และการตัดสินใจ</p>
             </div>
           </div>
         </div>
 
-        <!-- Pick Controls Bar -->
+        <span id="step2HeaderTitle" class="hidden" style="display: none !important;"></span>
+
+        <!-- Pick Controls Bar (Top) -->
         <div class="pick-controls-bar">
-          <div class="pick-current-instruction" id="pickCurrentInstruction">
-            <i class="fa-solid fa-arrow-down-long text-gold animate-bounce"></i> 
-            <span>คลิกเลือกไพ่จากสำรับด้านล่างสำหรับ <strong>ใบที่ 1: สถานการณ์ปัจจุบัน</strong></span>
+          <div class="pick-current-instruction hidden" id="pickCurrentInstruction" style="display: none !important;">
+            <span>คลิกเลือกไพ่</span>
           </div>
 
           <div class="pick-quick-actions">
-            <button class="btn btn-secondary-sm" id="autoDraw3CardsBtn" title="ให้ระบบสุ่มเลือก 3 ใบอัตโนมัติ">
-              <i class="fa-solid fa-bolt-lightning"></i> สุ่มเปิด 3 ใบอัตโนมัติ
+            <button class="btn btn-secondary-sm" id="shuffleDeckCardsBtn" title="สับไพ่">
+              <i class="fa-solid fa-arrows-rotate"></i> สับไพ่
             </button>
-            <button class="btn btn-secondary-sm" id="shuffleDeckCardsBtn" title="สับไพ่ใหม่อีกรอบ">
-              <i class="fa-solid fa-arrows-rotate"></i> สับไพ่ใหม่
-            </button>
-            <button class="btn btn-secondary-sm" id="openManualPickerBtn" title="ค้นหาและเลือกไพ่ตามเลขหรือชื่อ">
-              <i class="fa-solid fa-magnifying-glass"></i> ค้นหาชื่อไพ่
+            <button class="btn btn-primary-sm-action" id="autoDraw3CardsBtn" title="สุ่มไพ่">
+              <i class="fa-solid fa-bolt-lightning"></i> <span id="autoDrawCardsBtnText">สุ่มไพ่</span>
             </button>
           </div>
         </div>
 
-        <!-- Interactive Deck Card Fan -->
+        <!-- Interactive Deck Card Fan (Top) -->
         <div class="deck-fan-stage">
+          <div class="deck-fan-instruction" style="position: absolute !important; top: 12px !important; left: 0 !important; right: 0 !important; width: 100% !important; text-align: center !important; z-index: 20 !important; pointer-events: none !important;">
+            <span class="deck-fan-instruction-text" style="font-family: 'Prompt', sans-serif !important; font-size: 15px !important; font-weight: 700 !important; color: #dc2626 !important; letter-spacing: 0.5px !important; display: inline-flex !important; align-items: center !important; gap: 6px !important; background: rgba(254, 242, 242, 0.95) !important; padding: 4px 16px !important; border-radius: 20px !important; border: 1px solid rgba(254, 202, 202, 0.8) !important; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08) !important;">
+              เลือกไพ่ตรงบริเวณนี้
+            </span>
+          </div>
           <div class="deck-fan-wrapper" id="deckFanWrapper">
             <!-- Dynamically populated with cards in JS -->
           </div>
         </div>
 
-        <!-- Reveal Divination Trigger Banner (Shows when 3 cards are picked) -->
+        <!-- Target Slots Row (Placed below deck) -->
+        <div class="pick-slots-container" id="pickSlotsContainer">
+          <!-- Dynamically populated according to active spread (3 or 5 slots) -->
+        </div>
+
+        <!-- Reveal Divination Trigger Banner (Shows when cards are picked) -->
         <div id="revealTriggerBanner" class="reveal-trigger-banner hidden animate-bounce-soft">
           <div class="banner-content">
             <i class="fa-solid fa-wand-magic-sparkles banner-icon"></i>
             <div>
-              <h3>เลือกไพ่ครบ 3 ใบเรียบร้อยแล้ว!</h3>
-              <p>ตั้งจิตส่งพลังถึงไพ่ทั้งสามใบ แล้วกดปุ่มเพื่อเริ่มประมวลผลและเปิดเผยคำทำนาย</p>
+              <h3 id="revealBannerTitle">เลือกไพ่ครบ 3 ใบเรียบร้อยแล้ว!</h3>
+              <p>ตั้งจิตส่งพลังถึงไพ่ แล้วกดปุ่มเพื่อเริ่มประมวลผลและเปิดเผยคำทำนาย</p>
             </div>
           </div>
           <button class="btn btn-primary btn-xl pulse-glow" id="revealDivinationBtn">
@@ -1305,8 +1138,8 @@
         <!-- Question Summary Banner -->
         <div class="result-question-banner" id="resultQuestionBanner">
           <div class="banner-badge-group">
-            <span class="badge-deck" id="resultDeckBadge">JiuTian Arcana</span>
-            <span class="badge-spread">3-Card Trinity Spread</span>
+            <span class="badge-deck" id="resultDeckBadge">ไพ่เทพเหมียว</span>
+            <span class="badge-spread" id="resultSpreadBadge">3-Card Trinity Spread</span>
             <span class="badge-date" id="resultDateBadge">วันนี้</span>
           </div>
           <h2 class="result-question-title" id="resultQuestionTitle">คำถาม: ...</h2>
@@ -1907,21 +1740,24 @@
   <div class="modal-overlay hidden" id="cardSelectModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังไพ่ My Cat &amp; I (61 ใบ) - เลือกตำแหน่ง: <span id="modalPositionName">ตำแหน่ง 1</span></h3>
+        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังสำรับ "ไพ่เทพเหมียว" (92 ใบ) - เลือกตำแหน่ง: <span id="modalPositionName">ตำแหน่ง 1</span></h3>
         <button class="modal-close" id="closeCardModalBtn">&times;</button>
       </div>
       
-      <!-- Filter Bar -->
+      <!-- Filter Bar: Five Elements & Arcana for ไพ่เทพเหมียว -->
       <div class="modal-filter-tabs" id="modalFilterTabs">
-        <button class="modal-tab active" data-filter="all">ทั้งหมด (61 ใบ)</button>
-        <button class="modal-tab" data-filter="light">แสงสว่าง (Light)</button>
-        <button class="modal-tab" data-filter="shadow">ด้านเงา (Shadow)</button>
-        <button class="modal-tab" data-filter="advice">คำแนะนำ (Advice)</button>
+        <button class="modal-tab active" data-filter="all">ทั้งหมด (92 ใบ)</button>
+        <button class="modal-tab" data-filter="major">ชุดหลัก Major (22)</button>
+        <button class="modal-tab" data-filter="wood">ธาตุไม้ (14)</button>
+        <button class="modal-tab" data-filter="fire">ธาตุไฟ (14)</button>
+        <button class="modal-tab" data-filter="earth">ธาตุดิน (14)</button>
+        <button class="modal-tab" data-filter="metal">ธาตุทอง (14)</button>
+        <button class="modal-tab" data-filter="water">ธาตุน้ำ (14)</button>
       </div>
 
       <div class="modal-search-bar">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="modalCardSearchInput" placeholder="พิมพ์เลขไพ่ (1-61) หรือ ค้นหาชื่อไพ่ / คำสำคัญ...">
+        <input type="text" id="modalCardSearchInput" placeholder="พิมพ์เลขไพ่ (1-92) หรือ ค้นหาชื่อไพ่ / ธาตุ / คำสำคัญ...">
       </div>
       <div class="modal-cards-grid" id="modalCardsGrid">
         <!-- Dynamically rendered card list for picking -->
@@ -1978,6 +1814,10 @@
   <script src="data/my-cat-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
+  <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
+  <script src="data/jiutian-arcana-database-v2.js?v=20261016_v2_release"></script>
+  <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
+  <script src="data/jiutian-cards.js?v=20261016_thepmeow_exclusive_v4"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -1985,7 +1825,7 @@
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
   <script src="auth.js?v=20261012_nav_fix_v23"></script>
-  <script src="app.js?v=20261012_nav_fix_v23"></script>
+  <script src="app.js?v=20261016_thepmeow_verdict_v1"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
