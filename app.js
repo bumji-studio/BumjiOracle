@@ -881,11 +881,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerNavTabs = document.getElementById('headerNavTabs') || document.querySelector('.header-nav-tabs');
   const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
 
-  // Responsive Viewport & Device Detector
+  // Responsive Viewport & Device Detector (Strict Mobile < 768px, Tablet/Desktop >= 768px)
   function updateResponsiveViewMode() {
-    const isMobile = window.innerWidth <= 980 || 
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-      (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches && window.innerWidth <= 1024);
+    const isMobile = window.innerWidth < 768 || 
+      /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches && window.innerWidth < 768);
     
     document.documentElement.classList.toggle('is-mobile', isMobile);
     document.documentElement.classList.toggle('is-desktop', !isMobile);
@@ -893,8 +893,25 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('is-desktop', !isMobile);
   }
   updateResponsiveViewMode();
-  window.addEventListener('resize', updateResponsiveViewMode);
-  window.addEventListener('orientationchange', () => setTimeout(updateResponsiveViewMode, 150));
+
+  let resizeDebounceTimer = null;
+  window.addEventListener('resize', () => {
+    updateResponsiveViewMode();
+    clearTimeout(resizeDebounceTimer);
+    resizeDebounceTimer = setTimeout(() => {
+      if (readingStep3 && !readingStep3.classList.contains('hidden')) {
+        renderFanDeck();
+      }
+    }, 120);
+  });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      updateResponsiveViewMode();
+      if (readingStep3 && !readingStep3.classList.contains('hidden')) {
+        renderFanDeck();
+      }
+    }, 150);
+  });
 
   function toggleMobileMenu(forceClose = false) {
     if (!headerNavTabs) return;
@@ -2091,17 +2108,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!deckFanWrapper) return;
     deckFanWrapper.innerHTML = '';
 
-    const isMobile = window.innerWidth <= 640;
+    const winW = window.innerWidth;
+    const isMobile = winW < 768;
+    const isWidescreen = winW >= 1200;
     const backImg = getDeckBackImage();
     
-    // Straight line horizontal arrangement (แนวตรง ไม่กรีดโค้ง)
-    const cardCount = isMobile ? 18 : 24;
-    const cardWidth = isMobile ? 68 : 116;
+    // Dynamic card count and width according to screen
+    const cardCount = isMobile ? 18 : (isWidescreen ? 34 : 26);
+    const cardWidth = isMobile ? 62 : (isWidescreen ? 122 : 108);
     
-    // Calculate spread step so cards fit gracefully within container
-    const containerWidth = deckFanWrapper.clientWidth || window.innerWidth;
-    const maxSpan = Math.max(containerWidth - cardWidth - (isMobile ? 24 : 48), 240);
-    const targetStep = isMobile ? 14 : 26;
+    // Calculate spread step so cards fill the available width smoothly across desktop or mobile
+    const containerWidth = deckFanWrapper.clientWidth || (isMobile ? winW - 32 : Math.min(winW - 64, 1260));
+    const maxSpan = Math.max(containerWidth - cardWidth - (isMobile ? 16 : 48), 220);
+    const targetStep = isMobile ? 16 : (isWidescreen ? 34 : 28);
     const spreadStep = Math.min(targetStep, Math.floor(maxSpan / (cardCount - 1)));
 
     for (let i = 0; i < cardCount; i++) {
