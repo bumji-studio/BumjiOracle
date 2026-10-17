@@ -2618,34 +2618,44 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'general';
   }
 
-  // 1. Direct Verdict Builder
-  function buildThepMeowVerdict({ question, drawn, patternId, intent }) {
-    const cardLast = drawn[drawn.length - 1];
-    const outcomeName = cardLast ? (cardLast.name_th || cardLast.name) : 'ไพ่แห่งโชคชะตา';
-    const outcomeElem = cardLast ? getBaseElement(cardLast.element) : 'ดิน';
-    const outcomeReading = getThepMeowCardReading(cardLast, intent);
+  // 1. Master Prophecy Builder (Synthesized from 3 cards, positions & meanings in Thep Meow Voice)
+  function buildThepMeowMainProphecy({ question, drawn, positions, intent }) {
+    const c1 = drawn[0];
+    const c2 = drawn[1] || drawn[0];
+    const c3 = drawn[2] || drawn[drawn.length - 1];
 
-    let verdictLead = '';
-    let verdictDetail = '';
+    const pos1 = positions[0] || { title: 'ใบที่ 1: รากฐาน / อดีตที่ส่งผล' };
+    const pos2 = positions[1] || { title: 'ใบที่ 2: ปัจจุบัน / สภาวะจริง' };
+    const pos3 = positions[2] || { title: 'ใบที่ 3: อนาคต / แนวโน้มผลลัพธ์' };
 
-    if (intent === 'will_it_happen') {
-      verdictLead = 'มีแนวโน้มสำเร็จและเปิดทางสว่างสดใสให้คุณอย่างแน่นอนค่ะ';
-      verdictDetail = `พลังจากไพ่ <strong>“${outcomeName}”</strong> (ธาตุ${outcomeElem}) ชี้ชัดว่าสิ่งที่คุณกำลังตั้งจิตถามเรื่อง <em>'${question}'</em> มีโอกาสสมหวังสูงมาก โดยแก่นพลังงานบอกว่า <em>“${outcomeReading}”</em> ขอเพียงรักษาความสม่ำเสมอและก้าวไปด้วยความมั่นใจ รับรองว่าผลลัพธ์ที่รออยู่จะทำให้คุณยิ้มได้กว้างเลยค่ะ เมี๊ยววว~ 🐾✨`;
-    } else if (intent === 'how_to') {
-      verdictLead = 'กุญแจสำคัญคือการ “วางความกังวลลง แล้วเริ่มจากก้าวเล็กๆ ที่จัดการได้จริงในวันนี้”';
-      verdictDetail = `สำหรับคำถาม <em>'${question}'</em> เทพเหมียวมองเห็นว่าทางออกอยู่ที่ <em>“${outcomeReading}”</em> ไพ่ <strong>“${outcomeName}”</strong> บอกให้คุณปรับสมดุลธาตุ${outcomeElem}ในตัว โฟกัสกับสิ่งที่มีอำนาจตัดสินใจในมือ และค่อยๆ ก้าวทีละสเต็ป จะราบรื่นและคลี่คลายได้สวยงามแน่นอนค่ะ เมี๊ยววว~ 🐾✨`;
-    } else if (intent === 'choices') {
-      verdictLead = 'เส้นทางที่มีพลังเกื้อหนุนและให้ความสบายใจในระยะยาวคือตัวเลือกที่ดีที่สุด';
-      verdictDetail = `ในเรื่อง <em>'${question}'</em> เทพเหมียวอยากให้คุณสังเกตว่าทางไหนที่สอดคล้องกับ <em>“${outcomeReading}”</em> นั่นคือเสียงนำทางที่แท้จริง ไพ่ <strong>“${outcomeName}”</strong> ยืนยันว่าเมื่อคุณเลือกด้วยความสงบในใจ จะเกิดความมั่นคงและความก้าวหน้าที่ยั่งยืนค่ะ เมี๊ยววว~ 🐾✨`;
-    } else if (intent === 'relationship') {
-      verdictLead = 'เรื่องของหัวใจกำลังเรียกร้อง “ความเข้าใจและการสื่อสารที่นุ่มนวลจริงใจ”';
-      verdictDetail = `พลังงานความสัมพันธ์ในคำถาม <em>'${question}'</em> สะท้อนว่า <em>“${outcomeReading}”</em> ไพ่ <strong>“${outcomeName}”</strong> แนะนำให้ใช้ความอ่อนโยนเป็นสะพานเชื่อม ไม่ต้องเร่งรัดคำตอบ แล้วความอบอุ่นจะค่อยๆ หวนกลับมาเบ่งบานอีกครั้งค่ะ เมี๊ยววว~ 🐾✨`;
+    const c1Name = c1 ? (c1.name_th || c1.name) : 'ไพ่ใบแรก';
+    const c2Name = c2 ? (c2.name_th || c2.name) : 'ไพ่ใบที่สอง';
+    const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่ใบที่สาม';
+
+    const elem1 = c1 ? getBaseElement(c1.element) : 'น้ำ';
+    const elem2 = c2 ? getBaseElement(c2.element) : 'ไฟ';
+    const elem3 = c3 ? getBaseElement(c3.element) : 'ไม้';
+
+    const elem1Info = ELEMENT_INFO[elem1] || { icon: '💧', color: '#0284c7' };
+    const elem2Info = ELEMENT_INFO[elem2] || { icon: '🔥', color: '#ef4444' };
+    const elem3Info = ELEMENT_INFO[elem3] || { icon: '🌿', color: '#10b981' };
+
+    const r1 = getThepMeowCardReading(c1, intent);
+    const r2 = getThepMeowCardReading(c2, intent);
+    const r3 = getThepMeowCardReading(c3, intent);
+
+    // Intent specific thematic intro
+    let intentTheme = '';
+    if (intent === 'relationship') {
+      intentTheme = 'คลื่นพลังงานของหัวใจและความผูกพัน';
     } else if (intent === 'career_finance') {
-      verdictLead = 'จังหวะโอกาสทองกำลังเปิดกว้าง เตรียมตัวให้พร้อมแล้วลงมืออย่างมั่นใจ';
-      verdictDetail = `สำหรับเรื่องงานและโอกาสก้าวหน้าใน <em>'${question}'</em> ไพ่ <strong>“${outcomeName}”</strong> ส่งสัญญาณว่า <em>“${outcomeReading}”</em> ทุกความพยายามที่สะสมมาจะไม่สูญเปล่า สิ่งสำคัญคือกล้าแสดงศักยภาพของตัวเองออกมา เทพเหมียวเอาใจช่วยสุดตัวเลยค่ะ เมี๊ยววว~ 🐾✨`;
+      intentTheme = 'เส้นทางความก้าวหน้าและการจัดการโอกาส';
+    } else if (intent === 'will_it_happen') {
+      intentTheme = 'ทิศทางแนวโน้มความสำเร็จและจังหวะเวลา';
+    } else if (intent === 'how_to') {
+      intentTheme = 'กุญแจสำคัญและแนวทางปลดล็อกสถานการณ์';
     } else {
-      verdictLead = 'สถานการณ์กำลังเปลี่ยนผ่านไปสู่จุดที่คลี่คลายและสบายใจยิ่งขึ้น';
-      verdictDetail = `เทพเหมียวสัมผัสได้ถึงความตั้งใจจริงในคำถาม <em>'${question}'</em> ของคุณ ไพ่ <strong>“${outcomeName}”</strong> มอบคำตอบว่า <em>“${outcomeReading}”</em> ทุกสิ่งที่พบเจอคือจังหวะชีวิตที่กำลังจัดสรรสิ่งดีๆ เข้ามา ขอให้วางใจในตัวเองและก้าวต่อไปอย่างเบิกบานนะคะ เมี๊ยววว~ 🐾✨`;
+      intentTheme = 'ภาพรวมพลังงานชีวิตและจุดเปลี่ยนสำคัญ';
     }
 
     return `
@@ -2654,152 +2664,151 @@ document.addEventListener('DOMContentLoaded', () => {
           <span class="thepmeow-avatar-badge">
             <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์
           </span>
-          <span class="thepmeow-verdict-tag">
-            <i class="fa-solid fa-star"></i> คำตอบชัดเจนตรงประเด็น
-          </span>
         </div>
         <h3 class="thepmeow-verdict-question">
           “${question}”
         </h3>
-        <p class="thepmeow-verdict-speech">
-          “เทพเหมียวตั้งจิตอ่านพลังงานให้คุณแล้วนะคะ... <strong>${verdictLead}</strong> ${verdictDetail}”
-        </p>
-      </div>
-    `;
-  }
 
-  // 2. Connected Story Stream Builder (The 3-Card Journey)
-  function buildThepMeowStoryStream({ question, drawn, patternId, intent, positions }) {
-    let stepsHtml = '';
+        <div class="thepmeow-prophecy-body">
+          <p class="prophecy-intro-text">
+            “เจ้ามนุษย์ที่รัก... เทพเหมียวตั้งจิตกางกรงเล็บสัมผัส${intentTheme}จากไพ่ทั้ง 3 ใบให้แล้วนะคะ เมื่อเชื่อมโยงพลังงานตามตำแหน่ง หน้าไพ่ และแก่นความหมายเข้าด้วยกัน เรื่องราวของคำถามนี้กำลังสื่อสารออกมาอย่างชัดเจนเลยค่ะ เมี๊ยววว~ 🐾✨”
+          </p>
 
-    drawn.forEach((card, idx) => {
-      const pos = positions[idx] || { title: `ใบที่ ${idx + 1}`, role: 'INSIGHT' };
-      const elem = getBaseElement(card.element);
-      const elemInfo = ELEMENT_INFO[elem] || { icon: '🐾', color: '#ec4899', name: elem };
-      const cardName = card.name_th || card.name;
-      const readingText = getThepMeowCardReading(card, intent);
-      const caution = getThepMeowCardCaution(card);
-      const catVoice = getThepMeowCardCatVoice(card, idx);
-      const stepNum = idx + 1;
-
-      // Extract keywords cleanly (excluding any generic placeholders)
-      const validKeywords = (card.keywords || []).filter(k => !['พลังธาตุ', 'จิ่วเทียนอาร์คานา', 'โชคชะตา'].includes(k));
-      const keywordBadge = validKeywords.length > 0 
-        ? `<div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
-            ${validKeywords.slice(0, 3).map(k => `<span style="font-size: 11px; background: #fff1f2; color: #e11d48; padding: 2px 8px; border-radius: 12px; font-weight: 600;">#${k}</span>`).join('')}
-           </div>`
-        : '';
-
-      let storyIntro = '';
-
-      if (drawn.length === 3) {
-        if (idx === 0) {
-          storyIntro = `<strong>${pos.title}:</strong> พลังงานตั้งต้นของเรื่องนี้เปิดด้วย <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) สะท้อนว่ารากเหง้าของเรื่องราวกำลังขับเคลื่อนด้วย <em>“${readingText}”</em> สิ่งที่คุณได้สั่งสมหรือเผชิญมาก่อนหน้านี้คือฐานกำลังสำคัญที่นำพาให้คุณก้าวมาสู่จุดนี้ค่ะ`;
-        } else if (idx === 1) {
-          storyIntro = `<strong>${pos.title}:</strong> เมื่อเชื่อมโยงมาสู่ใจกลางสถานการณ์ปัจจุบัน ไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) ได้เข้ามาบอกจุดโฟกัสที่คุณต้องตระหนัก คือ <em>“${readingText}”</em> โดยมีข้อควรระวังเพื่อประคองใจให้ราบรื่นคือ <em>${caution}</em> ไม่ต้องเร่งร้อน ให้ประคองจังหวะอย่างมีสติค่ะ`;
-        } else {
-          storyIntro = `<strong>${pos.title}:</strong> ปลายทางและบทสรุปของคำถามถูกส่งมอบผ่านไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) เผยให้เห็นแนวโน้มความสำเร็จและทางออกข้างหน้า คือ <em>“${readingText}”</em> เมื่อคุณน้อมนำคำแนะนำของไพ่ไปปรับใช้ ผลลัพธ์จะคลี่คลายและตอบแทนความตั้งใจของคุณอย่างงดงามแน่นอนค่ะ`;
-        }
-      } else {
-        storyIntro = `<strong>${pos.title}:</strong> พลังของไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) กำลังสื่อสารกับคุณว่า: <em>“${readingText}”</em> โดยมีจุดควรประคองใจคือ ${caution}`;
-      }
-
-      stepsHtml += `
-        <div class="thepmeow-step-card step-card-${stepNum}">
-          <div class="step-card-header">
-            <div class="step-card-pill">
-              <span class="step-num-badge">${stepNum}</span>
-              <span>${cardName}</span>
-              <span style="font-size: 12px; color: ${elemInfo.color}; font-weight: 600;">
-                (${elemInfo.icon} ธาตุ${elem})
-              </span>
+          <div class="prophecy-cards-narrative">
+            <div class="prophecy-card-block">
+              <div class="prophecy-block-header">
+                <span class="prophecy-step-badge">1</span>
+                <strong>${pos1.title}:</strong>
+                <span class="prophecy-card-highlight">“${c1Name}”</span>
+                <span class="prophecy-elem-tag" style="color: ${elem1Info.color};">(${elem1Info.icon} ธาตุ${elem1})</span>
+              </div>
+              <p class="prophecy-block-desc">
+                รากเหง้าของเรื่องนี้เปิดด้วยพลังของ <strong>“${c1Name}”</strong> บ่งบอกว่าที่ผ่านมาเรื่องราวนี้ถูกขับเคลื่อนด้วย <em>“${r1}”</em> สิ่งที่คุณสั่งสมหรือเผชิญมาก่อนหน้านี้ไม่ได้สูญเปล่าเลยนะคะ มันคือฐานพลังสำคัญที่กำลังส่งผลต่อเนื่องมาถึงจุดนี้
+              </p>
             </div>
-            <span class="step-role-label">
-              <i class="fa-solid fa-sparkles" style="color: #f59e0b; margin-right: 4px;"></i>${pos.title}
-            </span>
-          </div>
-          <p class="step-card-text">
-            ${storyIntro}
-          </p>
-          ${keywordBadge}
-          <div style="margin-top: 10px; font-size: 13px; color: #be185d; font-weight: 600; background: #fdf2f8; padding: 8px 14px; border-radius: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.45; border-left: 3px solid #ec4899;">
-            <i class="fa-solid fa-paw" style="color: #ec4899; margin-top: 2px; flex-shrink: 0;"></i>
-            <span>${catVoice}</span>
-          </div>
-        </div>
-      `;
-    });
 
-    return `
-      <div class="thepmeow-story-stream">
-        <div class="thepmeow-stream-header">
-          <h3 class="thepmeow-stream-title">
-            <i class="fa-solid fa-compass" style="color: #ec4899;"></i> การเดินทางของคลื่นพลังงาน (Story Journey)
-          </h3>
-          <p class="thepmeow-stream-sub">
-            เทพเหมียวร้อยเรียงเรื่องราวจากไพ่ทั้งสำรับเป็นหนึ่งเดียว เพื่อให้คุณเห็นภาพชัดเจนที่สุด
-          </p>
+            <div class="prophecy-card-block">
+              <div class="prophecy-block-header">
+                <span class="prophecy-step-badge">2</span>
+                <strong>${pos2.title}:</strong>
+                <span class="prophecy-card-highlight">“${c2Name}”</span>
+                <span class="prophecy-elem-tag" style="color: ${elem2Info.color};">(${elem2Info.icon} ธาตุ${elem2})</span>
+              </div>
+              <p class="prophecy-block-desc">
+                เมื่อไหลเวียนมาสู่ใจกลางสถานการณ์ปัจจุบัน ไพ่ <strong>“${c2Name}”</strong> เข้ามาสะท้อนสภาวะจริงตรงหน้าว่า <em>“${r2}”</em> นี่คือจุดหมุนที่คุณต้องตั้งสติให้มั่น ไม่ต้องเตลิดตามความเร่งร้อน ให้โฟกัสอยู่กับความเป็นจริงตรงหน้าแล้วคุณจะคุมเกมอยู่ค่ะ
+              </p>
+            </div>
+
+            <div class="prophecy-card-block">
+              <div class="prophecy-block-header">
+                <span class="prophecy-step-badge">3</span>
+                <strong>${pos3.title}:</strong>
+                <span class="prophecy-card-highlight">“${c3Name}”</span>
+                <span class="prophecy-elem-tag" style="color: ${elem3Info.color};">(${elem3Info.icon} ธาตุ${elem3})</span>
+              </div>
+              <p class="prophecy-block-desc">
+                และปลายทางทิศทางข้างหน้าถูกส่งมอบผ่านไพ่ <strong>“${c3Name}”</strong> เผยให้เห็นคำตอบและแนวโน้มที่กำลังจะผลิดอกออกผล คือ <em>“${r3}”</em> เมื่อคุณประคองจังหวะตามคำแนะนำของไพ่ทั้งสามใบ สิ่งที่ตั้งใจไว้จะเปิดทางสว่างสดใสและทำให้คุณยิ้มได้แน่นอนค่ะ
+              </p>
+            </div>
+          </div>
+
+          <div class="prophecy-summary-box">
+            <i class="fa-solid fa-sparkles" style="color: #d946ef; font-size: 16px; margin-top: 2px;"></i>
+            <div class="prophecy-summary-text">
+              <strong>บทสรุปภาษาเทพเหมียว:</strong> “มองภาพรวมแล้ว เรื่องนี้กำลังดำเนินไปในทิศทางที่เติบโต เพียงแต่ระหว่างทางต้องอาศัยความใจเย็นและไว้ใจในศักยภาพของตัวเอง ไม่ต้องแบกโลกทั้งใบไว้คนเดียวนะคะ ก้าวทีละสเต็ปอย่างสง่างามเหมือนแมวเดินบนกำแพง แล้วความสำเร็จจะเป็นของคุณแน่นอนค่ะ เมี๊ยววว~ 🐾💖”
+            </div>
+          </div>
         </div>
-        ${stepsHtml}
       </div>
     `;
   }
 
-  // 3. 3 Practical Actions Builder (Mindset, Action, Release)
-  function buildThepMeowActions({ question, drawn, intent }) {
-    const cardFirst = drawn[0];
-    const cardMid = drawn[1] || drawn[0];
-    const cardLast = drawn[drawn.length - 1];
+  // 2. เคล็ดลับฮีลใจ (Alchemize any negative/challenging aspects into deep comfort, relief & motivation)
+  function buildThepMeowHealingTips({ question, drawn, intent }) {
+    const c1 = drawn[0];
+    const c2 = drawn[1] || drawn[0];
+    const c3 = drawn[drawn.length - 1];
 
-    const cardFirstVoice = cardFirst?.deity_message || getThepMeowCardReading(cardFirst, intent);
-    const cautionText = getThepMeowCardCaution(cardMid);
+    // Detect negative or challenging themes across cards
+    const rawShadow = [c2?.meanings?.shadow_side, c1?.meanings?.shadow_side, c3?.meanings?.shadow_side, c2?.warning].filter(Boolean).join(' ');
     
-    // Extract practical step from cardLast strategy or light side
-    let practicalStep = '';
-    if (cardLast?.strategy) {
-      const stratParts = cardLast.strategy.split(/[-–—•\n]/).map(s => s.trim()).filter(s => s.length > 5);
-      practicalStep = stratParts[0] ? cleanThepMeowCardText(stratParts[0]) : '';
-    }
-    if (!practicalStep || practicalStep.length < 5) {
-      practicalStep = getThepMeowCardReading(cardLast, intent);
+    let negativePoint = '';
+    let positiveFlip = '';
+
+    if (/ใจร้อน|เร่ง|ด่วน|เร็ว|หุนหัน/i.test(rawShadow)) {
+      negativePoint = 'ความรู้สึกกระวนกระวาย อยากเห็นผลลัพธ์ทันที หรือกลัวว่าจะไม่ทันการ';
+      positiveFlip = 'ต้นไม้ใหญ่ไม่เคยผลิดอกในชั่วข้ามคืน ความช้าไม่ได้แปลว่าล้มเหลว แต่คือช่วงเวลาที่รากกำลังหยั่งลึกอย่างมั่นคงที่สุดค่ะ';
+    } else if (/กังวล|คิดมาก|วิตก|กลัว|ไม่แน่นอน|สับสน/i.test(rawShadow)) {
+      negativePoint = 'ความคิดวนเวียนล่วงหน้า กลัวความผิดพลาด หรือความไม่มั่นใจในตัวเอง';
+      positiveFlip = 'ความกังวลกว่า 90% คือภาพลวงที่ใจสร้างขึ้นมาเอง เมื่อไหร่ที่เริ่มคิดเยอะ ให้ดึงสติกลับมาที่ลมหายใจในปัจจุบัน คุณเก่งกว่าที่ตัวเองคิดเยอะเลยนะ';
+    } else if (/เหนื่อย|ภาระ|กดดัน|ตึง|แบก|หนัก/i.test(rawShadow)) {
+      negativePoint = 'ความรู้สึกว่าต้องแบกรับทุกอย่างไว้คนเดียว หรือตั้งเป้าหมายตึงจนหายใจไม่ทั่วท้อง';
+      positiveFlip = 'คุณไม่จำเป็นต้องสมบูรณ์แบบเพื่อที่จะมีคุณค่า การอนุญาตให้ตัวเองได้พักและปล่อยวาง คือความกล้าหาญที่งดงามที่สุดค่ะ';
+    } else if (/ขัดแย้ง|อารมณ์|สื่อสาร|เข้าใจผิด/i.test(rawShadow)) {
+      negativePoint = 'ความตึงเครียดในความสัมพันธ์ หรือความรู้สึกอึดอัดที่ไม่กล้าพูดออกมาตรงๆ';
+      positiveFlip = 'ทุกคลื่นลมมีไว้เพื่อปรับจูนความเข้าใจ ใช้ความนุ่มนวลเหมือนอุ้งเท้าแมวแตะเบาๆ ไม่ต้องเอาชนะด้วยคำพูด แล้วความอบอุ่นจะคืนกลับมา';
+    } else {
+      negativePoint = 'ความลังเลสงสัย หรือความรู้สึกกลัวการก้าวออกจากพื้นที่คุ้นเคย';
+      positiveFlip = 'ความไม่แน่นอนคือพื้นที่ที่ปาฏิหาริย์เกิดขึ้นได้เสมอ ขอเพียงมีใจที่เปิดกว้างและเชื่อมั่นในตัวเอง ทุกอย่างกำลังจัดสรรสิ่งที่ดีที่สุดให้คุณ';
     }
 
-    const cardFirstName = cardFirst ? (cardFirst.name_th || cardFirst.name) : 'ไพ่ใบแรก';
-    const cardLastName = cardLast ? (cardLast.name_th || cardLast.name) : 'ไพ่บทสรุป';
+    // Cat healing voice
+    const catVoice = getThepMeowCardCatVoice(c2 || c1, 1);
+    
+    // Practical micro action
+    let microStep = '';
+    if (c3?.strategy) {
+      const parts = c3.strategy.split(/[-–—•\n]/).map(s => s.trim()).filter(s => s.length > 5);
+      microStep = parts[0] ? cleanThepMeowCardText(parts[0]) : '';
+    }
+    if (!microStep || microStep.length < 5) {
+      microStep = getThepMeowCardReading(c3, intent);
+    }
 
     return `
       <div class="thepmeow-action-box">
         <h3 class="thepmeow-action-heading">
-          <i class="fa-solid fa-list-check"></i> 3 สเต็ปฮีลใจและแผนปฏิบัติจริง โดย เทพเหมียว
+          <i class="fa-solid fa-heart-pulse" style="color: #ec4899;"></i> เคล็ดลับฮีลใจและสร้างแรงใจ โดย เทพเหมียว
         </h3>
+        <p class="thepmeow-healing-sub">
+          เทพเหมียวช่วยแปลงจุดที่อาจสร้างความกังวลใจ ให้กลายเป็นพลังบวกและอ้อมกอดอุ่นๆ เพื่อให้คุณอ่านแล้วรู้สึกสบายใจที่สุดค่ะ
+        </p>
+
         <div class="thepmeow-action-items">
+          <!-- Step 1: Mindset Transformation (Flip negative to positive) -->
           <div class="thepmeow-action-row">
             <div class="action-row-icon icon-mind">
-              <i class="fa-solid fa-brain"></i>
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
             </div>
             <div class="action-row-text">
-              <strong>สเต็ปที่ 1: ปรับคลื่นใจให้สงบและเชื่อมั่น (Mindset)</strong><br />
-              น้อมรับพลังบวกจาก <strong>“${cardFirstName}”</strong>: วางความกังวลในอนาคตลง เตือนสติตัวเองว่า <em>“${cleanThepMeowCardText(cardFirstVoice)}”</em> เชื่อมั่นว่าคุณมีศักยภาพเพียงพอที่จะผ่านทุกเรื่องราวไปได้ เมี๊ยววว~ 🐾
+              <strong>สเต็ปที่ 1: พลิกมุมมองเปลี่ยนกังวลเป็นพลังใจ (Mindset Transformation)</strong><br />
+              <span class="healing-tag-worry"><i class="fa-solid fa-cloud-rain"></i> จุดที่อาจทำให้กังวล:</span> ${negativePoint}<br />
+              <span class="healing-tag-relief"><i class="fa-solid fa-sun" style="color: #f59e0b;"></i> เทพเหมียวพลิกมุมมองให้:</span> “${positiveFlip}” วางความกลัวลง แล้วเปลี่ยนมาส่งพลังความเชื่อมั่นให้ตัวเองกันนะคะ เมี๊ยววว~ 🐾
             </div>
           </div>
 
+          <!-- Step 2: Cat Healing Warmth & Comfort -->
           <div class="thepmeow-action-row">
-            <div class="action-row-icon icon-act">
+            <div class="action-row-icon icon-act" style="background: #fdf2f8; color: #ec4899;">
               <i class="fa-solid fa-paw"></i>
             </div>
             <div class="action-row-text">
-              <strong>สเต็ปที่ 2: เริ่มลงมือทำก้าวเล็กๆ ทันที (Practical Action)</strong><br />
-              ขับเคลื่อนความสำเร็จตามแนวทางของ <strong>“${cardLastName}”</strong>: โฟกัสที่ <strong>“${practicalStep}”</strong> เริ่มจากสิ่งที่ทำได้ง่ายที่สุด 1 อย่างในวันนี้ ความสม่ำเสมอเพียงเล็กน้อยจะสร้างผลลัพธ์ที่ยิ่งใหญ่ค่ะ เมี๊ยววว~ 🐾
+              <strong>สเต็ปที่ 2: เคล็ดลับปลอบประโลมใจฉบับน้องเหมียว (Emotional Healing)</strong><br />
+              <em>${catVoice}</em><br />
+              <div style="margin-top: 6px; font-size: 13.5px; color: #475569;">
+                <i class="fa-solid fa-mug-hot" style="color: #b45309; margin-right: 4px;"></i> <strong>ท่าไม้ตายฮีลใจ:</strong> หากรู้สึกเหนื่อยหรือใจไม่สงบ ลองยืดเส้นยืดสายเหมือนแมวบิดขี้เกียจ ดื่มน้ำอุ่นสักแก้ว หรือนั่งนิ่งๆ สูดหายใจลึกๆ 1 นาที บอกตัวเองเบาๆ ว่า <em>“ฉันทำดีที่สุดแล้วในจุดนี้ และฉันพร้อมรับสิ่งดีๆ เสมอ”</em>
+              </div>
             </div>
           </div>
 
+          <!-- Step 3: Gentle Micro-Action to feel accomplished -->
           <div class="thepmeow-action-row">
-            <div class="action-row-icon icon-let">
-              <i class="fa-solid fa-feather-pointed"></i>
+            <div class="action-row-icon icon-let" style="background: #ecfdf5; color: #059669;">
+              <i class="fa-solid fa-shoe-prints"></i>
             </div>
             <div class="action-row-text">
-              <strong>สเต็ปที่ 3: ปล่อยวางและระวังจุดสะดุด (Release & Care)</strong><br />
-              สิ่งที่ควรระวังและคอยประคองใจคือ <strong>“${cautionText}”</strong> อย่ากดดันตัวเองจนตึงเกินไป หากเหนื่อยให้พัก ดื่มน้ำอุ่น กอดน้องแมว หรือทำสิ่งที่ทำให้ยิ้มได้ แล้วค่อยลุยต่อนะคะ เมี๊ยววว~ 🐾
+              <strong>สเต็ปที่ 3: ก้าวเล็กๆ ที่ทำให้ใจฟูและสำเร็จจริง (Gentle Micro-Step)</strong><br />
+              ไม่ต้องกดดันให้ต้องรีบเปลี่ยนทั้งชีวิตในวันเดียว! นำพลังจากไพ่ <strong>“${c3?.name_th || 'ไพ่บทสรุป'}”</strong> มาเริ่มจากสิ่งที่ทำได้ง่ายที่สุด 1 อย่าง: <strong>“${microStep}”</strong> เมื่อทำเสร็จให้ยิ้มชื่นชมตัวเองกว้างๆ ความสุขและผลลัพธ์ที่ดีงามจะค่อยๆ เบ่งบานตามมาแน่นอนค่ะ เมี๊ยววว~ 🐾✨
             </div>
           </div>
         </div>
@@ -2807,7 +2816,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
-  // 4. Empowerment Blessing Builder
+  // 3. Empowerment Blessing Builder
   function buildThepMeowBlessing({ question, drawn }) {
     const quotes = [
       '“เมื่อใจของคุณสงบและมั่นคง ทางเดินข้างหน้าจะสว่างไสวเสมอ ขอให้เชื่อมั่นในแสงสว่างในตัวคุณนะคะ”',
@@ -2839,26 +2848,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!resultSynthesisContainer) return;
     const question = (fortuneState.question || 'สิ่งที่อยู่ในใจ').trim();
     const intent = detectQuestionIntent(question);
-    const patternId = fortuneState.patternId || 'pattern1';
     const positions = getActivePositions();
 
-    const verdictHtml = buildThepMeowVerdict({ question, drawn, patternId, intent });
-    const storyHtml = buildThepMeowStoryStream({ question, drawn, patternId, intent, positions });
-    const actionHtml = buildThepMeowActions({ question, drawn, intent });
+    const prophecyHtml = buildThepMeowMainProphecy({ question, drawn, positions, intent });
+    const healingHtml = buildThepMeowHealingTips({ question, drawn, intent });
     const blessingHtml = buildThepMeowBlessing({ question, drawn });
 
     resultSynthesisContainer.innerHTML = `
       <div class="thepmeow-dossier">
-        <!-- Layer 1: ฟันธงชัดเจน ตอบตรงคำถาม -->
-        ${verdictHtml}
+        <!-- Layer 1: คำทำนายไพ่เทพเหมียว (วิเคราะห์จากไพ่ 3 ใบตามตำแหน่ง หน้าไพ่ และความหมาย) -->
+        ${prophecyHtml}
 
-        <!-- Layer 2: การเดินทางของไพ่ 3 ใบ (Connected Narrative) -->
-        ${storyHtml}
+        <!-- Layer 2: เคล็ดลับฮีลใจ (แปลงจุดลบเป็นกำลังใจ ฮีลใจให้อ่านแล้วรู้สึกดี) -->
+        ${healingHtml}
 
-        <!-- Layer 3: 3 สเต็ปฮีลใจและแนวทางปฏิบัติ -->
-        ${actionHtml}
-
-        <!-- Layer 4: พรเสริมมงคลจากเทพเหมียว -->
+        <!-- Layer 3: พรเสริมมงคลจากเทพเหมียว -->
         ${blessingHtml}
       </div>
     `;
