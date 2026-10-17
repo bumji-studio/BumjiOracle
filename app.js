@@ -2524,18 +2524,52 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!text) return '';
     return text
       .replace(/\*\*.*?\*\*/g, (m) => m.replace(/\*\*/g, ''))
+      .replace(/^[-*•\s]+/, '')
+      .replace(/^(?:ภาพรวมของไพ่ใบนี้|ภาพรวม|การงาน\/ธุรกิจ|การงาน|การเงิน\/โชคลาภ|การเงิน|ความรัก\/ความสัมพันธ์|ความรัก|สุขภาพ|ข้อความจากเทพ)[:：\s]*/i, '')
+      .replace(/^[“"']+|[”"']+$/g, '')
       .replace(/[\*\#\-]/g, ' ')
       .replace(/\s+/g, ' ')
       .replace(/(ยะโส|เล่ห์เหลี่ยม|ทรยศ|เอาแต่ใจ|ก้าวร้าว|ดื้อดึง|ความโลภ|ความดื้อรั้น)/g, 'ความตึงเครียดหรือความเร่งร้อน')
       .trim();
   }
 
-  // Extract core positive wisdom and healing advice from card
-  function getThepMeowCardCore(card) {
+  // Get dynamic domain or core wisdom from card depending on user's question intent
+  function getThepMeowCardReading(card, intent) {
     if (!card) return 'พลังแห่งการเริ่มต้นใหม่และความหวัง';
-    if (card.summary) return cleanThepMeowCardText(card.summary);
-    if (card.keywords && card.keywords.length > 0) return card.keywords.slice(0, 3).join(' • ');
-    if (card.meanings && card.meanings.light_side) return cleanThepMeowCardText(card.meanings.light_side);
+    
+    // Check if domain-specific reading is relevant and not a generic element boilerplate
+    const isGenericTemplate = (txt) => !txt || /ตามแนวทางของ\s*ธาตุ/i.test(txt) || /พลังธาตุ.*จิ่วเทียน/i.test(txt);
+
+    let domainText = '';
+    if (intent === 'relationship') {
+      domainText = card.meanings?.domains?.love || card.reading_love;
+    } else if (intent === 'career_finance') {
+      domainText = card.meanings?.domains?.career || card.reading_work || card.meanings?.domains?.finance || card.reading_finance;
+    } else if (intent === 'health') {
+      domainText = card.meanings?.domains?.health || card.reading_health;
+    }
+
+    if (domainText && !isGenericTemplate(domainText)) {
+      return cleanThepMeowCardText(domainText);
+    }
+
+    // High quality core fallbacks
+    if (card.meanings?.core && !isGenericTemplate(card.meanings.core)) {
+      return cleanThepMeowCardText(card.meanings.core);
+    }
+    if (card.summary) {
+      return cleanThepMeowCardText(card.summary);
+    }
+    if (card.deity_message && !isGenericTemplate(card.deity_message)) {
+      return cleanThepMeowCardText(card.deity_message);
+    }
+    if (card.meanings?.light_side) {
+      return cleanThepMeowCardText(card.meanings.light_side);
+    }
+    if (card.keywords && card.keywords.length > 0) {
+      const validKws = card.keywords.filter(k => !['พลังธาตุ', 'จิ่วเทียนอาร์คานา', 'โชคชะตา'].includes(k));
+      if (validKws.length > 0) return validKws.slice(0, 3).join(' • ');
+    }
     return cleanThepMeowCardText(card.core_meaning || card.name_th || card.name);
   }
 
@@ -2549,6 +2583,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (card.warning) return cleanThepMeowCardText(card.warning);
     return 'ระวังความกังวลใจล่วงหน้าที่จะมาบั่นทอนพลังใจของคุณ';
+  }
+
+  // Get unique feline quote/gesture from the card's curated healing caption
+  function getThepMeowCardCatVoice(card, idx) {
+    if (!card) return 'เทพเหมียวอยู่เคียงข้างและเป็นกำลังใจให้เสมอนะคะ เมี๊ยววว~ 🐾';
+    let voice = (card.deity && card.deity.title) ? card.deity.title.trim() : '';
+    if (!voice || voice === card.name_th || voice.startsWith('Card ') || voice.startsWith('17-') || voice.length < 5) {
+      voice = card.deity_message || card.advice || 'เชื่อมั่นในหัวใจของตัวเองนะ';
+    }
+    // Clean trailing cat sounds if already included, then append standardized cute ending
+    voice = voice.replace(/\s*เมี๊ยว.*$/i, '').trim();
+    return `${voice} เมี๊ยววว~ 🐾`;
   }
 
   // Detect user's question intent
@@ -2577,28 +2623,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardLast = drawn[drawn.length - 1];
     const outcomeName = cardLast ? (cardLast.name_th || cardLast.name) : 'ไพ่แห่งโชคชะตา';
     const outcomeElem = cardLast ? getBaseElement(cardLast.element) : 'ดิน';
+    const outcomeReading = getThepMeowCardReading(cardLast, intent);
 
     let verdictLead = '';
     let verdictDetail = '';
 
     if (intent === 'will_it_happen') {
       verdictLead = 'มีแนวโน้มสำเร็จและเปิดทางสว่างสดใสให้คุณอย่างแน่นอนค่ะ';
-      verdictDetail = `พลังจากไพ่ <strong>“${outcomeName}”</strong> ชี้ชัดว่าสิ่งที่คุณกำลังตั้งจิตถามเรื่อง <em>'${question}'</em> มีโอกาสสมหวังสูงมาก ขอเพียงรักษาความสม่ำเสมอและก้าวไปด้วยความมั่นใจ รับรองว่าผลลัพธ์ที่รออยู่จะทำให้คุณยิ้มได้กว้างเลยค่ะ เมี๊ยววว~ 🐾✨`;
+      verdictDetail = `พลังจากไพ่ <strong>“${outcomeName}”</strong> (ธาตุ${outcomeElem}) ชี้ชัดว่าสิ่งที่คุณกำลังตั้งจิตถามเรื่อง <em>'${question}'</em> มีโอกาสสมหวังสูงมาก โดยแก่นพลังงานบอกว่า <em>“${outcomeReading}”</em> ขอเพียงรักษาความสม่ำเสมอและก้าวไปด้วยความมั่นใจ รับรองว่าผลลัพธ์ที่รออยู่จะทำให้คุณยิ้มได้กว้างเลยค่ะ เมี๊ยววว~ 🐾✨`;
     } else if (intent === 'how_to') {
       verdictLead = 'กุญแจสำคัญคือการ “วางความกังวลลง แล้วเริ่มจากก้าวเล็กๆ ที่จัดการได้จริงในวันนี้”';
-      verdictDetail = `สำหรับคำถาม <em>'${question}'</em> เทพเหมียวมองเห็นว่าทางออกไม่ได้ซับซ้อนเลยค่ะ ไพ่ <strong>“${outcomeName}”</strong> บอกให้คุณปรับสมดุลธาตุ${outcomeElem}ในตัว โฟกัสกับสิ่งที่มีอำนาจตัดสินใจในมือ และอย่าเพิ่งแบกรับเรื่องราวทั้งหมดไว้คนเดียว ค่อยๆ ก้าวทีละสเต็ป จะราบรื่นและคลี่คลายได้สวยงามแน่นอนค่ะ เมี๊ยววว~ 🐾✨`;
+      verdictDetail = `สำหรับคำถาม <em>'${question}'</em> เทพเหมียวมองเห็นว่าทางออกอยู่ที่ <em>“${outcomeReading}”</em> ไพ่ <strong>“${outcomeName}”</strong> บอกให้คุณปรับสมดุลธาตุ${outcomeElem}ในตัว โฟกัสกับสิ่งที่มีอำนาจตัดสินใจในมือ และค่อยๆ ก้าวทีละสเต็ป จะราบรื่นและคลี่คลายได้สวยงามแน่นอนค่ะ เมี๊ยววว~ 🐾✨`;
     } else if (intent === 'choices') {
       verdictLead = 'เส้นทางที่มีพลังเกื้อหนุนและให้ความสบายใจในระยะยาวคือตัวเลือกที่ดีที่สุด';
-      verdictDetail = `ในเรื่อง <em>'${question}'</em> เทพเหมียวอยากให้คุณสังเกตว่าทางไหนที่คิดถึงแล้วรู้สึกโล่งอกและมีพลังใจมากกว่า นั่นคือเสียงนำทางที่แท้จริง ไพ่ <strong>“${outcomeName}”</strong> ยืนยันว่าเมื่อคุณเลือกด้วยความสงบในใจ จะเกิดความมั่นคงและความก้าวหน้าที่ยั่งยืนค่ะ เมี๊ยววว~ 🐾✨`;
+      verdictDetail = `ในเรื่อง <em>'${question}'</em> เทพเหมียวอยากให้คุณสังเกตว่าทางไหนที่สอดคล้องกับ <em>“${outcomeReading}”</em> นั่นคือเสียงนำทางที่แท้จริง ไพ่ <strong>“${outcomeName}”</strong> ยืนยันว่าเมื่อคุณเลือกด้วยความสงบในใจ จะเกิดความมั่นคงและความก้าวหน้าที่ยั่งยืนค่ะ เมี๊ยววว~ 🐾✨`;
     } else if (intent === 'relationship') {
       verdictLead = 'เรื่องของหัวใจกำลังเรียกร้อง “ความเข้าใจและการสื่อสารที่นุ่มนวลจริงใจ”';
-      verdictDetail = `พลังงานความสัมพันธ์ในคำถาม <em>'${question}'</em> มีการเชื่อมต่อของคลื่นอารมณ์ที่ลึกซึ้ง ไพ่ <strong>“${outcomeName}”</strong> แนะนำให้ใช้ความอ่อนโยนเป็นสะพานเชื่อม ไม่ต้องเร่งรัดคำตอบหรือจับผิดกัน แล้วความอบอุ่นจะค่อยๆ หวนกลับมาเบ่งบานอีกครั้งค่ะ เมี๊ยววว~ 🐾✨`;
+      verdictDetail = `พลังงานความสัมพันธ์ในคำถาม <em>'${question}'</em> สะท้อนว่า <em>“${outcomeReading}”</em> ไพ่ <strong>“${outcomeName}”</strong> แนะนำให้ใช้ความอ่อนโยนเป็นสะพานเชื่อม ไม่ต้องเร่งรัดคำตอบ แล้วความอบอุ่นจะค่อยๆ หวนกลับมาเบ่งบานอีกครั้งค่ะ เมี๊ยววว~ 🐾✨`;
     } else if (intent === 'career_finance') {
       verdictLead = 'จังหวะโอกาสทองกำลังเปิดกว้าง เตรียมตัวให้พร้อมแล้วลงมืออย่างมั่นใจ';
-      verdictDetail = `สำหรับเรื่องงานและโอกาสก้าวหน้าใน <em>'${question}'</em> ไพ่ <strong>“${outcomeName}”</strong> ส่งพลังสนับสนุนอย่างเต็มที่ ทุกความพยายามที่สะสมมาจะไม่สูญเปล่า สิ่งสำคัญคือกล้าแสดงศักยภาพของตัวเองออกมา เทพเหมียวเอาใจช่วยสุดตัวเลยค่ะ เมี๊ยววว~ 🐾✨`;
+      verdictDetail = `สำหรับเรื่องงานและโอกาสก้าวหน้าใน <em>'${question}'</em> ไพ่ <strong>“${outcomeName}”</strong> ส่งสัญญาณว่า <em>“${outcomeReading}”</em> ทุกความพยายามที่สะสมมาจะไม่สูญเปล่า สิ่งสำคัญคือกล้าแสดงศักยภาพของตัวเองออกมา เทพเหมียวเอาใจช่วยสุดตัวเลยค่ะ เมี๊ยววว~ 🐾✨`;
     } else {
       verdictLead = 'สถานการณ์กำลังเปลี่ยนผ่านไปสู่จุดที่คลี่คลายและสบายใจยิ่งขึ้น';
-      verdictDetail = `เทพเหมียวสัมผัสได้ถึงความตั้งใจจริงในคำถาม <em>'${question}'</em> ของคุณ ไพ่ <strong>“${outcomeName}”</strong> มอบคำตอบว่าทุกสิ่งที่พบเจอคือจังหวะชีวิตที่กำลังจัดสรรสิ่งดีๆ เข้ามา ขอให้วางใจในตัวเองและก้าวต่อไปอย่างเบิกบานนะคะ เมี๊ยววว~ 🐾✨`;
+      verdictDetail = `เทพเหมียวสัมผัสได้ถึงความตั้งใจจริงในคำถาม <em>'${question}'</em> ของคุณ ไพ่ <strong>“${outcomeName}”</strong> มอบคำตอบว่า <em>“${outcomeReading}”</em> ทุกสิ่งที่พบเจอคือจังหวะชีวิตที่กำลังจัดสรรสิ่งดีๆ เข้ามา ขอให้วางใจในตัวเองและก้าวต่อไปอย่างเบิกบานนะคะ เมี๊ยววว~ 🐾✨`;
     }
 
     return `
@@ -2630,27 +2677,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const elem = getBaseElement(card.element);
       const elemInfo = ELEMENT_INFO[elem] || { icon: '🐾', color: '#ec4899', name: elem };
       const cardName = card.name_th || card.name;
-      const coreWisdom = getThepMeowCardCore(card);
+      const readingText = getThepMeowCardReading(card, intent);
       const caution = getThepMeowCardCaution(card);
+      const catVoice = getThepMeowCardCatVoice(card, idx);
       const stepNum = idx + 1;
 
+      // Extract keywords cleanly (excluding any generic placeholders)
+      const validKeywords = (card.keywords || []).filter(k => !['พลังธาตุ', 'จิ่วเทียนอาร์คานา', 'โชคชะตา'].includes(k));
+      const keywordBadge = validKeywords.length > 0 
+        ? `<div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
+            ${validKeywords.slice(0, 3).map(k => `<span style="font-size: 11px; background: #fff1f2; color: #e11d48; padding: 2px 8px; border-radius: 12px; font-weight: 600;">#${k}</span>`).join('')}
+           </div>`
+        : '';
+
       let storyIntro = '';
-      let catNote = '';
 
       if (drawn.length === 3) {
         if (idx === 0) {
-          storyIntro = `<strong>จุดเริ่มต้นและรากฐานของเรื่อง:</strong> ไพ่ใบแรกเปิดขึ้นมาด้วยพลังของ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) สะท้อนว่าที่ผ่านมาคุณได้สั่งสมประสบการณ์และเผชิญสิ่งต่างๆ มาด้วยความพยายาม สิ่งที่ไพ่บอกคือ <em>${coreWisdom}</em>`;
-          catNote = 'เทพเหมียวสัมผัสได้ว่าคุณเก่งมากแล้วนะที่ผ่านมาถึงจุดนี้ได้ เมี๊ยววว~ 🐾';
+          storyIntro = `<strong>${pos.title}:</strong> พลังงานตั้งต้นของเรื่องนี้เปิดด้วย <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) สะท้อนว่ารากเหง้าของเรื่องราวกำลังขับเคลื่อนด้วย <em>“${readingText}”</em> สิ่งที่คุณได้สั่งสมหรือเผชิญมาก่อนหน้านี้คือฐานกำลังสำคัญที่นำพาให้คุณก้าวมาสู่จุดนี้ค่ะ`;
         } else if (idx === 1) {
-          storyIntro = `<strong>สภาวะใจกลางและการประคองสมดุล:</strong> เมื่อมาถึงไพ่ใบที่สอง <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) ได้เข้ามาบอกจุดโฟกัสสำคัญในตอนนี้ คือ <em>${coreWisdom}</em> โดยข้อควรระวังเบาๆ คือ ${caution}`;
-          catNote = 'ตรงนี้ให้ใจเย็นๆ ไม่ต้องเร่งรีบ ค่อยๆ หายใจลึกๆ นะคะ เมี๊ยววว~ 🐾';
+          storyIntro = `<strong>${pos.title}:</strong> เมื่อเชื่อมโยงมาสู่ใจกลางสถานการณ์ปัจจุบัน ไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) ได้เข้ามาบอกจุดโฟกัสที่คุณต้องตระหนัก คือ <em>“${readingText}”</em> โดยมีข้อควรระวังเพื่อประคองใจให้ราบรื่นคือ <em>${caution}</em> ไม่ต้องเร่งร้อน ให้ประคองจังหวะอย่างมีสติค่ะ`;
         } else {
-          storyIntro = `<strong>ปลายทางและทิศทางข้างหน้า:</strong> บทสรุปปิดท้ายด้วยไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) เผยให้เห็นแนวโน้มที่กำลังจะผลิดอกออกผล คือ <em>${coreWisdom}</em> หากคุณประคองใจตามคำแนะนำ ทุกอย่างจะลงตัวอย่างงดงามค่ะ`;
-          catNote = 'ปลายทางสดใสรออยู่แน่นอน เชื่อมั่นในตัวเองเข้าไว้นะคะ เมี๊ยววว~ 🐾✨';
+          storyIntro = `<strong>${pos.title}:</strong> ปลายทางและบทสรุปของคำถามถูกส่งมอบผ่านไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) เผยให้เห็นแนวโน้มความสำเร็จและทางออกข้างหน้า คือ <em>“${readingText}”</em> เมื่อคุณน้อมนำคำแนะนำของไพ่ไปปรับใช้ ผลลัพธ์จะคลี่คลายและตอบแทนความตั้งใจของคุณอย่างงดงามแน่นอนค่ะ`;
         }
       } else {
-        storyIntro = `<strong>${pos.title}:</strong> พลังของไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) กำลังสื่อสารกับคุณว่า: ${coreWisdom}`;
-        catNote = `เทพเหมียวอยากให้คุณนำพลังธาตุ${elem}นี้มาเสริมความมั่นใจนะคะ เมี๊ยววว~ 🐾`;
+        storyIntro = `<strong>${pos.title}:</strong> พลังของไพ่ <strong>“${cardName}”</strong> (${elemInfo.icon} ธาตุ${elem}) กำลังสื่อสารกับคุณว่า: <em>“${readingText}”</em> โดยมีจุดควรประคองใจคือ ${caution}`;
       }
 
       stepsHtml += `
@@ -2670,8 +2721,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <p class="step-card-text">
             ${storyIntro}
           </p>
-          <div style="margin-top: 10px; font-size: 13px; color: #ec4899; font-weight: 600; background: #fdf2f8; padding: 6px 12px; border-radius: 10px; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-comment-dots"></i> ${catNote}
+          ${keywordBadge}
+          <div style="margin-top: 10px; font-size: 13px; color: #be185d; font-weight: 600; background: #fdf2f8; padding: 8px 14px; border-radius: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.45; border-left: 3px solid #ec4899;">
+            <i class="fa-solid fa-paw" style="color: #ec4899; margin-top: 2px; flex-shrink: 0;"></i>
+            <span>${catVoice}</span>
           </div>
         </div>
       `;
@@ -2694,10 +2747,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. 3 Practical Actions Builder (Mindset, Action, Release)
   function buildThepMeowActions({ question, drawn, intent }) {
+    const cardFirst = drawn[0];
     const cardMid = drawn[1] || drawn[0];
     const cardLast = drawn[drawn.length - 1];
+
+    const cardFirstVoice = cardFirst?.deity_message || getThepMeowCardReading(cardFirst, intent);
     const cautionText = getThepMeowCardCaution(cardMid);
-    const coreAction = getThepMeowCardCore(cardLast);
+    
+    // Extract practical step from cardLast strategy or light side
+    let practicalStep = '';
+    if (cardLast?.strategy) {
+      const stratParts = cardLast.strategy.split(/[-–—•\n]/).map(s => s.trim()).filter(s => s.length > 5);
+      practicalStep = stratParts[0] ? cleanThepMeowCardText(stratParts[0]) : '';
+    }
+    if (!practicalStep || practicalStep.length < 5) {
+      practicalStep = getThepMeowCardReading(cardLast, intent);
+    }
+
+    const cardFirstName = cardFirst ? (cardFirst.name_th || cardFirst.name) : 'ไพ่ใบแรก';
+    const cardLastName = cardLast ? (cardLast.name_th || cardLast.name) : 'ไพ่บทสรุป';
 
     return `
       <div class="thepmeow-action-box">
@@ -2711,7 +2779,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="action-row-text">
               <strong>สเต็ปที่ 1: ปรับคลื่นใจให้สงบและเชื่อมั่น (Mindset)</strong><br />
-              วางความกังวลในอนาคตที่ยังมาไม่ถึงลงก่อน บอกตัวเองทุกเช้าว่า <em>“ฉันทำดีที่สุดในจุดนี้ และฉันคู่ควรกับสิ่งที่ดีงาม”</em> ไม่เปรียบเทียบตัวเองกับใคร เมี๊ยววว~ 🐾
+              น้อมรับพลังบวกจาก <strong>“${cardFirstName}”</strong>: วางความกังวลในอนาคตลง เตือนสติตัวเองว่า <em>“${cleanThepMeowCardText(cardFirstVoice)}”</em> เชื่อมั่นว่าคุณมีศักยภาพเพียงพอที่จะผ่านทุกเรื่องราวไปได้ เมี๊ยววว~ 🐾
             </div>
           </div>
 
@@ -2721,7 +2789,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="action-row-text">
               <strong>สเต็ปที่ 2: เริ่มลงมือทำก้าวเล็กๆ ทันที (Practical Action)</strong><br />
-              นำพลังจากไพ่มาขับเคลื่อน: โฟกัสที่ <strong>“${coreAction}”</strong> เริ่มจากสิ่งที่ทำได้ง่ายที่สุด 1 อย่างในวันนี้ ความสม่ำเสมอเพียงเล็กน้อยจะสร้างปาฏิหาริย์ที่ยิ่งใหญ่ค่ะ เมี๊ยววว~ 🐾
+              ขับเคลื่อนความสำเร็จตามแนวทางของ <strong>“${cardLastName}”</strong>: โฟกัสที่ <strong>“${practicalStep}”</strong> เริ่มจากสิ่งที่ทำได้ง่ายที่สุด 1 อย่างในวันนี้ ความสม่ำเสมอเพียงเล็กน้อยจะสร้างผลลัพธ์ที่ยิ่งใหญ่ค่ะ เมี๊ยววว~ 🐾
             </div>
           </div>
 
@@ -2731,7 +2799,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="action-row-text">
               <strong>สเต็ปที่ 3: ปล่อยวางและระวังจุดสะดุด (Release & Care)</strong><br />
-              สิ่งที่ควรระวังคือ <strong>“${cautionText}”</strong> อย่ากดดันตัวเองจนตึงเกินไป หากเหนื่อยให้พัก ดื่มน้ำอุ่น กอดน้องแมว หรือทำสิ่งที่ทำให้ยิ้มได้ แล้วค่อยลุยต่อนะคะ เมี๊ยววว~ 🐾
+              สิ่งที่ควรระวังและคอยประคองใจคือ <strong>“${cautionText}”</strong> อย่ากดดันตัวเองจนตึงเกินไป หากเหนื่อยให้พัก ดื่มน้ำอุ่น กอดน้องแมว หรือทำสิ่งที่ทำให้ยิ้มได้ แล้วค่อยลุยต่อนะคะ เมี๊ยววว~ 🐾
             </div>
           </div>
         </div>
