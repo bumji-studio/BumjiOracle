@@ -4,7 +4,7 @@
 // รูปภาพหน้าไพ่ Cat61/1.png - Cat61/61.png และหลังไพ่ Cat61/62.png
 // ============================================================================
 
-const myCatCards = [
+var myCatCards = window.myCatCards || [
   {
     "id": 1,
     "name": "1 - Wish (ความปรารถนา)",
@@ -2082,7 +2082,7 @@ const myCatCards = [
 ];
 
 // Aliases for global compatibility
-const bumjiCards = myCatCards;
+var bumjiCards = myCatCards;
 if (typeof window !== 'undefined') {
   window.myCatCards = myCatCards;
   window.bumjiCards = bumjiCards;

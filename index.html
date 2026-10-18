@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261017_thepmeow_healing_v9">
+  <link rel="stylesheet" href="styles.css?v=20261018_social_share_center_v1">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -989,19 +989,13 @@
   <div id="readingAppView" class="view-container">
     <div class="reading-app-container">
       
-      <!-- STEPPER PROGRESS BAR (2 STEPS) -->
-      <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง">
-        <div class="stepper-track">
-          <div class="stepper-fill" id="stepperFill" style="width: 0%;"></div>
+      <!-- STEPPER PROGRESS BAR (HIDDEN AS REQUESTED) -->
+      <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง" style="display: none !important;">
+        <div class="stepper-track" style="display: none !important;">
+          <div class="stepper-fill" id="stepperFill" style="display: none !important;"></div>
         </div>
-        <div class="stepper-step active" id="stepIndicator1" data-step="1">
-          <div class="step-num"><i class="fa-solid fa-hand-sparkles"></i></div>
-          <span class="step-label">1. ตั้งคำถาม &amp; เลือกไพ่ 3 ใบ</span>
-        </div>
-        <div class="stepper-step" id="stepIndicator2" data-step="2">
-          <div class="step-num"><i class="fa-solid fa-star"></i></div>
-          <span class="step-label">2. คำทำนายดวงชะตา</span>
-        </div>
+        <div class="stepper-step active" id="stepIndicator1" data-step="1" style="display: none !important;"></div>
+        <div class="stepper-step" id="stepIndicator2" data-step="2" style="display: none !important;"></div>
       </nav>
 
       <!-- PINNED CONTEXT BAR (Hidden in 2-step single screen) -->
@@ -1126,11 +1120,8 @@
             <button class="btn btn-secondary-sm" id="copyResultTextBtn" title="คัดลอกสรุปคำทำนายทั้งหมดลงคลิปบอร์ด">
               <i class="fa-solid fa-copy"></i> คัดลอกคำทำนาย
             </button>
-            <button class="btn btn-line-share hidden" id="shareToLineBtn" title="แชร์ผลทำนายเข้าห้องแชท LINE">
-              <i class="fa-brands fa-line"></i> แชร์ลง LINE
-            </button>
-            <button class="btn btn-primary-sm" id="printResultReportBtn" title="สั่งพิมพ์หรือบันทึกคำทำนายเป็นไฟล์ PDF">
-              <i class="fa-solid fa-print"></i> พิมพ์คำทำนาย
+            <button class="btn btn-social-share" id="shareToSocialBtn" title="แชร์คำทำนายลงโซเชียลมีเดีย">
+              <i class="fa-solid fa-share-nodes"></i> แชร์ลง Social
             </button>
           </div>
         </div>
@@ -1807,6 +1798,84 @@
     </div>
   </div>
 
+  <!-- SOCIAL SHARE MODAL (FB, TT, IG, LINE) -->
+  <div id="socialShareModal" class="social-share-modal-overlay hidden">
+    <div class="social-share-modal-card animate-scale-up">
+      <div class="social-modal-header">
+        <div class="social-modal-title">
+          <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
+          <span>แชร์คำทำนายลง Social</span>
+        </div>
+        <button type="button" class="social-modal-close" id="closeSocialShareBtn" aria-label="ปิด">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="social-modal-desc">
+        เลือกแพลตฟอร์มที่ต้องการแชร์ ระบบจะคัดลอกคำทำนายและเปิดแอปให้พร้อมโพสต์ทันทีค่ะ! 🐾✨
+      </p>
+
+      <div class="social-platform-grid">
+        <!-- Facebook -->
+        <button type="button" class="social-platform-btn platform-fb" id="shareFbBtn">
+          <div class="platform-icon"><i class="fa-brands fa-facebook-f"></i></div>
+          <div class="platform-info">
+            <strong>Facebook</strong>
+            <span>แชร์ลงฟีดหรือกลุ่ม</span>
+          </div>
+          <span class="platform-badge"><i class="fa-solid fa-copy"></i> Copy &amp; เปิด FB</span>
+        </button>
+
+        <!-- TikTok -->
+        <button type="button" class="social-platform-btn platform-tt" id="shareTtBtn">
+          <div class="platform-icon"><i class="fa-brands fa-tiktok"></i></div>
+          <div class="platform-info">
+            <strong>TikTok</strong>
+            <span>แคปชั่นคำทำนาย</span>
+          </div>
+          <span class="platform-badge"><i class="fa-solid fa-copy"></i> Copy &amp; เปิด TT</span>
+        </button>
+
+        <!-- Instagram -->
+        <button type="button" class="social-platform-btn platform-ig" id="shareIgBtn">
+          <div class="platform-icon"><i class="fa-brands fa-instagram"></i></div>
+          <div class="platform-info">
+            <strong>Instagram</strong>
+            <span>ลงสตอรี่หรือโพสต์</span>
+          </div>
+          <span class="platform-badge"><i class="fa-solid fa-copy"></i> Copy &amp; เปิด IG</span>
+        </button>
+
+        <!-- LINE -->
+        <button type="button" class="social-platform-btn platform-line" id="shareLineBtn">
+          <div class="platform-icon"><i class="fa-brands fa-line"></i></div>
+          <div class="platform-info">
+            <strong>LINE</strong>
+            <span>ส่งให้เพื่อนในแชท</span>
+          </div>
+          <span class="platform-badge"><i class="fa-solid fa-paper-plane"></i> แชร์เข้า LINE</span>
+        </button>
+      </div>
+
+      <!-- Preview of text to be copied -->
+      <div class="social-modal-preview">
+        <div class="preview-header">
+          <i class="fa-regular fa-clipboard"></i>
+          <span>ตัวอย่างข้อความที่จะคัดลอก:</span>
+        </div>
+        <div class="preview-content" id="socialSharePreviewText">
+          กำลังเตรียมข้อความ...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification for Copy / Actions -->
+  <div id="socialShareToast" class="social-share-toast hidden">
+    <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+    <span id="socialToastMessage">คัดลอกคำทำนายเรียบร้อยแล้วค่ะ! ✨</span>
+  </div>
+
   <!-- Offscreen buffer for compiling PDF pages -->
   <div id="pdfPrintBuffer" class="pdf-buffer-hidden"></div>
 
@@ -1825,7 +1894,7 @@
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
   <script src="auth.js?v=20261012_nav_fix_v23"></script>
-  <script src="app.js?v=20261017_thepmeow_healing_v9"></script>
+  <script src="app.js?v=20261018_social_share_center_v1"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>

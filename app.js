@@ -1392,6 +1392,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // App State for Fortune Telling (Single Unified Deck: ไพ่เทพเหมียว 92 ใบ)
+
+  // --------------------------------------------------------------------------
+  // STEPPER CONTROLLER (Step 1: Pick Cards, Step 2: Results)
+  // --------------------------------------------------------------------------
+  function setStep(step) {
+    fortuneState.step = step;
+    if (stepperFill) {
+      stepperFill.style.width = step === 1 ? '50%' : '100%';
+    }
+    if (stepIndicators && stepIndicators[0] && stepIndicators[1]) {
+      stepIndicators[0].classList.toggle('active', step === 1);
+      stepIndicators[0].classList.toggle('completed', step > 1);
+      stepIndicators[1].classList.toggle('active', step === 2);
+    }
+    if (readingStep3 && readingStep4) {
+      if (step === 1) {
+        readingStep3.classList.remove('hidden');
+        readingStep4.classList.add('hidden');
+      } else {
+        readingStep3.classList.add('hidden');
+        readingStep4.classList.remove('hidden');
+      }
+    }
+    const readingAppView = document.getElementById('readingAppView') || document.querySelector('.main-card-layout');
+    if (readingAppView) {
+      readingAppView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function getActivePositions() {
+    if (fortuneState.spreadType === '5cards') {
+      return SPREAD_CONFIGS['5cards'].positions;
+    }
+    const patId = fortuneState.patternId || 'pattern2';
+    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId]) 
+      || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
+    return pat ? pat.positions : [];
+  }
+
+  function getActiveSpreadTitle() {
+    if (fortuneState.spreadType === '5cards') {
+      return SPREAD_CONFIGS['5cards'].title;
+    }
+    const patId = fortuneState.patternId || 'pattern2';
+    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId]) 
+      || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
+    return pat ? pat.title : 'ไพ่ 3 ใบ (Trinity Spread)';
+  }
+
   const fortuneState = {
     step: 1,
     question: '',
@@ -1404,6 +1453,7 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPickSlot: 0,
     modalTargetSlot: 0
   };
+  window.fortuneState = fortuneState;
 
   function parseQuestionChoices(question) {
     if (!question || typeof question !== 'string') {
@@ -1734,348 +1784,746 @@ document.addEventListener('DOMContentLoaded', () => {
       return `ข้อพึงระวังหากปล่อยผ่านหรือไม่ปรับเปลี่ยนวิธี: ด้านเงาของไพ่เตือนถึง ${warningBody} ซึ่งจะทำให้สถานการณ์กลายเป็นแรงกดดันที่สะสมยืดเยื้อต่อไป`;
     } else if (posRole === 'HEART_INCLINATION') {
       const heartBody = domains.personality || essence;
-      return `ลึกๆ ในก้นบึ้งหัวใจของคุณ ไพ่ใบนี้สะท้อนว่าจิตใต้สำนึกกำลังโน้มเอียงไปทาง “${heartBody}” คุณปรารถนาความมั่นคงตามพลังของธาตุ${elem} ${deityMsg ? `พร้อมด้วยโอวาทเตือนใจ: “${deityMsg}”` : ''}`;
-    } else if (posRole === 'OBSTACLE') {
-      return `จุดที่ทำให้เรื่องนี้ติดขัดเกิดจาก: ${shadowSide || ed.warning} หรือการยึดติดในกรอบเดิมมากเกินไปจนขาดความสมดุล`;
-    } else if (posRole === 'CHOICE_A' || posRole === 'CHOICE_B') {
-      const cLabel = choiceLabel || 'เส้นทางนี้';
-      const choiceBody = domainReading || essence;
-      return `หากเลือกเส้นทาง “${cLabel}” บรรยากาศและผลลัพธ์จะขับเคลื่อนด้วยพลังของ “${name} (${elem})”: ${choiceBody} โดยมีทั้ง ${ed.gift} ${shadowSide ? `แต่ก็ต้องพึงระวังด้านเงา (${shadowSide}) ไว้ด้วยค่ะ` : ''}`;
-    } else if (posRole === 'PAST') {
-      return `ในอดีตหรือรากเหง้าที่นำพามาสู่จุดนี้ของ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” สะท้อนว่า ${domainReading || essence} ซึ่งได้หล่อหลอมและส่งผลต่อเนื่องมาถึงปัจจุบัน`;
-    } else if (posRole === 'FUTURE') {
-      return `แนวโน้มพัฒนาการข้างหน้าที่จะเกิดขึ้นกับ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” นำพา ${ed.gift} ${domainReading || essence}`;
-    } else if (posRole === 'SURFACE_REALITY') {
-      return `สิ่งที่ปรากฏให้เห็นภายนอกอย่างชัดเจนสำหรับ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” สะท้อนว่า ${domainReading || essence} ซึ่งเป็นภาพจริงเบื้องหน้าที่ทุกคนรับรู้ได้`;
-    } else if (posRole === 'HIDDEN_FACTOR') {
-      const hiddenBody = shadowSide || domains.personality || essence;
-      return `เบื้องลึกหรือสิ่งที่ซ่อนอยู่ใต้ผิวน้ำ ไพ่ “${name}” ชี้ให้เห็นถึง: ${hiddenBody} พลังของธาตุ${elem}บ่งบอกถึงสภาวะจิตใต้สำนึก หรือแรงผลักดันที่ยังไม่ได้เปิดเผยออกมา`;
-    } else if (posRole === 'PROJECTED_OUTCOME') {
-      return `ทิศทางที่สถานการณ์กำลังดำเนินไปสู่ สำหรับเรื่อง “${question || fortuneState.question}”: พลังของ “${name} (${elem})” ชี้ว่า ${domainReading || essence} จะเป็นผลลัพธ์ที่จะค่อยๆ ชัดเจนขึ้นตามกาลเวลา`;
-    } else if (posRole === 'PREREQUISITE') {
-      return `เงื่อนไขสำคัญหรือปัจจัยตั้งต้นที่ต้องมี/ต้องรู้สำหรับ “${question || fortuneState.question}”: พลังของ “${name} (${elem})” สะท้อนว่า ${domainReading || strategy || essence} คุณต้องเตรียมความพร้อมและตั้งหลักบนพื้นฐานนี้`;
-    } else if (posRole === 'PROCESS') {
-      return `ในขั้นตอนการดำเนินงานจริง สิ่งที่จะต้องปฏิบัติและเผชิญระหว่างทางคือ: ${strategy ? `“${strategy}” ` : ''}${domainReading || essence} นั่นคือ ${ed.actionVerb} เพื่อขับเคลื่อนเรื่องนี้ให้คืบหน้า`;
+      return `ลึกๆ ในก้นบึ้งหัวใจของคุณ ไพ่ใบนี้สะท้อนว่าจิตใต้สำนึกกำลังโน้มเอียงไปทาง: ${heartBody}`;
     }
-
-    return `ไพ่ “${name}” ในตำแหน่ง${posTitle || ''} สะท้อนว่า: ${domainReading || essence} จงใช้พลังของธาตุ${elem}เพื่อนำพา${qTopic.actionVerb}อย่างมีสติ`;
-  }
-
-  function getCardSituationInterpretation(card, baseElem, question) {
-    return interpretCardInContext({
-      card,
-      posRole: 'CURRENT_SITUATION',
-      posTitle: 'สถานการณ์ปัจจุบัน',
-      question: question || fortuneState.question
-    });
-  }
-
-  function getCardObstacleInterpretation(card, baseElem, question) {
-    return interpretCardInContext({
-      card,
-      posRole: 'OBSTACLE',
-      posTitle: 'อุปสรรค / สิ่งกีดขวาง',
-      question: question || fortuneState.question
-    });
-  }
-
-  function getCardSolutionInterpretation(card, baseElem, question) {
-    return interpretCardInContext({
-      card,
-      posRole: 'ACTION_SOLUTION',
-      posTitle: 'ทางออก / กลยุทธ์แก้ไข',
-      question: question || fortuneState.question
-    });
-  }
-
-  function getCardWisdomGuidance(card, question) {
-    return interpretCardInContext({
-      card,
-      posRole: 'ACTION_SOLUTION',
-      posTitle: 'คำแนะนำจากปัญญาญาณ',
-      question: question || fortuneState.question
-    });
-  }
-
-  function getActivePositions() {
-    if (fortuneState.spreadType === '5cards') {
-      return SPREAD_CONFIGS['5cards'].positions;
-    }
-    const pat = SPREAD_CONFIGS['3cards'].patterns[fortuneState.patternId] || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
-    if (fortuneState.patternId === 'pattern4') {
-      const { choiceA, choiceB } = parseQuestionChoices(fortuneState.question);
-      return [
-        { 
-          index: 0, 
-          title: `ใบที่ 1: ตัวเลือก A (${choiceA})`, 
-          shortName: `ตัวเลือก A (${choiceA})`, 
-          choiceLabel: choiceA,
-          desc: `สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทาง: ${choiceA}` 
-        },
-        { 
-          index: 1, 
-          title: `ใบที่ 2: ตัวเลือก B (${choiceB})`, 
-          shortName: `ตัวเลือก B (${choiceB})`, 
-          choiceLabel: choiceB,
-          desc: `สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทาง: ${choiceB}` 
-        },
-        { 
-          index: 2, 
-          title: 'ใบที่ 3: คำแนะนำจากปัญญาญาณ', 
-          shortName: 'คำแนะนำ', 
-          desc: 'คำชี้แนะจากปัญญาญาณเพื่อประกอบการตัดสินใจอย่างมีสติ' 
-        }
-      ];
-    }
-    return pat.positions;
-  }
-
-  function getActiveSpreadTitle() {
-    if (fortuneState.spreadType === '5cards') {
-      return 'ไพ่ 5 ใบ (ทางเลือกและผลลัพธ์เชิงกลยุทธ์)';
-    }
-    const pat = SPREAD_CONFIGS['3cards'].patterns[fortuneState.patternId] || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
-    return `ไพ่ 3 ใบ (${pat.shortTitle})`;
+    return `พลังของไพ่ “${name}” นำพาข้อคิดสำคัญมาสู่คำถามของคุณ`;
   }
 
   // --------------------------------------------------------------------------
-  // STEPPER & NAVIGATION CONTROLLER (2-STEP STREAMLINED SYSTEM)
-  // 1: Question Input & Pick 3 Cards -> 2: Divination Results
+  // INTELLIGENT QUESTION PARSER & ORACLE ANSWER ENGINE
   // --------------------------------------------------------------------------
-  function setStep(targetStep) {
-    fortuneState.step = targetStep;
+  function analyzeQuestionContext(question) {
+    const q = (question || '').toLowerCase();
 
-    // Ensure pool is loaded
-    if (!fortuneState.activeCardsPool || fortuneState.activeCardsPool.length === 0) {
-      fortuneState.activeCardsPool = getActiveCardsPool();
+    // 1. Detect Topic / Category (Priority over query mode)
+    let topic = 'general';
+    if (/แฟน|รัก|คนคุย|คนรัก|คู่|ชอบ|เลิก|คืนดี|กลับมา|ทักมา|คิดถึง|มือที่สาม|แต่งงาน|โสด|ความสัมพันธ์|เขาคิด|เขารู้สึก|ใจ|ผูกพัน|อกหัก|ง้อ/.test(q)) {
+      topic = 'love';
+    } else if (/สอบ|เรียน|มหาวิทยาลัย|มหาลัย|ติดไหม|ผ่านไหม|คะแนน|เกรด|สอบผ่าน|สอบติด|ผลสอบ|วิทยานิพนธ์|คณะ/.test(q)) {
+      topic = 'study';
+    } else if (/เงิน|ทอง|หนี้|หนี้สิน|โชค|โชคลาภ|หวย|ลอตเตอรี่|ลงทุน|หุ้น|คืนเงิน|ทวงเงิน|กู้|รวย|ขายของ|กำไร|ขาดทุน|มรดก/.test(q)) {
+      topic = 'finance';
+    } else if (/งาน|บริษัท|เจ้านาย|หัวหน้า|เพื่อนร่วมงาน|สัมภาษณ์|โปรเจกต์|ธุรกิจ|ลูกค้า|ลาออก|ย้ายงาน|หางาน|ตกงาน|ตำแหน่ง|เลื่อนขั้น|บรรจุ/.test(q)) {
+      topic = 'career';
+    } else if (/ป่วย|สุขภาพ|ผ่าตัด|หายไหม|โรค|หมอ|โรงพยาบาล|อุบัติเหตุ|ร่างกาย|น้ำหนัก|นอนไม่หลับ/.test(q)) {
+      topic = 'health';
     }
 
-    // Update Stepper Progress Bar (0% for Step 1, 100% for Step 2)
-    const fillPercents = [0, 100];
-    if (stepperFill) {
-      stepperFill.style.width = `${fillPercents[targetStep - 1] || 0}%`;
+    // 2. Detect Question Query Mode
+    let mode = 'general';
+    if (topic === 'love' && /กลับมา|คืนดี|ทักมา|ติดต่อมา|หวนคืน|กลับไป/.test(q)) {
+      mode = 'ex_return';
+    } else if (topic === 'love' && /คิดยังไง|รู้สึกยังไง|คิดอะไร|รักไหม|ชอบไหม|มีใจ|จริงจังไหม|คิดถึงไหม/.test(q)) {
+      mode = 'love_feelings';
+    } else if (topic === 'love' && /มีแฟน|คนใหม่|เจอคู่|สละโสด|เนื้อคู่/.test(q)) {
+      mode = 'love_future';
+    } else if (/จะ.*ไหม|จะ.*หรือเปล่า|ผ่านไหม|ได้ไหม|สำเร็จไหม|มีโอกาสไหม|รอดไหม|สมหวังไหม|จะดีไหม/.test(q)) {
+      mode = 'yes_no';
+    } else if (/ควร|เลือก|ลาออกดีไหม|ไปต่อหรือพอ|ดีกว่า|อันไหน|ทางไหน/.test(q)) {
+      mode = 'decision';
+    } else if (/ทำยังไง|อย่างไร|วิธี|แนวทาง|ทางออก|ควรทำ|แก้ไข|เริ่มยังไง|แบบไหนดี/.test(q)) {
+      mode = 'how_to';
     }
 
-    // Update Stepper Step Badges
-    stepIndicators.forEach((indicator, idx) => {
-      if (!indicator) return;
-      const stepNum = idx + 1;
-      indicator.classList.remove('active', 'completed');
-      if (stepNum === targetStep) {
-        indicator.classList.add('active');
-      } else if (stepNum < targetStep) {
-        indicator.classList.add('completed');
+    return { topic, mode, raw: q };
+  }
+
+  function getCardNature(card) {
+    if (!card) return 'neutral';
+    const name = card.name_th || card.name || '';
+    if (/หนิวหลาง|ไท่เอี๊ยง|โต้วหมู่|พระแม่หนี่วา|จีกง|ไท่ซ่างเหล่าจวิน|สื่อสารฉับไว|สุขสมบูรณ์|เฉลิมฉลอง|ชัยชนะ|ร่วมมือประสานใจ|สมปรารถนา|รุ่งโรจน์|สร้างสรรค์|ปฐมบทแห่งทรัพย์|กำเนิด|แสงสว่าง|รุ่งเรือง/i.test(name)) {
+      return 'favorable';
+    }
+    if (/หยุดคิด|พักรบ|เฉินถวน|โจวเหวินหวาง|สมดุล|ดุลยพินิจ|แสวงหาความสงบ|เฉยชา|รอคอย|อดทน|ประเมิน/i.test(name)) {
+      return 'pause';
+    }
+    if (/เดิมพันเฮือกสุดท้าย|วิกฤต|ทรมาณ|พังทลาย|เหลยเสิน|ท้าวพญายม|จิ้งจอกเก้าหาง|ติดกับดัก|จมดิ่ง|อัตตา|ขัดสน|สิ้นเกียรติ|ห้าแห่งไฟ/i.test(name)) {
+      return 'challenging';
+    }
+    return 'favorable';
+  }
+
+  // Get dynamic domain or core wisdom with STRICT topic filtering (no business jargon in love!)
+  function getThepMeowCardReading(card, topic) {
+    if (!card) return 'พลังแห่งการเริ่มต้นใหม่และความหวัง';
+    
+    const isGenericTemplate = (txt) => !txt || /ตามแนวทางของ\s*ธาตุ/i.test(txt) || /พลังธาตุ.*จิ่วเทียน/i.test(txt);
+
+    if (topic === 'love') {
+      let loveText = card.meanings?.domains?.love || card.reading_love;
+      if (loveText && !isGenericTemplate(loveText) && !/ธุรกิจ|พอร์ต|ลงทุน|audit|poc|sunk cost|บอร์ดบริหาร/i.test(loveText)) {
+        return cleanThepMeowCardText(loveText);
       }
-    });
-
-    // Toggle Step Containers: Step 1 is readingStep3 (integrated screen), Step 2 is readingStep4 (results)
-    if (readingStep1) readingStep1.classList.add('hidden');
-    if (readingStep2) readingStep2.classList.add('hidden');
-    if (readingStep3) readingStep3.classList.toggle('hidden', targetStep !== 1);
-    if (readingStep4) readingStep4.classList.toggle('hidden', targetStep !== 2);
-
-    // Keep pinnedContextBar hidden on Step 1 (since question box is right on this screen)
-    if (pinnedContextBar) {
-      pinnedContextBar.classList.add('hidden');
+      // Love-specific contextual fallbacks
+      const name = card.name_th || card.name || '';
+      if (/เดิมพัน/i.test(name)) return 'ความสัมพันธ์ที่เหนื่อยล้าจากการประคับประคองมานาน เหมือนต้องทุ่มเทและแบกรับความพยายามอยู่เพียงลำพัง';
+      if (/วิกฤต/i.test(name)) return 'ช่วงเวลาเปราะบางทางอารมณ์ ความขัดแย้งหรือบาดแผลในใจที่ต้องใช้ความนิ่ง ไม่เร่งร้อนปะทะ';
+      if (/หยุดคิด/i.test(name)) return 'การหยุดพักเพื่อทบทวนความรู้สึก เว้นระยะห่างให้แต่ละฝ่ายได้สำรวจหัวใจตนเองว่าควรไปต่อหรือปรับตัวอย่างไร';
+      if (/หนิวหลาง/i.test(name)) return 'ความรักแท้และความผูกพันที่ก้าวข้ามกาลเวลา การเชื่อมใจที่อบอุ่นและเข้าใจกันลึกซึ้ง';
+      if (/ฉางเอ๋อ/i.test(name)) return 'ความคิดถึงและความเหงาในใจ แต่แสงจันทร์จะค่อยๆ ปลอบประโลมให้หัวใจสงบขึ้น';
+      if (/เฉินถวน/i.test(name)) return 'การถอยกลับมาพักใจในพื้นที่ส่วนตัว เพื่อฟื้นฟูพลังใจให้กลับมามั่นคง';
+      if (card.deity?.title && card.deity.title.length > 10) return cleanThepMeowCardText(card.deity.title);
+      return 'การเรียนรู้ที่จะรักและเข้าใจตนเอง เพื่อสร้างความสัมพันธ์ที่มั่นคงและสบายใจ';
     }
 
-    // Smooth scroll to top
-    if (readingAppView) {
-      readingAppView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (topic === 'career') {
+      let careerText = card.meanings?.domains?.career || card.reading_work;
+      if (careerText && !isGenericTemplate(careerText)) return cleanThepMeowCardText(careerText);
+    } else if (topic === 'finance') {
+      let finText = card.meanings?.domains?.finance || card.reading_finance;
+      if (finText && !isGenericTemplate(finText)) return cleanThepMeowCardText(finText);
+    } else if (topic === 'study') {
+      let studyText = card.meanings?.domains?.career || card.reading_work;
+      if (studyText && !isGenericTemplate(studyText)) return cleanThepMeowCardText(studyText);
+    } else if (topic === 'health') {
+      let healthText = card.meanings?.domains?.health || card.reading_health;
+      if (healthText && !isGenericTemplate(healthText)) return cleanThepMeowCardText(healthText);
     }
+
+    // High quality core fallbacks
+    if (card.meanings?.core && !isGenericTemplate(card.meanings.core)) {
+      return cleanThepMeowCardText(card.meanings.core);
+    }
+    if (card.summary) {
+      return cleanThepMeowCardText(card.summary);
+    }
+    if (card.deity_message && !isGenericTemplate(card.deity_message)) {
+      return cleanThepMeowCardText(card.deity_message);
+    }
+    if (card.meanings?.light_side) {
+      return cleanThepMeowCardText(card.meanings.light_side);
+    }
+    return cleanThepMeowCardText(card.core_meaning || card.name_th || card.name);
   }
 
-  // --------------------------------------------------------------------------
-  // LIVE QUESTION INPUT & SMART PATTERN DETECTION
-  // --------------------------------------------------------------------------
-  function updateSmartPatternPreview() {
-    const q = userQuestionInput ? userQuestionInput.value.trim() : '';
-    fortuneState.question = q;
-    const patId = detectBestPatternForQuestion(q);
-    fortuneState.patternId = patId;
-    const patConfig = SPREAD_CONFIGS['3cards'].patterns[patId];
-    if (smartPatternTitle && patConfig) {
-      smartPatternTitle.textContent = patConfig.title;
+  // Extract gentle caution without harsh words
+  function getThepMeowCardCaution(card) {
+    if (!card) return 'ค่อยๆ คิด ค่อยๆ ก้าว ไม่ต้องกดดันตัวเอง';
+    if (card.meanings && card.meanings.shadow_side) {
+      const clean = cleanThepMeowCardText(card.meanings.shadow_side);
+      const parts = clean.split(/[.,;\n]/);
+      return parts[0]?.trim() || 'อย่าเพิ่งใจร้อนหรือคาดหวังผลลัพธ์เร็วเกินไป';
     }
-    if (smartPatternDesc && patConfig) {
-      smartPatternDesc.textContent = patConfig.desc;
+    if (card.warning) return cleanThepMeowCardText(card.warning);
+    return 'ระวังความกังวลใจล่วงหน้าที่จะมาบั่นทอนพลังใจของคุณ';
+  }
+
+  // Get unique feline quote/gesture from the card's curated healing caption
+  function getThepMeowCardCatVoice(card, idx) {
+    if (!card) return 'เทพเหมียวอยู่เคียงข้างและเป็นกำลังใจให้เสมอนะคะ เมี๊ยววว~ 🐾';
+    let voice = (card.deity && card.deity.title) ? card.deity.title.trim() : '';
+    if (!voice || voice === card.name_th || voice.startsWith('Card ') || voice.startsWith('17-') || voice.length < 5) {
+      voice = card.deity_message || card.advice || 'เชื่อมั่นในหัวใจของตัวเองนะ';
+    }
+    // Clean trailing cat sounds if already included, then append standardized cute ending
+    voice = voice.replace(/\s*เมี๊ยว.*$/i, '').trim();
+    return `${voice} เมี๊ยววว~ 🐾`;
+  }
+
+  // Generate Direct Answer to the exact user question
+  function generateDirectAnswer(qCtx, drawn) {
+    const c1 = drawn[0];
+    const c2 = drawn[1] || drawn[0];
+    const c3 = drawn[drawn.length - 1];
+
+    const n1 = getCardNature(c1);
+    const n2 = getCardNature(c2);
+    const n3 = getCardNature(c3);
+    const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่บทสรุป';
+
+    let verdict = '';
+    let reason = '';
+    let badgeClass = 'verdict-badge-pause';
+
+    if (qCtx.mode === 'ex_return') {
+      if (n3 === 'favorable' && n2 !== 'challenging') {
+        verdict = 'มีแนวโน้มจะได้กลับมาพูดคุยหรือมีสัญญาณการคืนดีกันค่ะ';
+        reason = `พลังจากไพ่ “${c3Name}” ชี้ว่ายังมีความผูกพันและเยื่อใยลึกซึ้ง โดยเร็วๆ นี้จะมีจังหวะเปิดให้ได้ปรับความเข้าใจและเชื่อมต่อกันอีกครั้งค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else if (n3 === 'pause' || n2 === 'pause') {
+        verdict = 'ในระยะเวลานี้ เขายังไม่ได้กลับมาในทันทีค่ะ';
+        reason = `พลังของไพ่ “${c3Name}” ชี้ชัดว่าเขายังอยู่ในช่วงถอยออกมาทบทวนความรู้สึกของตัวเอง (Checkpoint) ความสัมพันธ์เพิ่งผ่านความตึงเครียดหรือความเหนื่อยล้ามา ตอนนี้เขาต้องการพื้นที่ส่วนตัวและความสงบ ยังไม่ใช่จังหวะที่เขาพร้อมจะกลับมาง้อขอคืนดีในเร็วๆ นี้ค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      } else {
+        verdict = 'โอกาสกลับมาค่อนข้างยาก และแนะนำให้เริ่มปล่อยวางเพื่อตัวเองค่ะ';
+        reason = `ไพ่สะท้อนถึงความเหนื่อยล้าและรอยร้าวที่สะสมมานาน การเว้นระยะหรือแยกย้ายกันไปเติบโตคือทางออกที่ทำให้หัวใจของคุณหลุดพ้นจากความทุกข์ได้ดีที่สุดค่ะ`;
+        badgeClass = 'verdict-badge-challenging';
+      }
+    } else if (qCtx.mode === 'love_feelings') {
+      if (n3 === 'favorable') {
+        verdict = 'เขามีความรู้สึกที่ดี จริงใจ และมองคุณเป็นคนสำคัญในใจค่ะ';
+        reason = `แม้ภายนอกอาจไม่ได้แสดงออกหวือหวา แต่ลึกๆ พลังจากไพ่ “${c3Name}” ยืนยันว่าเขายังแคร์และรู้สึกอบอุ่นที่มีคุณอยู่ในสายตาค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else if (n3 === 'pause') {
+        verdict = 'เขากำลังสับสน ยังไม่แน่ใจในความรู้สึกตัวเอง และต้องการเวลาคิดทบทวนค่ะ';
+        reason = `ไพ่ “${c3Name}” ชี้ว่าเขามีความลังเลในใจ อยากคิดไตร่ตรองให้รอบคอบก่อนที่จะขยับสถานะหรือแสดงออกชัดเจนค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      } else {
+        verdict = 'เขามีกำแพงในใจ รู้สึกตึงเครียด หรือยังมีเรื่องค้างคาใจที่ยังไม่พร้อมเปิดรับค่ะ';
+        reason = `ตอนนี้เขายังติดอยู่กับปัญหาหรือความกังวลส่วนตัว ทำให้ยังไม่พร้อมเปิดใจเต็มร้อย อย่าเพิ่งกดดันหรือเร่งรัดเขาในตอนนี้นะคะ`;
+        badgeClass = 'verdict-badge-challenging';
+      }
+    } else if (qCtx.mode === 'love_future') {
+      if (n3 === 'favorable') {
+        verdict = 'มีโอกาสได้พบเจอความสัมพันธ์ใหม่ที่สดใส หรือคนที่คุยอยู่จะเริ่มชัดเจนขึ้นค่ะ';
+        reason = `พลังงานความรักเปิดทางสว่างสดใส ความจริงใจและเสน่ห์ในตัวคุณจะดึงดูดคนดีๆ เข้ามาในชีวิตค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else {
+        verdict = 'ช่วงนี้เป็นจังหวะแห่งการรักและดูแลตัวเอง จังหวะความรักยังค่อยเป็นค่อยไปค่ะ';
+        reason = `ไพ่ “${c3Name}” แนะนำว่ายิ่งคุณมีความสุขและใจฟูกับตัวเองมากเท่าไหร่ จังหวะความรักที่ดีจะเดินทางมาหาอย่างถูกที่ถูกเวลาค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      }
+    } else if (qCtx.topic === 'career' && qCtx.mode === 'yes_no') {
+      if (n3 === 'favorable') {
+        verdict = 'มีเกณฑ์สำเร็จสูงมาก และมีโอกาสได้รับข่าวดีที่น่าพึงพอใจค่ะ!';
+        reason = `พลังของไพ่ “${c3Name}” ชี้ชัดว่าความพยายามและทักษะที่คุณแสดงออกไปจะได้รับการยอมรับ มีเกณฑ์ผ่านการคัดเลือกหรือได้งานตามที่หวังค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else if (n3 === 'pause') {
+        verdict = 'ยังอยู่ในขั้นตอนการพิจารณาเปรียบเทียบ อาจมีความล่าช้าในการประกาศผลค่ะ';
+        reason = `ไพ่ “${c3Name}” บอกว่าผู้ใหญ่หรือฝ่ายคัดเลือกกำลังตรวจสอบคุณสมบัติอย่างละเอียด ให้รออย่างใจเย็นและเตรียมตัวให้พร้อมเสมอค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      } else {
+        verdict = 'ยังมีการแข่งขันสูงหรือมีข้อจำกัดบางประการ แนะนำให้เตรียมแผนสำรองไว้ค่ะ';
+        reason = `ไพ่สะท้อนถึงอุปสรรคหรือความตึงเครียดหน้างาน อย่าเพิ่งท้อถอย ให้ปรับแก้พอร์ตหรือเตรียมตัวกับโอกาสใหม่ๆ เพิ่มเติมค่ะ`;
+        badgeClass = 'verdict-badge-challenging';
+      }
+    } else if (qCtx.topic === 'finance' && qCtx.mode === 'yes_no') {
+      if (n3 === 'favorable') {
+        verdict = 'มีแนวโน้มการเงินที่คลี่คลาย มีโชคลาภ หรือได้รับเงินตามที่รอคอยค่ะ';
+        reason = `ไพ่ “${c3Name}” นำพาพลังแห่งสภาพคล่องและความมั่งคั่งเข้ามา โอกาสทางการเงินเปิดกว้างค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else {
+        verdict = 'เงินที่รอคอยอาจมีความล่าช้า ต้องติดตามทวงถามอย่างใจเย็นและระวังรายจ่ายค่ะ';
+        reason = `พลังของไพ่ “${c3Name}” เตือนให้ตรวจเช็คสภาพคล่องอย่างรัดกุม อย่าเพิ่งไว้ใจคำสัญญาเรื่องเงินง่ายเกินไปค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      }
+    } else if (qCtx.topic === 'study' && qCtx.mode === 'yes_no') {
+      if (n3 === 'favorable') {
+        verdict = 'มีเกณฑ์สอบผ่านและสมหวังตามเป้าหมายสูงมากค่ะ!';
+        reason = `พลังปัญญาจากไพ่ “${c3Name}” สนับสนุนเต็มที่ ความขยันและสิ่งที่คุณทบทวนมาจะออกตรงจุดค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else {
+        verdict = 'ผลลัพธ์ยังอยู่ในเกณฑ์ก้ำกึ่ง ต้องเร่งทบทวนจุดอ่อนเพิ่มเติมอีกนิดค่ะ';
+        reason = `ไพ่ “${c3Name}” เตือนว่าห้ามประมาท การจัดเวลาอ่านหนังสือและฝึกทำข้อสอบซ้ำจะช่วยพลิกสถานการณ์ได้ค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      }
+    } else if (qCtx.mode === 'decision') {
+      if (n3 === 'favorable') {
+        verdict = 'เส้นทางข้างหน้าเปิดโอกาสที่ดีและน่าก้าวต่อไปค่ะ';
+        reason = `เมื่อคุณตัดสินใจด้วยความมั่นคงและกล้าออกจากความกลัว พลังของไพ่ “${c3Name}” จะนำพาคุณไปสู่การเติบโตที่ดียิ่งขึ้นค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else {
+        verdict = 'แนะนำให้ชะลอการตัดสินใจแบบกะทันหัน และประเมินข้อดีข้อเสียให้ชัดเจนก่อนค่ะ';
+        reason = `ไพ่ “${c3Name}” ชี้ว่ายังมีข้อมูลบางอย่างที่ควรตรวจสอบให้รอบด้าน อย่าเพิ่งขยับตัวด้วยความใจร้อนค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      }
+    } else if (qCtx.mode === 'yes_no') {
+      if (n3 === 'favorable') {
+        verdict = 'มีโอกาสสำเร็จและเปิดทางสว่างสดใสให้คุณอย่างแน่นอนค่ะ!';
+        reason = `พลังของไพ่ “${c3Name}” สื่อถึงความลงตัว สิ่งที่คุณตั้งจิตถามมีแนวโน้มสมหวังสูงมากค่ะ`;
+        badgeClass = 'verdict-badge-favorable';
+      } else if (n3 === 'pause') {
+        verdict = 'ยังต้องรอจังหวะเวลาและความอดทนอีกนิด ทุกอย่างกำลังจัดสรรค่ะ';
+        reason = `เรื่องนี้ยังอยู่ในช่วงบ่มเพาะ ไพ่ “${c3Name}” บอกให้คุณประคองความสม่ำเสมอไว้ แล้วผลลัพธ์จะตามมาเองค่ะ`;
+        badgeClass = 'verdict-badge-pause';
+      } else {
+        verdict = 'มีอุปสรรคหรือบททดสอบที่ต้องเตรียมรับมืออย่างมีสติค่ะ';
+        reason = `ไพ่เตือนให้รอบคอบกับจุดสะดุด และมองหาแนวทางแก้ไขหรือแผนสำรองไว้ล่วงหน้าค่ะ`;
+        badgeClass = 'verdict-badge-challenging';
+      }
+    } else {
+      verdict = 'สถานการณ์กำลังนำพาคุณไปสู่จุดเปลี่ยนและบทเรียนที่มีคุณค่าค่ะ';
+      reason = `พลังของไพ่ “${c3Name}” บอกว่าทุกสิ่งที่พบเจอในตอนนี้คือจังหวะชีวิตที่กำลังคลี่คลายไปสู่ทิศทางที่เติบโตขึ้นค่ะ`;
+      badgeClass = 'verdict-badge-pause';
     }
 
-    // Dynamically update slot badges according to the detected pattern
+    return { verdict, reason, badgeClass };
+  }
+
+  // 1. Master Prophecy Builder (Synthesized from 3 cards, positions & meanings in Thep Meow Voice)
+  function buildThepMeowMainProphecy({ question, drawn, positions, qCtx }) {
+    const c1 = drawn[0];
+    const c2 = drawn[1] || drawn[0];
+    const c3 = drawn[2] || drawn[drawn.length - 1];
+
+    const pos1 = positions[0] || { title: 'ใบที่ 1: รากฐาน / อดีตที่ส่งผล' };
+    const pos2 = positions[1] || { title: 'ใบที่ 2: ปัจจุบัน / สภาวะจริง' };
+    const pos3 = positions[2] || { title: 'ใบที่ 3: อนาคต / แนวโน้มผลลัพธ์' };
+
+    const c1Name = c1 ? (c1.name_th || c1.name) : 'ไพ่ใบแรก';
+    const c2Name = c2 ? (c2.name_th || c2.name) : 'ไพ่ใบที่สอง';
+    const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่ใบที่สาม';
+
+    const elem1 = c1 ? getBaseElement(c1.element) : 'น้ำ';
+    const elem2 = c2 ? getBaseElement(c2.element) : 'ไฟ';
+    const elem3 = c3 ? getBaseElement(c3.element) : 'ไม้';
+
+    const elem1Info = ELEMENT_INFO[elem1] || { icon: '💧', color: '#0284c7' };
+    const elem2Info = ELEMENT_INFO[elem2] || { icon: '🔥', color: '#ef4444' };
+    const elem3Info = ELEMENT_INFO[elem3] || { icon: '🌿', color: '#10b981' };
+
+    const r1 = getThepMeowCardReading(c1, qCtx.topic);
+    const r2 = getThepMeowCardReading(c2, qCtx.topic);
+    const r3 = getThepMeowCardReading(c3, qCtx.topic);
+
+    // Get direct answer
+    const directAns = generateDirectAnswer(qCtx, drawn);
+
+    // Intent specific thematic intro
+    let intentTheme = '';
+    if (qCtx.topic === 'love') {
+      intentTheme = 'คลื่นพลังงานของหัวใจและความสัมพันธ์';
+    } else if (qCtx.topic === 'career') {
+      intentTheme = 'เส้นทางความก้าวหน้าในหน้าที่การงาน';
+    } else if (qCtx.topic === 'finance') {
+      intentTheme = 'กระแสโชคลาภและการหมุนเวียนทางการเงิน';
+    } else if (qCtx.topic === 'study') {
+      intentTheme = 'พลังสติปัญญาและผลลัพธ์การเรียนการสอบ';
+    } else {
+      intentTheme = 'ภาพรวมพลังงานชีวิตและจุดเปลี่ยนสำคัญ';
+    }
+
+    return `
+      <div class="thepmeow-verdict-box">
+        <div class="thepmeow-verdict-top">
+          <span class="thepmeow-avatar-badge">
+            <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์
+          </span>
+        </div>
+        <h3 class="thepmeow-verdict-question">
+          “${question}”
+        </h3>
+
+        <!-- DIRECT ANSWER CALLOUT AT TOP -->
+        <div class="thepmeow-direct-answer-callout">
+          <div class="direct-answer-header">
+            <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
+            <strong>คำตอบชัดเจนสำหรับคำถาม: “${question}”</strong>
+          </div>
+          <div class="direct-answer-verdict ${directAns.badgeClass}">
+            ${directAns.verdict}
+          </div>
+          <p class="direct-answer-reason">
+            <strong>เหตุผลจากหน้าไพ่:</strong> ${directAns.reason}
+          </p>
+        </div>
+
+        <div class="thepmeow-prophecy-body">
+          <p class="prophecy-intro-text">
+            “เจ้ามนุษย์ที่รัก... เทพเหมียวตั้งจิตกางกรงเล็บสัมผัส${intentTheme}จากไพ่ทั้ง 3 ใบให้แล้วนะคะ เมื่อเชื่อมโยงพลังงานตามตำแหน่ง หน้าไพ่ และแก่นความหมายเข้าด้วยกัน เรื่องราวของคำถามนี้กำลังสื่อสารออกมาอย่างชัดเจนเลยค่ะ เมี๊ยววว~ 🐾✨”
+          </p>
+
+          <div class="prophecy-cards-narrative">
+            <div class="prophecy-card-block">
+              <div class="prophecy-block-header">
+                <span class="prophecy-step-badge">1</span>
+                <strong>${pos1.title}:</strong>
+                <span class="prophecy-card-highlight">“${c1Name}”</span>
+                <span class="prophecy-elem-tag" style="color: ${elem1Info.color};">(${elem1Info.icon} ธาตุ${elem1})</span>
+              </div>
+              <p class="prophecy-block-desc">
+                รากเหง้าของเรื่องนี้เปิดด้วยพลังของ <strong>“${c1Name}”</strong> บ่งบอกว่าที่ผ่านมาเรื่องราวนี้ถูกขับเคลื่อนด้วย <em>“${r1}”</em> สิ่งที่คุณสั่งสมหรือเผชิญมาก่อนหน้านี้ไม่ได้สูญเปล่าเลยนะคะ มันคือฐานพลังสำคัญที่กำลังส่งผลต่อเนื่องมาถึงจุดนี้
+              </p>
+            </div>
+
+            <div class="prophecy-card-block">
+              <div class="prophecy-block-header">
+                <span class="prophecy-step-badge">2</span>
+                <strong>${pos2.title}:</strong>
+                <span class="prophecy-card-highlight">“${c2Name}”</span>
+                <span class="prophecy-elem-tag" style="color: ${elem2Info.color};">(${elem2Info.icon} ธาตุ${elem2})</span>
+              </div>
+              <p class="prophecy-block-desc">
+                เมื่อไหลเวียนมาสู่ใจกลางสถานการณ์ปัจจุบัน ไพ่ <strong>“${c2Name}”</strong> เข้ามาสะท้อนสภาวะจริงตรงหน้าว่า <em>“${r2}”</em> นี่คือจุดหมุนที่คุณต้องตั้งสติให้มั่น ไม่ต้องเตลิดตามความเร่งร้อน ให้โฟกัสอยู่กับความเป็นจริงตรงหน้าแล้วคุณจะคุมเกมอยู่ค่ะ
+              </p>
+            </div>
+
+            <div class="prophecy-card-block">
+              <div class="prophecy-block-header">
+                <span class="prophecy-step-badge">3</span>
+                <strong>${pos3.title}:</strong>
+                <span class="prophecy-card-highlight">“${c3Name}”</span>
+                <span class="prophecy-elem-tag" style="color: ${elem3Info.color};">(${elem3Info.icon} ธาตุ${elem3})</span>
+              </div>
+              <p class="prophecy-block-desc">
+                และปลายทางทิศทางข้างหน้าถูกส่งมอบผ่านไพ่ <strong>“${c3Name}”</strong> เผยให้เห็นคำตอบและแนวโน้มที่กำลังจะผลิดอกออกผล คือ <em>“${r3}”</em> เมื่อคุณประคองจังหวะตามคำแนะนำของไพ่ทั้งสามใบ สิ่งที่ตั้งใจไว้จะเปิดทางสว่างสดใสและทำให้คุณยิ้มได้แน่นอนค่ะ
+              </p>
+            </div>
+          </div>
+
+          <div class="prophecy-summary-box">
+            <i class="fa-solid fa-sparkles" style="color: #d946ef; font-size: 16px; margin-top: 2px;"></i>
+            <div class="prophecy-summary-text">
+              <strong>บทสรุปภาษาเทพเหมียว:</strong> “มองภาพรวมแล้ว เรื่องนี้กำลังดำเนินไปในทิศทางที่เติบโต เพียงแต่ระหว่างทางต้องอาศัยความใจเย็นและไว้ใจในศักยภาพของตัวเอง ไม่ต้องแบกโลกทั้งใบไว้คนเดียวนะคะ ก้าวทีละสเต็ปอย่างสง่างามเหมือนแมวเดินบนกำแพง แล้วความสำเร็จจะเป็นของคุณแน่นอนค่ะ เมี๊ยววว~ 🐾💖”
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // ==========================================================================
+  // AI ORACLE ENGINE (GEMINI 3.8 FLASH + THEP MEOW PERSONALITY)
+  // ==========================================================================
+  const THEP_MEOW_API_KEY = window.THEP_MEOW_API_KEY || (typeof localStorage !== 'undefined' ? (localStorage.getItem('thepmeow_ai_key') || '') : '');
+
+  async function fetchThepMeowAIFortune({ question, drawn, positions }) {
+    if (!THEP_MEOW_API_KEY) {
+      throw new Error('AI API key not configured. Using high-precision local engine.');
+    }
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=' + THEP_MEOW_API_KEY;
+
+    const c1 = drawn[0] || {};
+    const c2 = drawn[1] || drawn[0] || {};
+    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
+
+    const pos1Title = positions[0]?.title || 'ใบที่ 1: สิ่งที่เกิดขึ้น / อดีตที่ส่งผล';
+    const pos2Title = positions[1]?.title || 'ใบที่ 2: สิ่งที่ซ่อนอยู่ / สภาวะจริง';
+    const pos3Title = positions[2]?.title || 'ใบที่ 3: แนวโน้มผลลัพธ์ / อนาคต';
+
+    const prompt = `
+คุณคือ "แม่หมอเทพเหมียว" เทพแมวพยากรณ์สุดศักดิ์สิทธิ์และแสนใจดีแห่งสำรับไพ่เทพเหมียว (Thep Meow Oracle)
+บุคลิก: น่ารัก อบอุ่น มีเมตตา อารมณ์ดี พูดจาไพเราะ มีคำลงท้ายน่ารักเช่น "เมี๊ยววว~ 🐾", "เจ้ามนุษย์ที่รัก"
+จุดสำคัญที่สุด: **ต้องตอบตรงคำถามอย่างแม่นยำ จริงใจ และตรงประเด็นเป็นอันดับแรก ไม่พูดอ้อมค้อมหรือหลุดประเด็น**
+
+ข้อมูลคำถามของผู้ใช้:
+คำถาม: "${question}"
+
+ข้อมูลไพ่ 3 ใบที่เปิดได้จากฐานข้อมูล:
+1. ตำแหน่งที่ 1 (${pos1Title}): ไพ่ "${c1.name_th || c1.name}" (ธาตุ ${c1.element || 'น้ำ'})
+   - แก่นแท้: ${c1.core_meaning || c1.meanings?.core || ''}
+   - ข้อความเทพ: ${c1.deity_message || c1.summary || ''}
+2. ตำแหน่งที่ 2 (${pos2Title}): ไพ่ "${c2.name_th || c2.name}" (ธาตุ ${c2.element || 'ไฟ'})
+   - แก่นแท้: ${c2.core_meaning || c2.meanings?.core || ''}
+   - ข้อความเทพ: ${c2.deity_message || c2.summary || ''}
+3. ตำแหน่งที่ 3 (${pos3Title}): ไพ่ "${c3.name_th || c3.name}" (ธาตุ ${c3.element || 'ดิน'})
+   - แก่นแท้: ${c3.core_meaning || c3.meanings?.core || ''}
+   - ข้อความเทพ: ${c3.deity_message || c3.summary || ''}
+
+คำสั่งสำคัญ:
+1. วิเคราะห์คำถามของผู้ใช้ให้แตกฉาน หากถามเรื่องความรัก ให้ตีความไพ่ทุกใบในมิติของความรักและความสัมพันธ์เท่านั้น ห้ามนำเรื่องการงาน หุ้น การลงทุน หรือ Sunk Cost Fallacy มาปนเด็ดขาด! หากถามเรื่องงานให้ตีความเรื่องงาน หากถามเรื่องเรียนให้ตีความเรื่องเรียน
+2. ตอบตรงคำถามในส่วน direct_verdict ทันที เช่น มีโอกาสกลับมาไหม หรือแนวโน้มเป็นอย่างไร
+3. ส่งผลลัพธ์กลับมาเป็น JSON ตามรูปแบบนี้เท่านั้น:
+{
+  "direct_verdict": "คำตอบฟันธงตรงคำถามแบบสั้นกระชับ ชัดเจนและอบอุ่น",
+  "direct_reason": "เหตุผลสั้นๆ จากหน้าไพ่ที่เชื่อมโยงกับคำตอบ",
+  "card1_reading": "การทำนายไพ่ใบที่ 1 ให้เชื่อมโยงกับคำถามอย่างลึกซึ้ง",
+  "card2_reading": "การทำนายไพ่ใบที่ 2 ให้สะท้อนสภาวะจริง/สิ่งที่ซ่อนอยู่ตามคำถาม",
+  "card3_reading": "การทำนายไพ่ใบที่ 3 สรุปผลลัพธ์และทิศทางข้างหน้า",
+  "summary": "บทสรุปคำทำนายและกำลังใจจากแม่หมอเทพเหมียว (ลงท้ายด้วย เมี๊ยววว~ 🐾💖)",
+  "actions": [
+    {"title": "ชื่อข้อแนะนำที่ 1", "desc": "คำแนะนำสั้นๆ สไตล์ฮีลใจ"},
+    {"title": "ชื่อข้อแนะนำที่ 2", "desc": "คำแนะนำสั้นๆ สไตล์ฮีลใจ"},
+    {"title": "ชื่อข้อแนะนำที่ 3", "desc": "คำแนะนำสั้นๆ สไตล์ฮีลใจ"}
+  ],
+  "blessing_quote": "คำคมพลังบวกหรือข้อคิดเตือนใจสั้นๆ 1 ประโยค"
+}
+`;
+
+    const payload = {
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json"
+      }
+    };
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      throw new Error('AI API responded with status: ' + res.status);
+    }
+
+    const data = await res.json();
+    const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    return JSON.parse(rawText);
+  }
+
+  function renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData }) {
+    const c1 = drawn[0] || {};
+    const c2 = drawn[1] || drawn[0] || {};
+    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
+
+    const pos1 = positions[0] || { title: 'ใบที่ 1: สิ่งที่เกิดขึ้น / อดีตที่ส่งผล' };
+    const pos2 = positions[1] || { title: 'ใบที่ 2: สิ่งที่ซ่อนอยู่ / สภาวะจริง' };
+    const pos3 = positions[2] || { title: 'ใบที่ 3: แนวโน้มผลลัพธ์ / อนาคต' };
+
+    const c1Name = c1.name_th || c1.name || 'ไพ่ใบแรก';
+    const c2Name = c2.name_th || c2.name || 'ไพ่ใบที่สอง';
+    const c3Name = c3.name_th || c3.name || 'ไพ่ใบที่สาม';
+
+    const elem1 = getBaseElement(c1.element) || 'น้ำ';
+    const elem2 = getBaseElement(c2.element) || 'ไฟ';
+    const elem3 = getBaseElement(c3.element) || 'ไม้';
+
+    const elem1Info = ELEMENT_INFO[elem1] || { icon: '💧', color: '#0284c7' };
+    const elem2Info = ELEMENT_INFO[elem2] || { icon: '🔥', color: '#ef4444' };
+    const elem3Info = ELEMENT_INFO[elem3] || { icon: '🌿', color: '#10b981' };
+
+    const cardThemes = [
+      {
+        themeClass: 'card-theme-rose',
+        badgeIcon: 'fa-heart',
+        badgeText: 'เคล็ดลับที่ 1 • ใจฟู',
+        cuteTag: '🐾 #ฮีลใจเมี๊ยวว'
+      },
+      {
+        themeClass: 'card-theme-amber',
+        badgeIcon: 'fa-wand-magic-sparkles',
+        badgeText: 'เคล็ดลับที่ 2 • เสกพลังบวก',
+        cuteTag: '✨ #ดึงดูดสิ่งดีงาม'
+      },
+      {
+        themeClass: 'card-theme-emerald',
+        badgeIcon: 'fa-clover',
+        badgeText: 'เคล็ดลับที่ 3 • ก้าวต่อไปอย่างมั่นใจ',
+        cuteTag: '🍀 #เปิดดวงรับโชค'
+      }
+    ];
+
+    const rawActions = (aiData.actions && aiData.actions.length > 0) ? aiData.actions : [
+      { title: 'ตามใจเสียงแรกในใจ', desc: 'เชื่อมั่นในสัญชาตญาณแรกของตัวเอง ไม่ต้องลังเลเปรียบเทียบให้เหนื่อยใจ' },
+      { title: 'เติมพลังด้วยความอบอุ่น', desc: 'หาเครื่องดื่มหรืออาหารอุ่นๆ ผ่อนคลายร่างกายและจิตใจ' },
+      { title: 'วางความกังวลแล้วกอดตัวเอง', desc: 'วันนี้ทำเต็มที่แล้ว ให้เวลาตัวเองได้พักผ่อนอย่างมีความสุข' }
+    ];
+
+    const actionsHtml = rawActions.map((act, idx) => {
+      const theme = cardThemes[idx % cardThemes.length];
+      return `
+        <div class="secret-healing-card ${theme.themeClass}">
+          <div class="card-glass-glow"></div>
+          <div class="card-stamp-badge">
+            <i class="fa-solid ${theme.badgeIcon} stamp-icon"></i> ${theme.badgeText}
+          </div>
+          <h4 class="secret-card-title">${act.title}</h4>
+          <div class="secret-card-body">
+            <p>${act.desc}</p>
+          </div>
+          <div class="secret-card-footer">
+            <span class="cute-tag"><i class="fa-solid fa-sparkles"></i> ${theme.cuteTag}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="thepmeow-dossier">
+        <!-- Layer 1: คำทำนายไพ่เทพเหมียว -->
+        <div class="thepmeow-verdict-box">
+          <div class="thepmeow-verdict-top">
+            <span class="thepmeow-avatar-badge">
+              <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์ (AI พลังจิตสัมผัส)
+            </span>
+          </div>
+          <h3 class="thepmeow-verdict-question">
+            “${question}”
+          </h3>
+
+          <!-- DIRECT ANSWER CALLOUT AT TOP -->
+          <div class="thepmeow-direct-answer-callout">
+            <div class="direct-answer-header">
+              <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
+              <strong>คำตอบชัดเจนสำหรับคำถาม: “${question}”</strong>
+            </div>
+            <div class="direct-answer-verdict verdict-badge-favorable">
+              ${aiData.direct_verdict}
+            </div>
+            <p class="direct-answer-reason">
+              <strong>เหตุผลจากหน้าไพ่:</strong> ${aiData.direct_reason}
+            </p>
+          </div>
+
+          <div class="thepmeow-prophecy-body">
+            <p class="prophecy-intro-text">
+              “เจ้ามนุษย์ที่รัก... เทพเหมียวตั้งจิตกางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบเข้ากับคำถามของคุณให้แล้วนะคะ เมื่อเชื่อมโยงพลังงานตามตำแหน่ง หน้าไพ่ และแก่นความหมายเข้าด้วยกัน เรื่องราวของคำถามนี้กำลังสื่อสารออกมาอย่างชัดเจนเลยค่ะ เมี๊ยววว~ 🐾✨”
+            </p>
+
+            <div class="prophecy-cards-narrative">
+              <div class="prophecy-card-block">
+                <div class="prophecy-block-header">
+                  <span class="prophecy-step-badge">1</span>
+                  <strong>${pos1.title}:</strong>
+                  <span class="prophecy-card-highlight">“${c1Name}”</span>
+                  <span class="prophecy-elem-tag" style="color: ${elem1Info.color};">(${elem1Info.icon} ธาตุ${elem1})</span>
+                </div>
+                <p class="prophecy-block-desc">
+                  ${aiData.card1_reading}
+                </p>
+              </div>
+
+              <div class="prophecy-card-block">
+                <div class="prophecy-block-header">
+                  <span class="prophecy-step-badge">2</span>
+                  <strong>${pos2.title}:</strong>
+                  <span class="prophecy-card-highlight">“${c2Name}”</span>
+                  <span class="prophecy-elem-tag" style="color: ${elem2Info.color};">(${elem2Info.icon} ธาตุ${elem2})</span>
+                </div>
+                <p class="prophecy-block-desc">
+                  ${aiData.card2_reading}
+                </p>
+              </div>
+
+              <div class="prophecy-card-block">
+                <div class="prophecy-block-header">
+                  <span class="prophecy-step-badge">3</span>
+                  <strong>${pos3.title}:</strong>
+                  <span class="prophecy-card-highlight">“${c3Name}”</span>
+                  <span class="prophecy-elem-tag" style="color: ${elem3Info.color};">(${elem3Info.icon} ธาตุ${elem3})</span>
+                </div>
+                <p class="prophecy-block-desc">
+                  ${aiData.card3_reading}
+                </p>
+              </div>
+            </div>
+
+            <div class="prophecy-summary-box">
+              <i class="fa-solid fa-sparkles" style="color: #d946ef; font-size: 16px; margin-top: 2px;"></i>
+              <div class="prophecy-summary-text">
+                <strong>บทสรุปภาษาเทพเหมียว:</strong> “${aiData.summary}”
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Layer 2: 3 คาถาฮีลใจ & เคล็ดลับปรับชะตาฉบับเทพเหมียว -->
+        <div class="thepmeow-healing-box">
+          <div class="thepmeow-healing-header-cute">
+            <div class="healing-title-group">
+              <div class="healing-paw-icon">
+                <i class="fa-solid fa-paw"></i>
+              </div>
+              <div>
+                <h4 class="healing-main-title">3 คาถาฮีลใจ &amp; เคล็ดลับปรับชะตาฉบับเทพเหมียว 🐾✨</h4>
+                <p class="healing-sub-title">กลเม็ดลับเฉพาะคุณ นำไปปรับใช้ได้ทันที เพื่อเปิดรับพลังงานดีๆ ในทุกย่างก้าว</p>
+              </div>
+            </div>
+          </div>
+          <div class="healing-cards-trio">
+            ${actionsHtml}
+          </div>
+        </div>
+
+        <!-- Layer 3: พรเสริมมงคลจากเทพเหมียว -->
+        <div class="thepmeow-blessing-card">
+          <div class="thepmeow-blessing-badge">
+            <i class="fa-solid fa-sparkles"></i> พรเสริมมงคลจากเทพเหมียว
+          </div>
+          <p class="thepmeow-blessing-quote">
+            “${aiData.blessing_quote || 'ขอให้เชื่อมั่นในพลังแห่งแสงสว่างในตัวคุณ'}”
+          </p>
+          <p class="thepmeow-blessing-author">
+            — ส่งพลังรัก ปัดเป่าความกังวล และส่งอ้อมกอดอุ่นๆ โดย เทพเหมียว เมี๊ยววว~ 🐾💖
+          </p>
+        </div>
+      </div>
+    `;
+  }
+
+  async function renderThepMeowSynthesis(drawn) {
+    if (!resultSynthesisContainer) return;
+    const question = (fortuneState.question || 'สิ่งที่อยู่ในใจ').trim();
+    const qCtx = analyzeQuestionContext(question);
     const positions = getActivePositions();
-    positions.forEach((pos, i) => {
-      const slotEl = document.getElementById(`slotCard${i}`);
-      if (slotEl) {
-        const badgeEl = slotEl.querySelector('.slot-pos-badge');
-        if (badgeEl) {
-          badgeEl.setAttribute('title', pos.title);
-          badgeEl.innerHTML = `<span class="badge-num">${i + 1}</span>`;
-        }
-      }
-    });
 
-    // Update instruction text
-    if (pickCurrentInstruction && fortuneState.currentPickSlot < positions.length) {
-      const pos = positions[fortuneState.currentPickSlot];
-      const isMobile = window.innerWidth <= 880;
-      const targetLabel = isMobile ? `ใบที่ ${fortuneState.currentPickSlot + 1}: ${pos.shortName || pos.title}` : pos.title;
-      pickCurrentInstruction.innerHTML = `
-        <i class="fa-solid fa-hand-pointer text-gold animate-bounce"></i> 
-        <span>คลิกเลือกไพ่สำหรับ <strong>${targetLabel}</strong></span>
+    // Show Animated Mystic Cat Loading Screen
+    resultSynthesisContainer.innerHTML = `
+      <div class="thepmeow-loading-card">
+        <!-- Central Animated Mystic Cat Orb -->
+        <div class="thepmeow-orb-stage">
+          <div class="thepmeow-aura-ring"></div>
+          <div class="thepmeow-aura-ring-2"></div>
+          <div class="thepmeow-orb-glow"></div>
+          <div class="thepmeow-floating-cat">
+            <i class="fa-solid fa-cat"></i>
+          </div>
+          <i class="fa-solid fa-sparkles thepmeow-sparkle-dot thepmeow-sparkle-1"></i>
+          <i class="fa-solid fa-star thepmeow-sparkle-dot thepmeow-sparkle-2"></i>
+          <i class="fa-solid fa-wand-magic-sparkles thepmeow-sparkle-dot thepmeow-sparkle-3"></i>
+        </div>
+
+        <h3 class="thepmeow-loading-title">
+          <span>✨</span>
+          <span>แม่หมอเทพเหมียวกำลังตั้งจิตเปิดเนตรวิเคราะห์ชะตา...</span>
+          <span>✨</span>
+        </h3>
+
+        <p class="thepmeow-loading-question">
+          กำลังไขคำตอบสำหรับ: “<strong>${question}</strong>”
+        </p>
+
+        <!-- Dynamic Live Status Badge with Animated Dots -->
+        <div class="thepmeow-status-badge" id="thepmeowStatusBadge">
+          <span id="thepmeowStatusText">🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...</span>
+          <div class="thepmeow-pulse-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- 3 Step Progress Indicators -->
+        <div class="thepmeow-steps-bar">
+          <div class="thepmeow-step-dot active" id="loadingStepDot1"></div>
+          <div class="thepmeow-step-dot" id="loadingStepDot2"></div>
+          <div class="thepmeow-step-dot" id="loadingStepDot3"></div>
+        </div>
+      </div>
+    `;
+
+    // Live Step Message Switcher
+    const liveMessages = [
+      { text: "🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...", step: 1 },
+      { text: "🔮 สเต็ป 2: แม่หมอเปิดเนตรปัญญาญาณ กำลังเชื่อมโยงคำถามของคุณ...", step: 2 },
+      { text: "✨ สเต็ป 3: กำลังร้อยเรียงคำทำนายและข้อคิดฮีลใจอย่างลึกซึ้ง เมี๊ยววว~ 💖", step: 3 }
+    ];
+
+    let currentMsgIdx = 0;
+    const msgTimer = setInterval(() => {
+      currentMsgIdx++;
+      if (currentMsgIdx < liveMessages.length) {
+        const item = liveMessages[currentMsgIdx];
+        const statusText = document.getElementById('thepmeowStatusText');
+        if (statusText) statusText.textContent = item.text;
+        
+        const dot2 = document.getElementById('loadingStepDot2');
+        const dot3 = document.getElementById('loadingStepDot3');
+        if (item.step >= 2 && dot2) dot2.classList.add('active');
+        if (item.step >= 3 && dot3) dot3.classList.add('active');
+      }
+    }, 2400);
+
+    try {
+      // 1. Try Gemini AI Engine
+      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions });
+      if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
+      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData });
+    } catch (err) {
+      if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
+      console.warn('[ThepMeow] AI generation fallback to local engine:', err);
+      // 2. Safe Fallback to template engine
+      const prophecyHtml = buildThepMeowMainProphecy({ question, drawn, positions, qCtx });
+      const healingHtml = buildThepMeowHealingTips({ question, drawn, qCtx });
+      const blessingHtml = buildThepMeowBlessing({ question, drawn });
+
+      resultSynthesisContainer.innerHTML = `
+        <div class="thepmeow-dossier">
+          ${prophecyHtml}
+          ${healingHtml}
+          ${blessingHtml}
+        </div>
       `;
     }
   }
 
-  if (userQuestionInput) {
-    userQuestionInput.addEventListener('input', updateSmartPatternPreview);
-  }
-
-  if (clearQuestionBtn && userQuestionInput) {
-    clearQuestionBtn.addEventListener('click', () => {
-      userQuestionInput.value = '';
-      userQuestionInput.focus();
-      updateSmartPatternPreview();
-    });
-  }
-
-  // Suggestion Chips Click
-  chipButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const q = btn.getAttribute('data-question');
-      if (userQuestionInput && q) {
-        userQuestionInput.value = q;
-        userQuestionInput.focus();
-        updateSmartPatternPreview();
-      }
-    });
-  });
-
-  // --------------------------------------------------------------------------
-  // SPREAD SELECTION LOGIC (STEP 1)
-  // --------------------------------------------------------------------------
-  function updateSpreadUI() {
-    const is5Cards = fortuneState.spreadType === '5cards';
-
-    // Tabs toggle
-    if (spreadTab3Cards) spreadTab3Cards.classList.toggle('active', !is5Cards);
-    if (spreadTab5Cards) spreadTab5Cards.classList.toggle('active', is5Cards);
-
-    // Pattern container toggle
-    if (patterns3CardsWrap) patterns3CardsWrap.classList.toggle('hidden', is5Cards);
-    if (spread5CardsWrap) spread5CardsWrap.classList.toggle('hidden', !is5Cards);
-
-    // Update proceed button text
-    if (proceedToStep2Btn) {
-      proceedToStep2Btn.innerHTML = is5Cards 
-        ? 'ไปเลือกไพ่เทพเหมียว 5 ใบกันเลย ✨ <i class="fa-solid fa-arrow-right"></i>'
-        : 'ไปเลือกไพ่เทพเหมียว 3 ใบกันเลย ✨ <i class="fa-solid fa-arrow-right"></i>';
-    }
-
-    // Update stepper label
-    if (step2IndicatorLabel) {
-      step2IndicatorLabel.textContent = is5Cards ? '2. เลือกไพ่ 5 ใบ' : '2. เลือกไพ่ 3 ใบ';
-    }
-
-    // Update Step 2 header title
-    if (step2HeaderTitle) {
-      step2HeaderTitle.innerHTML = '<i class="fa-solid fa-hand-sparkles"></i> ตั้งจิตอธิษฐานให้ "ไพ่เทพเหมียว" ช่วยนำทาง';
-    }
-
-    // Update auto draw button text
-    if (autoDrawCardsBtnText) {
-      autoDrawCardsBtnText.textContent = 'สุ่มไพ่';
-    }
-  }
-
-  if (spreadTab3Cards) {
-    spreadTab3Cards.addEventListener('click', () => {
-      fortuneState.spreadType = '3cards';
-      updateSpreadUI();
-    });
-  }
-
-  if (spreadTab5Cards) {
-    spreadTab5Cards.addEventListener('click', () => {
-      fortuneState.spreadType = '5cards';
-      updateSpreadUI();
-    });
-  }
-
-  // 3-Card Pattern Pill Buttons Click
-  if (patternChipsGroup) {
-    const patternPills = patternChipsGroup.querySelectorAll('.pattern-pill-btn');
-    patternPills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        patternPills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        const patId = pill.getAttribute('data-pattern');
-        fortuneState.patternId = patId;
-
-        const patConfig = SPREAD_CONFIGS['3cards'].patterns[patId];
-        if (patternInfoBanner && patConfig) {
-          patternInfoBanner.innerHTML = `
-            <strong style="color: #0284c7;"><i class="fa-solid fa-circle-info"></i> ${patConfig.title}</strong><br>
-            <span>${patConfig.desc}</span>
-          `;
-        }
-      });
-    });
-  }
-
-  // Step 1 Proceed Button -> Direct to Step 2 (Pick Cards)
-  if (proceedToStep2Btn && userQuestionInput) {
-    proceedToStep2Btn.addEventListener('click', () => {
-      const q = userQuestionInput.value.trim();
-      fortuneState.question = q || 'ภาพรวมดวงชะตา พลังงานชีวิต และคำแนะนำในปัจจุบัน';
-      fortuneState.spreadType = '3cards';
-      fortuneState.patternId = detectBestPatternForQuestion(fortuneState.question);
-      fortuneState.activeCardsPool = getActiveCardsPool();
-      resetPicks();
-      setStep(2);
-      renderFanDeck();
-      updateSlotVisuals();
-    });
-  }
-
-  if (editQuestionQuickBtn) {
-    editQuestionQuickBtn.addEventListener('click', () => {
-      setStep(1);
-      if (userQuestionInput) userQuestionInput.focus();
-    });
-  }
-
-  // --------------------------------------------------------------------------
-  // STEP 2: PICK CARDS LOGIC (3 OR 5 CARDS DYNAMIC)
-  // --------------------------------------------------------------------------
-  if (backToStep2Btn) {
-    backToStep2Btn.addEventListener('click', () => {
-      setStep(1);
-    });
-  }
-
-  function resetPicks() {
-    const cardCount = fortuneState.spreadType === '5cards' ? 5 : 3;
-    fortuneState.drawnCards = new Array(cardCount).fill(null);
-    fortuneState.currentPickSlot = 0;
-    if (revealTriggerBanner) revealTriggerBanner.classList.add('hidden');
-    renderPickSlots();
-  }
-
   function renderPickSlots() {
     if (!pickSlotsContainer) return;
-    pickSlotsContainer.innerHTML = '';
     const positions = getActivePositions();
-    const count = positions.length;
-
-    if (count === 5) {
-      pickSlotsContainer.classList.add('slots-count-5');
-    } else {
-      pickSlotsContainer.classList.remove('slots-count-5');
-    }
+    pickSlotsContainer.innerHTML = '';
 
     positions.forEach((pos, i) => {
       const slotEl = document.createElement('div');
-      slotEl.className = 'pick-target-slot';
+      slotEl.className = 'pick-slot';
       slotEl.id = `slotCard${i}`;
       slotEl.setAttribute('data-slot', i);
 
@@ -2842,30 +3290,97 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --------------------------------------------------------------------------
-  // MAIN SYNTHESIS DISPATCHER
+  // MAIN SYNTHESIS DISPATCHER (POWERED BY GEMINI 3.8 FLASH AI + DEEP HEALING)
   // --------------------------------------------------------------------------
-  function renderThepMeowSynthesis(drawn) {
+  async function renderThepMeowSynthesis(drawn) {
     if (!resultSynthesisContainer) return;
     const question = (fortuneState.question || 'สิ่งที่อยู่ในใจ').trim();
-    const intent = detectQuestionIntent(question);
     const positions = getActivePositions();
 
-    const prophecyHtml = buildThepMeowMainProphecy({ question, drawn, positions, intent });
-    const healingHtml = buildThepMeowHealingTips({ question, drawn, intent });
-    const blessingHtml = buildThepMeowBlessing({ question, drawn });
-
+    // Show Animated Mystic Cat Loading Screen
     resultSynthesisContainer.innerHTML = `
-      <div class="thepmeow-dossier">
-        <!-- Layer 1: คำทำนายไพ่เทพเหมียว (วิเคราะห์จากไพ่ 3 ใบตามตำแหน่ง หน้าไพ่ และความหมาย) -->
-        ${prophecyHtml}
+      <div class="thepmeow-loading-card">
+        <!-- Central Animated Mystic Cat Orb -->
+        <div class="thepmeow-orb-stage">
+          <div class="thepmeow-aura-ring"></div>
+          <div class="thepmeow-aura-ring-2"></div>
+          <div class="thepmeow-orb-glow"></div>
+          <div class="thepmeow-floating-cat">
+            <i class="fa-solid fa-cat"></i>
+          </div>
+          <i class="fa-solid fa-sparkles thepmeow-sparkle-dot thepmeow-sparkle-1"></i>
+          <i class="fa-solid fa-star thepmeow-sparkle-dot thepmeow-sparkle-2"></i>
+          <i class="fa-solid fa-wand-magic-sparkles thepmeow-sparkle-dot thepmeow-sparkle-3"></i>
+        </div>
 
-        <!-- Layer 2: เคล็ดลับฮีลใจ (แปลงจุดลบเป็นกำลังใจ ฮีลใจให้อ่านแล้วรู้สึกดี) -->
-        ${healingHtml}
+        <h3 class="thepmeow-loading-title">
+          <span>✨</span>
+          <span>แม่หมอเทพเหมียวกำลังตั้งจิตเปิดเนตรวิเคราะห์ชะตา...</span>
+          <span>✨</span>
+        </h3>
 
-        <!-- Layer 3: พรเสริมมงคลจากเทพเหมียว -->
-        ${blessingHtml}
+        <p class="thepmeow-loading-question">
+          กำลังไขคำตอบสำหรับ: “<strong>${question}</strong>”
+        </p>
+
+        <!-- Dynamic Live Status Badge with Animated Dots -->
+        <div class="thepmeow-status-badge" id="thepmeowStatusBadge">
+          <span id="thepmeowStatusText">🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...</span>
+          <div class="thepmeow-pulse-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <!-- 3 Step Progress Indicators -->
+        <div class="thepmeow-steps-bar">
+          <div class="thepmeow-step-dot active" id="loadingStepDot1"></div>
+          <div class="thepmeow-step-dot" id="loadingStepDot2"></div>
+          <div class="thepmeow-step-dot" id="loadingStepDot3"></div>
+        </div>
       </div>
     `;
+
+    // Live Step Message Switcher
+    const liveMessages = [
+      { text: "🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...", step: 1 },
+      { text: "🔮 สเต็ป 2: แม่หมอเปิดเนตรปัญญาญาณ กำลังเชื่อมโยงคำถามของคุณ...", step: 2 },
+      { text: "✨ สเต็ป 3: กำลังร้อยเรียงคำทำนายและข้อคิดฮีลใจอย่างลึกซึ้ง เมี๊ยววว~ 💖", step: 3 }
+    ];
+
+    let currentMsgIdx = 0;
+    const msgTimer = setInterval(() => {
+      currentMsgIdx++;
+      if (currentMsgIdx < liveMessages.length) {
+        const item = liveMessages[currentMsgIdx];
+        const statusText = document.getElementById('thepmeowStatusText');
+        if (statusText) statusText.textContent = item.text;
+        
+        const dot2 = document.getElementById('loadingStepDot2');
+        const dot3 = document.getElementById('loadingStepDot3');
+        if (item.step >= 2 && dot2) dot2.classList.add('active');
+        if (item.step >= 3 && dot3) dot3.classList.add('active');
+      }
+    }, 2400);
+
+    try {
+      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions });
+      if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
+      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData });
+    } catch (err) {
+      if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
+      console.warn('[ThepMeow] AI generation fallback to local engine:', err);
+      const intent = typeof detectQuestionIntent === 'function' ? detectQuestionIntent(question) : { topic: 'general' };
+      const prophecyHtml = buildThepMeowMainProphecy({ question, drawn, positions, intent });
+      const healingHtml = buildThepMeowHealingTips({ question, drawn, intent });
+      const blessingHtml = buildThepMeowBlessing({ question, drawn });
+      resultSynthesisContainer.innerHTML = `
+        <div class="thepmeow-dossier">
+          ${prophecyHtml}
+          ${healingHtml}
+          ${blessingHtml}
+        </div>
+      `;
+    }
   }
 
   // Render 3 Cards for My Cat & I Oracle
@@ -2990,13 +3505,23 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
   }
 
+  // Function to reset selected cards
+  function resetPicks() {
+    fortuneState.drawnCards = [null, null, null];
+    fortuneState.currentPickSlot = 0;
+    if (revealTriggerBanner) {
+      revealTriggerBanner.classList.add('hidden');
+    }
+    const fanCards = document.querySelectorAll('.fan-card');
+    fanCards.forEach(c => c.classList.remove('selected'));
+  }
+
   // Results Action Buttons
   if (newReadingBtn) {
     newReadingBtn.addEventListener('click', () => {
       resetPicks();
       if (userQuestionInput) {
         userQuestionInput.value = '';
-        userQuestionInput.focus();
       }
       fortuneState.question = '';
       fortuneState.patternId = 'pattern2';
@@ -3004,6 +3529,9 @@ document.addEventListener('DOMContentLoaded', () => {
       renderFanDeck();
       renderPickSlots();
       updateSlotVisuals();
+      if (userQuestionInput) {
+        setTimeout(() => userQuestionInput.focus(), 150);
+      }
     });
   }
 
@@ -3014,6 +3542,10 @@ document.addEventListener('DOMContentLoaded', () => {
       renderFanDeck();
       renderPickSlots();
       updateSlotVisuals();
+      const deckFan = document.getElementById('deckFanWrapper');
+      if (deckFan) {
+        deckFan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     });
   }
 
@@ -3027,7 +3559,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (copyResultTextBtn) {
-    copyResultTextBtn.addEventListener('click', () => {
+    copyResultTextBtn.addEventListener('click', async () => {
+      if (resultSynthesisContainer && resultSynthesisContainer.innerText.trim()) {
+        const text = `🔮 ผลคำทำนายไพ่เทพเหมียว (แม่หมอติ๊ดติ๊ด)\n\n${resultSynthesisContainer.innerText.trim()}\n\n✨ ดูดวงด้วยตัวเองได้ที่: ${window.location.href}`;
+        try {
+          await navigator.clipboard.writeText(text);
+          alert('คัดลอกคำทำนายเรียบร้อยแล้วค่ะ! 📋✨');
+          return;
+        } catch (e) {
+          console.warn('Clipboard write failed, using legacy copy:', e);
+        }
+      }
       const drawn = fortuneState.drawnCards;
       const positions = getActivePositions();
       const spreadTitle = getActiveSpreadTitle();
@@ -3117,11 +3659,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (printResultReportBtn) {
-    printResultReportBtn.addEventListener('click', () => {
-      window.print();
-    });
-  }
+  // Print button removed as requested
 
   // Initialize App
   if (document.getElementById('cardList')) {
@@ -3193,60 +3731,260 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // --------------------------------------------------------------------------
+  // SOCIAL SHARE MODAL & PLATFORM ACTIONS (FB, TT, IG, LINE)
+  // --------------------------------------------------------------------------
+  const shareToSocialBtn = document.getElementById('shareToSocialBtn');
   const shareToLineBtn = document.getElementById('shareToLineBtn');
-  if (shareToLineBtn) {
-    shareToLineBtn.addEventListener('click', shareResultToLine);
+  const socialShareModal = document.getElementById('socialShareModal');
+  const closeSocialShareBtn = document.getElementById('closeSocialShareBtn');
+  const socialSharePreviewText = document.getElementById('socialSharePreviewText');
+  const socialShareToast = document.getElementById('socialShareToast');
+  const socialToastMessage = document.getElementById('socialToastMessage');
+
+  const shareFbBtn = document.getElementById('shareFbBtn');
+  const shareTtBtn = document.getElementById('shareTtBtn');
+  const shareIgBtn = document.getElementById('shareIgBtn');
+  const shareLineBtn = document.getElementById('shareLineBtn');
+
+  function generateSocialShareText() {
+    const state = window.fortuneState || (typeof fortuneState !== 'undefined' ? fortuneState : {});
+    const question = (state.question || 'คำถามดวงชะตา').trim();
+    const deckName = 'ไพ่เทพเหมียว (92 ใบ)';
+    const cards = state.drawnCards || [];
+    
+    const card1Name = cards[0] ? (cards[0].name_th || cards[0].name || 'ไพ่ใบที่ 1') : '';
+    const card2Name = cards[1] ? (cards[1].name_th || cards[1].name || 'ไพ่ใบที่ 2') : '';
+    const card3Name = cards[2] ? (cards[2].name_th || cards[2].name || 'ไพ่ใบที่ 3') : '';
+
+    let directAnswerText = '';
+    const verdictEl = document.querySelector('.direct-answer-verdict');
+    if (verdictEl && verdictEl.innerText.trim()) {
+      directAnswerText = `\n💬 ผลฟันธง: ${verdictEl.innerText.trim()}\n`;
+    }
+
+    let blessingText = '';
+    const blessingEl = document.querySelector('.thepmeow-blessing-quote');
+    if (blessingEl && blessingEl.innerText.trim()) {
+      blessingText = `\n🌟 พรจากเทพเหมียว: ${blessingEl.innerText.trim()}\n`;
+    }
+
+    return `🔮 ผลทำนายไพ่: ${deckName} 🐾✨
+❓ คำถาม: "${question}"${directAnswerText}
+🎴 ไพ่ 3 ใบที่ได้:
+1️⃣ ${card1Name}
+2️⃣ ${card2Name}
+3️⃣ ${card3Name}
+${blessingText}
+🐾 เช็กดวงเปิดไพ่กับแม่หมอติ๊ดติ๊ดได้ที่นี่เลย:
+${window.location.href}
+#แม่หมอติ๊ดติ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ`;
   }
 
-  async function shareResultToLine() {
-    const question = fortuneState.question || 'คำถามดวงชะตา';
-    const deckName = 'My Cat & I Oracle (61 ใบ)';
-    const cards = fortuneState.drawnCards;
-    
-    const card1Name = cards[0] ? cards[0].name : '';
-    const card2Name = cards[1] ? cards[1].name : '';
-    const card3Name = cards[2] ? cards[2].name : '';
+  function showSocialToast(msg) {
+    if (!socialShareToast) return;
+    if (socialToastMessage) socialToastMessage.innerText = msg;
+    socialShareToast.classList.remove('hidden');
+    clearTimeout(window.__socialToastTimer);
+    window.__socialToastTimer = setTimeout(() => {
+      socialShareToast.classList.add('hidden');
+    }, 3500);
+  }
 
-    const shareText = `🔮 ผลทำนายไพ่: ${deckName}
-💬 คำถาม: "${question}"
-
-1️⃣ ปัจจุบัน: ${card1Name}
-2️⃣ กลยุทธ์/ทางออก: ${card2Name}
-3️⃣ บทสรุป: ${card3Name}
-
-✨ เปิดไพ่ดูดวงด้วยตัวเองได้ที่:
-https://liff.line.me/2011798499-hm8dJi7C`;
-
-    if (typeof liff !== 'undefined' && liff.isLoggedIn()) {
+  async function copyToClipboardFallback(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
       try {
-        if (liff.isApiAvailable('shareTargetPicker')) {
-          const res = await liff.shareTargetPicker([
-            { type: 'text', text: shareText }
-          ]);
-          if (res) {
-            alert('แชร์ผลทำนายเรียบร้อยแล้วครับ! 💬✨');
-          }
-          return;
-        } else if (liff.isInClient()) {
-          await liff.sendMessages([
-            { type: 'text', text: shareText }
-          ]);
-          alert('ส่งผลทำนายเข้าห้องแชท LINE เรียบร้อยแล้วครับ! 💬✨');
-          return;
-        }
+        await navigator.clipboard.writeText(text);
+        return true;
       } catch (err) {
-        console.log('LINE share error:', err);
+        console.warn('Navigator clipboard error, trying textarea fallback:', err);
+      }
+    }
+    try {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-999999px';
+      textArea.style.top = '-999999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      const success = document.execCommand('copy');
+      document.body.removeChild(textArea);
+      return success;
+    } catch (err) {
+      console.error('All copy fallbacks failed:', err);
+      return false;
+    }
+  }
+
+  function openSocialShareModal() {
+    if (!socialShareModal) return;
+    const shareText = generateSocialShareText();
+    if (socialSharePreviewText) {
+      socialSharePreviewText.innerText = shareText;
+    }
+    socialShareModal.classList.remove('hidden');
+  }
+
+  function closeSocialShareModal() {
+    if (!socialShareModal) return;
+    socialShareModal.classList.add('hidden');
+  }
+
+  // Helper: Capture Fortune Results into an Image Blob
+  async function captureFortuneCardBlob() {
+    const step3 = document.getElementById('readingStep3');
+    if (!step3) return null;
+    const toolbar = document.querySelector('.result-header-toolbar');
+    if (toolbar) toolbar.style.visibility = 'hidden';
+
+    try {
+      if (typeof html2canvas === 'function') {
+        const canvas = await html2canvas(step3, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false
+        });
+        return await new Promise((resolve) => {
+          canvas.toBlob((blob) => resolve(blob), 'image/png', 0.95);
+        });
+      }
+    } catch (err) {
+      console.warn('html2canvas capture error:', err);
+    } finally {
+      if (toolbar) toolbar.style.visibility = '';
+    }
+    return null;
+  }
+
+  // Unified Handler: Share with Auto Image & Text to Social (User confirms Post)
+  async function handleSocialShareWithMedia(platform = 'all') {
+    const text = generateSocialShareText();
+    showSocialToast('🔮 กำลังเตรียมรูปภาพคำทำนายและข้อความ... 🐾✨');
+
+    let imageBlob = null;
+    try {
+      imageBlob = await captureFortuneCardBlob();
+    } catch (e) {
+      console.warn('Capture error:', e);
+    }
+
+    const imageFile = imageBlob ? new File([imageBlob], 'MaeMorTidTid_Fortune_' + Date.now() + '.png', { type: 'image/png' }) : null;
+
+    // 1. Mobile & Web Share API (นำทั้งรูปภาพและแคปชั่นไปใส่ในโพสต์ของแอปโซเชียลอัตโนมัติ โดย user กดปุ่มโพสต์เอง)
+    if (navigator.canShare && imageFile && navigator.canShare({ files: [imageFile] })) {
+      try {
+        closeSocialShareModal();
+        await navigator.share({
+          title: 'ผลทำนายไพ่เทพเหมียว - แม่หมอตึ๊ดตึ๊ด 🐾✨',
+          text: text,
+          files: [imageFile]
+        });
+        showSocialToast('✨ ระบบนำรูปและข้อความไปวางในโพสต์แล้ว ตรวจสอบแล้วกดโพสต์ได้เลยนะคะ 💖');
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return; // User closed share sheet
+        console.warn('Native share failed, fallback to clipboard/browser:', err);
       }
     }
 
-    // Fallback: Copy to clipboard
-    if (navigator.clipboard) {
-      await navigator.clipboard.writeText(shareText);
-      alert('คัดลอกข้อความผลทำนายแล้ว สามารถกดวาง (Paste) ส่งให้เพื่อนใน LINE ได้เลยครับ! 💬✨');
+    // 2. Fallback on Desktop or unsupported browsers:
+    await copyToClipboardFallback(text);
+
+    if (imageBlob && navigator.clipboard && window.ClipboardItem) {
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': imageBlob })
+        ]);
+      } catch (clipErr) {
+        console.log('Clipboard image item skipped:', clipErr);
+      }
+    }
+
+    if (imageBlob) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(imageBlob);
+      a.download = 'MaeMorTidTid_Fortune_' + Date.now() + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+    }
+
+    closeSocialShareModal();
+
+    if (platform === 'fb') {
+      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! วาง (Ctrl+V) หรือแนบรูปในโพสต์ Facebook ได้เลยนะคะ 🐾');
+      setTimeout(() => window.open('https://www.facebook.com/', '_blank'), 600);
+    } else if (platform === 'tt') {
+      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
+      setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 600);
+    } else if (platform === 'ig') {
+      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
+      setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
+    } else if (platform === 'line') {
+      showSocialToast('📸 คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
+      setTimeout(() => {
+        if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
+          try {
+            if (liff.isApiAvailable('shareTargetPicker')) {
+              liff.shareTargetPicker([{ type: 'text', text }]);
+              return;
+            } else if (liff.isInClient()) {
+              liff.sendMessages([{ type: 'text', text }]);
+              return;
+            }
+          } catch (err) {
+            console.log('LINE share error:', err);
+          }
+        }
+        const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
+        window.open(lineUrl, '_blank');
+      }, 600);
+    } else {
+      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
     }
   }
 
-  // Auto initialize LIFF on startup
+  if (shareToSocialBtn) {
+    shareToSocialBtn.addEventListener('click', () => {
+      if (navigator.share && navigator.canShare && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        handleSocialShareWithMedia('all');
+      } else {
+        openSocialShareModal();
+      }
+    });
+  }
+  if (shareToLineBtn) {
+    shareToLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
+  }
+  if (closeSocialShareBtn) {
+    closeSocialShareBtn.addEventListener('click', closeSocialShareModal);
+  }
+  if (socialShareModal) {
+    socialShareModal.addEventListener('click', (e) => {
+      if (e.target === socialShareModal) {
+        closeSocialShareModal();
+      }
+    });
+  }
+
+  // Platform Button Handlers
+  if (shareFbBtn) {
+    shareFbBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
+  }
+  if (shareTtBtn) {
+    shareTtBtn.addEventListener('click', () => handleSocialShareWithMedia('tt'));
+  }
+  if (shareIgBtn) {
+    shareIgBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
+  }
+  if (shareLineBtn) {
+    shareLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
+  }
   setTimeout(initLineLiff, 500);
 
   // Responsive fan deck re-render on orientation change or window resize

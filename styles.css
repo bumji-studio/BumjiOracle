@@ -2364,6 +2364,7 @@ body {
   padding: 24px 30px;
   margin-bottom: 34px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  text-align: center;
 }
 
 .banner-badge-group {
@@ -2371,6 +2372,7 @@ body {
   gap: 10px;
   margin-bottom: 14px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .badge-deck {
@@ -2403,6 +2405,7 @@ body {
   font-weight: 800;
   color: #0f172a;
   line-height: 1.5;
+  text-align: center;
 }
 
 /* 3 Cards Visual Board */
@@ -13806,7 +13809,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .thepmeow-verdict-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 12px;
@@ -13847,6 +13850,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #1e1b4b;
   margin: 0 0 14px 0;
   line-height: 1.4;
+  text-align: center;
 }
 
 .thepmeow-verdict-speech {
@@ -13869,6 +13873,65 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* Integrated 3-Card Prophecy & Healing Styles */
+.thepmeow-direct-answer-callout {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 22px;
+  margin-bottom: 16px;
+  border: 1.5px solid #f0abfc;
+  box-shadow: 0 4px 14px rgba(217, 70, 239, 0.08);
+}
+
+.direct-answer-header {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #701a75;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.direct-answer-verdict {
+  font-family: 'Prompt', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1.45;
+  margin-bottom: 8px;
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 12px;
+}
+
+.verdict-badge-favorable {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #6ee7b7;
+}
+
+.verdict-badge-pause {
+  background: #fffbeb;
+  color: #b45309;
+  border: 1px solid #fcd34d;
+}
+
+.verdict-badge-challenging {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.direct-answer-reason {
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: #334155;
+  margin: 0;
+}
+
+.direct-answer-reason strong {
+  color: #0f172a;
+}
+
 .thepmeow-prophecy-body {
   display: flex;
   flex-direction: column;
@@ -13877,14 +13940,40 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .prophecy-intro-text {
   font-family: 'Prompt', sans-serif;
-  font-size: 15.5px;
-  line-height: 1.8;
-  color: #3b0764;
-  margin: 0;
-  background: rgba(255, 255, 255, 0.65);
-  padding: 14px 18px;
-  border-radius: 16px;
-  border-left: 3.5px solid #d946ef;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #701a75;
+  text-align: center;
+  margin: 16px auto 20px auto;
+  max-width: 720px;
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 10px 20px;
+  font-weight: 500;
+  position: relative;
+}
+
+.prophecy-intro-text::before {
+  content: "";
+  display: block;
+  width: 140px;
+  height: 1.5px;
+  margin: 0 auto 14px auto;
+  background: linear-gradient(90deg, transparent 0%, #ec4899 50%, transparent 100%);
+  opacity: 0.6;
+}
+
+.prophecy-intro-text::after {
+  content: "";
+  display: block;
+  width: 140px;
+  height: 1.5px;
+  margin: 14px auto 0 auto;
+  background: linear-gradient(90deg, transparent 0%, #ec4899 50%, transparent 100%);
+  opacity: 0.6;
 }
 
 .prophecy-cards-narrative {
@@ -14336,6 +14425,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     margin: 0 auto 32px auto !important;
     padding: 26px 36px !important;
     border-radius: 22px !important;
+    text-align: center !important;
+  }
+
+  .banner-badge-group {
+    justify-content: center !important;
   }
 
   .result-cards-board {
@@ -14359,8 +14453,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-radius: 24px !important;
   }
 
+  .thepmeow-verdict-top {
+    justify-content: center !important;
+  }
+
   .thepmeow-verdict-question {
     font-size: 1.4rem !important;
+    text-align: center !important;
   }
 
   .thepmeow-verdict-speech {
@@ -14577,12 +14676,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     border-radius: 16px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    text-align: center !important;
+  }
+
+  .banner-badge-group {
+    justify-content: center !important;
   }
 
   .result-question-title {
     font-size: 16px !important;
     line-height: 1.4 !important;
     word-break: break-word !important;
+    text-align: center !important;
   }
 
   .result-cards-board {
@@ -14616,9 +14721,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     box-sizing: border-box !important;
   }
 
+  .thepmeow-verdict-top {
+    justify-content: center !important;
+  }
+
   .thepmeow-verdict-question {
     font-size: 1.05rem !important;
     word-break: break-word !important;
+    text-align: center !important;
   }
 
   .thepmeow-verdict-speech {
@@ -14684,3 +14794,723 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
 }
 
+
+
+/* ==========================================================================
+   THEP MEOW MYSTIC ORACLE LOADING ANIMATIONS (เทพเหมียวตั้งจิตเปิดเนตร)
+   ========================================================================== */
+
+.thepmeow-loading-card {
+  position: relative;
+  text-align: center;
+  padding: 48px 24px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(253, 242, 248, 0.95) 50%, rgba(255, 247, 237, 0.95) 100%);
+  border-radius: 24px;
+  border: 2px dashed #f472b6;
+  margin: 24px 0;
+  box-shadow: 0 15px 40px rgba(244, 114, 182, 0.18), 0 0 25px rgba(236, 72, 153, 0.08);
+  overflow: hidden;
+  animation: borderGlowPulse 3s ease-in-out infinite;
+}
+
+/* Background mystic starlight shimmer */
+.thepmeow-loading-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.1) 0%, transparent 60%);
+  animation: bgShimmerRotate 12s linear infinite;
+  pointer-events: none;
+}
+
+/* Central Cat Orb Container */
+.thepmeow-orb-stage {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pulsing aura rings */
+.thepmeow-aura-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(236, 72, 153, 0.35);
+  animation: magicAuraPulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.thepmeow-aura-ring-2 {
+  position: absolute;
+  inset: -22px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(245, 158, 11, 0.3);
+  animation: magicRingSpin 8s linear infinite;
+  pointer-events: none;
+}
+
+/* Glowing crystal core behind cat */
+.thepmeow-orb-glow {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(244, 114, 182, 0.15) 50%, transparent 70%);
+  filter: blur(8px);
+  animation: orbGlowPulse 2s ease-in-out infinite alternate;
+}
+
+/* Animated floating cat */
+.thepmeow-floating-cat {
+  position: relative;
+  z-index: 2;
+  font-size: 54px;
+  color: #ec4899;
+  filter: drop-shadow(0 6px 14px rgba(236, 72, 153, 0.4));
+  animation: catFloat 2.6s ease-in-out infinite;
+}
+
+/* Little mystic spark orbiting */
+.thepmeow-sparkle-dot {
+  position: absolute;
+  font-size: 16px;
+  color: #f59e0b;
+  animation: sparkleTwinkle 1.8s ease-in-out infinite alternate;
+}
+.thepmeow-sparkle-1 { top: 6px; right: 14px; animation-delay: 0.2s; }
+.thepmeow-sparkle-2 { bottom: 12px; left: 10px; animation-delay: 0.8s; color: #ec4899; }
+.thepmeow-sparkle-3 { top: 20px; left: 15px; animation-delay: 1.2s; font-size: 13px; }
+
+/* Animated Shimmer Title */
+.thepmeow-loading-title {
+  font-family: 'Prompt', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #831843 0%, #db2777 40%, #f59e0b 60%, #831843 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: textShimmer 3s linear infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Question text box */
+.thepmeow-loading-question {
+  color: #be185d;
+  font-size: 16px;
+  margin-bottom: 18px;
+  font-weight: 500;
+}
+.thepmeow-loading-question strong {
+  color: #831843;
+  font-weight: 700;
+}
+
+/* Dynamic Live Status Badge */
+.thepmeow-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  color: #db2777;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(244, 114, 182, 0.4);
+  transition: all 0.4s ease;
+}
+
+/* Wave dots inside status */
+.thepmeow-pulse-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+.thepmeow-pulse-dots span {
+  width: 6px;
+  height: 6px;
+  background: #ec4899;
+  border-radius: 50%;
+  animation: dotBounce 1.2s infinite ease-in-out both;
+}
+.thepmeow-pulse-dots span:nth-child(1) { animation-delay: -0.32s; }
+.thepmeow-pulse-dots span:nth-child(2) { animation-delay: -0.16s; }
+.thepmeow-pulse-dots span:nth-child(3) { animation-delay: 0s; }
+
+/* Mini step progress bars */
+.thepmeow-steps-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.thepmeow-step-dot {
+  width: 28px;
+  height: 4px;
+  border-radius: 4px;
+  background: #fce7f3;
+  transition: all 0.5s ease;
+}
+.thepmeow-step-dot.active {
+  background: linear-gradient(90deg, #ec4899, #f59e0b);
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.4);
+}
+
+/* Keyframes */
+@keyframes catFloat {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes magicAuraPulse {
+  0% { transform: scale(0.85); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 0.25; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+@keyframes magicRingSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes orbGlowPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.6) rotate(0deg); opacity: 0.4; }
+  100% { transform: scale(1.2) rotate(45deg); opacity: 1; }
+}
+
+@keyframes textShimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@keyframes borderGlowPulse {
+  0% { border-color: #f472b6; box-shadow: 0 15px 40px rgba(244, 114, 182, 0.15); }
+  50% { border-color: #fb7185; box-shadow: 0 15px 45px rgba(251, 113, 133, 0.28), 0 0 20px rgba(244, 114, 182, 0.2); }
+  100% { border-color: #f472b6; box-shadow: 0 15px 40px rgba(244, 114, 182, 0.15); }
+}
+
+@keyframes bgShimmerRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   1. HIDE STEPPER BAR AS REQUESTED
+   ========================================================================== */
+.reading-stepper {
+  display: none !important;
+}
+
+/* ==========================================================================
+   2. SOCIAL SHARE BUTTON & MODAL
+   ========================================================================== */
+.btn-social-share {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 50%, #be185d 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3) !important;
+  font-weight: 600 !important;
+  padding: 8px 18px !important;
+  border-radius: 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13.5px !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+}
+
+.btn-social-share:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.45) !important;
+  filter: brightness(1.05) !important;
+}
+
+.social-share-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.social-share-modal-overlay.hidden {
+  display: none !important;
+}
+
+.social-share-modal-card {
+  background: #ffffff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 480px;
+  padding: 28px 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), 0 0 40px rgba(236, 72, 153, 0.15);
+  border: 1px solid rgba(244, 114, 182, 0.3);
+  position: relative;
+  animation: scaleUpModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleUpModal {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.social-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.social-modal-title {
+  font-family: 'Prompt', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #831843;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-modal-close {
+  background: #fdf2f8;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #db2777;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.social-modal-close:hover {
+  background: #fce7f3;
+  color: #9d174d;
+  transform: rotate(90deg);
+}
+
+.social-modal-desc {
+  font-size: 13.5px;
+  color: #6b7280;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.social-platform-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.social-platform-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 12px;
+  border-radius: 16px;
+  border: 1.5px solid #f1f5f9;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-platform-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.platform-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #fff;
+  transition: transform 0.25s ease;
+}
+
+.social-platform-btn:hover .platform-icon {
+  transform: scale(1.1);
+}
+
+.platform-info strong {
+  display: block;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.platform-info span {
+  display: block;
+  font-size: 11.5px;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.platform-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Facebook Theme */
+.platform-fb:hover {
+  border-color: #1877f2;
+  background: #f0f7ff;
+}
+.platform-fb .platform-icon { background: #1877f2; }
+.platform-fb .platform-badge { background: #e0edff; color: #1877f2; }
+
+/* TikTok Theme */
+.platform-tt:hover {
+  border-color: #000;
+  background: #f8fafc;
+}
+.platform-tt .platform-icon { background: #000000; color: #25f4ee; text-shadow: 2px 2px 0 #fe2c55; }
+.platform-tt .platform-badge { background: #0f172a; color: #fff; }
+
+/* Instagram Theme */
+.platform-ig:hover {
+  border-color: #e1306c;
+  background: #fff5f8;
+}
+.platform-ig .platform-icon { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.platform-ig .platform-badge { background: #fdf2f8; color: #be185d; }
+
+/* LINE Theme */
+.platform-line:hover {
+  border-color: #06c755;
+  background: #f0fdf4;
+}
+.platform-line .platform-icon { background: #06c755; }
+.platform-line .platform-badge { background: #dcfce7; color: #15803d; }
+
+/* Preview box in modal */
+.social-modal-preview {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px dashed #cbd5e1;
+}
+
+.copy-preview-header {
+  font-size: 11.5px;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.copy-preview-text {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+/* Toast Notification */
+.social-share-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1b4b;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  z-index: 100000;
+  animation: toastFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(244, 114, 182, 0.3);
+}
+
+.social-share-toast.hidden {
+  display: none !important;
+}
+
+@keyframes toastFadeIn {
+  from { transform: translate(-50%, 20px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+/* ==========================================================================
+   3. CUTE SECRET HEALING CARDS LAYOUT (3 คาถาฮีลใจฉบับเทพเหมียว)
+   ========================================================================== */
+.thepmeow-healing-box {
+  margin-top: 30px !important;
+  background: linear-gradient(180deg, #fff9fb 0%, #ffffff 100%) !important;
+  border: 1.5px solid #fce7f3 !important;
+  border-radius: 24px !important;
+  padding: 28px 22px !important;
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.08) !important;
+}
+
+.thepmeow-healing-header-cute {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  padding-bottom: 16px;
+  border-bottom: 1.5px dashed #fbcfe8;
+}
+
+.healing-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.healing-paw-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.3);
+  flex-shrink: 0;
+  animation: catFloat 3s ease-in-out infinite;
+}
+
+.healing-main-title {
+  font-family: 'Prompt', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: #831843;
+  margin: 0 0 3px 0;
+  letter-spacing: -0.2px;
+}
+
+.healing-sub-title {
+  font-size: 13px;
+  color: #9d174d;
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* 3 Cards Grid */
+.healing-cards-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .healing-cards-trio {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+/* Secret Healing Card Component */
+.secret-healing-card {
+  position: relative;
+  border-radius: 20px;
+  padding: 22px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1.5px solid transparent;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+
+.secret-healing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.09);
+}
+
+/* Glass & light reflection */
+.card-glass-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Cute Stamp Badge at top */
+.card-stamp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  align-self: flex-start;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.stamp-icon {
+  font-size: 14px;
+}
+
+/* Card Title */
+.secret-card-title {
+  font-family: 'Prompt', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 0 10px 0;
+}
+
+/* Card Body */
+.secret-card-body {
+  flex-grow: 1;
+  margin-bottom: 16px;
+}
+
+.secret-card-body p {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #475569;
+  margin: 0;
+}
+
+/* Card Footer */
+.secret-card-footer {
+  padding-top: 12px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.cute-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 3px 8px;
+}
+
+/* Theme 1: Rose Pink (ใจฟู) */
+.card-theme-rose {
+  background: linear-gradient(145deg, #fff5f8 0%, #ffffff 100%);
+  border-color: #fbcfe8;
+}
+.card-theme-rose:hover {
+  border-color: #f472b6;
+  box-shadow: 0 12px 28px rgba(244, 114, 182, 0.2);
+}
+.card-theme-rose .card-stamp-badge {
+  background: #fdf2f8;
+  color: #be185d;
+  border: 1px solid #fbcfe8;
+}
+.card-theme-rose .secret-card-title {
+  color: #9d174d;
+}
+.card-theme-rose .cute-tag {
+  background: #fce7f3;
+  color: #be185d;
+}
+
+/* Theme 2: Golden Amber (พลังบวก & โชคดี) */
+.card-theme-amber {
+  background: linear-gradient(145deg, #fffbeb 0%, #ffffff 100%);
+  border-color: #fde68a;
+}
+.card-theme-amber:hover {
+  border-color: #fbbf24;
+  box-shadow: 0 12px 28px rgba(245, 158, 11, 0.2);
+}
+.card-theme-amber .card-stamp-badge {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+.card-theme-amber .secret-card-title {
+  color: #92400e;
+}
+.card-theme-amber .cute-tag {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+/* Theme 3: Emerald Mint (เติบโต & สบายใจ) */
+.card-theme-emerald {
+  background: linear-gradient(145deg, #f0fdf4 0%, #ffffff 100%);
+  border-color: #a7f3d0;
+}
+.card-theme-emerald:hover {
+  border-color: #34d399;
+  box-shadow: 0 12px 28px rgba(16, 185, 129, 0.2);
+}
+.card-theme-emerald .card-stamp-badge {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #a7f3d0;
+}
+.card-theme-emerald .secret-card-title {
+  color: #065f46;
+}
+.card-theme-emerald .cute-tag {
+  background: #dcfce7;
+  color: #15803d;
+}
