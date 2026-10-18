@@ -14,7 +14,10 @@
     "shortcut": "powershell -ExecutionPolicy Bypass -File scripts/create_shortcut.ps1"
   },
   "dependencies": {
-    "puppeteer": "^22.12.1",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1",
+    "puppeteer": "^22.12.1"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

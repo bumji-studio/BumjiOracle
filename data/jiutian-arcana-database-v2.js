@@ -24,7 +24,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/1.jpg",
+      "image": "JiuTianCardImage/1.webp",
       "image_alt": "CardImage/Major0.png",
       "deity": {
         "name_th": "พระอรหันต์จีกง (เต้าจี)",
@@ -63,7 +63,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/2.jpg",
+      "image": "JiuTianCardImage/2.webp",
       "image_alt": "CardImage/Major1.png",
       "deity": {
         "name_th": "มหาเทพไท่ซ่างเหล่าจวิน",
@@ -102,7 +102,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/3.jpg",
+      "image": "JiuTianCardImage/3.webp",
       "image_alt": "CardImage/Major2.png",
       "deity": {
         "name_th": "จิ่วเทียนเสวียนหนี่ว์",
@@ -141,7 +141,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/4.jpg",
+      "image": "JiuTianCardImage/4.webp",
       "image_alt": "CardImage/Major3.png",
       "deity": {
         "name_th": "พระแม่หนีหวา",
@@ -180,7 +180,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/5.jpg",
+      "image": "JiuTianCardImage/5.webp",
       "image_alt": "CardImage/Major4.png",
       "deity": {
         "name_th": "มหาเทพเง็กเซียนฮ่องเต้",
@@ -219,7 +219,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/6.jpg",
+      "image": "JiuTianCardImage/6.webp",
       "image_alt": "CardImage/Major5.png",
       "deity": {
         "name_th": "ปฐมบรรพชนฝูซี",
@@ -258,7 +258,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/7.jpg",
+      "image": "JiuTianCardImage/7.webp",
       "image_alt": "CardImage/Major6.png",
       "deity": {
         "name_th": "หนิวหลาง & จื้อหนี่ว์",
@@ -297,7 +297,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/8.jpg",
+      "image": "JiuTianCardImage/8.webp",
       "image_alt": "CardImage/Major7.png",
       "deity": {
         "name_th": "เทพนักรบนาจา",
@@ -336,7 +336,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/9.jpg",
+      "image": "JiuTianCardImage/9.webp",
       "image_alt": "CardImage/Major8.png",
       "deity": {
         "name_th": "พระถังซัมจั๋ง",
@@ -375,7 +375,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/10.jpg",
+      "image": "JiuTianCardImage/10.webp",
       "image_alt": "CardImage/Major9.png",
       "deity": {
         "name_th": "เฉินถวน",
@@ -419,7 +419,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/11.jpg",
+      "image": "JiuTianCardImage/11.webp",
       "image_alt": "CardImage/Major10.png",
       "deity": {
         "name_th": "ไท้ส่วยเอี๊ย",
@@ -458,7 +458,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/12.jpg",
+      "image": "JiuTianCardImage/12.webp",
       "image_alt": "CardImage/Major11.png",
       "deity": {
         "name_th": "ผู้พิพากษาเปาบุ้นจิ้น",
@@ -497,7 +497,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/13.jpg",
+      "image": "JiuTianCardImage/13.webp",
       "image_alt": "CardImage/Major12.png",
       "deity": {
         "name_th": "กษัตริย์โจวเหวินหวาง (จีชาง)",
@@ -536,7 +536,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/14.jpg",
+      "image": "JiuTianCardImage/14.webp",
       "image_alt": "CardImage/Major13.png",
       "deity": {
         "name_th": "เหยียนหลัวหวาง",
@@ -580,7 +580,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/15.jpg",
+      "image": "JiuTianCardImage/15.webp",
       "image_alt": "CardImage/Major14.png",
       "deity": {
         "name_th": "พระโพธิสัตว์กวนอิม",
@@ -619,7 +619,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/16.jpg",
+      "image": "JiuTianCardImage/16.webp",
       "image_alt": "CardImage/Major15.png",
       "deity": {
         "name_th": "จิ้งจอกเก้าหาง",
@@ -658,7 +658,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/17.jpg",
+      "image": "JiuTianCardImage/17.webp",
       "image_alt": "CardImage/Major16.png",
       "deity": {
         "name_th": "เหลยเสิน",
@@ -702,7 +702,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/18.jpg",
+      "image": "JiuTianCardImage/18.webp",
       "image_alt": "CardImage/Major17.png",
       "deity": {
         "name_th": "โต้วหมู่หยวนจวิน",
@@ -741,7 +741,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/19.jpg",
+      "image": "JiuTianCardImage/19.webp",
       "image_alt": "CardImage/Major18.png",
       "deity": {
         "name_th": "ฉางเอ๋อ",
@@ -785,7 +785,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/20.jpg",
+      "image": "JiuTianCardImage/20.webp",
       "image_alt": "CardImage/Major19.png",
       "deity": {
         "name_th": "ไท่เอี๊ยงแชกุง",
@@ -824,7 +824,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/21.jpg",
+      "image": "JiuTianCardImage/21.webp",
       "image_alt": "CardImage/Major20.png",
       "deity": {
         "name_th": "พระกษิติครรภโพธิสัตว์",
@@ -863,7 +863,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MAJOR",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/22.jpg",
+      "image": "JiuTianCardImage/22.webp",
       "image_alt": "CardImage/Major21.png",
       "deity": {
         "name_th": "ผานกู่",
@@ -907,7 +907,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/23.jpg",
+      "image": "JiuTianCardImage/23.webp",
       "image_alt": "CardImage/Minor-Wood1.png",
       "deity": {
         "name_th": "โอกาสและการเริ่มต้น",
@@ -951,7 +951,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/24.jpg",
+      "image": "JiuTianCardImage/24.webp",
       "image_alt": "CardImage/Minor-Wood2.png",
       "deity": {
         "name_th": "ลิขิตเส้นทาง",
@@ -995,7 +995,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/25.jpg",
+      "image": "JiuTianCardImage/25.webp",
       "image_alt": "CardImage/Minor-Wood3.png",
       "deity": {
         "name_th": "เพื่อนร่วมอุดมการณ์",
@@ -1039,7 +1039,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/26.jpg",
+      "image": "JiuTianCardImage/26.webp",
       "image_alt": "CardImage/Minor-Wood4.png",
       "deity": {
         "name_th": "ก่อร่างสร้างตัว",
@@ -1083,7 +1083,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/27.jpg",
+      "image": "JiuTianCardImage/27.webp",
       "image_alt": "CardImage/Minor-Wood5.png",
       "deity": {
         "name_th": "อัตตา",
@@ -1127,7 +1127,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/28.jpg",
+      "image": "JiuTianCardImage/28.webp",
       "image_alt": "CardImage/Minor-Wood6.png",
       "deity": {
         "name_th": "ยกย่องสรรเสริญ",
@@ -1171,7 +1171,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/29.jpg",
+      "image": "JiuTianCardImage/29.webp",
       "image_alt": "CardImage/Minor-Wood7.png",
       "deity": {
         "name_th": "ตั้งมั่นในจุดยืน",
@@ -1215,7 +1215,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/30.jpg",
+      "image": "JiuTianCardImage/30.webp",
       "image_alt": "CardImage/Minor-Wood8.png",
       "deity": {
         "name_th": "สื่อสารฉับไว",
@@ -1259,7 +1259,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/31.jpg",
+      "image": "JiuTianCardImage/31.webp",
       "image_alt": "CardImage/Minor-Wood9.png",
       "deity": {
         "name_th": "ปัญญาและประสบการณ์",
@@ -1303,7 +1303,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/32.jpg",
+      "image": "JiuTianCardImage/32.webp",
       "image_alt": "CardImage/Minor-Wood10.png",
       "deity": {
         "name_th": "ภาระจากความสำเร็จ",
@@ -1347,7 +1347,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/33.jpg",
+      "image": "JiuTianCardImage/33.webp",
       "image_alt": "CardImage/Minor-Wood-PageOfWood.png",
       "deity": {
         "name_th": "เทพเหวินซาง",
@@ -1391,7 +1391,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/34.jpg",
+      "image": "JiuTianCardImage/34.webp",
       "image_alt": "CardImage/Minor-Wood-KnightOfWood.png",
       "deity": {
         "name_th": "โฮ่วอี้",
@@ -1435,7 +1435,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/35.jpg",
+      "image": "JiuTianCardImage/35.webp",
       "image_alt": "CardImage/Minor-Wood-QueenOfWood.png",
       "deity": {
         "name_th": "หม่ากู่",
@@ -1479,7 +1479,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WOOD",
       "element": "WOOD",
       "element_th": "ธาตุไม้",
-      "image": "JiuTianCardImage/36.jpg",
+      "image": "JiuTianCardImage/36.webp",
       "image_alt": "CardImage/Minor-Wood-KingOfWood.png",
       "deity": {
         "name_th": "มหาเทพตงหัวตีจวิน",
@@ -1523,7 +1523,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/37.jpg",
+      "image": "JiuTianCardImage/37.webp",
       "image_alt": "CardImage/Minor-Fire1.png",
       "deity": {
         "name_th": "แรงบันดาลใจ",
@@ -1569,7 +1569,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/38.jpg",
+      "image": "JiuTianCardImage/38.webp",
       "image_alt": "CardImage/Minor-Fire2.png",
       "deity": {
         "name_th": "วิสัยทัศน์และยุทธศาสตร์",
@@ -1604,7 +1604,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/39.jpg",
+      "image": "JiuTianCardImage/39.webp",
       "image_alt": "CardImage/Minor-Fire3.png",
       "deity": {
         "name_th": "ขยายอาณาเขต",
@@ -1648,7 +1648,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/40.jpg",
+      "image": "JiuTianCardImage/40.webp",
       "image_alt": "CardImage/Minor-Fire4.png",
       "deity": {
         "name_th": "เฉลิมฉลองร่วมกัน",
@@ -1692,7 +1692,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/41.jpg",
+      "image": "JiuTianCardImage/41.webp",
       "image_alt": "CardImage/Minor-Fire5.png",
       "deity": {
         "name_th": "ประลองยุทธ์ชิงชัย",
@@ -1736,7 +1736,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/42.jpg",
+      "image": "JiuTianCardImage/42.webp",
       "image_alt": "CardImage/Minor-Fire6.png",
       "deity": {
         "name_th": "ชัยชนะและเกียรติยศ",
@@ -1780,7 +1780,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/43.jpg",
+      "image": "JiuTianCardImage/43.webp",
       "image_alt": "CardImage/Minor-Fire7.png",
       "deity": {
         "name_th": "ยืนหยัดต่อสู้",
@@ -1824,7 +1824,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/44.jpg",
+      "image": "JiuTianCardImage/44.webp",
       "image_alt": "CardImage/Minor-Fire8.png",
       "deity": {
         "name_th": "บุกทะลวงทันที",
@@ -1868,7 +1868,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/45.jpg",
+      "image": "JiuTianCardImage/45.webp",
       "image_alt": "CardImage/Minor-Fire9.png",
       "deity": {
         "name_th": "เดิมพันเฮือกสุดท้าย",
@@ -1912,7 +1912,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/46.jpg",
+      "image": "JiuTianCardImage/46.webp",
       "image_alt": "CardImage/Minor-Fire10.png",
       "deity": {
         "name_th": "แลกด้วยชีวิต",
@@ -1956,7 +1956,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/47.jpg",
+      "image": "JiuTianCardImage/47.webp",
       "image_alt": "CardImage/Minor-Fire-PageOfFire.png",
       "deity": {
         "name_th": "หงไห่เอ๋อร์",
@@ -2000,7 +2000,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/48.jpg",
+      "image": "JiuTianCardImage/48.webp",
       "image_alt": "CardImage/Minor-Fire-KnightOfFire.png",
       "deity": {
         "name_th": "ซุนหงอคง",
@@ -2044,7 +2044,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/49.jpg",
+      "image": "JiuTianCardImage/49.webp",
       "image_alt": "CardImage/Minor-Fire-QueenOfFire.png",
       "deity": {
         "name_th": "เฟิ่งหวง",
@@ -2088,7 +2088,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_FIRE",
       "element": "FIRE",
       "element_th": "ธาตุไฟ",
-      "image": "JiuTianCardImage/50.jpg",
+      "image": "JiuTianCardImage/50.webp",
       "image_alt": "CardImage/Minor-Fire-KingOfFire.png",
       "deity": {
         "name_th": "มหาเทพจู้หรง",
@@ -2134,7 +2134,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/51.jpg",
+      "image": "JiuTianCardImage/51.webp",
       "image_alt": "CardImage/Minor-Earth1.png",
       "deity": {
         "name_th": "ปฐมบทแห่งทรัพย์",
@@ -2179,7 +2179,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/52.jpg",
+      "image": "JiuTianCardImage/52.webp",
       "image_alt": "CardImage/Minor-Earth2.png",
       "deity": {
         "name_th": "สมดุลหมุนเวียน",
@@ -2222,7 +2222,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/53.jpg",
+      "image": "JiuTianCardImage/53.webp",
       "image_alt": "CardImage/Minor-Earth3.png",
       "deity": {
         "name_th": "ภาคีผู้เชี่ยวชาญ",
@@ -2266,7 +2266,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/54.jpg",
+      "image": "JiuTianCardImage/54.webp",
       "image_alt": "CardImage/Minor-Earth4.png",
       "deity": {
         "name_th": "หวงแหนสมบัติ",
@@ -2310,7 +2310,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/55.jpg",
+      "image": "JiuTianCardImage/55.webp",
       "image_alt": "CardImage/Minor-Earth5.png",
       "deity": {
         "name_th": "ขัดสนแร้นแค้น",
@@ -2354,7 +2354,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/56.jpg",
+      "image": "JiuTianCardImage/56.webp",
       "image_alt": "CardImage/Minor-Earth6.png",
       "deity": {
         "name_th": "เอื้อเฟื้อเผื่อแผ่",
@@ -2398,7 +2398,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/57.jpg",
+      "image": "JiuTianCardImage/57.webp",
       "image_alt": "CardImage/Minor-Earth7.png",
       "deity": {
         "name_th": "หยุดคิดไตร่ตรอง",
@@ -2442,7 +2442,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/58.jpg",
+      "image": "JiuTianCardImage/58.webp",
       "image_alt": "CardImage/Minor-Earth8.png",
       "deity": {
         "name_th": "ฝึกฝนเชี่ยวชาญ",
@@ -2486,7 +2486,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/59.jpg",
+      "image": "JiuTianCardImage/59.webp",
       "image_alt": "CardImage/Minor-Earth9.png",
       "deity": {
         "name_th": "อิสรภาพอุดมสมบูรณ์",
@@ -2530,7 +2530,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/60.jpg",
+      "image": "JiuTianCardImage/60.webp",
       "image_alt": "CardImage/Minor-Earth10.png",
       "deity": {
         "name_th": "วงศ์ตระกูลมั่งคั่ง",
@@ -2574,7 +2574,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/61.jpg",
+      "image": "JiuTianCardImage/61.webp",
       "image_alt": "CardImage/Minor-Earth-PageOfEarth.png",
       "deity": {
         "name_th": "ไฉ่เสินถงจื่อ",
@@ -2618,7 +2618,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/62.jpg",
+      "image": "JiuTianCardImage/62.webp",
       "image_alt": "CardImage/Minor-Earth-KnightOfEarth.png",
       "deity": {
         "name_th": "หวงไฉ่เสิน",
@@ -2662,7 +2662,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/63.jpg",
+      "image": "JiuTianCardImage/63.webp",
       "image_alt": "CardImage/Minor-Earth-QueenOfEarth.png",
       "deity": {
         "name_th": "พระแม่ธรณีโฮ่วถู่",
@@ -2706,7 +2706,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_EARTH",
       "element": "EARTH",
       "element_th": "ธาตุดิน",
-      "image": "JiuTianCardImage/64.jpg",
+      "image": "JiuTianCardImage/64.webp",
       "image_alt": "CardImage/Minor-Earth-KingOfEarth.png",
       "deity": {
         "name_th": "มหาจักรพรรดิหวงตี้",
@@ -2750,7 +2750,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/65.jpg",
+      "image": "JiuTianCardImage/65.webp",
       "image_alt": "CardImage/Minor-Metal1.png",
       "deity": {
         "name_th": "โองการสวรรค์",
@@ -2785,7 +2785,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/66.jpg",
+      "image": "JiuTianCardImage/66.webp",
       "image_alt": "CardImage/Minor-Metal2.png",
       "deity": {
         "name_th": "ดุลยพินิจ",
@@ -2820,7 +2820,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/67.jpg",
+      "image": "JiuTianCardImage/67.webp",
       "image_alt": "CardImage/Minor-Metal3.png",
       "deity": {
         "name_th": "ทรยศหักหลัง",
@@ -2855,7 +2855,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/68.jpg",
+      "image": "JiuTianCardImage/68.webp",
       "image_alt": "CardImage/Minor-Metal4.png",
       "deity": {
         "name_th": "พักรบ",
@@ -2890,7 +2890,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/69.jpg",
+      "image": "JiuTianCardImage/69.webp",
       "image_alt": "CardImage/Minor-Metal5.png",
       "deity": {
         "name_th": "สิ้นเกียรติและศักดิ์ศรี",
@@ -2925,7 +2925,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/70.jpg",
+      "image": "JiuTianCardImage/70.webp",
       "image_alt": "CardImage/Minor-Metal6.png",
       "deity": {
         "name_th": "ทิศทางใหม่",
@@ -2960,7 +2960,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/71.jpg",
+      "image": "JiuTianCardImage/71.webp",
       "image_alt": "CardImage/Minor-Metal7.png",
       "deity": {
         "name_th": "กุศโลบาย",
@@ -2995,7 +2995,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/72.jpg",
+      "image": "JiuTianCardImage/72.webp",
       "image_alt": "CardImage/Minor-Metal8.png",
       "deity": {
         "name_th": "ติดกับดัก",
@@ -3030,7 +3030,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/73.jpg",
+      "image": "JiuTianCardImage/73.webp",
       "image_alt": "CardImage/Minor-Metal9.png",
       "deity": {
         "name_th": "ทรมาณ",
@@ -3065,7 +3065,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/74.jpg",
+      "image": "JiuTianCardImage/74.webp",
       "image_alt": "CardImage/Minor-Metal10.png",
       "deity": {
         "name_th": "พังทลาย",
@@ -3100,7 +3100,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/75.jpg",
+      "image": "JiuTianCardImage/75.webp",
       "image_alt": "CardImage/Minor-Metal-PageOfMetal.png",
       "deity": {
         "name_th": "คุยซิง",
@@ -3144,7 +3144,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/76.jpg",
+      "image": "JiuTianCardImage/76.webp",
       "image_alt": "CardImage/Minor-Metal-KnightOfMetal.png",
       "deity": {
         "name_th": "เอ้อหลางเสิน",
@@ -3188,7 +3188,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/77.jpg",
+      "image": "JiuTianCardImage/77.webp",
       "image_alt": "CardImage/Minor-Metal-QueenOfMetal.png",
       "deity": {
         "name_th": "ซีหวังหมู่",
@@ -3232,7 +3232,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_METAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/78.jpg",
+      "image": "JiuTianCardImage/78.webp",
       "image_alt": "CardImage/Minor-Metal-KingOfMetal.png",
       "deity": {
         "name_th": "มหาเทพไป๋ตี้",
@@ -3276,7 +3276,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/79.jpg",
+      "image": "JiuTianCardImage/79.webp",
       "image_alt": "CardImage/Minor-Water1.png",
       "deity": {
         "name_th": "นิมิตแรก",
@@ -3320,7 +3320,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/80.jpg",
+      "image": "JiuTianCardImage/80.webp",
       "image_alt": "CardImage/Minor-Water2.png",
       "deity": {
         "name_th": "ร่วมมือประสานใจ",
@@ -3355,7 +3355,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/81.jpg",
+      "image": "JiuTianCardImage/81.webp",
       "image_alt": "CardImage/Minor-Water3.png",
       "deity": {
         "name_th": "สังสรรค์ประสานไมตรี",
@@ -3390,7 +3390,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/82.jpg",
+      "image": "JiuTianCardImage/82.webp",
       "image_alt": "CardImage/Minor-Water4.png",
       "deity": {
         "name_th": "เฉยชาเบื่อหน่าย",
@@ -3425,7 +3425,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/83.jpg",
+      "image": "JiuTianCardImage/83.webp",
       "image_alt": "CardImage/Minor-Water5.png",
       "deity": {
         "name_th": "จมดิ่งในความเศร้า",
@@ -3460,7 +3460,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/84.jpg",
+      "image": "JiuTianCardImage/84.webp",
       "image_alt": "CardImage/Minor-Water6.png",
       "deity": {
         "name_th": "ความทรงจำ",
@@ -3495,7 +3495,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/85.jpg",
+      "image": "JiuTianCardImage/85.webp",
       "image_alt": "CardImage/Minor-Water7.png",
       "deity": {
         "name_th": "ภาพลวงเพ้อฝัน",
@@ -3530,7 +3530,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/86.jpg",
+      "image": "JiuTianCardImage/86.webp",
       "image_alt": "CardImage/Minor-Water8.png",
       "deity": {
         "name_th": "แสวงหาความสงบ",
@@ -3565,7 +3565,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/87.jpg",
+      "image": "JiuTianCardImage/87.webp",
       "image_alt": "CardImage/Minor-Water9.png",
       "deity": {
         "name_th": "สมปรารถนา",
@@ -3600,7 +3600,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/88.jpg",
+      "image": "JiuTianCardImage/88.webp",
       "image_alt": "CardImage/Minor-Water10.png",
       "deity": {
         "name_th": "สุขสมบูรณ์",
@@ -3635,7 +3635,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/89.jpg",
+      "image": "JiuTianCardImage/89.webp",
       "image_alt": "CardImage/Minor-Water-PageOfWater.png",
       "deity": {
         "name_th": "หลงหนี่ว์",
@@ -3679,7 +3679,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/90.jpg",
+      "image": "JiuTianCardImage/90.webp",
       "image_alt": "CardImage/Minor-Water-KnightOfWater.png",
       "deity": {
         "name_th": "อ๋าวปิ่ง",
@@ -3723,7 +3723,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/91.jpg",
+      "image": "JiuTianCardImage/91.webp",
       "image_alt": "CardImage/Minor-Water-QueenOfWater.png",
       "deity": {
         "name_th": "เจ้าแม่หมาจู่",
@@ -3767,7 +3767,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "MINOR_WATER",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/92.jpg",
+      "image": "JiuTianCardImage/92.webp",
       "image_alt": "CardImage/Minor-Water-KingOfWater.png",
       "deity": {
         "name_th": "ราชามังกร",
@@ -3813,7 +3813,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "SPECIAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/93.jpg",
+      "image": "JiuTianCardImage/93.webp",
       "image_alt": "CardImage/93.png",
       "deity": {
         "name_th": "Martial Saint - มิได้เกิดจากชัยชนะในสนามรบ",
@@ -3852,7 +3852,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "SPECIAL",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/94.jpg",
+      "image": "JiuTianCardImage/94.webp",
       "image_alt": "CardImage/94.png",
       "deity": {
         "name_th": "Lady of Nine Heavens - ย่อมเปลี่ยนโชคชะตาได้ด้วยปัญญา”",
@@ -3891,7 +3891,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "SPECIAL",
       "element": "METAL",
       "element_th": "ธาตุทอง",
-      "image": "JiuTianCardImage/95.jpg",
+      "image": "JiuTianCardImage/95.webp",
       "image_alt": "CardImage/95.png",
       "deity": {
         "name_th": "ปาฏิหาริย์ศักดิ์สิทธิ์",
@@ -3928,7 +3928,7 @@ const jiutianDatabaseV2 = {
       "arcana_type": "SPECIAL",
       "element": "WATER",
       "element_th": "ธาตุน้ำ",
-      "image": "JiuTianCardImage/96.jpg",
+      "image": "JiuTianCardImage/96.webp",
       "image_alt": "CardImage/96.png",
       "deity": {
         "name_th": "จักรวาลสมบูรณ์",
