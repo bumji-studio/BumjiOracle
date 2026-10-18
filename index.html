@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261018_groq_v5">
+  <link rel="stylesheet" href="styles.css?v=20261018_bazi_saved_v6">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -554,19 +554,19 @@
         </div>
 
         <div class="bazi-toolbar-actions">
-          <button class="bazi-btn-secondary" id="baziPresetNowBtn" title="ใช้วันและเวลาปัจจุบัน">
-            <i class="fa-solid fa-bolt"></i> ขณะนี้
-          </button>
           <button class="bazi-btn-primary" id="baziCalcBtn" onclick="window.BaziApp.calculateFromInputs(true)">
             <i class="fa-solid fa-wand-magic-sparkles"></i> วิเคราะห์ดวงชะตา (Calculate)
           </button>
-          <button class="bazi-btn-secondary bazi-btn-save" id="baziSaveBtn" title="บันทึกข้อมูลลูกดวงนี้ลงในเครื่อง">
-            <i class="fa-solid fa-bookmark"></i> บันทึกลูกดวง
+          <button class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()" title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
+            <i class="fa-solid fa-bookmark"></i> บันทึกดวงนี้
           </button>
-          <button class="bazi-btn-secondary" id="baziOpenSavedModalBtn" title="ดูและจัดการรายชื่อลูกดวงที่บันทึกไว้">
-            <i class="fa-solid fa-folder-open"></i> รายชื่อลูกดวง (<span id="baziSavedCount">0</span>)
+          <button class="bazi-btn-saved-list" id="baziOpenSavedModalBtn" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
+            <i class="fa-solid fa-folder-open"></i> หน้ารวมดวงที่บันทึก (<span id="baziSavedCount">0</span>)
           </button>
-          <button class="bazi-btn-secondary" id="baziCopySummaryBtn" title="คัดลอกสรุปคำทำนาย">
+          <button class="bazi-btn-secondary" id="baziPresetNowBtn" onclick="window.BaziApp.resetToNow()" title="กลับไปที่วันและเวลาปัจจุบัน">
+            <i class="fa-solid fa-rotate-right"></i> ขณะนี้ (วันปัจจุบัน)
+          </button>
+          <button class="bazi-btn-secondary" id="baziCopySummaryBtn" onclick="window.BaziApp.copySummary()" title="คัดลอกสรุปคำทำนาย">
             <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
           </button>
         </div>
@@ -1893,15 +1893,15 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261018_autofill_v24"></script>
+  <script src="auth.js?v=20261018_autofill_v25"></script>
   <script src="app.js?v=20261018_groq_v5"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
-  <script src="bazi.js?v=20261018_bazi_autocalc_v2"></script>
+  <script src="bazi.js?v=20261018_bazi_autocalc_v3"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
-  <script src="personality.js?v=20261012_mobile_radar_v5"></script>
+  <script src="personality.js?v=20261018_jump_v6"></script>
 </body>
 </html>

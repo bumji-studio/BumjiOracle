@@ -518,19 +518,9 @@
     autoFillHoroscopes: function (user) {
       if (!user) return;
 
-      // 1. Fill BaZi form
-      const baziName = document.getElementById('baziNameInput');
-      const baziGender = document.getElementById('baziGenderSelect');
-      const baziDate = document.getElementById('baziDateInput');
-      const baziHour = document.getElementById('baziHourInput');
-
-      if (baziName && user.name) baziName.value = user.name;
-      if (baziGender && user.gender) baziGender.value = user.gender;
-      if (baziDate && user.birthDate) baziDate.value = user.birthDate;
-      if (baziHour && user.birthTime) baziHour.value = user.birthTime;
-
-      if (window.BaziApp && typeof window.BaziApp.calculateFromInputs === 'function') {
-        window.BaziApp.calculateFromInputs(false);
+      // 1. Add user profile to BaZi saved profiles (without overwriting current live view on refresh)
+      if (window.BaziApp && typeof window.BaziApp.addProfileFromUser === 'function') {
+        window.BaziApp.addProfileFromUser(user);
       }
 
       // 2. Fill Qi Men Dun Jia

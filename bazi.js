@@ -1036,16 +1036,60 @@
       this.setDefaultCurrentDateTimeInputs();
       this.renderQuickProfileSelect();
       this.bindEvents();
-      this.calculateFromInputs();
+      this.calculateFromInputs(false);
       this.switchMode(this.currentMode, true);
 
+      // If arriving with explicit parameters from another view or URL query
       try {
         const urlParams = new URLSearchParams(window.location.search);
+        const qDate = urlParams.get('birthDate') || urlParams.get('bDate') || urlParams.get('date');
+        const qTime = urlParams.get('birthTime') || urlParams.get('bTime') || urlParams.get('time');
+        const qName = urlParams.get('name') || urlParams.get('bName');
+        const qGender = urlParams.get('gender');
+        if (qDate) {
+          const nameInput = document.getElementById('baziNameInput');
+          const dateInput = document.getElementById('baziDateInput');
+          const hourInput = document.getElementById('baziHourInput');
+          const genderSelect = document.getElementById('baziGenderSelect');
+          if (nameInput && qName) nameInput.value = decodeURIComponent(qName);
+          if (dateInput) dateInput.value = qDate;
+          if (hourInput && qTime) hourInput.value = qTime;
+          if (genderSelect && qGender) genderSelect.value = qGender;
+          this.calculateFromInputs(false);
+        }
+
         const queryQ = urlParams.get('q');
         if (queryQ) {
           this.fillAndRunCustomQuery(queryQ);
         }
       } catch (e) {}
+    },
+
+    resetToNow: function () {
+      this.setDefaultCurrentDateTimeInputs();
+      this.calculateFromInputs(false);
+      this.showToast('แสดงดวงจีน ณ วันและเวลาปัจจุบันเรียบร้อยแล้วค่ะ');
+    },
+
+    addProfileFromUser: function (user) {
+      if (!user || !user.birthDate) return;
+      const userProfileId = 'bazi_user_' + (user.uid || 'current');
+      const profile = {
+        id: userProfileId,
+        name: user.name || 'ดวงของฉัน',
+        gender: user.gender || 'male',
+        birthDate: user.birthDate,
+        birthTime: user.birthTime || '12:00',
+        savedAt: 'สมาชิก (ดวงของฉัน)'
+      };
+      const existingIdx = this.savedProfiles.findIndex(p => p.id === userProfileId || p.name === profile.name);
+      if (existingIdx !== -1) {
+        this.savedProfiles[existingIdx] = profile;
+      } else {
+        this.savedProfiles.unshift(profile);
+      }
+      this.saveProfilesToStorage();
+      this.renderQuickProfileSelect();
     },
 
     setDefaultCurrentDateTimeInputs: function () {
@@ -1270,16 +1314,8 @@
     },
 
     onTabShow: function () {
-      const dateInput = document.getElementById('baziDateInput');
-      const nameInput = document.getElementById('baziNameInput');
-      const genderSelect = document.getElementById('baziGenderSelect');
-
-      const needsRecalc = !this.currentChart ||
-        (dateInput && dateInput.value && this.currentChart.birthDateString !== dateInput.value) ||
-        (nameInput && nameInput.value.trim() && this.currentChart.name !== nameInput.value.trim()) ||
-        (genderSelect && genderSelect.value && this.currentChart.gender !== genderSelect.value);
-
-      if (needsRecalc) {
+      if (!this.currentChart) {
+        this.setDefaultCurrentDateTimeInputs();
         this.calculateFromInputs(false);
       }
     },

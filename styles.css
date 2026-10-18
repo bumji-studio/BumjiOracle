@@ -3878,7 +3878,9 @@ body {
     font-size: 14px !important;
   }
 
-  .bazi-toolbar-actions .bazi-btn-secondary {
+  .bazi-toolbar-actions .bazi-btn-secondary,
+  .bazi-toolbar-actions .bazi-btn-save,
+  .bazi-toolbar-actions .bazi-btn-saved-list {
     justify-content: center !important;
     padding: 8px 6px !important;
     font-size: 11.5px !important;
@@ -7690,6 +7692,30 @@ body.is-mobile .synthesis-box-body {
 .bazi-btn-save:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+
+/* Saved Profiles List button */
+.bazi-btn-saved-list {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-family: 'Prompt', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.bazi-btn-saved-list:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
 }
 
 /* Dayun Selected Card State */

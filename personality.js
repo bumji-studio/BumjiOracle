@@ -279,29 +279,26 @@
       const bGender = document.getElementById('personalityGender')?.value;
       const bName = document.getElementById('personalityName')?.value;
 
-      if (document.getElementById('baziBirthDate') && bDate) {
-        document.getElementById('baziBirthDate').value = bDate;
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+      const nameInput = document.getElementById('baziNameInput');
+
+      if (dateInput && bDate) dateInput.value = bDate;
+      if (hourInput && bHour !== undefined && bHour !== '') {
+        const hh = String(bHour).padStart(2, '0');
+        const mm = String(bMin || 0).padStart(2, '0');
+        hourInput.value = `${hh}:${mm}`;
       }
-      if (document.getElementById('baziBirthHour') && bHour) {
-        document.getElementById('baziBirthHour').value = bHour;
-      }
-      if (document.getElementById('baziBirthMinute') && bMin) {
-        document.getElementById('baziBirthMinute').value = bMin;
-      }
-      if (document.getElementById('baziGender') && bGender) {
-        document.getElementById('baziGender').value = bGender;
-      }
-      if (document.getElementById('baziName') && bName) {
-        document.getElementById('baziName').value = bName;
-      }
+      if (genderSelect && bGender) genderSelect.value = bGender;
+      if (nameInput && bName) nameInput.value = bName;
 
       if (window.setActiveAppMode) {
         window.setActiveAppMode('bazi');
       }
 
-      const calcBtn = document.getElementById('baziCalcBtn');
-      if (calcBtn) {
-        setTimeout(() => calcBtn.click(), 100);
+      if (window.BaziApp && typeof window.BaziApp.calculateFromInputs === 'function') {
+        setTimeout(() => window.BaziApp.calculateFromInputs(true), 120);
       }
     },
 
