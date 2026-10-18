@@ -3155,96 +3155,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 2. เคล็ดลับฮีลใจ (Alchemize any negative/challenging aspects into deep comfort, relief & motivation)
-  function buildThepMeowHealingTips({ question, drawn, intent }) {
-    const c1 = drawn[0];
-    const c2 = drawn[1] || drawn[0];
-    const c3 = drawn[drawn.length - 1];
-
-    // Detect negative or challenging themes across cards
-    const rawShadow = [c2?.meanings?.shadow_side, c1?.meanings?.shadow_side, c3?.meanings?.shadow_side, c2?.warning].filter(Boolean).join(' ');
-    
-    let negativePoint = '';
-    let positiveFlip = '';
-
-    if (/ใจร้อน|เร่ง|ด่วน|เร็ว|หุนหัน/i.test(rawShadow)) {
-      negativePoint = 'ความรู้สึกกระวนกระวาย อยากเห็นผลลัพธ์ทันที หรือกลัวว่าจะไม่ทันการ';
-      positiveFlip = 'ต้นไม้ใหญ่ไม่เคยผลิดอกในชั่วข้ามคืน ความช้าไม่ได้แปลว่าล้มเหลว แต่คือช่วงเวลาที่รากกำลังหยั่งลึกอย่างมั่นคงที่สุดค่ะ';
-    } else if (/กังวล|คิดมาก|วิตก|กลัว|ไม่แน่นอน|สับสน/i.test(rawShadow)) {
-      negativePoint = 'ความคิดวนเวียนล่วงหน้า กลัวความผิดพลาด หรือความไม่มั่นใจในตัวเอง';
-      positiveFlip = 'ความกังวลกว่า 90% คือภาพลวงที่ใจสร้างขึ้นมาเอง เมื่อไหร่ที่เริ่มคิดเยอะ ให้ดึงสติกลับมาที่ลมหายใจในปัจจุบัน คุณเก่งกว่าที่ตัวเองคิดเยอะเลยนะ';
-    } else if (/เหนื่อย|ภาระ|กดดัน|ตึง|แบก|หนัก/i.test(rawShadow)) {
-      negativePoint = 'ความรู้สึกว่าต้องแบกรับทุกอย่างไว้คนเดียว หรือตั้งเป้าหมายตึงจนหายใจไม่ทั่วท้อง';
-      positiveFlip = 'คุณไม่จำเป็นต้องสมบูรณ์แบบเพื่อที่จะมีคุณค่า การอนุญาตให้ตัวเองได้พักและปล่อยวาง คือความกล้าหาญที่งดงามที่สุดค่ะ';
-    } else if (/ขัดแย้ง|อารมณ์|สื่อสาร|เข้าใจผิด/i.test(rawShadow)) {
-      negativePoint = 'ความตึงเครียดในความสัมพันธ์ หรือความรู้สึกอึดอัดที่ไม่กล้าพูดออกมาตรงๆ';
-      positiveFlip = 'ทุกคลื่นลมมีไว้เพื่อปรับจูนความเข้าใจ ใช้ความนุ่มนวลเหมือนอุ้งเท้าแมวแตะเบาๆ ไม่ต้องเอาชนะด้วยคำพูด แล้วความอบอุ่นจะคืนกลับมา';
-    } else {
-      negativePoint = 'ความลังเลสงสัย หรือความรู้สึกกลัวการก้าวออกจากพื้นที่คุ้นเคย';
-      positiveFlip = 'ความไม่แน่นอนคือพื้นที่ที่ปาฏิหาริย์เกิดขึ้นได้เสมอ ขอเพียงมีใจที่เปิดกว้างและเชื่อมั่นในตัวเอง ทุกอย่างกำลังจัดสรรสิ่งที่ดีที่สุดให้คุณ';
-    }
-
-    // Cat healing voice
-    const catVoice = getThepMeowCardCatVoice(c2 || c1, 1);
-    
-    // Practical micro action
-    let microStep = '';
-    if (c3?.strategy) {
-      const parts = c3.strategy.split(/[-–—•\n]/).map(s => s.trim()).filter(s => s.length > 5);
-      microStep = parts[0] ? cleanThepMeowCardText(parts[0]) : '';
-    }
-    if (!microStep || microStep.length < 5) {
-      microStep = getThepMeowCardReading(c3, intent);
-    }
-
-    return `
-      <div class="thepmeow-action-box">
-        <h3 class="thepmeow-action-heading">
-          <i class="fa-solid fa-heart-pulse" style="color: #ec4899;"></i> เคล็ดลับฮีลใจและสร้างแรงใจ โดย เทพเหมียว
-        </h3>
-        <p class="thepmeow-healing-sub">
-          เทพเหมียวช่วยแปลงจุดที่อาจสร้างความกังวลใจ ให้กลายเป็นพลังบวกและอ้อมกอดอุ่นๆ เพื่อให้คุณอ่านแล้วรู้สึกสบายใจที่สุดค่ะ
-        </p>
-
-        <div class="thepmeow-action-items">
-          <!-- Step 1: Mindset Transformation (Flip negative to positive) -->
-          <div class="thepmeow-action-row">
-            <div class="action-row-icon icon-mind">
-              <i class="fa-solid fa-wand-magic-sparkles"></i>
-            </div>
-            <div class="action-row-text">
-              <strong>สเต็ปที่ 1: พลิกมุมมองเปลี่ยนกังวลเป็นพลังใจ (Mindset Transformation)</strong><br />
-              <span class="healing-tag-worry"><i class="fa-solid fa-cloud-rain"></i> จุดที่อาจทำให้กังวล:</span> ${negativePoint}<br />
-              <span class="healing-tag-relief"><i class="fa-solid fa-sun" style="color: #f59e0b;"></i> เทพเหมียวพลิกมุมมองให้:</span> “${positiveFlip}” วางความกลัวลง แล้วเปลี่ยนมาส่งพลังความเชื่อมั่นให้ตัวเองกันนะคะ เมี๊ยววว~ 🐾
-            </div>
-          </div>
-
-          <!-- Step 2: Cat Healing Warmth & Comfort -->
-          <div class="thepmeow-action-row">
-            <div class="action-row-icon icon-act" style="background: #fdf2f8; color: #ec4899;">
-              <i class="fa-solid fa-paw"></i>
-            </div>
-            <div class="action-row-text">
-              <strong>สเต็ปที่ 2: เคล็ดลับปลอบประโลมใจฉบับน้องเหมียว (Emotional Healing)</strong><br />
-              <em>${catVoice}</em><br />
-              <div style="margin-top: 6px; font-size: 13.5px; color: #475569;">
-                <i class="fa-solid fa-mug-hot" style="color: #b45309; margin-right: 4px;"></i> <strong>ท่าไม้ตายฮีลใจ:</strong> หากรู้สึกเหนื่อยหรือใจไม่สงบ ลองยืดเส้นยืดสายเหมือนแมวบิดขี้เกียจ ดื่มน้ำอุ่นสักแก้ว หรือนั่งนิ่งๆ สูดหายใจลึกๆ 1 นาที บอกตัวเองเบาๆ ว่า <em>“ฉันทำดีที่สุดแล้วในจุดนี้ และฉันพร้อมรับสิ่งดีๆ เสมอ”</em>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 3: Gentle Micro-Action to feel accomplished -->
-          <div class="thepmeow-action-row">
-            <div class="action-row-icon icon-let" style="background: #ecfdf5; color: #059669;">
-              <i class="fa-solid fa-shoe-prints"></i>
-            </div>
-            <div class="action-row-text">
-              <strong>สเต็ปที่ 3: ก้าวเล็กๆ ที่ทำให้ใจฟูและสำเร็จจริง (Gentle Micro-Step)</strong><br />
-              ไม่ต้องกดดันให้ต้องรีบเปลี่ยนทั้งชีวิตในวันเดียว! นำพลังจากไพ่ <strong>“${c3?.name_th || 'ไพ่บทสรุป'}”</strong> มาเริ่มจากสิ่งที่ทำได้ง่ายที่สุด 1 อย่าง: <strong>“${microStep}”</strong> เมื่อทำเสร็จให้ยิ้มชื่นชมตัวเองกว้างๆ ความสุขและผลลัพธ์ที่ดีงามจะค่อยๆ เบ่งบานตามมาแน่นอนค่ะ เมี๊ยววว~ 🐾✨
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+  // 2. เคล็ดลับฮีลใจ (Removed as requested)
+  function buildThepMeowHealingTips() {
+    return '';
   }
 
   // 3. Empowerment Blessing Builder
