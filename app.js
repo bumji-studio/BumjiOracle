@@ -2388,23 +2388,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
 
-        <!-- Layer 2: 3 คาถาฮีลใจ & เคล็ดลับปรับชะตาฉบับเทพเหมียว -->
-        <div class="thepmeow-healing-box">
-          <div class="thepmeow-healing-header-cute">
-            <div class="healing-title-group">
-              <div class="healing-paw-icon">
-                <i class="fa-solid fa-paw"></i>
-              </div>
-              <div>
-                <h4 class="healing-main-title">3 คาถาฮีลใจ &amp; เคล็ดลับปรับชะตาฉบับเทพเหมียว 🐾✨</h4>
-                <p class="healing-sub-title">กลเม็ดลับเฉพาะคุณ นำไปปรับใช้ได้ทันที เพื่อเปิดรับพลังงานดีๆ ในทุกย่างก้าว</p>
-              </div>
-            </div>
-          </div>
-          <div class="healing-cards-trio">
-            ${actionsHtml}
-          </div>
-        </div>
+
 
         <!-- Layer 3: พรเสริมมงคลจากเทพเหมียว -->
         <div class="thepmeow-blessing-card">
@@ -2509,8 +2493,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultSynthesisContainer.innerHTML = `
         <div class="thepmeow-dossier">
           ${prophecyHtml}
-          ${healingHtml}
-          ${blessingHtml}
+                    ${blessingHtml}
         </div>
       `;
     }
@@ -3376,8 +3359,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultSynthesisContainer.innerHTML = `
         <div class="thepmeow-dossier">
           ${prophecyHtml}
-          ${healingHtml}
-          ${blessingHtml}
+                    ${blessingHtml}
         </div>
       `;
     }

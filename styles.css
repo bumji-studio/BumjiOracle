@@ -15514,3 +15514,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background: #dcfce7;
   color: #15803d;
 }
+
+
+/* Hide healing tips box as requested */
+.thepmeow-action-box,
+.thepmeow-healing-box,
+.thepmeow-healing-header,
+.thepmeow-action-items {
+  display: none !important;
+}
