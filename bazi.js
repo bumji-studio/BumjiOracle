@@ -2126,9 +2126,600 @@
       return interactions;
     },
 
+    getNaYinDetail: function (stemIdx, branchIdx) {
+      const NAYIN_INFO = [
+        { zh: '海中金', en: 'Gold on Seafloor', th: 'ทองในมหาสมุทร', element: 'metal' },
+        { zh: '爐中火', en: 'Furnace Fire', th: 'ไฟในเตาหลอม', element: 'fire' },
+        { zh: '大林木', en: 'Wood of Forest', th: 'ไม้ในป่าใหญ่', element: 'wood' },
+        { zh: '路旁土', en: 'Roadside Earth', th: 'ดินริมทาง', element: 'earth' },
+        { zh: '劍鋒金', en: 'Sword Edge Gold', th: 'ทองปลายกระบี่', element: 'metal' },
+        { zh: '山頭火', en: 'Mountaintop Fire', th: 'ไฟบนยอดเขา', element: 'fire' },
+        { zh: '澗下水', en: 'Stream Water', th: 'น้ำในลำธาร', element: 'water' },
+        { zh: '城頭土', en: 'City Wall Earth', th: 'ดินบนกำแพงเมือง', element: 'earth' },
+        { zh: '白蠟金', en: 'White Wax Gold', th: 'ทองขาวบริสุทธิ์', element: 'metal' },
+        { zh: '楊柳木', en: 'Wood of Willow', th: 'ไม้ต้นหลิว', element: 'wood' },
+        { zh: '泉中水', en: 'Spring Water', th: 'น้ำพุใต้พิภพ', element: 'water' },
+        { zh: '屋上土', en: 'Rooftop Earth', th: 'ดินบนหลังคา', element: 'earth' },
+        { zh: '霹靂火', en: 'Thunderbolt Fire', th: 'ไฟสายฟ้าฟาด', element: 'fire' },
+        { zh: '松柏木', en: 'Pine Wood', th: 'ไม้สนยืนต้น', element: 'wood' },
+        { zh: '長流水', en: 'Long River Water', th: 'น้ำไหลไม่สิ้นสุด', element: 'water' },
+        { zh: '砂中金', en: 'Sand Gold', th: 'ทองในหาดทราย', element: 'metal' },
+        { zh: '山下火', en: 'Foothill Fire', th: 'ไฟเชิงเขา', element: 'fire' },
+        { zh: '平地木', en: 'Bushes on Plain', th: 'ไม้บนที่ราบ', element: 'wood' },
+        { zh: '壁上土', en: 'Wall Earth', th: 'ดินฉาบฝาผนัง', element: 'earth' },
+        { zh: '金箔金', en: 'Gold Foil', th: 'ทองคำเปลว', element: 'metal' },
+        { zh: '覆燈火', en: 'Lamp Fire', th: 'ไฟดวงประทีป', element: 'fire' },
+        { zh: '天河水', en: 'Celestial River', th: 'น้ำแม่น้ำสวรรค์', element: 'water' },
+        { zh: '大驛土', en: 'Post Station Earth', th: 'ดินสถานีใหญ่', element: 'earth' },
+        { zh: '釵釧金', en: 'Hairpin Gold', th: 'ทองปิ่นปักผม', element: 'metal' },
+        { zh: '桑柘木', en: 'Mulberry Wood', th: 'ไม้หม่อนมงคล', element: 'wood' },
+        { zh: '大溪水', en: 'Great Creek Water', th: 'น้ำในห้วยใหญ่', element: 'water' },
+        { zh: '沙中土', en: 'Sand Earth', th: 'ดินทรายปนหิน', element: 'earth' },
+        { zh: '天上火', en: 'Celestial Sun Fire', th: 'ไฟบนท้องนภา', element: 'fire' },
+        { zh: '石榴木', en: 'Pomegranate Wood', th: 'ไม้ทับทิมมงคล', element: 'wood' },
+        { zh: '大海水', en: 'Ocean Water', th: 'น้ำในทะเลหลวง', element: 'water' }
+      ];
+      for (let i = 0; i < 60; i++) {
+        if (i % 10 === stemIdx && i % 12 === branchIdx) {
+          return NAYIN_INFO[Math.floor(i / 2)] || { zh: '五行', en: 'Five Elements', th: 'เบญจธาตุ', element: 'earth' };
+        }
+      }
+      return { zh: '五行', en: 'Five Elements', th: 'เบญจธาตุ', element: 'earth' };
+    },
+
+    get12LifeStage: function (stemChar, branchChar) {
+      const CHANG_SHENG_NAMES = [
+        { order: 1, zh: '長生', py: 'Chang Sheng', en: 'Birth', symbol: '++' },
+        { order: 2, zh: '沐浴', py: 'Mu Yu', en: 'Bath', symbol: '-' },
+        { order: 3, zh: '冠帶', py: 'Guan Dai', en: 'Coming of Age', symbol: '+' },
+        { order: 4, zh: '臨官', py: 'Lin Guan', en: 'Prosperity', symbol: '+' },
+        { order: 5, zh: '帝旺', py: 'Di Wang', en: 'Prosp. Peak', symbol: '++' },
+        { order: 6, zh: '衰', py: 'Shuai', en: 'Aging', symbol: '·' },
+        { order: 7, zh: '病', py: 'Bing', en: 'Sickness', symbol: '-' },
+        { order: 8, zh: '死', py: 'Si', en: 'Death', symbol: '--' },
+        { order: 9, zh: '墓', py: 'Mu', en: 'Tomb', symbol: '--' },
+        { order: 10, zh: '絕', py: 'Jue', en: 'Extinction', symbol: '---' },
+        { order: 11, zh: '胎', py: 'Tai', en: 'Conception', symbol: '·' },
+        { order: 12, zh: '養', py: 'Yang', en: 'Gestation', symbol: '·' }
+      ];
+      const CHANG_SHENG_STARTS = {
+        '甲': { start: 11, dir: 1 },
+        '乙': { start: 6, dir: -1 },
+        '丙': { start: 2, dir: 1 },
+        '丁': { start: 9, dir: -1 },
+        '戊': { start: 2, dir: 1 },
+        '己': { start: 9, dir: -1 },
+        '庚': { start: 5, dir: 1 },
+        '辛': { start: 0, dir: -1 },
+        '壬': { start: 8, dir: 1 },
+        '癸': { start: 3, dir: -1 }
+      };
+      const cfg = CHANG_SHENG_STARTS[stemChar];
+      if (!cfg) return { order: '-', zh: '-', py: '-', en: '-', symbol: '' };
+      const bIdx = BRANCHES.findIndex(b => b.zh === branchChar);
+      if (bIdx === -1) return { order: '-', zh: '-', py: '-', en: '-', symbol: '' };
+      const offset = ((bIdx - cfg.start) * cfg.dir % 12 + 12) % 12;
+      return CHANG_SHENG_NAMES[offset];
+    },
+
+    getKongWang: function (stemIdx, branchIdx) {
+      const xun = ((stemIdx - branchIdx + 12) % 12);
+      const voidMap = {
+        0: ['Xu, Hai', '戌, 亥'],
+        10: ['Shen, You', '申, 酉'],
+        8: ['Wu, Wei', '午, 未'],
+        6: ['Chen, Si', '辰, 巳'],
+        4: ['Yin, Mao', '寅, 卯'],
+        2: ['Zi, Chou', '子, 丑']
+      };
+      return voidMap[xun] || ['-', '-'];
+    },
+
+    getDominantHiddenStem: function (branchChar) {
+      const DHHS_MAP = {
+        '子': '癸', '丑': '己', '寅': '甲', '卯': '乙',
+        '辰': '戊', '巳': '丙', '午': '丁', '未': '己',
+        '申': '庚', '酉': '辛', '戌': '戊', '亥': '壬'
+      };
+      const stemChar = DHHS_MAP[branchChar] || '戊';
+      const sObj = STEMS.find(s => s.zh === stemChar) || STEMS[4];
+      return sObj;
+    },
+
+    computeDetailedStars: function (targetBranch, targetStem, dayStem, dayBranch, yearBranch, monthBranch) {
+      const dmStars = [];
+      const otherStars = [];
+      const tb = targetBranch;
+      const ts = targetStem;
+      const ds = dayStem.zh;
+      const db = dayBranch.zh;
+      const yb = yearBranch.zh;
+      const mb = monthBranch ? monthBranch.zh : '';
+
+      // 1. Day Master Derived Stars (DM:)
+      const wenChangMap = { '甲': '巳', '乙': '午', '丙': '申', '丁': '酉', '戊': '申', '己': '酉', '庚': '亥', '辛': '子', '壬': '寅', '癸': '卯' };
+      if (wenChangMap[ds] === tb) dmStars.push('academic star / WenChang / 文昌');
+
+      const xueTangMap = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' };
+      if (xueTangMap[ds] === tb) dmStars.push('literacy star / XueTang / 学堂');
+
+      const hongYanMap = { '甲': '午', '乙': '午', '丙': '寅', '丁': '未', '戊': '辰', '己': '辰', '庚': '戌', '辛': '酉', '壬': '子', '癸': '申' };
+      if (hongYanMap[ds] === tb) dmStars.push('red peach blossom / HongYanSha / 红艳桃花');
+
+      const tianChuMap = { '甲': '巳', '乙': '午', '丙': '子', '丁': '巳', '戊': '午', '己': '申', '庚': '寅', '辛': '午', '壬': '酉', '癸': '亥' };
+      if (tianChuMap[ds] === tb) dmStars.push('culinary / TianChuGuiRen / 天厨*');
+
+      const tianYiMap = { '甲': ['丑', '未'], '戊': ['丑', '未'], '庚': ['丑', '未'], '乙': ['子', '申'], '己': ['子', '申'], '丙': ['亥', '酉'], '丁': ['亥', '酉'], '壬': ['卯', '巳'], '癸': ['卯', '巳'], '辛': ['午', '寅'] };
+      if (tianYiMap[ds] && tianYiMap[ds].includes(tb)) dmStars.push('nobleman / TianYiGuiRen / 天乙贵人');
+
+      const fuXingMap = { '甲': ['寅', '子'], '乙': ['卯', '丑'], '丙': ['寅', '子'], '丁': ['亥', '酉'], '戊': '申', '己': '未', '庚': '午', '辛': '巳', '壬': '辰', '癸': '卯' };
+      if (Array.isArray(fuXingMap[ds]) ? fuXingMap[ds].includes(tb) : fuXingMap[ds] === tb) dmStars.push('beneficiary / FuXingGuiRen / 福星*');
+
+      const yangRenMap = { '甲': '卯', '乙': '辰', '丙': '午', '丁': '未', '戊': '午', '己': '未', '庚': '酉', '辛': '戌', '壬': '子', '癸': '丑' };
+      const feiRenMap = { '甲': '酉', '乙': '戌', '丙': '子', '丁': '丑', '戊': '子', '己': '丑', '庚': '卯', '辛': '辰', '壬': '午', '癸': '未' };
+      if (feiRenMap[ds] === tb) dmStars.push('flying knife / FeiRen / 飞刃*');
+      if (yangRenMap[ds] === tb) dmStars.push('blade / YangRen / 羊刃');
+
+      const liuXiaMap = { '甲': '酉', '乙': '戌', '丙': '未', '丁': '申', '戊': '巳', '己': '午', '庚': '辰', '辛': '卯', '壬': '亥', '癸': '寅' };
+      if (liuXiaMap[ds] === tb) dmStars.push('red clouds / LiuXia / 流霞*');
+
+      const jieDuMap = { '甲': '午', '乙': '未', '丙': '申', '丁': '酉', '戊': '戌', '己': '亥', '庚': '子', '辛': '丑', '壬': '寅', '癸': '卯' };
+      if (jieDuMap[ds] === tb) dmStars.push('right measure / JieDuGuiRen / 节度*');
+
+      const luMap = { '甲': '寅', '乙': '卯', '丙': '巳', '丁': '午', '戊': '巳', '己': '午', '庚': '申', '辛': '酉', '壬': '亥', '癸': '子' };
+      if (luMap[ds] === tb) dmStars.push('prosperity / LuShen / 禄神');
+
+      const jinYuMap = { '甲': '辰', '乙': '巳', '丙': '未', '丁': '申', '戊': '未', '己': '申', '庚': '戌', '辛': '亥', '壬': '丑', '癸': '寅' };
+      if (jinYuMap[ds] === tb) dmStars.push('golden carriage / JinYu / 金舆');
+
+      const guGuaMap = {
+        '亥': { gu: '寅', gua: '戌' }, '子': { gu: '寅', gua: '戌' }, '丑': { gu: '寅', gua: '戌' },
+        '寅': { gu: '巳', gua: '丑' }, '卯': { gu: '巳', gua: '丑' }, '辰': { gu: '巳', gua: '丑' },
+        '巳': { gu: '申', gua: '辰' }, '午': { gu: '申', gua: '辰' }, '未': { gu: '申', gua: '辰' },
+        '申': { gu: '亥', gua: '未' }, '酉': { gu: '亥', gua: '未' }, '戌': { gu: '亥', gua: '未' }
+      };
+      if (guGuaMap[yb]) {
+        if (guGuaMap[yb].gua === tb) otherStars.push('forlorn star / GuaSu / 寡宿');
+        if (guGuaMap[yb].gu === tb) otherStars.push('solitary star / GuChen / 孤辰');
+      }
+
+      // 2. Year Branch & Month Derived Stars (Other:)
+      if (mb) {
+        const tianDeMap = { '寅': '丁', '卯': '申', '辰': '壬', '巳': '辛', '午': '亥', '未': '甲', '申': '癸', '酉': '寅', '戌': '丙', '亥': '乙', '子': '巳', '丑': '庚' };
+        if (tianDeMap[mb] === ts) otherStars.push(`heavenly virtue / TianDeGuiRen / 天德贵人 (${ts})`);
+        const yueDeMap = { '寅': '丙', '午': '丙', '戌': '丙', '申': '壬', '子': '壬', '辰': '壬', '亥': '甲', '卯': '甲', '未': '甲', '巳': '庚', '酉': '庚', '丑': '庚' };
+        if (yueDeMap[mb] === ts) otherStars.push(`monthly virtue / YueDeGuiRen / 月德贵人 (${ts})`);
+      }
+
+      const groupMap = {
+        '寅': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
+        '午': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
+        '戌': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
+        '申': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
+        '子': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
+        '辰': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
+        '巳': { hua: '丑', jiang: '酉', ma: '亥', tao: '午', jie: '寅', wang: '申' },
+        '酉': { hua: '丑', jiang: '酉', ma: '亥', tao: '午', jie: '寅', wang: '申' },
+        '丑': { hua: '丑', jiang: '酉', ma: '亥', tao: '午', jie: '寅', wang: '申' },
+        '亥': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' },
+        '卯': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' },
+        '未': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' }
+      };
+
+      const yGroup = groupMap[yb];
+      const dGroup = groupMap[db];
+      if (yGroup) {
+        if (yGroup.hua === tb) otherStars.push('star of arts / HuaGai / 华盖*(YP)');
+        if (yGroup.jiang === tb) otherStars.push('general star / JiangXing / 将星*(YP)');
+        if (yGroup.ma === tb) otherStars.push('traveling horse / YiMa / 驿马');
+        if (yGroup.tao === tb) otherStars.push('peach blossom by the pool / XianChiTaoHua / 咸池桃花');
+      }
+      if (dGroup && dGroup.hua === tb && (!yGroup || yGroup.hua !== tb)) otherStars.push('star of arts / HuaGai / 华盖*(DP)');
+      if (dGroup && dGroup.jiang === tb && (!yGroup || yGroup.jiang !== tb)) otherStars.push('general star / JiangXing / 将星*(DP)');
+
+      const taiJiMap = { '甲': ['子', '午'], '乙': ['子', '午'], '丙': ['卯', '酉'], '丁': ['卯', '酉'], '戊': ['辰', '戌', '丑', '未'], '己': ['辰', '戌', '丑', '未'], '庚': ['寅', '亥'], '辛': ['寅', '亥'], '壬': ['巳', '申'], '癸': ['巳', '申'] };
+      if (taiJiMap[ds] && taiJiMap[ds].includes(tb)) otherStars.push('wealth / TaiJi / 太极');
+
+      const wuGuiMap = { '子': '辰', '丑': '巳', '寅': '午', '卯': '未', '辰': '申', '巳': '酉', '午': '戌', '未': '亥', '申': '子', '酉': '丑', '戌': '寅', '亥': '卯' };
+      if (wuGuiMap[yb] === tb) otherStars.push('backstabbing / WuGui / 五鬼*');
+
+      const longDeMap = { '子': '未', '丑': '申', '寅': '酉', '卯': '戌', '辰': '亥', '巳': '子', '午': '丑', '未': '寅', '申': '卯', '酉': '辰', '戌': '巳', '亥': '午' };
+      if (longDeMap[yb] === tb) otherStars.push('mentor / LongDe / 龙德*');
+
+      return { dmStars, otherStars };
+    },
+
+    computeDetailedInteractions: function (col, allCols, annualCol, luckCol) {
+      const natalInteractions = [];
+      const luckInteractions = [];
+      const s = col.stem.zh;
+      const b = col.branch.zh;
+
+      const stemCombos = { '甲': '己', '己': '甲', '乙': '庚', '庚': '乙', '丙': '辛', '辛': '丙', '丁': '壬', '壬': '丁', '戊': '癸', '癸': '戊' };
+      const sixCombos = { '子': '丑', '丑': '子', '寅': '亥', '亥': '寅', '卯': '戌', '戌': '卯', '辰': '酉', '酉': '辰', '巳': '申', '申': '巳', '午': '未', '未': '午' };
+      const sixClashes = { '子': '午', '午': '子', '丑': '未', '未': '丑', '寅': '申', '申': '寅', '卯': '酉', '酉': '卯', '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳' };
+      const sixHarms = { '子': '未', '未': '子', '丑': '午', '午': '丑', '寅': '巳', '巳': '寅', '卯': '辰', '辰': '卯', '申': '亥', '亥': '申', '酉': '戌', '戌': '酉' };
+      const sixDestructions = { '子': '酉', '酉': '子', '丑': '辰', '辰': '丑', '寅': '亥', '亥': '寅', '卯': '午', '午': '卯', '巳': '申', '申': '巳', '未': '戌', '戌': '未' };
+
+      const triadGroups = [
+        { name: 'Water', branches: ['申', '子', '辰'] },
+        { name: 'Wood', branches: ['亥', '卯', '未'] },
+        { name: 'Fire', branches: ['寅', '午', '戌'] },
+        { name: 'Metal', branches: ['巳', '酉', '丑'] }
+      ];
+
+      const otherNatals = allCols.filter(c => c !== col);
+      const natalBranches = otherNatals.map(c => c.branch.zh);
+      const natalStems = otherNatals.map(c => c.stem.zh);
+
+      if (stemCombos[s] && natalStems.includes(stemCombos[s])) {
+        const otherCol = otherNatals.find(c => c.stem.zh === stemCombos[s]);
+        natalInteractions.push(`stem combination / Wu He / 五合 (${otherCol.stem.py}-${col.stem.py})`);
+      }
+
+      if (['丑', '未', '戌'].includes(b)) {
+        const earthBranchesInNatal = allCols.map(c => c.branch.zh).filter(x => ['丑', '未', '戌'].includes(x));
+        const uniqueEarths = Array.from(new Set(earthBranchesInNatal));
+        if (uniqueEarths.length >= 3 || (uniqueEarths.length >= 2 && luckCol && ['丑', '未', '戌'].includes(luckCol.branch.zh))) {
+          natalInteractions.push('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)');
+        }
+      }
+
+      if (sixClashes[b] && natalBranches.includes(sixClashes[b])) {
+        const otherCol = otherNatals.find(c => c.branch.zh === sixClashes[b]);
+        natalInteractions.push(`branch conflict / Liu Chong / 冲 (${col.branch.py}-${otherCol.branch.py})`);
+      }
+
+      if (sixCombos[b] && natalBranches.includes(sixCombos[b])) {
+        const otherCol = otherNatals.find(c => c.branch.zh === sixCombos[b]);
+        natalInteractions.push(`six combination / Liu He / 六合 (${col.branch.py}-${otherCol.branch.py})`);
+      }
+
+      triadGroups.forEach(grp => {
+        if (grp.branches.includes(b)) {
+          const matchedOther = natalBranches.find(x => x !== b && grp.branches.includes(x));
+          if (matchedOther) {
+            const otherCol = otherNatals.find(c => c.branch.zh === matchedOther);
+            natalInteractions.push(`half triangular combination / Ban San He / 半合 (${otherCol.branch.py}-${col.branch.py})`);
+          }
+        }
+      });
+
+      if (sixDestructions[b] && natalBranches.includes(sixDestructions[b])) {
+        const otherCol = otherNatals.find(c => c.branch.zh === sixDestructions[b]);
+        natalInteractions.push(`destruction / Liu Po / 破 (${otherCol.branch.py}-${col.branch.py})`);
+      }
+
+      if (sixHarms[b] && natalBranches.includes(sixHarms[b])) {
+        const otherCol = otherNatals.find(c => c.branch.zh === sixHarms[b]);
+        natalInteractions.push(`harm / Liu Hai / 害 (${otherCol.branch.py}-${col.branch.py})`);
+      }
+
+      // Check external luck pillar & annual year
+      const externalCols = [luckCol, annualCol].filter(Boolean);
+      externalCols.forEach(ext => {
+        const extS = ext.stem.zh;
+        const extB = ext.branch.zh;
+
+        if (stemCombos[s] === extS) {
+          luckInteractions.push(`stem combination / Wu He / 五合 (${ext.stem.py}-${col.stem.py})`);
+        }
+        if (['丑', '未', '戌'].includes(b) && ['丑', '未', '戌'].includes(extB)) {
+          if (!luckInteractions.includes('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)')) {
+            luckInteractions.push('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)');
+          }
+        }
+        if (sixCombos[b] === extB) {
+          luckInteractions.push(`six combination / Liu He / 六合 (${ext.branch.py}-${col.branch.py})`);
+        }
+        if (sixClashes[b] === extB) {
+          luckInteractions.push(`branch conflict / Liu Chong / 冲 (${ext.branch.py}-${col.branch.py})`);
+        }
+        triadGroups.forEach(grp => {
+          if (grp.branches.includes(b) && grp.branches.includes(extB) && b !== extB) {
+            luckInteractions.push(`half triangular combination / Ban San He / 半合 (${ext.branch.py}-${col.branch.py})`);
+          }
+        });
+        if (sixDestructions[b] === extB) {
+          luckInteractions.push(`destruction / Liu Po / 破 (${ext.branch.py}-${col.branch.py})`);
+        }
+        if (sixHarms[b] === extB) {
+          luckInteractions.push(`harm / Liu Hai / 害 (${ext.branch.py}-${col.branch.py})`);
+        }
+        if (s === extS && b === extB && ext === annualCol) {
+          luckInteractions.push(`Fu Yin (${col.stem.py} ${col.branch.py}) / 伏吟`);
+        }
+      });
+
+      return { natalInteractions, luckInteractions };
+    },
+
+    renderMasterFourPillarsMatrix: function () {
+      const container = document.getElementById('baziExpertMasterTableWrap');
+      if (!container || !this.currentChart) return;
+      const c = this.currentChart;
+
+      const curYear = this.selectedYear || new Date().getFullYear();
+      const yrSIdx = ((curYear - 4) % 10 + 10) % 10;
+      const yrBIdx = ((curYear - 4) % 12 + 12) % 12;
+      const annualStem = STEMS[yrSIdx];
+      const annualBranch = BRANCHES[yrBIdx];
+      const annualTenGod = getTenGod(c.dayMaster, annualStem);
+      const annualHiddenStems = annualBranch.hidden.map(h => {
+        const hStemObj = STEMS.find(s => s.zh === h.stem);
+        return { ...h, stemObj: hStemObj, tenGod: getTenGod(c.dayMaster, hStemObj) };
+      });
+      const annualPillar = {
+        stem: annualStem,
+        branch: annualBranch,
+        tenGod: annualTenGod,
+        hiddenStems: annualHiddenStems,
+        label: `ปีจร ${curYear}`
+      };
+
+      const curDaYun = (c.daYunPillars && c.daYunPillars[this.selectedDaYunIndex]) || (c.daYunPillars && c.daYunPillars.find(d => d.isCurrent)) || (c.daYunPillars && c.daYunPillars[0]) || {
+        stem: annualStem,
+        branch: annualBranch,
+        ageFrom: 0,
+        ageTo: 10,
+        ageRange: '0-10 ปี'
+      };
+      const luckTenGod = getTenGod(c.dayMaster, curDaYun.stem);
+      const luckHiddenStems = curDaYun.branch.hidden ? curDaYun.branch.hidden.map(h => {
+        const hStemObj = STEMS.find(s => s.zh === h.stem);
+        return { ...h, stemObj: hStemObj, tenGod: getTenGod(c.dayMaster, hStemObj) };
+      }) : [];
+      const luckPillar = {
+        stem: curDaYun.stem,
+        branch: curDaYun.branch,
+        tenGod: luckTenGod,
+        hiddenStems: luckHiddenStems,
+        label: `วัยจร ${curDaYun.ageFrom}-${curDaYun.ageTo} ปี`
+      };
+
+      const natalCols = [c.pillars.hour, c.pillars.day, c.pillars.month, c.pillars.year];
+      const dayStem = c.dayMaster;
+      const dayBranch = c.pillars.day.branch;
+      const yearBranch = c.pillars.year.branch;
+      const monthBranch = c.pillars.month.branch;
+
+      const columns = [
+        { key: 'hour', title: 'เสายาม', subTitle: c.birthTimeString || '13:40', pillar: c.pillars.hour, isNatal: true },
+        { key: 'day', title: 'เสาวัน', subTitle: String(new Date(c.birthDateString).getDate() || 18), pillar: c.pillars.day, isNatal: true, isDM: true },
+        { key: 'month', title: 'เสาเดือน', subTitle: String(new Date(c.birthDateString).getMonth() + 1 || 10), pillar: c.pillars.month, isNatal: true },
+        { key: 'year', title: 'เสาปี', subTitle: String(new Date(c.birthDateString).getFullYear() || 2026), pillar: c.pillars.year, isNatal: true },
+        { key: 'annual', title: 'ปีจร', subTitle: `${curYear}`, pillar: annualPillar, isAnnual: true },
+        { key: 'luck', title: 'วัยจร', subTitle: `${curDaYun.ageFrom}-${curDaYun.ageTo} ปี`, pillar: luckPillar, isLuck: true }
+      ];
+
+      const tgAbbrMap = {
+        '比肩': 'Fr', '劫財': 'RW', '食神': 'EG', '傷官': 'HO',
+        '偏財': 'IW', '正財': 'DW', '七殺': 'QS', '正官': 'DO',
+        '偏印': 'IR', '正印': 'DR'
+      };
+
+      let html = `
+        <table class="bazi-master-grid-table">
+          <thead>
+            <tr>
+              <th class="row-header-col">เสาชะตา</th>
+              ${columns.map(col => `
+                <th class="col-header ${col.isLuck ? 'is-luck-pillar' : ''} ${col.isAnnual ? 'is-annual-pillar' : ''}">
+                  <div style="font-size: 13px; font-weight: 700; color: #0f172a;">${col.title}</div>
+                  <div style="font-size: 11px; color: #64748b; font-weight: 500;">${col.subTitle}</div>
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row: HS (Heavenly Stems) -->
+            <tr>
+              <td class="row-header-col">HS<br><small style="font-size:10px; color:#94a3b8;">กิ่งฟ้า</small></td>
+              ${columns.map(col => {
+                const s = col.pillar.stem;
+                const tg = col.isDM ? { zh: '日主', py: 'Day master', en: 'Self' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', en: 'Friend' });
+                return `
+                  <td>
+                    <div class="bazi-stem-card stem-bg-${s.element}">
+                      <div class="bazi-card-pinyin">${s.py}</div>
+                      <div class="bazi-card-char">${s.zh}</div>
+                      <div class="bazi-card-polarity">${s.element.charAt(0).toUpperCase() + s.element.slice(1)} ${s.polarity === 'yang' ? '+' : '-'}</div>
+                      <div class="bazi-card-tengod">${col.isDM ? 'Day master' : `${tg.py} / ${tg.zh}`}</div>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: EB (Earthly Branches) -->
+            <tr>
+              <td class="row-header-col">EB<br><small style="font-size:10px; color:#94a3b8;">ก้านดิน</small></td>
+              ${columns.map(col => {
+                const b = col.pillar.branch;
+                const dh = this.getDominantHiddenStem(b.zh);
+                const bTg = col.isDM ? getTenGod(c.dayMaster, dh) : getTenGod(c.dayMaster, dh);
+                return `
+                  <td>
+                    <div class="bazi-branch-card branch-bg-${b.element}">
+                      <div class="bazi-card-pinyin">${b.py}</div>
+                      <div class="bazi-card-char">${b.zh}</div>
+                      <div class="bazi-card-polarity">${b.zodiac ? b.zodiac.split(' ')[0] : b.animal}</div>
+                      <div class="bazi-card-tengod">${bTg.py} / ${bTg.zh}</div>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: HHS (Hidden Heavenly Stems) -->
+            <tr>
+              <td class="row-header-col">HHS<br><small style="font-size:10px; color:#94a3b8;">กิ่งฟ้าแฝง</small></td>
+              ${columns.map(col => {
+                const b = col.pillar.branch;
+                return `
+                  <td>
+                    <div class="bazi-hhs-row">
+                      ${b.hidden.map(h => {
+                        const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+                        const tg = getTenGod(c.dayMaster, sObj);
+                        const abbr = tgAbbrMap[tg.zh] || 'Fr';
+                        return `
+                          <div class="bazi-hhs-badge stem-bg-${sObj.element}">
+                            <span style="font-size: 10px;">${sObj.py}</span>
+                            <span style="font-size: 13px; font-weight: 700;">${sObj.zh}</span>
+                            <span style="font-size: 9.5px; opacity: 0.85;">${abbr}</span>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: Na Yin (ธาตุกำเนิดนัปอิม) -->
+            <tr>
+              <td class="row-header-col">Na Yin<br><small style="font-size:10px; color:#94a3b8;">นัปอิม</small></td>
+              ${columns.map(col => {
+                const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
+                const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
+                const ny = this.getNaYinDetail(sIdx, bIdx);
+                return `
+                  <td>
+                    <div class="bazi-nayin-ribbon nayin-bg-${ny.element}" title="${ny.th}">
+                      ${ny.en}
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: DHHS (Dominant Hidden Stem) -->
+            <tr>
+              <td class="row-header-col">DHHS<br><small style="font-size:10px; color:#94a3b8;">ธาตุหลัก</small></td>
+              ${columns.map(col => {
+                const dh = this.getDominantHiddenStem(col.pillar.branch.zh);
+                return `
+                  <td style="text-align: center;">
+                    <div class="bazi-dhhs-bar stem-bg-${dh.element}">
+                      ${dh.py} (${dh.zh})
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: DM's qi phase -->
+            <tr>
+              <td class="row-header-col">DM's qi<br>phase</td>
+              ${columns.map(col => {
+                const p = this.get12LifeStage(c.dayMaster.zh, col.pillar.branch.zh);
+                return `
+                  <td class="bazi-phase-cell">
+                    <div><strong>${p.order}. ${p.en}</strong></div>
+                    <div style="color: #64748b;">/ ${p.py} / ${p.zh} ${p.symbol}</div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: Pillar's qi phase -->
+            <tr>
+              <td class="row-header-col">Pillar's<br>qi phase</td>
+              ${columns.map(col => {
+                const p = this.get12LifeStage(col.pillar.stem.zh, col.pillar.branch.zh);
+                return `
+                  <td class="bazi-phase-cell">
+                    <div><strong>${p.order}. ${p.en}</strong></div>
+                    <div style="color: #64748b;">/ ${p.py} / ${p.zh} ${p.symbol}</div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: Void branch -->
+            <tr>
+              <td class="row-header-col">Void<br>branch</td>
+              ${columns.map(col => {
+                const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
+                const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
+                const kw = this.getKongWang(sIdx, bIdx);
+                const isDPVoid = col.isNatal && !col.isDM && c.pillars.day && (this.getKongWang(STEMS.findIndex(s => s.zh === c.pillars.day.stem.zh), BRANCHES.findIndex(b => b.zh === c.pillars.day.branch.zh))[0].includes(col.pillar.branch.py));
+                return `
+                  <td class="bazi-phase-cell">
+                    <div>${kw[0]}</div>
+                    ${isDPVoid ? '<div style="color: #dc2626; font-weight: 600; font-size: 10px;">★ ติดวันว่าง (Day Void)</div>' : ''}
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: Symbolic Stars / 神煞 -->
+            <tr>
+              <td class="row-header-col">Symbolic<br>stars /<br>神煞</td>
+              ${columns.map(col => {
+                const stars = this.computeDetailedStars(
+                  col.pillar.branch.zh,
+                  col.pillar.stem.zh,
+                  dayStem,
+                  dayBranch,
+                  yearBranch,
+                  monthBranch
+                );
+                return `
+                  <td class="bazi-stars-cell">
+                    <div style="font-weight: 700; color: #475569; margin-bottom: 2px;">Symbolic stars / 神煞:</div>
+                    ${stars.dmStars.length > 0 ? `
+                      <div style="margin-bottom: 4px;">
+                        <span style="color: #7c3aed; font-weight: 600;">DM:</span> ${stars.dmStars.join(', ')}
+                      </div>
+                    ` : ''}
+                    ${stars.otherStars.length > 0 ? `
+                      <div>
+                        <span style="color: #0284c7; font-weight: 600;">Other:</span> ${stars.otherStars.join(', ')}
+                      </div>
+                    ` : ''}
+                    ${stars.dmStars.length === 0 && stars.otherStars.length === 0 ? '<span style="color: #94a3b8;">-</span>' : ''}
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: Interactions -->
+            <tr>
+              <td class="row-header-col">Inter-<br>actions</td>
+              ${columns.map(col => {
+                const inter = this.computeDetailedInteractions(col.pillar, natalCols, annualPillar, luckPillar);
+                return `
+                  <td class="bazi-interactions-cell">
+                    <div style="font-weight: 700; color: #475569; margin-bottom: 2px;">Interactions:</div>
+                    ${inter.natalInteractions.length > 0 ? inter.natalInteractions.map(it => `
+                      <div class="interaction-item">${it},</div>
+                    `).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
+
+                    ${inter.luckInteractions.length > 0 ? `
+                      <div class="luck-heading">Luck pillars / 大运:</div>
+                      ${inter.luckInteractions.map(it => `
+                        <div class="interaction-item" style="color: #b45309;">${it},</div>
+                      `).join('')}
+                    ` : ''}
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    },
+
     renderExpertSuite: function () {
       if (!this.currentChart) return;
       const c = this.currentChart;
+
+      // 0. Render Professional 6-Column Master Four Pillars Table
+      this.renderMasterFourPillarsMatrix();
 
       // 1. Render Shen Sha Table
       const shenshaContainer = document.getElementById('baziExpertShenShaTable');

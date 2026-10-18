@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261018_bazi_saved_v6">
+  <link rel="stylesheet" href="styles.css?v=20261018_bazi_matrix_v1">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -598,6 +598,25 @@
 
       <!-- EXPERT MODE SUITE (แสดงเฉพาะเมื่อเปิดโหมด Expert) -->
       <section id="baziExpertSuite" class="bazi-expert-suite hidden">
+        <!-- MASTER BAZI EXPERT FOUR PILLARS CHART (ตารางปาจื่อเจาะลึก 4 เสา + ปีจร + วัยจร ฉบับสมบูรณ์) -->
+        <div class="bazi-section-card bazi-expert-card" style="margin-bottom: 20px;">
+          <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <i class="fa-solid fa-table-cells" style="color: #7c3aed;"></i> ตารางดวงจีนปาจื่อเจาะลึก 4 เสา • ปีจร • วัยจร (Expert Master Matrix)
+            </div>
+            <span class="expert-badge" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed; border-color: rgba(124, 58, 237, 0.25);">
+              <i class="fa-solid fa-layer-group"></i> Na Yin • Shen Sha • Interactions Matrix
+            </span>
+          </div>
+          <p style="color: #64748b; font-size: 13px; margin-top: -6px; margin-bottom: 14px;">
+            วิเคราะห์ 4 เสาดั้งเดิม เทียบเสาปีจรและวัยจร 10 ปี พร้อมข้อมูล Na Yin สีตามธาตุ, 12 วงจรชีวิต (12 Qi Phases), วังเปล่า (Kong Wang), เทพและดาวชะตา (神煞) และการปฏิสัมพันธ์ของธาตุ (刑沖合害)
+          </p>
+
+          <div id="baziExpertMasterTableWrap" class="bazi-master-table-responsive">
+            <!-- Dynamically populated from renderExpertMasterTable -->
+          </div>
+        </div>
+
         <!-- 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ 6 หัวข้อวิเคราะห์เจาะลึก (Interactive Astrologer Assistant) -->
         <div class="bazi-section-card bazi-expert-card">
           <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
@@ -1898,7 +1917,7 @@
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
-  <script src="bazi.js?v=20261018_bazi_autocalc_v3"></script>
+  <script src="bazi.js?v=20261018_bazi_matrix_v1"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
