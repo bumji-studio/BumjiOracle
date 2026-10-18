@@ -1695,8 +1695,9 @@
             <div style="margin-bottom: 4px;">
               ${detailedInteractions.natalInteractions.map(it => {
                 const cls = this.getInteractionClass(it);
+                const st = this.getInteractionStyle(it);
                 return `
-                  <div class="interaction-item ${cls}">
+                  <div class="interaction-item ${cls}" style="${st}">
                     • ${it}
                   </div>
                 `;
@@ -1710,8 +1711,9 @@
               <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร/ปีจร (Luck/Year):</span>
               ${detailedInteractions.luckInteractions.map(it => {
                 const cls = this.getInteractionClass(it);
+                const st = this.getInteractionStyle(it);
                 return `
-                  <div class="interaction-item ${cls}">
+                  <div class="interaction-item ${cls}" style="${st}">
                     • ${it}
                   </div>
                 `;
@@ -2117,6 +2119,12 @@
       }).catch(err => {
         console.error('Copy failed:', err);
       });
+    },
+
+    forceHardReload: function () {
+      const url = new URL(window.location.href);
+      url.searchParams.set('_t', Date.now());
+      window.location.href = url.toString();
     },
 
     switchMode: function (mode, shouldRender = true) {
@@ -2540,6 +2548,66 @@
       }
 
       return '';
+    },
+
+    getInteractionStyle: function (text) {
+      if (!text) return '';
+      const lower = text.toLowerCase();
+
+      // 10. Heaven Earth Union (天地德合 / 天地合) -> ส้ม
+      if (lower.includes('heaven earth union') || text.includes('天地德合') || text.includes('天地合')) {
+        return 'color: #ea580c !important; background: #fff7ed !important; border: 1px solid #fed7aa !important; border-left: 3.5px solid #fb923c !important;';
+      }
+      // 1. Stem Combination (五合) -> เขียวอ่อน
+      if (lower.includes('stem combination') || lower.includes('wu he') || text.includes('五合')) {
+        return 'color: #16a34a !important; background: #f0fdf4 !important; border: 1px solid #bbf7d0 !important; border-left: 3.5px solid #22c55e !important;';
+      }
+      // 2. Six Combination (六合) -> ชมพูอ่อน
+      if (lower.includes('six combination') || lower.includes('liu he') || text.includes('六合')) {
+        return 'color: #ec4899 !important; background: #fdf2f8 !important; border: 1px solid #fbcfe8 !important; border-left: 3.5px solid #f472b6 !important;';
+      }
+      // 3. Destruction (破 / Liu Po) -> เทา
+      if (lower.includes('destruction') || lower.includes('liu po') || text.includes('破')) {
+        return 'color: #64748b !important; background: #f8fafc !important; border: 1px solid #cbd5e1 !important; border-left: 3.5px solid #94a3b8 !important;';
+      }
+      // 4. Half Triangular (半合 / Ban San He) -> ฟ้าอ่อน
+      if (lower.includes('half triangular') || lower.includes('ban san he') || text.includes('半合')) {
+        return 'color: #0284c7 !important; background: #f0f9ff !important; border: 1px solid #bae6fd !important; border-left: 3.5px solid #38bdf8 !important;';
+      }
+      // 5. Triangular (三合 / San He) -> ฟ้า
+      if (lower.includes('triangular') || lower.includes('san he') || text.includes('三合')) {
+        return 'color: #2563eb !important; background: #eff6ff !important; border: 1px solid #bfdbfe !important; border-left: 3.5px solid #3b82f6 !important;';
+      }
+      // 7. Branch Conflict (Liu Chong / 冲 / 沖) -> แดงอ่อน
+      if (lower.includes('branch conflict') || lower.includes('liu chong') || text.includes('冲') || text.includes('沖')) {
+        return 'color: #f87171 !important; background: #fff5f5 !important; border: 1px solid #fecaca !important; border-left: 3.5px solid #fca5a5 !important;';
+      }
+      // 6. Crash / Clash -> แดง
+      if (lower.includes('crash') || lower.includes('clash') || lower.includes('相冲')) {
+        return 'color: #dc2626 !important; background: #fef2f2 !important; border: 1px solid #fca5a5 !important; border-left: 3.5px solid #ef4444 !important;';
+      }
+      // 8. Harm (害 / Liu Hai) -> ม่วง
+      if (lower.includes('harm') || lower.includes('liu hai') || text.includes('害')) {
+        return 'color: #7c3aed !important; background: #faf5ff !important; border: 1px solid #e9d5ff !important; border-left: 3.5px solid #a855f7 !important;';
+      }
+      // 9. Penalty (刑 / San Xing / Earths punishment) -> ชมพู
+      if (lower.includes('punishment') || lower.includes('penalty') || lower.includes('san xing') || text.includes('刑')) {
+        return 'color: #d946ef !important; background: #fdf4ff !important; border: 1px solid #f5d0fe !important; border-left: 3.5px solid #e879f9 !important;';
+      }
+      // 11. Fu Yin (伏吟) -> เขียวมิ้นท์
+      if (lower.includes('fu yin') || lower.includes('fuyin') || text.includes('伏吟')) {
+        return 'color: #059669 !important; background: #ecfdf5 !important; border: 1px solid #a7f3d0 !important; border-left: 3.5px solid #10b981 !important;';
+      }
+      // 12. Fan Yin (反吟) -> เหลืองส้ม
+      if (lower.includes('fan yin') || lower.includes('fanyin') || text.includes('反吟')) {
+        return 'color: #d97706 !important; background: #fffbeb !important; border: 1px solid #fde68a !important; border-left: 3.5px solid #f59e0b !important;';
+      }
+      // 13. Void / Kongwang (空亡) -> เหลือง
+      if (lower.includes('void') || lower.includes('kongwang') || lower.includes('kong wang') || text.includes('空亡')) {
+        return 'color: #ca8a04 !important; background: #fefce8 !important; border: 1px solid #fef08a !important; border-left: 3.5px solid #eab308 !important;';
+      }
+
+      return 'color: #475569;';
     },
 
     computeDetailedInteractions: function (col, allCols, annualCol, luckCol) {
@@ -2984,14 +3052,16 @@
                     <div style="font-weight: 700; color: #475569; margin-bottom: 4px;">Interactions:</div>
                     ${inter.natalInteractions.length > 0 ? inter.natalInteractions.map(it => {
                       const cls = this.getInteractionClass(it);
-                      return `<div class="interaction-item ${cls}">${it},</div>`;
+                      const st = this.getInteractionStyle(it);
+                      return `<div class="interaction-item ${cls}" style="${st}">${it},</div>`;
                     }).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
 
                     ${inter.luckInteractions.length > 0 ? `
                       <div class="luck-heading">Luck pillars / 大运:</div>
                       ${inter.luckInteractions.map(it => {
                         const cls = this.getInteractionClass(it);
-                        return `<div class="interaction-item ${cls}">${it},</div>`;
+                        const st = this.getInteractionStyle(it);
+                        return `<div class="interaction-item ${cls}" style="${st}">${it},</div>`;
                       }).join('')}
                     ` : ''}
                   </td>

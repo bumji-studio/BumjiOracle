@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261018_bazi_matrix_v3">
+  <link rel="stylesheet" href="styles.css?v=20261018_interactions_v10">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -565,6 +565,9 @@
           </button>
           <button class="bazi-btn-secondary" id="baziPresetNowBtn" onclick="window.BaziApp.resetToNow()" title="กลับไปที่วันและเวลาปัจจุบัน">
             <i class="fa-solid fa-rotate-right"></i> ขณะนี้ (วันปัจจุบัน)
+          </button>
+          <button class="bazi-btn-secondary" id="baziForceReloadBtn" onclick="window.BaziApp.forceHardReload()" title="ล้างแคชเบราว์เซอร์และรีโหลดโค้ดเวอร์ชันล่าสุด">
+            <i class="fa-solid fa-arrows-rotate" style="color: #0284c7;"></i> รีเฟรชล้างแคช
           </button>
           <button class="bazi-btn-secondary" id="baziCopySummaryBtn" onclick="window.BaziApp.copySummary()" title="คัดลอกสรุปคำทำนาย">
             <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
@@ -1924,7 +1927,7 @@
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
-  <script src="bazi.js?v=20261018_bazi_matrix_v3"></script>
+  <script src="bazi.js?v=20261018_interactions_v10"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
