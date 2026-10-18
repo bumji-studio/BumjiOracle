@@ -2549,7 +2549,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getDeckBackImage() {
-    return 'JiuTianCardImage/93.png';
+    return 'JiuTianCardImage/93.jpg';
   }
 
   function renderFanDeck() {
