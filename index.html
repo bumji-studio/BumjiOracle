@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261018_interactions_v10">
+  <link rel="stylesheet" href="styles.css?v=20261018_desk_v12">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -572,6 +572,9 @@
           <button class="bazi-btn-secondary" id="baziCopySummaryBtn" onclick="window.BaziApp.copySummary()" title="คัดลอกสรุปคำทำนาย">
             <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
           </button>
+          <button class="bazi-btn-secondary" id="baziOpenDeskToolbarBtn" onclick="window.BaziApp.openDeskFromToolbar()" title="เปิดหน้าโต๊ะหมอดูเพื่อดู 4 หัวข้อวิชาการ" style="border-color: #c084fc; color: #7c3aed; background: #faf5ff;">
+            <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 🪑 โต๊ะหมอดู
+          </button>
         </div>
       </section>
 
@@ -599,13 +602,41 @@
         </div>
       </section>
 
-      <!-- EXPERT MODE SUITE (แสดงเฉพาะเมื่อเปิดโหมด Expert) -->
-      <section id="baziExpertSuite" class="bazi-expert-suite hidden">
-        <!-- 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ 6 หัวข้อวิเคราะห์เจาะลึก (Interactive Astrologer Assistant) -->
-        <div class="bazi-section-card bazi-expert-card">
+      <!-- SUB-NAVIGATION BAR (เฉพาะเมื่อเปิดโหมด Expert: สลับระหว่าง ผังดวง 6 เสา กับ โต๊ะหมอดู) -->
+      <div id="baziExpertSubBar" class="bazi-expert-subbar hidden">
+        <div class="bazi-expert-subnav-group">
+          <button type="button" class="bazi-sub-btn active" id="baziSubViewChartBtn" onclick="window.BaziApp.setExpertSubView('chart')">
+            <i class="fa-solid fa-table-cells"></i> <strong>ผังดวงปาจื่อ 6 เสา</strong>
+            <span class="sub-btn-desc">Four Pillars Matrix</span>
+          </button>
+          <button type="button" class="bazi-sub-btn" id="baziSubViewDeskBtn" onclick="window.BaziApp.setExpertSubView('desk')">
+            <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> <strong>🪑 โต๊ะหมอดู</strong>
+            <span class="desk-pill-tag">4 หัวข้อวิชาการ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DESK VIEW (หน้าโต๊ะหมอดู: 4 หัวข้อวิชาการเจาะลึก) -->
+      <div id="baziDeskPageView" class="bazi-desk-page-view hidden">
+        <!-- Desk Header Card -->
+        <div class="bazi-desk-header-card">
+          <div class="desk-header-left">
+            <div class="desk-badge"><i class="fa-solid fa-graduation-cap"></i> Astrologer's Workspace</div>
+            <h2 class="desk-title"><i class="fa-solid fa-compass-drafting"></i> โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ</h2>
+            <p class="desk-subtitle" id="baziDeskCurrentChartSubtitle">ชุดเครื่องมือเจาะลึก 4 หัวข้อวิชาการโหราศาสตร์จีน 4 เสา (BaZi Academic Reference & Calculation Engine)</p>
+          </div>
+          <div class="desk-header-right">
+            <button type="button" class="bazi-btn-back-chart" onclick="window.BaziApp.setExpertSubView('chart')">
+              <i class="fa-solid fa-arrow-left"></i> กลับไปผังดวงปาจื่อ 6 เสา
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ (Interactive Astrologer Assistant) -->
+        <div class="bazi-section-card bazi-expert-card" style="margin-bottom: 16px;">
           <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <div>
-              <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ
+              <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ
             </div>
             <span class="expert-badge" style="background: rgba(2, 132, 199, 0.1); color: #0284c7; border-color: rgba(2, 132, 199, 0.2);"><i class="fa-solid fa-book-bookmark"></i> Reference Toolkit</span>
           </div>
@@ -641,12 +672,12 @@
           </div>
         </div>
 
-        <!-- 2. Dual Expert Cards: Shen Sha Matrix + Clash/Harmony Matrix -->
-        <div class="bazi-dual-section" style="margin-top: 16px;">
+        <!-- 2 & 3. Dual Expert Cards: Shen Sha Matrix + Clash/Harmony Matrix -->
+        <div class="bazi-dual-section" style="margin-bottom: 16px;">
           <!-- Card A: ตารางเทพและดาวชะตา 4 เสา (Four Pillars Shen Sha Matrix) -->
           <div class="bazi-section-card">
             <div class="bazi-card-title">
-              <i class="fa-solid fa-star" style="color: #f59e0b;"></i> ตารางแจกแจงเทพและดาวชะตา 4 เสา (神煞星盤)
+              <i class="fa-solid fa-star" style="color: #f59e0b;"></i> 2. ตารางแจกแจงเทพและดาวชะตา 4 เสา (神煞星盤)
             </div>
             <div id="baziExpertShenShaTable" class="expert-table-wrap"></div>
           </div>
@@ -654,20 +685,23 @@
           <!-- Card B: ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (Clash, Harmony, Punishment, Harm) -->
           <div class="bazi-section-card">
             <div class="bazi-card-title">
-              <i class="fa-solid fa-arrows-split-up-and-left" style="color: #ef4444;"></i> ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (刑沖合害)
+              <i class="fa-solid fa-arrows-split-up-and-left" style="color: #ef4444;"></i> 3. ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (刑沖合害)
             </div>
             <div id="baziExpertInteractionsList" class="expert-interactions-wrap"></div>
           </div>
         </div>
 
-        <!-- 3. Mathematical & Theoretical Calculation Breakdown -->
-        <div class="bazi-section-card" style="margin-top: 16px;">
+        <!-- 4. Mathematical & Theoretical Calculation Breakdown -->
+        <div class="bazi-section-card" style="margin-bottom: 16px;">
           <div class="bazi-card-title">
-            <i class="fa-solid fa-calculator" style="color: #0284c7;"></i> แจกแจงสูตรและวิธีการคำนวณทางคณิตศาสตร์ (Calculation Breakdown)
+            <i class="fa-solid fa-calculator" style="color: #0284c7;"></i> 4. แจกแจงสูตรและวิธีการคำนวณทางคณิตศาสตร์ (Calculation Breakdown)
           </div>
           <div id="baziExpertFormulaBreakdown" class="expert-formula-grid"></div>
         </div>
-      </section>
+      </div>
+
+      <!-- MAIN CHART SECTIONS (ผังดวง 6 เสา, ดิถี, เบญจธาตุ, วัยจร, ปีจร) -->
+      <div id="baziMainChartSections">
 
       <!-- 2. Tri-Section: Day Master, Five Elements Balance, and Favorable Elements (3 กล่องวางแนวเดียวกัน) -->
       <section class="bazi-tri-section">
@@ -746,6 +780,9 @@
             </button>
             <button type="button" class="bazi-view-pill-btn" id="baziViewBothBtn" onclick="window.BaziApp.setMatrixView('both')">
               <i class="fa-solid fa-layer-group"></i> แสดงทั้งสองแบบ
+            </button>
+            <button type="button" class="bazi-view-pill-btn bazi-btn-open-desk" id="baziOpenDeskFromMatrixBtn" onclick="window.BaziApp.setExpertSubView('desk')" title="เปิดหน้าโต๊ะหมอดูเพื่อดู 4 หัวข้อวิชาการ">
+              <i class="fa-solid fa-compass-drafting"></i> 🪑 โต๊ะหมอดู (4 หัวข้อ)
             </button>
           </div>
         </div>
@@ -1010,6 +1047,8 @@
         <!-- Query Result Box (แสดงผลเมื่อกดคำนวณวิเคราะห์) -->
         <div id="baziExpertQueryResult" class="expert-result-box" style="margin-top: 14px; display: none;"></div>
       </section>
+
+      </div> <!-- END baziMainChartSections -->
 
     </div>
   </div>
@@ -1927,7 +1966,7 @@
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
-  <script src="bazi.js?v=20261018_interactions_v11"></script>
+  <script src="bazi.js?v=20261018_desk_v12"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

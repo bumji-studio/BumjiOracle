@@ -8780,6 +8780,163 @@ body.is-mobile .synthesis-box-body {
   margin-bottom: 20px;
 }
 
+/* Expert Sub-Navigation Bar & Desk View */
+.bazi-expert-subbar {
+  margin: 14px 0 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.bazi-expert-subnav-group {
+  display: inline-flex;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.bazi-sub-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475569;
+  font-family: 'Prompt', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bazi-sub-btn:hover {
+  color: #7c3aed;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.bazi-sub-btn.active {
+  background: #ffffff;
+  color: #7c3aed;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.12);
+}
+
+.bazi-sub-btn .sub-btn-desc {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.desk-pill-tag {
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+}
+
+.bazi-btn-open-desk {
+  background: #fdf4ff !important;
+  border-color: #f0abfc !important;
+  color: #a21caf !important;
+  font-weight: 700 !important;
+}
+
+.bazi-btn-open-desk:hover {
+  background: #fae8ff !important;
+  border-color: #e879f9 !important;
+  transform: translateY(-1px);
+}
+
+/* Desk Page Header Card */
+.bazi-desk-header-card {
+  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(109, 40, 217, 0.22);
+}
+
+.bazi-desk-header-card .desk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.bazi-desk-header-card .desk-title {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bazi-desk-header-card .desk-title i {
+  color: #fed7aa !important;
+}
+
+.bazi-desk-header-card .desk-subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #e9d5ff;
+}
+
+.bazi-btn-back-chart {
+  background: #ffffff;
+  color: #6d28d9;
+  border: none;
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.bazi-btn-back-chart:hover {
+  background: #f5f3ff;
+  transform: translateY(-1px);
+}
+
+.bazi-desk-page-view {
+  animation: baziFadeIn 0.25s ease-out;
+}
+
+@keyframes baziFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .bazi-expert-card {
   border-top: 4px solid #7c3aed;
   background: linear-gradient(180deg, #ffffff 0%, #faf5ff 100%);

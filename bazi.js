@@ -2127,6 +2127,49 @@
       window.location.href = url.toString();
     },
 
+    currentExpertSubView: 'chart',
+
+    openDeskFromToolbar: function () {
+      if (this.currentMode !== 'expert') {
+        this.switchMode('expert', false);
+      }
+      this.setExpertSubView('desk');
+    },
+
+    setExpertSubView: function (subView = 'chart') {
+      this.currentExpertSubView = subView;
+      const chartSec = document.getElementById('baziMainChartSections');
+      const deskSec = document.getElementById('baziDeskPageView');
+      const btnChart = document.getElementById('baziSubViewChartBtn');
+      const btnDesk = document.getElementById('baziSubViewDeskBtn');
+      const subSubtitle = document.getElementById('baziDeskCurrentChartSubtitle');
+
+      if (btnChart) btnChart.classList.toggle('active', subView === 'chart');
+      if (btnDesk) btnDesk.classList.toggle('active', subView === 'desk');
+
+      if (subView === 'chart') {
+        if (chartSec) chartSec.style.display = 'block';
+        if (deskSec) {
+          deskSec.style.display = 'none';
+          deskSec.classList.add('hidden');
+        }
+      } else {
+        if (chartSec) chartSec.style.display = 'none';
+        if (deskSec) {
+          deskSec.style.display = 'block';
+          deskSec.classList.remove('hidden');
+        }
+        if (subSubtitle && this.currentChart) {
+          const c = this.currentChart;
+          subSubtitle.innerHTML = `วิเคราะห์ดวง: <strong>${c.name || 'ลูกดวง'}</strong> • ดิถี <strong>${c.dayMaster.zh} (${c.dayMaster.py})</strong> • เสาปี <strong>${c.pillars.year.stem.zh}${c.pillars.year.branch.zh}</strong> (พร้อม 4 หัวข้อวิชาการโหราศาสตร์จีนเจาะลึก)`;
+        }
+        this.renderExpertSuite();
+        if (deskSec) {
+          deskSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    },
+
     switchMode: function (mode, shouldRender = true) {
       this.currentMode = mode;
       try {
@@ -2137,7 +2180,9 @@
       const expertBtn = document.getElementById('baziModeExpertBtn');
       const basicInfo = document.getElementById('baziModeBasicInfo');
       const expertInfo = document.getElementById('baziModeExpertInfo');
-      const expertSuite = document.getElementById('baziExpertSuite');
+      const expertSubBar = document.getElementById('baziExpertSubBar');
+      const chartSec = document.getElementById('baziMainChartSections');
+      const deskSec = document.getElementById('baziDeskPageView');
       const oracleSection = document.getElementById('baziOracleAiSection');
 
       const isExpert = mode === 'expert';
@@ -2146,13 +2191,19 @@
       if (expertBtn) expertBtn.classList.toggle('active', isExpert);
       if (basicInfo) basicInfo.classList.toggle('hidden', isExpert);
       if (expertInfo) expertInfo.classList.toggle('hidden', !isExpert);
-      if (expertSuite) expertSuite.classList.toggle('hidden', !isExpert);
       if (oracleSection) oracleSection.classList.toggle('hidden', !isExpert);
 
-      // Switch Four Pillars matrix view accordingly
       if (isExpert) {
+        if (expertSubBar) expertSubBar.classList.remove('hidden');
+        this.setExpertSubView(this.currentExpertSubView || 'chart');
         this.setMatrixView(this.currentMatrixView || 'matrix');
       } else {
+        if (expertSubBar) expertSubBar.classList.add('hidden');
+        if (deskSec) {
+          deskSec.style.display = 'none';
+          deskSec.classList.add('hidden');
+        }
+        if (chartSec) chartSec.style.display = 'block';
         this.setMatrixView(this.currentMatrixView || 'cards');
       }
 
