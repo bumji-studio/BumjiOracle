@@ -1605,6 +1605,14 @@
       }
 
       // 2. Four Pillars Table
+      const natalCols = [chart.pillars.hour, chart.pillars.day, chart.pillars.month, chart.pillars.year];
+      const curYear = this.selectedYear || new Date().getFullYear();
+      const yrSIdx = ((curYear - 4) % 10 + 10) % 10;
+      const yrBIdx = ((curYear - 4) % 12 + 12) % 12;
+      const annualPillar = { stem: STEMS[yrSIdx], branch: BRANCHES[yrBIdx], label: `ปีจร ${curYear}` };
+      const curDaYun = (chart.daYunPillars && chart.daYunPillars[this.selectedDaYunIndex]) || (chart.daYunPillars && chart.daYunPillars.find(d => d.isCurrent)) || (chart.daYunPillars && chart.daYunPillars[0]);
+      const luckPillar = curDaYun ? { stem: curDaYun.stem, branch: curDaYun.branch, label: `วัยจร ${curDaYun.ageRange}` } : annualPillar;
+
       const renderPillarCol = (pKey, colId) => {
         const p = chart.pillars[pKey];
         const colEl = document.getElementById(colId);
@@ -1624,9 +1632,90 @@
           `;
         }).join('');
 
-        let starsHtml = p.stars.length > 0 ? p.stars.map(s => `
-          <span class="bazi-star-pill" title="${s.desc}">${s.name}</span>
-        `).join('') : '<span class="text-muted" style="font-size: 11px;">-</span>';
+        // 1. Na Yin with 5-Element Color Ribbon
+        const sIdx = STEMS.findIndex(s => s.zh === p.stem.zh);
+        const bIdx = BRANCHES.findIndex(b => b.zh === p.branch.zh);
+        const ny = this.getNaYinDetail(sIdx, bIdx);
+        const nayinColorBg = `nayin-bg-${ny.element}`;
+
+        // 2. 12 Qi Phases (12 วงจรชีวิต / Chang Sheng)
+        const dmLife = this.get12LifeStage(chart.dayMaster.zh, p.branch.zh);
+        const pillarLife = this.get12LifeStage(p.stem.zh, p.branch.zh);
+
+        // 3. Symbolic Stars (เทพและดาวชะตา)
+        const detailedStars = this.computeDetailedStars(
+          p.branch.zh,
+          p.stem.zh,
+          chart.dayMaster.zh,
+          chart.pillars.day.branch.zh,
+          chart.pillars.year.branch.zh,
+          chart.pillars.month.branch.zh
+        );
+
+        let starsListHtml = '';
+        if (detailedStars.dmStars && detailedStars.dmStars.length > 0) {
+          starsListHtml += `
+            <div style="margin-bottom: 4px;">
+              <span style="font-size: 10px; font-weight: 700; color: #7c3aed; background: #f3e8ff; padding: 1px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px;">DM (จากดิถี):</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                ${detailedStars.dmStars.map(s => `
+                  <span class="bazi-star-pill" title="${s}">★ ${s}</span>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+        if (detailedStars.otherStars && detailedStars.otherStars.length > 0) {
+          starsListHtml += `
+            <div>
+              <span style="font-size: 10px; font-weight: 700; color: #0284c7; background: #e0f2fe; padding: 1px 6px; border-radius: 4px; display: inline-block; margin-bottom: 3px;">Other (จากปี/เดือน):</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                ${detailedStars.otherStars.map(s => `
+                  <span class="bazi-star-pill other-star-pill" title="${s}">✧ ${s}</span>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+        if (!starsListHtml) {
+          starsListHtml = '<span class="text-muted" style="font-size: 11px; color: #94a3b8;">- ราบรื่น ไม่มีดาวอิทธิพลรุนแรง -</span>';
+        }
+
+        // 4. Element Interactions (刑沖合害)
+        const detailedInteractions = this.computeDetailedInteractions(
+          p,
+          natalCols,
+          annualPillar,
+          luckPillar
+        );
+
+        let interactionsHtml = '';
+        if (detailedInteractions.natalInteractions && detailedInteractions.natalInteractions.length > 0) {
+          interactionsHtml += `
+            <div style="margin-bottom: 4px;">
+              ${detailedInteractions.natalInteractions.map(it => `
+                <div style="font-size: 11px; margin-bottom: 3px; color: #334155; line-height: 1.4;">
+                  • ${it}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+        if (detailedInteractions.luckInteractions && detailedInteractions.luckInteractions.length > 0) {
+          interactionsHtml += `
+            <div style="border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">
+              <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร/ปีจร (Luck/Year):</span>
+              ${detailedInteractions.luckInteractions.map(it => `
+                <div style="font-size: 11px; margin-bottom: 3px; color: #78350f; line-height: 1.4;">
+                  • ${it}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+        if (!interactionsHtml) {
+          interactionsHtml = '<span class="text-muted" style="font-size: 11px; color: #94a3b8;">- สมดุล ไม่มีปะทะ/ฮะรุนแรง -</span>';
+        }
 
         colEl.innerHTML = `
           <div class="bazi-pillar-card">
@@ -1663,14 +1752,41 @@
               </div>
             </div>
 
-            <div class="pillar-nayin">
-              <i class="fa-solid fa-music"></i> <strong>ธาตุในเสียง (納音):</strong> ${p.naYin}
+            <!-- Na Yin with element color -->
+            <div class="pillar-nayin-section" style="margin-top: 8px; margin-bottom: 8px;">
+              <div class="bazi-nayin-ribbon ${nayinColorBg}">
+                ${ny.en} • ${ny.zh}
+              </div>
+              <div style="font-size: 11px; color: #475569; text-align: center; margin-top: 3px;">
+                <i class="fa-solid fa-music" style="color: #7c3aed;"></i> นัปอิม: ${ny.th}
+              </div>
             </div>
 
-            <div class="pillar-stars">
-              <span class="sub-label"><i class="fa-solid fa-star"></i> เทพและดาวชะตา:</span>
-              <div class="stars-wrap">
-                ${starsHtml}
+            <!-- 12 Qi Phases -->
+            <div class="pillar-qi-phase-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 8px; font-size: 11px; margin-bottom: 8px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                <span style="color: #64748b;">ดิถีชี่ (DM Qi):</span>
+                <strong style="color: #0f172a;">${dmLife.order}. ${dmLife.en} / ${dmLife.zh} ${dmLife.symbol}</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b;">เสาชี่ (Pillar Qi):</span>
+                <strong style="color: #475569;">${pillarLife.order}. ${pillarLife.en} / ${pillarLife.zh} ${pillarLife.symbol}</strong>
+              </div>
+            </div>
+
+            <!-- Symbolic Stars -->
+            <div class="pillar-stars" style="margin-bottom: 8px;">
+              <span class="sub-label"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> เทพและดาวชะตา (神煞):</span>
+              <div class="stars-wrap" style="margin-top: 4px;">
+                ${starsListHtml}
+              </div>
+            </div>
+
+            <!-- Element Interactions -->
+            <div class="pillar-interactions" style="border-top: 1px dashed #e2e8f0; padding-top: 6px;">
+              <span class="sub-label"><i class="fa-solid fa-arrows-spin" style="color: #7c3aed;"></i> ปฏิสัมพันธ์ของธาตุ (Interactions):</span>
+              <div class="interactions-wrap" style="margin-top: 4px;">
+                ${interactionsHtml}
               </div>
             </div>
           </div>
@@ -1681,6 +1797,10 @@
       renderPillarCol('day', 'baziDayCol');
       renderPillarCol('month', 'baziMonthCol');
       renderPillarCol('year', 'baziYearCol');
+
+      // Also render Master Matrix table!
+      this.renderMasterFourPillarsMatrix();
+      this.setMatrixView(this.currentMatrixView || (this.currentMode === 'expert' ? 'matrix' : 'cards'));
 
       // 3. Five Elements Balance Bars
       const elementsContainer = document.getElementById('baziElementsBars');
@@ -2015,8 +2135,35 @@
       if (expertSuite) expertSuite.classList.toggle('hidden', !isExpert);
       if (oracleSection) oracleSection.classList.toggle('hidden', !isExpert);
 
+      // Switch Four Pillars matrix view accordingly
+      if (isExpert) {
+        this.setMatrixView(this.currentMatrixView || 'matrix');
+      } else {
+        this.setMatrixView(this.currentMatrixView || 'cards');
+      }
+
       if (isExpert && shouldRender && this.currentChart) {
         this.renderExpertSuite();
+      }
+    },
+
+    setMatrixView: function (view = 'matrix') {
+      this.currentMatrixView = view;
+      const tableWrap = document.getElementById('baziExpertMasterTableWrap');
+      const cardsGrid = document.getElementById('baziFourPillarsGrid');
+      const btnMatrix = document.getElementById('baziViewMatrixBtn');
+      const btnCards = document.getElementById('baziViewCardsBtn');
+      const btnBoth = document.getElementById('baziViewBothBtn');
+
+      if (btnMatrix) btnMatrix.classList.toggle('active', view === 'matrix');
+      if (btnCards) btnCards.classList.toggle('active', view === 'cards');
+      if (btnBoth) btnBoth.classList.toggle('active', view === 'both');
+
+      if (tableWrap) {
+        tableWrap.style.display = (view === 'cards') ? 'none' : 'block';
+      }
+      if (cardsGrid) {
+        cardsGrid.style.display = (view === 'matrix') ? 'none' : 'grid';
       }
     },
 
@@ -2229,12 +2376,12 @@
     computeDetailedStars: function (targetBranch, targetStem, dayStem, dayBranch, yearBranch, monthBranch) {
       const dmStars = [];
       const otherStars = [];
-      const tb = targetBranch;
-      const ts = targetStem;
-      const ds = dayStem.zh;
-      const db = dayBranch.zh;
-      const yb = yearBranch.zh;
-      const mb = monthBranch ? monthBranch.zh : '';
+      const tb = (typeof targetBranch === 'object' && targetBranch) ? targetBranch.zh : (targetBranch || '');
+      const ts = (typeof targetStem === 'object' && targetStem) ? targetStem.zh : (targetStem || '');
+      const ds = (typeof dayStem === 'object' && dayStem) ? dayStem.zh : (dayStem || '');
+      const db = (typeof dayBranch === 'object' && dayBranch) ? dayBranch.zh : (dayBranch || '');
+      const yb = (typeof yearBranch === 'object' && yearBranch) ? yearBranch.zh : (yearBranch || '');
+      const mb = (typeof monthBranch === 'object' && monthBranch) ? monthBranch.zh : (monthBranch || '');
 
       // 1. Day Master Derived Stars (DM:)
       const wenChangMap = { '甲': '巳', '乙': '午', '丙': '申', '丁': '酉', '戊': '申', '己': '酉', '庚': '亥', '辛': '子', '壬': '寅', '癸': '卯' };

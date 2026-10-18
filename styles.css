@@ -7923,6 +7923,48 @@ body.is-mobile .synthesis-box-body {
   opacity: 0.8;
 }
 
+/* Bazi View Toggle Pills */
+.bazi-view-toggle-pills {
+  display: inline-flex;
+  gap: 4px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.bazi-view-pill-btn {
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  padding: 6px 12px;
+  font-family: 'Prompt', -apple-system, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.bazi-view-pill-btn:hover {
+  color: #0f172a;
+}
+
+.bazi-view-pill-btn.active {
+  background: #ffffff;
+  color: #7c3aed;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.other-star-pill {
+  background: #e0f2fe !important;
+  color: #0284c7 !important;
+  border-color: #bae6fd !important;
+}
+
 /* Fortune Grid & Boxes */
 .bazi-fortune-grid {
   display: grid;
