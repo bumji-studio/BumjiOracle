@@ -1026,8 +1026,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paramMode = urlParams.get('mode');
         if (paramMode === 'expert' || paramMode === 'basic') return paramMode;
-        return localStorage.getItem('bazi_display_mode_v2') || 'basic';
-      } catch (e) { return 'basic'; }
+        return localStorage.getItem('bazi_display_mode_v2') || 'expert';
+      } catch (e) { return 'expert'; }
     })(),
     activeExpertQuery: 'geju',
 
@@ -1366,6 +1366,20 @@
       this.renderAnnualAndMonthlyFortune();
       if (this.currentMode === 'expert') {
         this.renderExpertSuite();
+      }
+
+      const triSection = document.getElementById('baziTriSection');
+      if (triSection) {
+        const isExp = this.currentMode === 'expert';
+        if (isExp) {
+          triSection.style.setProperty('display', 'none', 'important');
+          triSection.classList.add('hidden-in-expert');
+          triSection.setAttribute('hidden', '');
+        } else {
+          triSection.style.removeProperty('display');
+          triSection.classList.remove('hidden-in-expert');
+          triSection.removeAttribute('hidden');
+        }
       }
 
       if (showToast) {
@@ -2153,10 +2167,6 @@
           deskSec.style.display = 'none';
           deskSec.classList.add('hidden');
         }
-        const triSection = document.getElementById('baziTriSection');
-        if (triSection) {
-          triSection.style.display = this.currentMode === 'expert' ? 'none' : '';
-        }
       } else {
         if (chartSec) chartSec.style.display = 'none';
         if (deskSec) {
@@ -2172,6 +2182,20 @@
           deskSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
+
+      const triSection = document.getElementById('baziTriSection');
+      if (triSection) {
+        const isExp = this.currentMode === 'expert';
+        if (isExp) {
+          triSection.style.setProperty('display', 'none', 'important');
+          triSection.classList.add('hidden-in-expert');
+          triSection.setAttribute('hidden', '');
+        } else {
+          triSection.style.removeProperty('display');
+          triSection.classList.remove('hidden-in-expert');
+          triSection.removeAttribute('hidden');
+        }
+      }
     },
 
     switchMode: function (mode, shouldRender = true) {
@@ -2179,6 +2203,30 @@
       try {
         localStorage.setItem('bazi_display_mode_v2', mode);
       } catch (e) {}
+
+      const isExpert = mode === 'expert';
+
+      document.body.classList.toggle('expert-mode', isExpert);
+      const appView = document.getElementById('baziAppView');
+      if (appView) appView.classList.toggle('is-expert', isExpert);
+      const appContainer = document.querySelector('.bazi-app-container');
+      if (appContainer) {
+        appContainer.classList.toggle('is-expert', isExpert);
+        appContainer.setAttribute('data-mode', mode);
+      }
+
+      const triSection = document.getElementById('baziTriSection');
+      if (triSection) {
+        if (isExpert) {
+          triSection.style.setProperty('display', 'none', 'important');
+          triSection.classList.add('hidden-in-expert');
+          triSection.setAttribute('hidden', '');
+        } else {
+          triSection.style.removeProperty('display');
+          triSection.classList.remove('hidden-in-expert');
+          triSection.removeAttribute('hidden');
+        }
+      }
 
       const basicBtn = document.getElementById('baziModeBasicBtn');
       const expertBtn = document.getElementById('baziModeExpertBtn');
@@ -2188,13 +2236,6 @@
       const chartSec = document.getElementById('baziMainChartSections');
       const deskSec = document.getElementById('baziDeskPageView');
       const oracleSection = document.getElementById('baziOracleAiSection');
-
-      const isExpert = mode === 'expert';
-
-      const triSection = document.getElementById('baziTriSection');
-      if (triSection) {
-        triSection.style.display = isExpert ? 'none' : '';
-      }
 
       if (basicBtn) basicBtn.classList.toggle('active', !isExpert);
       if (expertBtn) expertBtn.classList.toggle('active', isExpert);

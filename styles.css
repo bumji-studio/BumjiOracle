@@ -8780,6 +8780,17 @@ body.is-mobile .synthesis-box-body {
   margin-bottom: 20px;
 }
 
+/* Expert Mode: Hide Tri-Section (Day Master, 5 Elements, Favorable Elements) */
+.expert-mode #baziTriSection,
+body.expert-mode #baziTriSection,
+#baziAppView.is-expert #baziTriSection,
+.bazi-app-container.is-expert #baziTriSection,
+.bazi-app-container[data-mode="expert"] #baziTriSection,
+#baziTriSection.hidden-in-expert,
+#baziTriSection[hidden] {
+  display: none !important;
+}
+
 /* Expert Sub-Navigation Bar & Desk View */
 .bazi-expert-subbar {
   margin: 14px 0 16px 0;

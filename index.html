@@ -18,7 +18,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261018_desk_v12">
+  <link rel="stylesheet" href="styles.css?v=20261018_tri_strict_v14">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -581,21 +581,21 @@
       <!-- MODE SWITCHER (Basic vs Expert) -->
       <section class="bazi-mode-switcher-bar">
         <div class="bazi-mode-toggle-group">
-          <button type="button" class="bazi-mode-btn active" id="baziModeBasicBtn" onclick="window.BaziApp.switchMode('basic')">
+          <button type="button" class="bazi-mode-btn" id="baziModeBasicBtn" onclick="window.BaziApp.switchMode('basic')">
             <i class="fa-solid fa-user-check"></i> <strong>โหมด Basic</strong>
             <span class="mode-sub">ข้อมูลพื้นฐาน เข้าใจง่าย</span>
           </button>
-          <button type="button" class="bazi-mode-btn" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
+          <button type="button" class="bazi-mode-btn active" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
             <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong>
             <span class="mode-sub">สำหรับหมอดู & คำนวณเจาะลึก</span>
           </button>
         </div>
         <div class="bazi-mode-hint-box" id="baziModeHintBox">
-          <div id="baziModeBasicInfo" class="mode-banner-content">
+          <div id="baziModeBasicInfo" class="mode-banner-content hidden">
             <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
             <span><strong>โหมด Basic:</strong> สรุปผลวิเคราะห์ดวงชะตา ธาตุสำคัญ วัยจร 10 ปี ดวงรายปี และคำแนะนำกลยุทธ์ชีวิตเพื่อการนำไปใช้งานทันที</span>
           </div>
-          <div id="baziModeExpertInfo" class="mode-banner-content hidden">
+          <div id="baziModeExpertInfo" class="mode-banner-content">
             <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
             <span><strong>โหมด Expert:</strong> เปิดชุดเครื่องมือหมอดูเต็มรูปแบบ: โต๊ะถาม-ตอบ/คำนวณเฉพาะกิจ, ตารางเทพและดาวชะตา (神煞), ตารางปะทะ-ฮะ (刑沖合害), และแจกแจงสูตรคำนวณวั่งซ่วย & เตี้ยวโฮ่ว</span>
           </div>
@@ -603,7 +603,7 @@
       </section>
 
       <!-- SUB-NAVIGATION BAR (เฉพาะเมื่อเปิดโหมด Expert: สลับระหว่าง ผังดวง 6 เสา กับ โต๊ะหมอดู) -->
-      <div id="baziExpertSubBar" class="bazi-expert-subbar hidden">
+      <div id="baziExpertSubBar" class="bazi-expert-subbar">
         <div class="bazi-expert-subnav-group">
           <button type="button" class="bazi-sub-btn active" id="baziSubViewChartBtn" onclick="window.BaziApp.setExpertSubView('chart')">
             <i class="fa-solid fa-table-cells"></i> <strong>ผังดวงปาจื่อ 6 เสา</strong>
@@ -704,7 +704,7 @@
       <div id="baziMainChartSections">
 
       <!-- 2. Tri-Section: Day Master, Five Elements Balance, and Favorable Elements (3 กล่องวางแนวเดียวกัน) -->
-      <section class="bazi-tri-section" id="baziTriSection">
+      <section class="bazi-tri-section hidden-in-expert" id="baziTriSection" style="display: none !important;" hidden>
         <!-- Card 1: Day Master Profile -->
         <div class="bazi-section-card bazi-dm-col-card">
           <div class="bazi-card-title">
@@ -1966,7 +1966,7 @@
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
-  <script src="bazi.js?v=20261018_hide_trisection_v13"></script>
+  <script src="bazi.js?v=20261018_tri_strict_v14"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
