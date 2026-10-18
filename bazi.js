@@ -1693,11 +1693,14 @@
         if (detailedInteractions.natalInteractions && detailedInteractions.natalInteractions.length > 0) {
           interactionsHtml += `
             <div style="margin-bottom: 4px;">
-              ${detailedInteractions.natalInteractions.map(it => `
-                <div style="font-size: 11px; margin-bottom: 3px; color: #334155; line-height: 1.4;">
-                  • ${it}
-                </div>
-              `).join('')}
+              ${detailedInteractions.natalInteractions.map(it => {
+                const cls = this.getInteractionClass(it);
+                return `
+                  <div class="interaction-item ${cls}">
+                    • ${it}
+                  </div>
+                `;
+              }).join('')}
             </div>
           `;
         }
@@ -1705,11 +1708,14 @@
           interactionsHtml += `
             <div style="border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">
               <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร/ปีจร (Luck/Year):</span>
-              ${detailedInteractions.luckInteractions.map(it => `
-                <div style="font-size: 11px; margin-bottom: 3px; color: #78350f; line-height: 1.4;">
-                  • ${it}
-                </div>
-              `).join('')}
+              ${detailedInteractions.luckInteractions.map(it => {
+                const cls = this.getInteractionClass(it);
+                return `
+                  <div class="interaction-item ${cls}">
+                    • ${it}
+                  </div>
+                `;
+              }).join('')}
             </div>
           `;
         }
@@ -2476,6 +2482,66 @@
       return { dmStars, otherStars };
     },
 
+    getInteractionClass: function (text) {
+      if (!text) return '';
+      const lower = text.toLowerCase();
+
+      // 10. Heaven Earth Union (天地德合 / 天地合) -> ส้ม
+      if (lower.includes('heaven earth union') || text.includes('天地德合') || text.includes('天地合')) {
+        return 'it-tian-di-he';
+      }
+      // 1. Stem Combination (五合) -> เขียวอ่อน
+      if (lower.includes('stem combination') || lower.includes('wu he') || text.includes('五合')) {
+        return 'it-stem-combo';
+      }
+      // 2. Six Combination (六合) -> ชมพูอ่อน
+      if (lower.includes('six combination') || lower.includes('liu he') || text.includes('六合')) {
+        return 'it-six-combo';
+      }
+      // 3. Destruction (破 / Liu Po) -> เทา
+      if (lower.includes('destruction') || lower.includes('liu po') || text.includes('破')) {
+        return 'it-destruction';
+      }
+      // 4. Half Triangular (半合 / Ban San He) -> ฟ้าอ่อน
+      if (lower.includes('half triangular') || lower.includes('ban san he') || text.includes('半合')) {
+        return 'it-half-triangular';
+      }
+      // 5. Triangular (三合 / San He) -> ฟ้า
+      if (lower.includes('triangular') || lower.includes('san he') || text.includes('三合')) {
+        return 'it-triangular';
+      }
+      // 7. Branch Conflict (Liu Chong / 冲 / 沖) -> แดงอ่อน
+      if (lower.includes('branch conflict') || lower.includes('liu chong') || text.includes('冲') || text.includes('沖')) {
+        return 'it-branch-conflict';
+      }
+      // 6. Crash / Clash -> แดง
+      if (lower.includes('crash') || lower.includes('clash') || lower.includes('相冲')) {
+        return 'it-clash';
+      }
+      // 8. Harm (害 / Liu Hai) -> ม่วง
+      if (lower.includes('harm') || lower.includes('liu hai') || text.includes('害')) {
+        return 'it-harm';
+      }
+      // 9. Penalty (刑 / San Xing / Earths punishment) -> ชมพู
+      if (lower.includes('punishment') || lower.includes('penalty') || lower.includes('san xing') || text.includes('刑')) {
+        return 'it-penalty';
+      }
+      // 11. Fu Yin (伏吟) -> เขียวมิ้นท์
+      if (lower.includes('fu yin') || lower.includes('fuyin') || text.includes('伏吟')) {
+        return 'it-fuyin';
+      }
+      // 12. Fan Yin (反吟) -> เหลืองส้ม
+      if (lower.includes('fan yin') || lower.includes('fanyin') || text.includes('反吟')) {
+        return 'it-fanyin';
+      }
+      // 13. Void / Kongwang (空亡) -> เหลือง
+      if (lower.includes('void') || lower.includes('kongwang') || lower.includes('kong wang') || text.includes('空亡')) {
+        return 'it-void';
+      }
+
+      return '';
+    },
+
     computeDetailedInteractions: function (col, allCols, annualCol, luckCol) {
       const natalInteractions = [];
       const luckInteractions = [];
@@ -2487,6 +2553,7 @@
       const sixClashes = { '子': '午', '午': '子', '丑': '未', '未': '丑', '寅': '申', '申': '寅', '卯': '酉', '酉': '卯', '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳' };
       const sixHarms = { '子': '未', '未': '子', '丑': '午', '午': '丑', '寅': '巳', '巳': '寅', '卯': '辰', '辰': '卯', '申': '亥', '亥': '申', '酉': '戌', '戌': '酉' };
       const sixDestructions = { '子': '酉', '酉': '子', '丑': '辰', '辰': '丑', '寅': '亥', '亥': '寅', '卯': '午', '午': '卯', '巳': '申', '申': '巳', '未': '戌', '戌': '未' };
+      const stemClashes = { '甲': '庚', '庚': '甲', '乙': '辛', '辛': '乙', '丙': '壬', '壬': '丙', '丁': '癸', '癸': '丁' };
 
       const triadGroups = [
         { name: 'Water', branches: ['申', '子', '辰'] },
@@ -2499,47 +2566,102 @@
       const natalBranches = otherNatals.map(c => c.branch.zh);
       const natalStems = otherNatals.map(c => c.stem.zh);
 
+      // 10. Heaven Earth Union (天地德合) in natal
+      otherNatals.forEach(otherCol => {
+        if (stemCombos[s] === otherCol.stem.zh && sixCombos[b] === otherCol.branch.zh) {
+          natalInteractions.push(`Heaven Earth Union / Tian Di He / 天地德合 (${otherCol.stem.py}${otherCol.branch.py}-${col.stem.py}${col.branch.py})`);
+        }
+      });
+
+      // 1. Stem Combination
       if (stemCombos[s] && natalStems.includes(stemCombos[s])) {
         const otherCol = otherNatals.find(c => c.stem.zh === stemCombos[s]);
         natalInteractions.push(`stem combination / Wu He / 五合 (${otherCol.stem.py}-${col.stem.py})`);
       }
 
+      // 9. Punishments (三刑 & 自刑)
       if (['丑', '未', '戌'].includes(b)) {
         const earthBranchesInNatal = allCols.map(c => c.branch.zh).filter(x => ['丑', '未', '戌'].includes(x));
         const uniqueEarths = Array.from(new Set(earthBranchesInNatal));
         if (uniqueEarths.length >= 3 || (uniqueEarths.length >= 2 && luckCol && ['丑', '未', '戌'].includes(luckCol.branch.zh))) {
-          natalInteractions.push('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)');
+          if (!natalInteractions.includes('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)')) {
+            natalInteractions.push('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)');
+          }
         }
       }
+      if (['寅', '巳', '申'].includes(b)) {
+        const fireMetalBranches = allCols.map(c => c.branch.zh).filter(x => ['寅', '巳', '申'].includes(x));
+        if (Array.from(new Set(fireMetalBranches)).length >= 2) {
+          if (!natalInteractions.some(it => it.includes('bullying punishment'))) {
+            natalInteractions.push('bullying punishment / San Xing / 持势之刑 (Yin-Si-Shen)');
+          }
+        }
+      }
+      if (['辰', '午', '酉', '亥'].includes(b) && natalBranches.includes(b)) {
+        natalInteractions.push(`self punishment / Zi Xing / 自刑 (${col.branch.py})`);
+      }
 
+      // 12. Fan Yin (反吟) in natal
+      otherNatals.forEach(otherCol => {
+        if (stemClashes[s] === otherCol.stem.zh && sixClashes[b] === otherCol.branch.zh) {
+          natalInteractions.push(`Fan Yin / 反吟 (${col.stem.py}${col.branch.py}-${otherCol.stem.py}${otherCol.branch.py})`);
+        }
+      });
+
+      // 7. Branch Conflict (Liu Chong)
       if (sixClashes[b] && natalBranches.includes(sixClashes[b])) {
         const otherCol = otherNatals.find(c => c.branch.zh === sixClashes[b]);
         natalInteractions.push(`branch conflict / Liu Chong / 冲 (${col.branch.py}-${otherCol.branch.py})`);
       }
 
+      // 2. Six Combination (Liu He)
       if (sixCombos[b] && natalBranches.includes(sixCombos[b])) {
         const otherCol = otherNatals.find(c => c.branch.zh === sixCombos[b]);
         natalInteractions.push(`six combination / Liu He / 六合 (${col.branch.py}-${otherCol.branch.py})`);
       }
 
+      // 4 & 5. Triad Groups (Full San He vs Half Ban San He)
       triadGroups.forEach(grp => {
         if (grp.branches.includes(b)) {
-          const matchedOther = natalBranches.find(x => x !== b && grp.branches.includes(x));
-          if (matchedOther) {
-            const otherCol = otherNatals.find(c => c.branch.zh === matchedOther);
-            natalInteractions.push(`half triangular combination / Ban San He / 半合 (${otherCol.branch.py}-${col.branch.py})`);
+          const allBranchesInChart = allCols.map(c => c.branch.zh);
+          const hasAll3 = grp.branches.every(x => allBranchesInChart.includes(x));
+          if (hasAll3) {
+            if (!natalInteractions.some(it => it.includes('triangular combination / San He'))) {
+              natalInteractions.push(`triangular combination / San He / 三合 (${grp.name})`);
+            }
+          } else {
+            const matchedOther = natalBranches.find(x => x !== b && grp.branches.includes(x));
+            if (matchedOther) {
+              const otherCol = otherNatals.find(c => c.branch.zh === matchedOther);
+              natalInteractions.push(`half triangular combination / Ban San He / 半合 (${otherCol.branch.py}-${col.branch.py})`);
+            }
           }
         }
       });
 
+      // 3. Destruction (Liu Po)
       if (sixDestructions[b] && natalBranches.includes(sixDestructions[b])) {
         const otherCol = otherNatals.find(c => c.branch.zh === sixDestructions[b]);
         natalInteractions.push(`destruction / Liu Po / 破 (${otherCol.branch.py}-${col.branch.py})`);
       }
 
+      // 8. Harm (Liu Hai)
       if (sixHarms[b] && natalBranches.includes(sixHarms[b])) {
         const otherCol = otherNatals.find(c => c.branch.zh === sixHarms[b]);
         natalInteractions.push(`harm / Liu Hai / 害 (${otherCol.branch.py}-${col.branch.py})`);
+      }
+
+      // 13. Void / Kongwang (空亡) in natal
+      const dayColObj = allCols.find(c => c.label && c.label.includes('วัน')) || allCols[1];
+      if (dayColObj && dayColObj !== col) {
+        const dSIdx = STEMS.findIndex(x => x.zh === dayColObj.stem.zh);
+        const dBIdx = BRANCHES.findIndex(x => x.zh === dayColObj.branch.zh);
+        if (dSIdx !== -1 && dBIdx !== -1) {
+          const kw = this.getKongWang(dSIdx, dBIdx);
+          if (kw[0].includes(col.branch.py)) {
+            natalInteractions.push('heaven void (DP) / Kong Wang / 日空亡');
+          }
+        }
       }
 
       // Check external luck pillar & annual year
@@ -2547,6 +2669,11 @@
       externalCols.forEach(ext => {
         const extS = ext.stem.zh;
         const extB = ext.branch.zh;
+
+        // Heaven Earth Union with external
+        if (stemCombos[s] === extS && sixCombos[b] === extB) {
+          luckInteractions.push(`Heaven Earth Union / Tian Di He / 天地德合 (${ext.stem.py}${ext.branch.py}-${col.stem.py}${col.branch.py})`);
+        }
 
         if (stemCombos[s] === extS) {
           luckInteractions.push(`stem combination / Wu He / 五合 (${ext.stem.py}-${col.stem.py})`);
@@ -2573,8 +2700,23 @@
         if (sixHarms[b] === extB) {
           luckInteractions.push(`harm / Liu Hai / 害 (${ext.branch.py}-${col.branch.py})`);
         }
-        if (s === extS && b === extB && ext === annualCol) {
+        if (s === extS && b === extB) {
           luckInteractions.push(`Fu Yin (${col.stem.py} ${col.branch.py}) / 伏吟`);
+        }
+        if (stemClashes[s] === extS && sixClashes[b] === extB) {
+          luckInteractions.push(`Fan Yin / 反吟 (${col.stem.py}${col.branch.py}-${ext.stem.py}${ext.branch.py})`);
+        }
+        if (dayColObj) {
+          const dSIdx = STEMS.findIndex(x => x.zh === dayColObj.stem.zh);
+          const dBIdx = BRANCHES.findIndex(x => x.zh === dayColObj.branch.zh);
+          if (dSIdx !== -1 && dBIdx !== -1) {
+            const kw = this.getKongWang(dSIdx, dBIdx);
+            if (kw[0].includes(extB) || kw[1].includes(extB)) {
+              if (!luckInteractions.includes('heaven void (DP) / Kong Wang / 日空亡')) {
+                luckInteractions.push('heaven void (DP) / Kong Wang / 日空亡');
+              }
+            }
+          }
         }
       });
 
@@ -2839,16 +2981,18 @@
                 const inter = this.computeDetailedInteractions(col.pillar, natalCols, annualPillar, luckPillar);
                 return `
                   <td class="bazi-interactions-cell">
-                    <div style="font-weight: 700; color: #475569; margin-bottom: 2px;">Interactions:</div>
-                    ${inter.natalInteractions.length > 0 ? inter.natalInteractions.map(it => `
-                      <div class="interaction-item">${it},</div>
-                    `).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
+                    <div style="font-weight: 700; color: #475569; margin-bottom: 4px;">Interactions:</div>
+                    ${inter.natalInteractions.length > 0 ? inter.natalInteractions.map(it => {
+                      const cls = this.getInteractionClass(it);
+                      return `<div class="interaction-item ${cls}">${it},</div>`;
+                    }).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
 
                     ${inter.luckInteractions.length > 0 ? `
                       <div class="luck-heading">Luck pillars / 大运:</div>
-                      ${inter.luckInteractions.map(it => `
-                        <div class="interaction-item" style="color: #b45309;">${it},</div>
-                      `).join('')}
+                      ${inter.luckInteractions.map(it => {
+                        const cls = this.getInteractionClass(it);
+                        return `<div class="interaction-item ${cls}">${it},</div>`;
+                      }).join('')}
                     ` : ''}
                   </td>
                 `;

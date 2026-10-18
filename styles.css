@@ -7897,8 +7897,136 @@ body.is-mobile .synthesis-box-body {
   line-height: 1.45;
 }
 
-.bazi-interactions-cell .interaction-item {
-  margin-bottom: 3px;
+.bazi-interactions-cell .interaction-item,
+.interaction-pill {
+  display: block;
+  padding: 5px 8px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 600;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+/* User-Requested Interaction Colors */
+/* 1. Stem Combination = เขียวอ่อน */
+.it-stem-combo,
+.interaction-item.it-stem-combo {
+  color: #16a34a !important;
+  background: #f0fdf4 !important;
+  border-color: #86efac !important;
+  border-left: 3.5px solid #22c55e !important;
+}
+
+/* 2. Six Combination = ชมพูอ่อน */
+.it-six-combo,
+.interaction-item.it-six-combo {
+  color: #ec4899 !important;
+  background: #fdf2f8 !important;
+  border-color: #fbcfe8 !important;
+  border-left: 3.5px solid #f472b6 !important;
+}
+
+/* 3. Destruction = เทา */
+.it-destruction,
+.interaction-item.it-destruction {
+  color: #64748b !important;
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  border-left: 3.5px solid #94a3b8 !important;
+}
+
+/* 4. Half Triangular = ฟ้าอ่อน */
+.it-half-triangular,
+.interaction-item.it-half-triangular {
+  color: #0284c7 !important;
+  background: #f0f9ff !important;
+  border-color: #7dd3fc !important;
+  border-left: 3.5px solid #38bdf8 !important;
+}
+
+/* 5. Triangular = ฟ้า */
+.it-triangular,
+.interaction-item.it-triangular {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border-color: #93c5fd !important;
+  border-left: 3.5px solid #3b82f6 !important;
+}
+
+/* 6. Crash / Clash = แดง */
+.it-clash,
+.interaction-item.it-clash {
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  border-left: 3.5px solid #ef4444 !important;
+}
+
+/* 7. Branch Conflict = แดงอ่อน */
+.it-branch-conflict,
+.interaction-item.it-branch-conflict {
+  color: #f87171 !important;
+  background: #fff5f5 !important;
+  border-color: #fecaca !important;
+  border-left: 3.5px solid #fca5a5 !important;
+}
+
+/* 8. Harm = ม่วง */
+.it-harm,
+.interaction-item.it-harm {
+  color: #7c3aed !important;
+  background: #faf5ff !important;
+  border-color: #d8b4fe !important;
+  border-left: 3.5px solid #a855f7 !important;
+}
+
+/* 9. Penalty = ชมพู */
+.it-penalty,
+.interaction-item.it-penalty {
+  color: #d946ef !important;
+  background: #fdf4ff !important;
+  border-color: #f5d0fe !important;
+  border-left: 3.5px solid #e879f9 !important;
+}
+
+/* 10. Heaven Earth Union = ส้ม */
+.it-tian-di-he,
+.interaction-item.it-tian-di-he {
+  color: #ea580c !important;
+  background: #fff7ed !important;
+  border-color: #fdba74 !important;
+  border-left: 3.5px solid #fb923c !important;
+}
+
+/* 11. Fuyin = เขียวมิ้นท์ */
+.it-fuyin,
+.interaction-item.it-fuyin {
+  color: #059669 !important;
+  background: #ecfdf5 !important;
+  border-color: #6ee7b7 !important;
+  border-left: 3.5px solid #10b981 !important;
+}
+
+/* 12. Fanyin = เหลืองส้ม */
+.it-fanyin,
+.interaction-item.it-fanyin {
+  color: #d97706 !important;
+  background: #fffbeb !important;
+  border-color: #fcd34d !important;
+  border-left: 3.5px solid #f59e0b !important;
+}
+
+/* 13. Void / Kongwang = เหลือง */
+.it-void,
+.interaction-item.it-void {
+  color: #ca8a04 !important;
+  background: #fefce8 !important;
+  border-color: #fef08a !important;
+  border-left: 3.5px solid #eab308 !important;
 }
 
 .bazi-interactions-cell .luck-heading {
