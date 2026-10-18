@@ -1026,8 +1026,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paramMode = urlParams.get('mode');
         if (paramMode === 'expert' || paramMode === 'basic') return paramMode;
-        return localStorage.getItem('bazi_display_mode') || 'expert';
-      } catch (e) { return 'expert'; }
+        return localStorage.getItem('bazi_display_mode_v2') || 'basic';
+      } catch (e) { return 'basic'; }
     })(),
     activeExpertQuery: 'geju',
 
@@ -1912,7 +1912,7 @@
     switchMode: function (mode, shouldRender = true) {
       this.currentMode = mode;
       try {
-        localStorage.setItem('bazi_display_mode', mode);
+        localStorage.setItem('bazi_display_mode_v2', mode);
       } catch (e) {}
 
       const basicBtn = document.getElementById('baziModeBasicBtn');
