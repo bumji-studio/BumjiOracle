@@ -529,6 +529,10 @@
       if (baziDate && user.birthDate) baziDate.value = user.birthDate;
       if (baziHour && user.birthTime) baziHour.value = user.birthTime;
 
+      if (window.BaziApp && typeof window.BaziApp.calculateFromInputs === 'function') {
+        window.BaziApp.calculateFromInputs(false);
+      }
+
       // 2. Fill Qi Men Dun Jia
       const qmDate = document.getElementById('qmDatePicker');
       const qmHour = document.getElementById('qmHourSelect');

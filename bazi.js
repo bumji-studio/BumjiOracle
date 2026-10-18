@@ -1149,7 +1149,43 @@
     bindEvents: function () {
       const calcBtn = document.getElementById('baziCalcBtn');
       if (calcBtn) {
-        calcBtn.addEventListener('click', () => this.calculateFromInputs());
+        calcBtn.addEventListener('click', () => this.calculateFromInputs(true));
+      }
+
+      // Live auto-calculation on input changes
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+      const quickSelect = document.getElementById('baziQuickProfileSelect');
+
+      const onManualInputChange = () => {
+        if (quickSelect && quickSelect.value !== '__custom__') {
+          let customOpt = quickSelect.querySelector('option[value="__custom__"]');
+          if (!customOpt) {
+            customOpt = document.createElement('option');
+            customOpt.value = '__custom__';
+            customOpt.textContent = '✏️ ดวงที่ระบุเอง (กำหนดเอง)';
+            quickSelect.appendChild(customOpt);
+          }
+          quickSelect.value = '__custom__';
+        }
+        this.calculateFromInputs(false);
+      };
+
+      if (dateInput) {
+        dateInput.addEventListener('change', onManualInputChange);
+        dateInput.addEventListener('input', onManualInputChange);
+      }
+      if (hourInput) {
+        hourInput.addEventListener('change', onManualInputChange);
+      }
+      if (genderSelect) {
+        genderSelect.addEventListener('change', onManualInputChange);
+      }
+      if (nameInput) {
+        nameInput.addEventListener('change', onManualInputChange);
+        nameInput.addEventListener('blur', onManualInputChange);
       }
 
       const presetNowBtn = document.getElementById('baziPresetNowBtn');
@@ -1162,7 +1198,6 @@
       }
 
       // Quick Profile Select
-      const quickSelect = document.getElementById('baziQuickProfileSelect');
       if (quickSelect) {
         quickSelect.addEventListener('change', (e) => this.onQuickProfileChange(e.target.value));
       }
@@ -1235,12 +1270,21 @@
     },
 
     onTabShow: function () {
-      if (!this.currentChart) {
-        this.calculateFromInputs();
+      const dateInput = document.getElementById('baziDateInput');
+      const nameInput = document.getElementById('baziNameInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+
+      const needsRecalc = !this.currentChart ||
+        (dateInput && dateInput.value && this.currentChart.birthDateString !== dateInput.value) ||
+        (nameInput && nameInput.value.trim() && this.currentChart.name !== nameInput.value.trim()) ||
+        (genderSelect && genderSelect.value && this.currentChart.gender !== genderSelect.value);
+
+      if (needsRecalc) {
+        this.calculateFromInputs(false);
       }
     },
 
-    calculateFromInputs: function () {
+    calculateFromInputs: function (showToast = false) {
       const nameInput = document.getElementById('baziNameInput');
       const dateInput = document.getElementById('baziDateInput');
       const hourInput = document.getElementById('baziHourInput');
@@ -1286,6 +1330,10 @@
       this.renderAnnualAndMonthlyFortune();
       if (this.currentMode === 'expert') {
         this.renderExpertSuite();
+      }
+
+      if (showToast) {
+        this.showToast(`วิเคราะห์ดวงชะตา ${name} เรียบร้อยแล้วค่ะ`);
       }
     },
 
