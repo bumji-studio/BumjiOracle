@@ -2153,6 +2153,10 @@
           deskSec.style.display = 'none';
           deskSec.classList.add('hidden');
         }
+        const triSection = document.getElementById('baziTriSection');
+        if (triSection) {
+          triSection.style.display = this.currentMode === 'expert' ? 'none' : '';
+        }
       } else {
         if (chartSec) chartSec.style.display = 'none';
         if (deskSec) {
@@ -2186,6 +2190,11 @@
       const oracleSection = document.getElementById('baziOracleAiSection');
 
       const isExpert = mode === 'expert';
+
+      const triSection = document.getElementById('baziTriSection');
+      if (triSection) {
+        triSection.style.display = isExpert ? 'none' : '';
+      }
 
       if (basicBtn) basicBtn.classList.toggle('active', !isExpert);
       if (expertBtn) expertBtn.classList.toggle('active', isExpert);
