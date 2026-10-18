@@ -8791,6 +8791,15 @@ body.expert-mode #baziTriSection,
   display: none !important;
 }
 
+/* Basic Mode: Hide Four Pillars Matrix (Four Pillars Matrix is for Expert Mode) */
+body:not(.expert-mode) #baziFourPillarsSection,
+#baziAppView:not(.is-expert) #baziFourPillarsSection,
+.bazi-app-container:not(.is-expert) #baziFourPillarsSection,
+.bazi-app-container[data-mode="basic"] #baziFourPillarsSection,
+#baziFourPillarsSection.hidden-in-basic {
+  display: none !important;
+}
+
 /* Expert Sub-Navigation Bar & Desk View */
 .bazi-expert-subbar {
   margin: 14px 0 16px 0;

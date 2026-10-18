@@ -1369,8 +1369,9 @@
       }
 
       const triSection = document.getElementById('baziTriSection');
+      const fourPillarsSec = document.getElementById('baziFourPillarsSection');
+      const isExp = this.currentMode === 'expert';
       if (triSection) {
-        const isExp = this.currentMode === 'expert';
         if (isExp) {
           triSection.style.setProperty('display', 'none', 'important');
           triSection.classList.add('hidden-in-expert');
@@ -1379,6 +1380,17 @@
           triSection.style.removeProperty('display');
           triSection.classList.remove('hidden-in-expert');
           triSection.removeAttribute('hidden');
+        }
+      }
+      if (fourPillarsSec) {
+        if (!isExp) {
+          fourPillarsSec.style.setProperty('display', 'none', 'important');
+          fourPillarsSec.classList.add('hidden-in-basic');
+          fourPillarsSec.setAttribute('hidden', '');
+        } else {
+          fourPillarsSec.style.removeProperty('display');
+          fourPillarsSec.classList.remove('hidden-in-basic');
+          fourPillarsSec.removeAttribute('hidden');
         }
       }
 
@@ -2184,8 +2196,9 @@
       }
 
       const triSection = document.getElementById('baziTriSection');
+      const fourPillarsSec = document.getElementById('baziFourPillarsSection');
+      const isExp = this.currentMode === 'expert';
       if (triSection) {
-        const isExp = this.currentMode === 'expert';
         if (isExp) {
           triSection.style.setProperty('display', 'none', 'important');
           triSection.classList.add('hidden-in-expert');
@@ -2194,6 +2207,17 @@
           triSection.style.removeProperty('display');
           triSection.classList.remove('hidden-in-expert');
           triSection.removeAttribute('hidden');
+        }
+      }
+      if (fourPillarsSec) {
+        if (!isExp) {
+          fourPillarsSec.style.setProperty('display', 'none', 'important');
+          fourPillarsSec.classList.add('hidden-in-basic');
+          fourPillarsSec.setAttribute('hidden', '');
+        } else {
+          fourPillarsSec.style.removeProperty('display');
+          fourPillarsSec.classList.remove('hidden-in-basic');
+          fourPillarsSec.removeAttribute('hidden');
         }
       }
     },
@@ -2215,6 +2239,7 @@
         appContainer.setAttribute('data-mode', mode);
       }
 
+      // 1. TriSection: Show in Basic, Hide in Expert
       const triSection = document.getElementById('baziTriSection');
       if (triSection) {
         if (isExpert) {
@@ -2225,6 +2250,20 @@
           triSection.style.removeProperty('display');
           triSection.classList.remove('hidden-in-expert');
           triSection.removeAttribute('hidden');
+        }
+      }
+
+      // 2. FourPillarsSection: Hide in Basic, Show in Expert
+      const fourPillarsSec = document.getElementById('baziFourPillarsSection');
+      if (fourPillarsSec) {
+        if (!isExpert) {
+          fourPillarsSec.style.setProperty('display', 'none', 'important');
+          fourPillarsSec.classList.add('hidden-in-basic');
+          fourPillarsSec.setAttribute('hidden', '');
+        } else {
+          fourPillarsSec.style.removeProperty('display');
+          fourPillarsSec.classList.remove('hidden-in-basic');
+          fourPillarsSec.removeAttribute('hidden');
         }
       }
 
