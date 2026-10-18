@@ -1708,7 +1708,7 @@
         if (detailedInteractions.luckInteractions && detailedInteractions.luckInteractions.length > 0) {
           interactionsHtml += `
             <div style="border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">
-              <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร/ปีจร (Luck/Year):</span>
+              <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร (Luck Pillar):</span>
               ${detailedInteractions.luckInteractions.map(it => {
                 const cls = this.getInteractionClass(it);
                 const st = this.getInteractionStyle(it);
@@ -2610,9 +2610,11 @@
       return 'color: #475569;';
     },
 
-    computeDetailedInteractions: function (col, allCols, annualCol, luckCol) {
-      const natalInteractions = [];
-      const luckInteractions = [];
+    computeDetailedInteractions: function (col, allCols, annualCol, luckCol, colType = 'natal') {
+      const primaryInteractions = [];
+      const secondaryInteractions = [];
+      let secondaryHeading = 'Luck pillars / 大运:';
+
       const s = col.stem.zh;
       const b = col.branch.zh;
 
@@ -2630,165 +2632,163 @@
         { name: 'Metal', branches: ['巳', '酉', '丑'] }
       ];
 
-      const otherNatals = allCols.filter(c => c !== col);
-      const natalBranches = otherNatals.map(c => c.branch.zh);
-      const natalStems = otherNatals.map(c => c.stem.zh);
+      const comparePillars = (targetCol, compareList, listToPush) => {
+        const tS = targetCol.stem.zh;
+        const tB = targetCol.branch.zh;
 
-      // 10. Heaven Earth Union (天地德合) in natal
-      otherNatals.forEach(otherCol => {
-        if (stemCombos[s] === otherCol.stem.zh && sixCombos[b] === otherCol.branch.zh) {
-          natalInteractions.push(`Heaven Earth Union / Tian Di He / 天地德合 (${otherCol.stem.py}${otherCol.branch.py}-${col.stem.py}${col.branch.py})`);
-        }
-      });
+        compareList.forEach(other => {
+          if (!other || other === targetCol) return;
+          const oS = other.stem.zh;
+          const oB = other.branch.zh;
 
-      // 1. Stem Combination
-      if (stemCombos[s] && natalStems.includes(stemCombos[s])) {
-        const otherCol = otherNatals.find(c => c.stem.zh === stemCombos[s]);
-        natalInteractions.push(`stem combination / Wu He / 五合 (${otherCol.stem.py}-${col.stem.py})`);
-      }
-
-      // 9. Punishments (三刑 & 自刑)
-      if (['丑', '未', '戌'].includes(b)) {
-        const earthBranchesInNatal = allCols.map(c => c.branch.zh).filter(x => ['丑', '未', '戌'].includes(x));
-        const uniqueEarths = Array.from(new Set(earthBranchesInNatal));
-        if (uniqueEarths.length >= 3 || (uniqueEarths.length >= 2 && luckCol && ['丑', '未', '戌'].includes(luckCol.branch.zh))) {
-          if (!natalInteractions.includes('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)')) {
-            natalInteractions.push('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)');
+          // Heaven Earth Union (天地德合)
+          if (stemCombos[tS] === oS && sixCombos[tB] === oB) {
+            listToPush.push(`Heaven Earth Union / Tian Di He / 天地德合 (${targetCol.stem.py}${targetCol.branch.py}-${other.stem.py}${other.branch.py})`);
           }
-        }
-      }
-      if (['寅', '巳', '申'].includes(b)) {
-        const fireMetalBranches = allCols.map(c => c.branch.zh).filter(x => ['寅', '巳', '申'].includes(x));
-        if (Array.from(new Set(fireMetalBranches)).length >= 2) {
-          if (!natalInteractions.some(it => it.includes('bullying punishment'))) {
-            natalInteractions.push('bullying punishment / San Xing / 持势之刑 (Yin-Si-Shen)');
+
+          // Stem Combination (五合)
+          if (stemCombos[tS] === oS) {
+            listToPush.push(`stem combination / Wu He / 五合 (${targetCol.stem.py}-${other.stem.py})`);
           }
-        }
-      }
-      if (['辰', '午', '酉', '亥'].includes(b) && natalBranches.includes(b)) {
-        natalInteractions.push(`self punishment / Zi Xing / 自刑 (${col.branch.py})`);
-      }
 
-      // 12. Fan Yin (反吟) in natal
-      otherNatals.forEach(otherCol => {
-        if (stemClashes[s] === otherCol.stem.zh && sixClashes[b] === otherCol.branch.zh) {
-          natalInteractions.push(`Fan Yin / 反吟 (${col.stem.py}${col.branch.py}-${otherCol.stem.py}${otherCol.branch.py})`);
-        }
-      });
+          // Fan Yin (反吟)
+          if (stemClashes[tS] === oS && sixClashes[tB] === oB) {
+            listToPush.push(`Fan Yin / 反吟 (${targetCol.stem.py}${targetCol.branch.py}-${other.stem.py}${other.branch.py})`);
+          }
 
-      // 7. Branch Conflict (Liu Chong)
-      if (sixClashes[b] && natalBranches.includes(sixClashes[b])) {
-        const otherCol = otherNatals.find(c => c.branch.zh === sixClashes[b]);
-        natalInteractions.push(`branch conflict / Liu Chong / 冲 (${col.branch.py}-${otherCol.branch.py})`);
-      }
+          // Branch Conflict (Liu Chong / 冲)
+          if (sixClashes[tB] === oB) {
+            listToPush.push(`branch conflict / Liu Chong / 冲 (${targetCol.branch.py}-${other.branch.py})`);
+          }
 
-      // 2. Six Combination (Liu He)
-      if (sixCombos[b] && natalBranches.includes(sixCombos[b])) {
-        const otherCol = otherNatals.find(c => c.branch.zh === sixCombos[b]);
-        natalInteractions.push(`six combination / Liu He / 六合 (${col.branch.py}-${otherCol.branch.py})`);
-      }
+          // Six Combination (Liu He / 六合)
+          if (sixCombos[tB] === oB) {
+            listToPush.push(`six combination / Liu He / 六合 (${targetCol.branch.py}-${other.branch.py})`);
+          }
 
-      // 4 & 5. Triad Groups (Full San He vs Half Ban San He)
-      triadGroups.forEach(grp => {
-        if (grp.branches.includes(b)) {
-          const allBranchesInChart = allCols.map(c => c.branch.zh);
-          const hasAll3 = grp.branches.every(x => allBranchesInChart.includes(x));
-          if (hasAll3) {
-            if (!natalInteractions.some(it => it.includes('triangular combination / San He'))) {
-              natalInteractions.push(`triangular combination / San He / 三合 (${grp.name})`);
+          // Triad Half Combination (Ban San He / 半合)
+          triadGroups.forEach(grp => {
+            if (grp.branches.includes(tB) && grp.branches.includes(oB) && tB !== oB) {
+              listToPush.push(`half triangular combination / Ban San He / 半合 (${targetCol.branch.py}-${other.branch.py})`);
             }
-          } else {
-            const matchedOther = natalBranches.find(x => x !== b && grp.branches.includes(x));
-            if (matchedOther) {
-              const otherCol = otherNatals.find(c => c.branch.zh === matchedOther);
-              natalInteractions.push(`half triangular combination / Ban San He / 半合 (${otherCol.branch.py}-${col.branch.py})`);
-            }
+          });
+
+          // Destruction (Liu Po / 破)
+          if (sixDestructions[tB] === oB) {
+            listToPush.push(`destruction / Liu Po / 破 (${targetCol.branch.py}-${other.branch.py})`);
           }
-        }
-      });
 
-      // 3. Destruction (Liu Po)
-      if (sixDestructions[b] && natalBranches.includes(sixDestructions[b])) {
-        const otherCol = otherNatals.find(c => c.branch.zh === sixDestructions[b]);
-        natalInteractions.push(`destruction / Liu Po / 破 (${otherCol.branch.py}-${col.branch.py})`);
-      }
-
-      // 8. Harm (Liu Hai)
-      if (sixHarms[b] && natalBranches.includes(sixHarms[b])) {
-        const otherCol = otherNatals.find(c => c.branch.zh === sixHarms[b]);
-        natalInteractions.push(`harm / Liu Hai / 害 (${otherCol.branch.py}-${col.branch.py})`);
-      }
-
-      // 13. Void / Kongwang (空亡) in natal
-      const dayColObj = allCols.find(c => c.label && c.label.includes('วัน')) || allCols[1];
-      if (dayColObj && dayColObj !== col) {
-        const dSIdx = STEMS.findIndex(x => x.zh === dayColObj.stem.zh);
-        const dBIdx = BRANCHES.findIndex(x => x.zh === dayColObj.branch.zh);
-        if (dSIdx !== -1 && dBIdx !== -1) {
-          const kw = this.getKongWang(dSIdx, dBIdx);
-          if (kw[0].includes(col.branch.py)) {
-            natalInteractions.push('heaven void (DP) / Kong Wang / 日空亡');
+          // Harm (Liu Hai / 害)
+          if (sixHarms[tB] === oB) {
+            listToPush.push(`harm / Liu Hai / 害 (${targetCol.branch.py}-${other.branch.py})`);
           }
-        }
-      }
 
-      // Check external luck pillar & annual year
-      const externalCols = [luckCol, annualCol].filter(Boolean);
-      externalCols.forEach(ext => {
-        const extS = ext.stem.zh;
-        const extB = ext.branch.zh;
-
-        // Heaven Earth Union with external
-        if (stemCombos[s] === extS && sixCombos[b] === extB) {
-          luckInteractions.push(`Heaven Earth Union / Tian Di He / 天地德合 (${ext.stem.py}${ext.branch.py}-${col.stem.py}${col.branch.py})`);
-        }
-
-        if (stemCombos[s] === extS) {
-          luckInteractions.push(`stem combination / Wu He / 五合 (${ext.stem.py}-${col.stem.py})`);
-        }
-        if (['丑', '未', '戌'].includes(b) && ['丑', '未', '戌'].includes(extB)) {
-          if (!luckInteractions.includes('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)')) {
-            luckInteractions.push('three earths punishment / San Xing / 无恩之刑 (Wei-Chou-Xu)');
-          }
-        }
-        if (sixCombos[b] === extB) {
-          luckInteractions.push(`six combination / Liu He / 六合 (${ext.branch.py}-${col.branch.py})`);
-        }
-        if (sixClashes[b] === extB) {
-          luckInteractions.push(`branch conflict / Liu Chong / 冲 (${ext.branch.py}-${col.branch.py})`);
-        }
-        triadGroups.forEach(grp => {
-          if (grp.branches.includes(b) && grp.branches.includes(extB) && b !== extB) {
-            luckInteractions.push(`half triangular combination / Ban San He / 半合 (${ext.branch.py}-${col.branch.py})`);
+          // Fu Yin (伏吟)
+          if (tS === oS && tB === oB) {
+            listToPush.push(`Fu Yin (${targetCol.stem.py} ${targetCol.branch.py})`);
           }
         });
-        if (sixDestructions[b] === extB) {
-          luckInteractions.push(`destruction / Liu Po / 破 (${ext.branch.py}-${col.branch.py})`);
-        }
-        if (sixHarms[b] === extB) {
-          luckInteractions.push(`harm / Liu Hai / 害 (${ext.branch.py}-${col.branch.py})`);
-        }
-        if (s === extS && b === extB) {
-          luckInteractions.push(`Fu Yin (${col.stem.py} ${col.branch.py}) / 伏吟`);
-        }
-        if (stemClashes[s] === extS && sixClashes[b] === extB) {
-          luckInteractions.push(`Fan Yin / 反吟 (${col.stem.py}${col.branch.py}-${ext.stem.py}${ext.branch.py})`);
-        }
-        if (dayColObj) {
-          const dSIdx = STEMS.findIndex(x => x.zh === dayColObj.stem.zh);
-          const dBIdx = BRANCHES.findIndex(x => x.zh === dayColObj.branch.zh);
-          if (dSIdx !== -1 && dBIdx !== -1) {
-            const kw = this.getKongWang(dSIdx, dBIdx);
-            if (kw[0].includes(extB) || kw[1].includes(extB)) {
-              if (!luckInteractions.includes('heaven void (DP) / Kong Wang / 日空亡')) {
-                luckInteractions.push('heaven void (DP) / Kong Wang / 日空亡');
-              }
-            }
+      };
+
+      const checkSanXing = (targetBranch, fullContextBranches, listToPush) => {
+        // 1. Earths punishment (丑 未 戌)
+        if (['丑', '未', '戌'].includes(targetBranch)) {
+          const earths = fullContextBranches.filter(x => ['丑', '未', '戌'].includes(x));
+          const uniqueEarths = Array.from(new Set(earths));
+          if (uniqueEarths.length >= 3) {
+            const order = ['Wei', 'Chou', 'Xu'];
+            const name = `three earths punishment / San Xing / 无恩之刑 (${order.join('-')})`;
+            if (!listToPush.includes(name)) listToPush.push(name);
           }
         }
-      });
+        // 2. Bullying punishment (寅 巳 申)
+        if (['寅', '巳', '申'].includes(targetBranch)) {
+          const group = fullContextBranches.filter(x => ['寅', '巳', '申'].includes(x));
+          if (Array.from(new Set(group)).length >= 2) {
+            const name = 'bullying punishment / San Xing / 持势之刑 (Yin-Si-Shen)';
+            if (!listToPush.includes(name)) listToPush.push(name);
+          }
+        }
+        // 3. Uncivil punishment (子 卯)
+        if (targetBranch === '子' && fullContextBranches.includes('卯')) {
+          const name = 'uncivil punishment / San Xing / 无礼之刑 (Zi-Mao)';
+          if (!listToPush.includes(name)) listToPush.push(name);
+        }
+        if (targetBranch === '卯' && fullContextBranches.includes('子')) {
+          const name = 'uncivil punishment / San Xing / 无礼之刑 (Mao-Zi)';
+          if (!listToPush.includes(name)) listToPush.push(name);
+        }
+        // 4. Self punishment (辰, 午, 酉, 亥)
+        if (['辰', '午', '酉', '亥'].includes(targetBranch)) {
+          const count = fullContextBranches.filter(x => x === targetBranch).length;
+          if (count >= 2) {
+            const py = BRANCHES.find(x => x.zh === targetBranch)?.py || targetBranch;
+            const name = `self punishment / Zi Xing / 自刑 (${py})`;
+            if (!listToPush.includes(name)) listToPush.push(name);
+          }
+        }
+      };
 
-      return { natalInteractions, luckInteractions };
+      const checkVoid = (targetCol, dayCol, listToPush) => {
+        if (!dayCol) return;
+        const dSIdx = STEMS.findIndex(x => x.zh === dayCol.stem.zh);
+        const dBIdx = BRANCHES.findIndex(x => x.zh === dayCol.branch.zh);
+        if (dSIdx !== -1 && dBIdx !== -1) {
+          const kw = this.getKongWang(dSIdx, dBIdx);
+          if (kw[0].includes(targetCol.branch.py)) {
+            listToPush.push('heaven void (DP) / Kong Wang / 日空亡');
+          }
+        }
+      };
+
+      const dayCol = allCols.find(c => c.label && c.label.includes('วัน')) || allCols[1];
+
+      if (colType === 'natal') {
+        // 1. Primary: Compare against other 3 natal pillars
+        const otherNatals = allCols.filter(c => c !== col);
+        comparePillars(col, otherNatals, primaryInteractions);
+        checkSanXing(b, allCols.map(c => c.branch.zh), primaryInteractions);
+        if (col !== dayCol) checkVoid(col, dayCol, primaryInteractions);
+
+        // 2. Secondary: Compare against Luck Pillar
+        if (luckCol) {
+          secondaryHeading = 'Luck pillars / 大运:';
+          comparePillars(col, [luckCol], secondaryInteractions);
+          const luckNatalBranches = [...allCols.map(c => c.branch.zh), luckCol.branch.zh];
+          checkSanXing(b, luckNatalBranches, secondaryInteractions);
+        }
+      } else if (colType === 'annual') {
+        // 1. Primary: Compare Annual Year against all 4 natal pillars
+        comparePillars(col, allCols, primaryInteractions);
+        checkSanXing(b, [...allCols.map(c => c.branch.zh), b], primaryInteractions);
+        checkVoid(col, dayCol, primaryInteractions);
+
+        // 2. Secondary: Compare Annual Year against Luck Pillar
+        if (luckCol) {
+          secondaryHeading = 'Luck pillars / 大运:';
+          comparePillars(col, [luckCol], secondaryInteractions);
+        }
+      } else if (colType === 'luck') {
+        // 1. Primary: Compare Luck Pillar against all 4 natal pillars
+        comparePillars(col, allCols, primaryInteractions);
+        checkSanXing(b, [...allCols.map(c => c.branch.zh), b], primaryInteractions);
+        checkVoid(col, dayCol, primaryInteractions);
+
+        // 2. Secondary: Compare Luck Pillar against Annual Year
+        if (annualCol) {
+          secondaryHeading = 'Annual year / 流年:';
+          comparePillars(col, [annualCol], secondaryInteractions);
+        }
+      }
+
+      const cleanList = (list) => Array.from(new Set(list));
+      return {
+        primary: cleanList(primaryInteractions),
+        secondary: cleanList(secondaryInteractions),
+        secondaryHeading,
+        natalInteractions: cleanList(primaryInteractions),
+        luckInteractions: cleanList(secondaryInteractions)
+      };
     },
 
     renderMasterFourPillarsMatrix: function () {
@@ -3046,19 +3046,20 @@
             <tr>
               <td class="row-header-col">Inter-<br>actions</td>
               ${columns.map(col => {
-                const inter = this.computeDetailedInteractions(col.pillar, natalCols, annualPillar, luckPillar);
+                const colType = col.isLuck ? 'luck' : (col.isAnnual ? 'annual' : 'natal');
+                const inter = this.computeDetailedInteractions(col.pillar, natalCols, annualPillar, luckPillar, colType);
                 return `
                   <td class="bazi-interactions-cell">
                     <div style="font-weight: 700; color: #475569; margin-bottom: 4px;">Interactions:</div>
-                    ${inter.natalInteractions.length > 0 ? inter.natalInteractions.map(it => {
+                    ${inter.primary.length > 0 ? inter.primary.map(it => {
                       const cls = this.getInteractionClass(it);
                       const st = this.getInteractionStyle(it);
                       return `<div class="interaction-item ${cls}" style="${st}">${it},</div>`;
                     }).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
 
-                    ${inter.luckInteractions.length > 0 ? `
-                      <div class="luck-heading">Luck pillars / 大运:</div>
-                      ${inter.luckInteractions.map(it => {
+                    ${inter.secondary.length > 0 ? `
+                      <div class="luck-heading">${inter.secondaryHeading}</div>
+                      ${inter.secondary.map(it => {
                         const cls = this.getInteractionClass(it);
                         const st = this.getInteractionStyle(it);
                         return `<div class="interaction-item ${cls}" style="${st}">${it},</div>`;
