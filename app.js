@@ -3738,21 +3738,117 @@ ${window.location.href}
     socialShareModal.classList.add('hidden');
   }
 
-  // Helper: Capture Fortune Results into an Image Blob
+  // Helper: Capture 3 Cards [1][2][3] Side-by-Side into a Share Image (No long synthesis)
   async function captureFortuneCardBlob() {
-    const resultCard = document.getElementById('readingStep4') || document.getElementById('readingStep3');
-    if (!resultCard) return null;
-    const toolbar = document.querySelector('.result-header-toolbar');
-    if (toolbar) toolbar.style.visibility = 'hidden';
+    const cardsBoard = document.getElementById('resultCardsBoard');
+    if (!cardsBoard) return null;
+
+    const questionBanner = document.getElementById('resultQuestionBanner');
+    const questionText = questionBanner ? (questionBanner.querySelector('.result-question-title')?.innerText || '') : '';
+    const deckBadge = questionBanner ? (questionBanner.querySelector('.badge-deck')?.innerText || 'ไพ่เทพเหมียว (92 ใบ)') : 'ไพ่เทพเหมียว';
+
+    // Clone the cards board and force horizontal 3-card side-by-side layout [1][2][3]
+    const cloneBoard = cardsBoard.cloneNode(true);
+    
+    // Copy computed image sources to cloned images to guarantee instant render
+    const origImages = cardsBoard.querySelectorAll('img');
+    const cloneImages = cloneBoard.querySelectorAll('img');
+    origImages.forEach((img, idx) => {
+      if (cloneImages[idx]) {
+        cloneImages[idx].src = img.currentSrc || img.src;
+      }
+    });
+
+    // Create an elegant capture card container with fixed desktop-grade width (960px)
+    const captureWrapper = document.createElement('div');
+    captureWrapper.style.position = 'fixed';
+    captureWrapper.style.left = '-99999px';
+    captureWrapper.style.top = '0';
+    captureWrapper.style.width = '960px';
+    captureWrapper.style.background = '#ffffff';
+    captureWrapper.style.borderRadius = '24px';
+    captureWrapper.style.padding = '24px 28px 28px 28px';
+    captureWrapper.style.boxSizing = 'border-box';
+    captureWrapper.style.fontFamily = "'Prompt', -apple-system, BlinkMacSystemFont, sans-serif";
+    captureWrapper.style.border = '1.5px solid #f1f5f9';
+
+    // Compact Header banner with branding & question
+    const headerDiv = document.createElement('div');
+    headerDiv.style.marginBottom = '20px';
+    headerDiv.style.paddingBottom = '14px';
+    headerDiv.style.borderBottom = '2px solid #f1f5f9';
+    headerDiv.innerHTML = `
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;">🐾 ${deckBadge}</span>
+          <span style="font-size: 13px; color: #64748b; font-weight: 600;">แม่หมอตึ๊ดตึ๊ด Destiny Oracle</span>
+        </div>
+        <div style="font-size: 12px; color: #94a3b8; font-weight: 600;">
+          ✨ ผลเปิดไพ่ 3 ใบ
+        </div>
+      </div>
+      ${questionText ? `<div style="text-align: center; margin-top: 10px;">
+        <span style="font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.4;">${questionText}</span>
+      </div>` : ''}
+    `;
+
+    // Count how many cards are present
+    const cardItems = cloneBoard.querySelectorAll('.result-card-item');
+    const cardCount = cardItems.length || 3;
+
+    // Force cloneBoard into horizontal [1][2][3] layout
+    cloneBoard.style.display = 'grid';
+    cloneBoard.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
+    cloneBoard.style.gap = '18px';
+    cloneBoard.style.margin = '0';
+    cloneBoard.style.padding = '0';
+    cloneBoard.style.width = '100%';
+    cloneBoard.style.boxSizing = 'border-box';
+
+    // Normalize each card item for optimal crisp rendering
+    cardItems.forEach(item => {
+      item.style.display = 'flex';
+      item.style.flexDirection = 'column';
+      item.style.width = '100%';
+      item.style.boxSizing = 'border-box';
+      item.style.background = '#ffffff';
+      item.style.borderRadius = '18px';
+      item.style.border = '1px solid #e2e8f0';
+      item.style.padding = '12px 12px 14px 12px';
+      item.style.boxShadow = '0 4px 16px rgba(0,0,0,0.04)';
+      item.style.overflow = 'hidden';
+
+      const media = item.querySelector('.result-card-media');
+      if (media) {
+        media.style.width = '100%';
+        media.style.borderRadius = '12px';
+        media.style.overflow = 'hidden';
+      }
+
+      const img = item.querySelector('img');
+      if (img) {
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        img.style.borderRadius = '12px';
+        img.style.aspectRatio = '3/5';
+        img.style.objectFit = 'cover';
+      }
+    });
+
+    captureWrapper.appendChild(headerDiv);
+    captureWrapper.appendChild(cloneBoard);
+    document.body.appendChild(captureWrapper);
 
     try {
       if (typeof html2canvas === 'function') {
-        const canvas = await html2canvas(resultCard, {
+        const canvas = await html2canvas(captureWrapper, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
-          logging: false
+          logging: false,
+          width: 960
         });
         return await new Promise((resolve) => {
           canvas.toBlob((blob) => resolve(blob), 'image/png', 0.95);
@@ -3761,7 +3857,9 @@ ${window.location.href}
     } catch (err) {
       console.warn('html2canvas capture error:', err);
     } finally {
-      if (toolbar) toolbar.style.visibility = '';
+      if (captureWrapper.parentNode) {
+        captureWrapper.parentNode.removeChild(captureWrapper);
+      }
     }
     return null;
   }
