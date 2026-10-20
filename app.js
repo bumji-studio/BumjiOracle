@@ -2342,9 +2342,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="direct-answer-verdict verdict-badge-favorable">
               ${aiData.direct_verdict}
             </div>
-            <p class="direct-answer-reason">
-              <strong>เหตุผลจากหน้าไพ่:</strong> ${aiData.direct_reason}
-            </p>
+            ${aiData.direct_reason ? `<p class="direct-answer-reason"><strong>เหตุผลจากหน้าไพ่:</strong> ${aiData.direct_reason}</p>` : ''}
           </div>
 
           <div class="thepmeow-prophecy-body">
@@ -3655,36 +3653,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function generateSocialShareText() {
     const state = window.fortuneState || (typeof fortuneState !== 'undefined' ? fortuneState : {});
-    const question = (state.question || 'คำถามดวงชะตา').trim();
+    const question = (state.question || document.getElementById('userQuestionInput')?.value || 'คำถามดวงชะตา').trim();
     const deckName = 'ไพ่เทพเหมียว (92 ใบ)';
     const cards = state.drawnCards || [];
+    const positions = (typeof getActivePositions === 'function') ? getActivePositions() : [];
     
-    const card1Name = cards[0] ? (cards[0].name_th || cards[0].name || 'ไพ่ใบที่ 1') : '';
-    const card2Name = cards[1] ? (cards[1].name_th || cards[1].name || 'ไพ่ใบที่ 2') : '';
-    const card3Name = cards[2] ? (cards[2].name_th || cards[2].name || 'ไพ่ใบที่ 3') : '';
+    let cardListText = '';
+    cards.forEach((c, idx) => {
+      if (!c) return;
+      const pos = positions[idx] || { title: `ใบที่ ${idx + 1}` };
+      const baseElem = (typeof getBaseElement === 'function') ? getBaseElement(c.element) : (c.element || '');
+      const elemStr = baseElem ? ` [ธาตุ${baseElem}]` : '';
+      cardListText += `${idx + 1}️⃣ ${pos.title}: ${c.name_th || c.name}${c.name_cn ? ` (${c.name_cn})` : ''}${elemStr}\n`;
+    });
 
-    let directAnswerText = '';
-    const verdictEl = document.querySelector('.direct-answer-verdict');
-    if (verdictEl && verdictEl.innerText.trim()) {
-      directAnswerText = `\n💬 ผลฟันธง: ${verdictEl.innerText.trim()}\n`;
+    let synthesisText = '';
+    const synthesisEl = document.getElementById('resultSynthesisContainer');
+    if (synthesisEl && synthesisEl.innerText && synthesisEl.innerText.trim()) {
+      synthesisText = synthesisEl.innerText.trim();
     }
 
-    let blessingText = '';
-    const blessingEl = document.querySelector('.thepmeow-blessing-quote');
-    if (blessingEl && blessingEl.innerText.trim()) {
-      blessingText = `\n🌟 พรจากเทพเหมียว: ${blessingEl.innerText.trim()}\n`;
+    let text = `🔮 ผลทำนายไพ่: ${deckName} 🐾✨\n`;
+    text += `❓ คำถาม: "${question}"\n\n`;
+
+    if (cardListText) {
+      text += `🎴 ไพ่ 3 ใบที่เปิดได้:\n${cardListText}\n`;
     }
 
-    return `🔮 ผลทำนายไพ่: ${deckName} 🐾✨
-❓ คำถาม: "${question}"${directAnswerText}
-🎴 ไพ่ 3 ใบที่ได้:
-1️⃣ ${card1Name}
-2️⃣ ${card2Name}
-3️⃣ ${card3Name}
-${blessingText}
-🐾 เช็กดวงเปิดไพ่กับแม่หมอติ๊ดติ๊ดได้ที่นี่เลย:
-${window.location.href}
-#แม่หมอติ๊ดติ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ`;
+    if (synthesisText) {
+      text += `📜 【เนื้อหาคำทำนายทั้งหมด】\n${synthesisText}\n\n`;
+    }
+
+    text += `🐾 เช็กดวงเปิดไพ่กับแม่หมอติ๊ดติ๊ดได้ที่นี่เลย:\n${window.location.href}\n`;
+    text += `#แม่หมอติ๊ดติ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ`;
+
+    return text;
   }
 
   function showSocialToast(msg) {
