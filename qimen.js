@@ -1142,7 +1142,9 @@
         palacesBox: document.getElementById('qmPalacesBox'),
         clashBox: document.getElementById('qmClashBox'),
         // Detail drawer
-        detailDrawer: document.getElementById('qmPalaceDetailBox')
+        detailDrawer: document.getElementById('qmPalaceDetailBox'),
+        // Natal Destiny Reading Section
+        destinyReadingSection: document.getElementById('qmDestinyReadingSection')
       };
     },
 
@@ -1552,7 +1554,18 @@
         `;
       }
 
-      // 5. Render Selected Palace Detail
+      // 5. Render Natal Destiny Reading Section (คำทำนายผังชะตากำเนิด)
+      if (this.el.destinyReadingSection) {
+        if (this.isDestinyMode) {
+          this.el.destinyReadingSection.style.display = 'flex';
+          this.el.destinyReadingSection.innerHTML = this.buildDestinyReadingHTML(chart, this.activeProfile || this.getProfileData());
+        } else {
+          this.el.destinyReadingSection.style.display = 'none';
+          this.el.destinyReadingSection.innerHTML = '';
+        }
+      }
+
+      // 6. Render Selected Palace Detail
       this.renderPalaceDetail(chart.palaces[this.selectedPalaceNum]);
     },
 
@@ -1700,6 +1713,358 @@
               <span class="qm-act-pill"><i class="fa-solid fa-compass"></i> <strong>หันหน้า/โต๊ะทำงาน:</strong> หันไปทาง ${p.pos} (${p.dirEn}) เพื่อดึงดูดพลังงาน</span>
               <span class="qm-act-pill"><i class="fa-solid fa-person-walking"></i> <strong>การเดินทาง:</strong> เริ่มต้นมุ่งหน้าไปทาง ${p.pos} เพื่อความเป็นสิริมงคล</span>
             </div>
+          </div>
+        </div>
+      `;
+    },
+
+    buildDestinyReadingHTML: function (chart, profile) {
+      if (!chart || !chart.destinyPalaceNum || !chart.palaces) return '';
+      const p = chart.palaces[chart.destinyPalaceNum];
+      if (!p) return '';
+
+      const dayStem = chart.fourPillars.day.stem.zh;
+      const v = chart.victories;
+
+      // 1. Core Essence Dictionary (10 Stems)
+      const STEMS_ESSENCE = {
+        '甲': {
+          title: 'ธาตุไม้หยาง (Yang Wood) • ต้นไม้ใหญ่ตระหง่านฟ้า',
+          badge: 'ผู้นำโดยกำเนิด',
+          text: 'คุณคือต้นไม้ใหญ่ที่หยั่งรากลึก มีคุณธรรม มุ่งมั่น รักเกียรติยศ มีความเป็นผู้นำโดยธรรมชาติ ตรงไปตรงมา ไม่ก้มหัวให้อยุติธรรม มีเป้าหมายสูงส่งและเป็นที่พึ่งพาให้คนรอบข้างได้อย่างมั่นคงดั่งร่มเงาไม้ใหญ่'
+        },
+        '乙': {
+          title: 'ธาตุไม้อิน (Yin Wood) • เถาวัลย์และบุปผางาม',
+          badge: 'ปราชญ์ผู้ยืดหยุ่น',
+          text: 'คุณคือพืชพันธุ์ดอกไม้ที่ปรับตัวเก่งเป็นเลิศ อ่อนโยนแต่ไม่อ่อนแอ พลิกแพลงแก้ไขสถานการณ์ได้ทุกสภาวะ มีเสน่ห์ทางวาจา เข้ากับผู้คนได้ง่ายดาย ชนะอุปสรรคด้วยความประนีประนอมและการเจรจา'
+        },
+        '丙': {
+          title: 'ธาตุไฟหยาง (Yang Fire) • ดวงสุริยันเจิดจรัส',
+          badge: 'แสงสว่างผู้เสียสละ',
+          text: 'คุณคือพระอาทิตย์ที่ให้ความอบอุ่นและพลังงานแก่โลก ใจกว้าง ตรงไปตรงมา กระตือรือร้น ชอบช่วยเหลือผู้อื่น เปิดเผย ชัดเจน โดดเด่นในที่แจ้ง มีพลังขับเคลื่อนสูงส่งและเป็นศูนย์รวมพลังบวก'
+        },
+        '丁': {
+          title: 'ธาตุไฟอิน (Yin Fire) • เปลวประทีปแห่งปัญญา',
+          badge: 'ปัญญาญาณผู้ชี้นำ',
+          text: 'คุณคือเปลวไฟแห่งปัญญาและแสงเทียนในความมืด อบอุ่น ลึกซึ้ง มีความรอบรู้ สัญชาตญาณแม่นยำ ใส่ใจรายละเอียด เป็นที่ปรึกษาที่ยอดเยี่ยม และมีพลังโน้มน้าวดึงดูดใจผู้คนได้อย่างลึกซึ้ง'
+        },
+        '戊': {
+          title: 'ธาตุดินหยาง (Yang Earth) • ขุนเขาศิลาแกร่ง',
+          badge: 'เสาหลักผู้มั่นคง',
+          text: 'คุณคือภูเขาหินผาที่สูงตระหง่าน มั่นคง ซื่อสัตย์ เก็บความลับเก่ง มีความรับผิดชอบเป็นเลิศ ใครอยู่ใกล้ก็รู้สึกปลอดภัย หนักแน่นดั่งผืนแผ่นดิน ไม่หวั่นไหวต่อแรงกดดันและมรสุมชีวิต'
+        },
+        '己': {
+          title: 'ธาตุดินอิน (Yin Earth) • ผืนดินสวนสวรรค์',
+          badge: 'ผู้บ่มเพาะความสำเร็จ',
+          text: 'คุณคือผืนดินอันอุดมสมบูรณ์ โอบอ้อมอารี ละเอียดรอบคอบ ช่างวางแผน มีความอดทนสูง ชอบสนับสนุนและพัฒนาคนอื่นให้เติบโต เปี่ยมด้วยเมตตา ละเมียดละไม และรสนิยมที่ดี'
+        },
+        '庚': {
+          title: 'ธาตุทองหยาง (Yang Metal) • ดาบกระบี่คมกล้า',
+          badge: 'นักสู้ผู้เด็ดเดี่ยว',
+          text: 'คุณคือกระบี่คมกล้าที่ผ่านการตีหลอม เด็ดขาด กล้าหาญ ลุยแหลก รักความถูกต้อง ชัดเจน ตรงประเด็น ไม่กลัวปัญหา ไม่ยอมใคร ยิ่งเจอความท้าทายยิ่งแข็งแกร่งและแสดงแสนยานุภาพ'
+        },
+        '辛': {
+          title: 'ธาตุทองอิน (Yin Metal) • เพชรน้ำหนึ่งและอัญมณีล้ำค่า',
+          badge: 'ประกายสมบูรณ์แบบ (Perfectionist)',
+          text: 'คุณคือเพชรน้ำเอกและอัญมณีล้ำเลิศ มีรสนิยมสูง ปราณีต ละเอียดลออ รักเกียรติและศักดิ์ศรี โดดเด่น มีเสน่ห์เฉพาะตัว ยึดมั่นในความสมบูรณ์แบบ ยิ่งผ่านการเจียระไนและขัดเกลา ยิ่งเปล่งประกายเจิดจรัสดึงดูดสายตาทุกคู่'
+        },
+        '壬': {
+          title: 'ธาตุน้ำหยาง (Yang Water) • มหาสมุทรไร้ขอบเขต',
+          badge: 'ปัญญาอันไร้ขีดจำกัด',
+          text: 'คุณคือสายน้ำมหาสมุทรที่ทรงพลัง ฉลาดปราดเปรื่อง มีวิสัยทัศน์กว้างไกล ปรับตัวได้ทุกภาชนะ รักอิสระ ไม่หยุดนิ่ง มีพลังผลักดันตนเองสูงและมองการณ์ไกลอย่างน่าอัศจรรย์'
+        },
+        '癸': {
+          title: 'ธาตุน้ำอิน (Yin Water) • หยาดน้ำค้างและฝนทิพย์',
+          badge: 'สัญชาตญาณมหัศจรรย์',
+          text: 'คุณคือน้ำค้างบริสุทธิ์และสายฝนชุ่มฉ่ำ อ่อนโยน เข้าอกเข้าใจอารมณ์คนอย่างลึกซึ้ง สัญชาตญาณและสัมผัสที่หกแม่นยำ ฉลาดแบบนุ่มลึก มีพลังซึมซับและเยียวยาจิตใจผู้คนได้อย่างวิเศษ'
+        }
+      };
+
+      // 2. Guardian Deity Dictionary (8 Deities)
+      const DEITIES_READING = {
+        '值符': {
+          title: 'มหาจักรพรรดิเทพ (The Chief • 值符)',
+          badge: 'ผู้นำ บารมี แคล้วคลาด',
+          text: 'คุณได้รับความคุ้มครองจากประธานสูงสุดแห่งทวยเทพ มักแคล้วคลาดจากภยันตราย มีบารมีดึงดูดความเคารพนับถือ เหมาะแก่การเป็นผู้นำ เจ้าของกิจการ ผู้บริหาร หรือศูนย์กลางขององค์กร ยามคับขันจะมีผู้ใหญ่หรือพลังศักดิ์สิทธิ์ยื่นมือเข้ามาช่วยเหลือเสมอ'
+        },
+        '腾蛇': {
+          title: 'เทพงูสุริยัน (The Serpent • 螣蛇)',
+          badge: 'จิตสัมผัส สัญชาตญาณลึกล้ำ',
+          text: 'คุณมีสัมผัสที่หก เรดาร์หยั่งรู้ความรู้สึกคนล่วงหน้าได้อย่างแม่นยำ ไหวพริบยอดเยี่ยม พลิกแพลงสถานการณ์ได้เร็ว ปรับเปลี่ยนกลยุทธ์ได้คล่องตัว เหมาะกับงานวางแผน จิตวิทยา และงานกลยุทธ์ชั้นสูง'
+        },
+        '太阴': {
+          title: 'เทพจันทราทิพย์ (The Moon • 太阴)',
+          badge: 'ปัญญาเงียบ ผู้ใหญ่อุปถัมภ์',
+          text: 'คุณเปี่ยมด้วยสติปัญญาอันสุขุมลุ่มลึก ชอบความสงบ ช่างสังเกต เก็บรายละเอียดเก่ง มักมีผู้อุปถัมภ์ค้ำชูอยู่เบื้องหลังเงียบๆ (Noble People) โดดเด่นในงานวิชาการ การวางแผนลับ และการทำงานเบื้องหลังความสำเร็จ'
+        },
+        '六合': {
+          title: 'เทพหกประสาน (Six Harmony • 六合)',
+          badge: 'มหาเสน่ห์ นักสร้างความร่วมมือ',
+          text: 'คุณมีพรสวรรค์เรื่องเสน่ห์ มนุษยสัมพันธ์ การทูต และการเจรจาต่อรอง เข้ากับคนได้ทุกระดับ เป็นกาวใจที่เชื่อมโยงผลประโยชน์และผู้คนเข้าด้วยกัน เหมาะกับการสร้างเครือข่าย พาร์ตเนอร์ชิป และงานการค้า'
+        },
+        '白虎': {
+          title: 'เทพพยัคฆ์ขาว (White Tiger • 白虎)',
+          badge: 'พลังแกร่ง ไม่ยอมแพ้',
+          text: 'คุณเปี่ยมด้วยพลังงานดุดัน แข็งแกร่ง บ้าพลัง ลุยงานหนัก ไม่ยอมก้มหัวให้อุปสรรค กล้าได้กล้าเสีย เหมาะกับงานแก้ปัญหาเฉพาะหน้า งานวิกฤต การแพทย์ หรือการแข่งขันชิงชัยที่ต้องใช้ความเด็ดเดี่ยว'
+        },
+        '玄武': {
+          title: 'เทพเต่าดำ (Black Tortoise • 玄武)',
+          badge: 'จินตนาการ ไหวพริบสะกดใจ',
+          text: 'คุณมีจินตนาการล้ำเลิศ ความคิดสร้างสรรค์เป็นเลิศ ทักษะการโน้มน้าวใจสะกดคน เชี่ยวชาญการใช้ไหวพริบและศิลปะในการสื่อสาร เหมาะกับงานบันเทิง การตลาด การสร้างแบรนด์ และกลยุทธ์ที่แยบยล'
+        },
+        '九地': {
+          title: 'เทพเก้าปฐพี (Nine Earth • 九地)',
+          badge: 'มั่นคง หนักแน่น สะสมทรัพย์',
+          text: 'คุณเปี่ยมด้วยความอดทน มั่นคง สุขุม รอบคอบ ไม่ผลีผลาม ชอบสร้างรากฐานที่ถาวร สะสมทรัพย์สินและอสังหาริมทรัพย์ได้ดีเยี่ยม เป็นคนหนักแน่นที่ผู้คนให้ความไว้วางใจในการบริหารระยะยาว'
+        },
+        '九天': {
+          title: 'เทพเก้าสวรรค์ (Nine Heaven • 九天)',
+          badge: 'วิสัยทัศน์ไกล สู่สากล',
+          text: 'คุณมีวิสัยทัศน์ระดับสากล คิดการใหญ่ มุ่งสู่จุดสูงสุดเสมอ ไม่ชอบถูกจำกัดกรอบ มีความคิดก้าวหน้า ล้ำยุค โดดเด่นในงานบุกเบิก การขยายธุรกิจสู่ต่างแดน และการสร้างโปรเจกต์ระดับสูง'
+        }
+      };
+
+      // 3. Destiny Star Dictionary (9 Stars)
+      const STARS_READING = {
+        '天辅': {
+          title: 'ดาวปราชญ์และครูอาจารย์ (Tian Fu • 天辅星)',
+          badge: 'ปัญญา ที่ปรึกษา วัฒนธรรม',
+          text: 'คุณมีปัญญาเฉียบแหลม รักการเรียนรู้ มีพรสวรรค์ในการถ่ายทอด สั่งสอน และให้คำแนะนำ เป็นครูอาจารย์ นักคิด นักวิจัย หรือที่ปรึกษาที่น่าเชื่อถือ มีบุคลิกสง่างาม และมีรสนิยมทางศิลปวิทยาการ'
+        },
+        '天禽': {
+          title: 'ดาวมหาจักรพรรดิ์สวรรค์ (Tian Qin • 天禽星)',
+          badge: 'เที่ยงธรรม ศูนย์กลางอำนาจ',
+          text: 'คุณเป็นคนเที่ยงธรรม มีสัจจะ ซื่อสัตย์ ได้รับความเคารพนับถือ เป็นศูนย์กลางการตัดสินใจ มีความสามารถรอบด้าน จัดการเรื่องยากและซับซ้อนให้เรียบร้อยได้อย่างลงตัว'
+        },
+        '天心': {
+          title: 'ดาวผู้นำยุทธศาสตร์และการแพทย์ (Tian Xin • 天心星)',
+          badge: 'นักบริหารระดับสูง วางระบบ',
+          text: 'คุณมีสมองของนักบริหารระดับสูง วางระบบ จัดการองค์กร และแก้ปัญหาเชิงโครงสร้างเก่ง เหมาะกับงานการแพทย์ วิศวกรรม กฎหมาย หรือผู้กุมนโยบายยุทธศาสตร์'
+        },
+        '天蓬': {
+          title: 'ดาวขุนพลกล้าผู้ท้าทาย (Tian Peng • 天蓬星)',
+          badge: 'กล้าได้กล้าเสีย พลิกวิกฤต',
+          text: 'คุณกล้าได้กล้าเสีย ใจถึง มองเห็นโอกาสในวิกฤต ไม่กลัวความเสี่ยง เหมาะกับธุรกิจที่มีความท้าทายสูง หรือการขยายธุรกิจแบบก้าวกระโดด'
+        },
+        '天芮': {
+          title: 'ดาวคุณธรรมและการเรียนรู้ (Tian Rui • 天芮星)',
+          badge: 'นักเรียนรู้ตลอดชีวิต สุขภาพ',
+          text: 'คุณเป็นนักเรียนรู้ตลอดชีวิต ละเอียดรอบคอบ ช่างสังเกต สนใจเรื่องสุขภาพ สวัสดิการ ช่างเอาใจใส่ดูแลผู้อื่น ชอบพัฒนาตนเองจากข้อผิดพลาด'
+        },
+        '天冲': {
+          title: 'ดาวนักสู้รวดเร็วฉับไว (Tian Chong • 天冲星)',
+          badge: 'ลุยแหลก ไม่ชอบรอคอย',
+          text: 'คุณรวดเร็ว ฉับไว ตัดสินใจเร็ว ลุยทำทันที ไม่ชอบรอคอย มีพลังผลักดันโปรเจกต์ใหม่ๆ ให้เกิดขึ้นจริงได้อย่างรวดเร็วทรงพลัง'
+        },
+        '天任': {
+          title: 'ดาวขุนเขามานะอดทน (Tian Ren • 天任星)',
+          badge: 'กตัญญู ซื่อตรง มั่นคง',
+          text: 'คุณอดทน กตัญญู ซื่อตรง ทำงานเงียบๆ แต่สำเร็จแน่นอน สร้างความมั่นคงทีละก้าวอย่างมั่นคงและยั่งยืนดั่งขุนเขา'
+        },
+        '天柱': {
+          title: 'ดาวเสาหลักวาทศิลป์ (Tian Zhu • 天柱星)',
+          badge: 'โวหารคมคาย ผู้ตรวจสอบ',
+          text: 'คุณมีวาทศิลป์คมคาย ช่างซักถาม ตรวจสอบ กล้าพูดความจริง โดดเด่นในงานเจรจา ทนายความ นักสื่อสาร หรือผู้ตรวจสอบ'
+        },
+        '天英': {
+          title: 'ดาวเปล่งประกายชื่อเสียง (Tian Ying • 天英星)',
+          badge: 'โดดเด่น สปอตไลท์ สื่อบันเทิง',
+          text: 'คุณมีเสน่ห์ดึงดูดสายตา โดดเด่นในที่สาธารณะ เหมาะกับงานสื่อ แสงสี แฟชั่น ประชาสัมพันธ์ และการสร้างชื่อเสียงให้เป็นที่จดจำ'
+        }
+      };
+
+      // 4. Destiny Door Dictionary (8 Doors)
+      const DOORS_READING = {
+        '伤': {
+          title: 'ประตูนักสู้ผู้มุ่งมั่น (Harm Door • 伤门)',
+          badge: 'สัญชาตญาณนักล่า ไม่ยอมแพ้',
+          text: 'คุณมีจิตวิญญาณของนักสู้ ไม่ยอมแพ้ต่ออุปสรรคใดๆ ชื่นชอบความท้าทายและการแข่งขัน มีสัญชาตญาณในการล่าเป้าหมาย กัดไม่ปล่อย ทุ่มเทสุดกำลังเพื่อคว้าชัยชนะ'
+        },
+        '生': {
+          title: 'ประตูแห่งชีวิตและความมั่งคั่ง (Life Door • 生门)',
+          badge: 'เงินทองไหลมาเทมา การเติบโต',
+          text: 'คุณมีสัญชาตญาณการค้าและช่องทางหาเงินเป็นเลิศ มองเห็นโอกาสทางธุรกิจที่ผู้อื่นมองไม่เห็น มีพลังแห่งการฟื้นตัวและเติบโตอย่างไม่หยุดยั้ง'
+        },
+        '开': {
+          title: 'ประตูเปิดทางแห่งความก้าวหน้า (Open Door • 开门)',
+          badge: 'ริเริ่ม บุกเบิก ราบรื่น',
+          text: 'คุณเปิดกว้าง ตรงไปตรงมา กระตือรือร้นในการบุกเบิกสิ่งใหม่ ชอบความโปร่งใส ก้าวหน้าในหน้าที่การงานและการริเริ่มโครงการใหม่ๆ ได้อย่างราบรื่น'
+        },
+        '休': {
+          title: 'ประตูแห่งความสุขและมิตรภาพ (Rest Door • 休门)',
+          badge: 'สันติสุข ผู้ใหญ่อุปถัมภ์',
+          text: 'คุณเป็นคนสุขุม รักความสงบ อบอุ่น มีมนุษยสัมพันธ์ดี มักได้รับความเมตตาเอ็นดูจากผู้ใหญ่และเพื่อนร่วมงาน ชีวิตมักมีความสุขสงบ สบายใจ'
+        },
+        '景': {
+          title: 'ประตูแห่งทัศนียภาพและชื่อเสียง (Scenery Door • 景门)',
+          badge: 'วิสัยทัศน์ แผนงาน การตลาด',
+          text: 'คุณช่างสังเกต มีความคิดสร้างสรรค์ทางสายตา งานวางแผน เอกสาร สัญญา การตลาด ภาพลักษณ์ และการสื่อสารที่สวยงามจับใจคน'
+        },
+        '杜': {
+          title: 'ประตูแห่งความสงบและการซุ่มพัฒนา (Block Door • 杜门)',
+          badge: 'งานวิจัย ลึกซึ้ง ผู้เชี่ยวชาญ',
+          text: 'คุณสุขุม ลึกซึ้ง รักความเป็นส่วนตัว มีสมาธิในการคิดค้น วิจัย และเชี่ยวชาญในศาสตร์เฉพาะทางอย่างลึกซึ้ง เก่งในการเก็บความลับและทำงานเบื้องหลัง'
+        },
+        '死': {
+          title: 'ประตูแห่งสัจธรรมและความหนักแน่น (Death Door • 死门)',
+          badge: 'เด็ดขาด วางรากฐาน สัจธรรม',
+          text: 'คุณมีความเด็ดขาด จริงจัง ยึดมั่นในหลักการ ซื่อตรงต่อคำสัญญา เหมาะกับงานจัดการสะสาง วางรากฐาน หรือศาสตร์ลี้ลับทางจิตวิญญาณ'
+        },
+        '惊': {
+          title: 'ประตูแห่งวาจาและการระแวดระวัง (Fear Door • 惊门)',
+          badge: 'วาทศิลป์ ระวังภัย โน้มน้าว',
+          text: 'คุณมีไหวพริบเรื่องคำพูด เสียงเตือนภัย การระวังป้องกันเหตุไม่คาดคิด โดดเด่นในการโน้มน้าว อภิปราย และชี้แจงประเด็นที่คลุมเครือ'
+        }
+      };
+
+      // 5. Wealth Relationship
+      const lifeDoorPalace = Object.values(chart.palaces).find(x => x.door && x.door.zh === '生');
+      let wealthRelationText = '';
+      let wealthBadge = 'พลังหนุนนำ';
+      if (lifeDoorPalace) {
+        const destElem = p.element; // e.g. ไฟ
+        const lifeElem = lifeDoorPalace.element; // e.g. ไม้
+        const produces = { 'ไม้': 'ไฟ', 'ไฟ': 'ดิน', 'ดิน': 'ทอง', 'ทอง': 'น้ำ', 'น้ำ': 'ไม้' };
+        const controls = { 'ไม้': 'ดิน', 'ดิน': 'น้ำ', 'น้ำ': 'ไฟ', 'ไฟ': 'ทอง', 'ทอง': 'ไม้' };
+
+        if (produces[lifeElem] === destElem) {
+          wealthBadge = '✨ มหาโชคลาภเกื้อหนุน (Wealth Nurtures You)';
+          wealthRelationText = `ประตูเกิด (生门) สถิตที่วัง ${lifeDoorPalace.num} (${lifeDoorPalace.pos} • ธาตุ${lifeElem}) ส่งพลังก่อเกิดธาตุ${destElem} ของวังชะตาคุณ (วัง ${p.num} ${p.pos}) โดยตรง! นี่คือผังการเงินที่ยอดเยี่ยมที่สุด เงินทอง โอกาสทางธุรกิจ และทรัพย์สินจะไหลเข้ามาหาคุณอย่างเป็นธรรมชาติ ค้าขายคล่องตัว ทำกิจการใดก็มักมีคนนำโอกาสทองมามอบให้`;
+        } else if (controls[destElem] === lifeElem) {
+          wealthBadge = '⚔️ บัญชาการและคว้าทรัพย์ด้วยฝีมือ (You Command Wealth)';
+          wealthRelationText = `วังชะตาของคุณ (ธาตุ${destElem}) มีอำนาจควบคุมวังประตูทรัพย์ (วัง ${lifeDoorPalace.num} ${lifeDoorPalace.pos} • ธาตุ${lifeElem}) หมายความว่า เงินทองไม่ได้ลอยมาฟรีๆ แต่คุณมีความสามารถ ความเด็ดขาด และไหวพริบในการล่าและคว้าโอกาสทางการเงินมาได้ด้วยน้ำพักน้ำแรง ยิ่งลุยยิ่งมั่งคั่ง`;
+        } else if (produces[destElem] === lifeElem) {
+          wealthBadge = '🌱 ร่ำรวยจากการสร้างสรรค์ (Creation Brings Wealth)';
+          wealthRelationText = `วังชะตาของคุณ (ธาตุ${destElem}) ส่งพลังไปให้กำเนิดวังทรัพย์ (ธาตุ${lifeElem}) แสดงว่า ความมั่งคั่งของคุณเกิดจากมันสมอง ผลงาน การสร้างสรรค์โปรเจกต์ หรือบริการที่คุณทุ่มเทลงมือทำ ยิ่งผลิตผลงานและช่วยเหลือผู้คน ทรัพย์สินยิ่งเพิ่มพูน`;
+        } else if (controls[lifeElem] === destElem) {
+          wealthBadge = '🛡️ พิชิตความท้าทายสู่ความมั่งคั่ง (Strategic Overcoming)';
+          wealthRelationText = `วังทรัพย์ (ธาตุ${lifeElem}) มีแรงกดดันต่อวังชะตา (ธาตุ${destElem}) ควรเน้นการบริหารความเสี่ยง การทำสัญญาอย่างรัดกุม และหลีกเลี่ยงการเก็งกำไรที่มีความเสี่ยงสูง ให้เน้นการสะสมอย่างเป็นระบบ`;
+        } else {
+          wealthBadge = '🤝 เครือข่ายและพันธมิตรสร้างรวย (Synergy Wealth)';
+          wealthRelationText = `วังชะตาและวังประตูทรัพย์มีธาตุกลมกลืนกัน การเงินหมุนเวียนได้ดีเยี่ยม เหมาะแก่การสร้างพันธมิตร หุ้นส่วน และการทำงานร่วมกันเป็นทีมเพื่อขยายขนาดธุรกิจ`;
+        }
+      }
+
+      // 6. Formations & Guidance
+      const fList = p.formations || [];
+      const hasXinXing = fList.some(f => f.name === 'Xin Xing' || (f.nameTh && f.nameTh.includes('ซิน')));
+      let guidanceText = '';
+      if (hasXinXing) {
+        guidanceText = '🌟 คุณมีรหัสก้านซิน (辛) อัญมณีและดาวนักสู้ในวังชะตา ซึ่งเป็นคนรักความสมบูรณ์แบบ (Perfectionist) อย่างยิ่ง จุดที่ต้องระวังคือ <strong>อย่ากดดันหรือลงโทษตัวเองมากเกินไป</strong> เมื่อสิ่งต่างๆ ไม่เป็นไปตามแผน จงจำไว้ว่าความผิดพลาดคือขั้นตอนการเจียระไนอัญมณีให้งดงามขึ้น เมื่อคุณเปิดใจและปล่อยวาง บารมีของเทพค่าฉือ (值符) จะแผ่อำนาจคุ้มครองนำพาความสำเร็จอันไร้ขีดจำกัด!';
+      } else if (fList.length > 0) {
+        guidanceText = `🌟 ในวังชะตามีโครงสร้างพิเศษ <strong>${fList.map(x => x.nameTh).join(', ')}</strong> ขอให้ใช้พลังแห่งคุณธรรม ความจริงใจ และความซื่อสัตย์เป็นเครื่องชี้นำทาง จะช่วยสลายอุปสรรคและดึงดูดพลังมงคลสู่ชีวิตตลอดกาล`;
+      } else {
+        guidanceText = '🌟 ผังชะตามีพลังงานไหลเวียนกลมกลืนเป็นกลาง ขอให้รักษาความสมดุลในชีวิต ทั้งการงาน ครอบครัว และจิตวิญญาณ จะช่วยหนุนนำให้ชีวิตเจริญรุ่งเรืองอย่างมั่นคงยาวนาน';
+      }
+
+      const getDeityData = (d) => {
+        if (!d) return { title: 'เทพพิทักษ์', badge: 'พิทักษ์ดวง', text: '' };
+        return DEITIES_READING[d.fullZh] || DEITIES_READING[d.zh] || Object.entries(DEITIES_READING).find(([k]) => k.includes(d.zh) || (d.fullZh && d.fullZh.includes(k)))?.[1] || { title: d.th || d.fullZh || d.zh, badge: d.en, text: d.th };
+      };
+
+      const getStarData = (s) => {
+        if (!s) return { title: 'ดาวสวรรค์', badge: 'ปัญญาญาณ', text: '' };
+        return STARS_READING[s.fullZh] || STARS_READING[s.zh] || Object.entries(STARS_READING).find(([k]) => k.includes(s.zh) || (s.fullZh && s.fullZh.includes(k)))?.[1] || { title: s.th || s.fullZh || s.zh, badge: s.en, text: s.th };
+      };
+
+      const getDoorData = (door) => {
+        if (!door) return { title: 'ประตูดวงชะตา', badge: 'การกระทำ', text: '' };
+        const norm = { '傷': '伤', '開': '开', '驚': '惊' }[door.zh] || door.zh;
+        return DOORS_READING[norm] || DOORS_READING[door.zh] || DOORS_READING[door.fullZh] || Object.entries(DOORS_READING).find(([k]) => k.includes(norm) || (door.fullZh && door.fullZh.includes(k)))?.[1] || { title: door.th || door.fullZh || door.zh, badge: door.en, text: door.desc };
+      };
+
+      const essence = STEMS_ESSENCE[dayStem] || STEMS_ESSENCE['辛'];
+      const deity = getDeityData(p.deity);
+      const star = getStarData(p.star);
+      const door = getDoorData(p.door);
+
+      return `
+        <div class="qm-reading-header">
+          <div class="qm-reading-title-wrap">
+            <i class="fa-solid fa-scroll"></i>
+            <div>
+              <h3>คำทำนายผังชะตากำเนิด (Natal Destiny Reading • 奇门命理)</h3>
+              <p style="margin: 0; font-size: 12.5px; color: #78350f;">วิเคราะห์รหัสชีวิต วาสนา พรสวรรค์ เทพพิทักษ์ ทิศทางโชคลาภ และยุทธศาสตร์ความสำเร็จตลอดชีพ</p>
+            </div>
+          </div>
+          <div class="qm-read-badge" style="background: #fef3c7; color: #92400e; border-color: #fde68a; font-size: 12px; padding: 4px 10px;">
+            <i class="fa-solid fa-crown" style="color: #f59e0b;"></i> วังชะตา: วัง ${p.num} (${p.pos} • ${p.dirTh} • ธาตุ${p.element})
+          </div>
+        </div>
+
+        <div class="qm-reading-grid">
+          <!-- 1. Core Essence -->
+          <div class="qm-reading-item item-essence">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-gem" style="color: #f59e0b;"></i> ธาตุแท้และแก่นดวงจิต (Core Essence • 日干)</strong>
+              <span class="qm-read-badge">${essence.badge}</span>
+            </div>
+            <div class="qm-read-sub">${dayStem} (${chart.fourPillars.day.stem.py}) • ${essence.title}</div>
+            <p class="qm-read-text">${essence.text}</p>
+          </div>
+
+          <!-- 2. Guardian Deity -->
+          <div class="qm-reading-item item-deity">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-shield-cat" style="color: #8b5cf6;"></i> เทพผู้พิทักษ์ดวงจิต (Guardian Deity • 八神)</strong>
+              <span class="qm-read-badge">${deity.badge}</span>
+            </div>
+            <div class="qm-read-sub">${p.deity.fullZh || p.deity.zh} (${p.deity.py}) • ${deity.title}</div>
+            <p class="qm-read-text">${deity.text}</p>
+          </div>
+
+          <!-- 3. Destiny Star -->
+          <div class="qm-reading-item item-star">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-star" style="color: #0284c7;"></i> ดาวสวรรค์ปัญญาและพรสวรรค์ (Destiny Star • 九星)</strong>
+              <span class="qm-read-badge">${star.badge}</span>
+            </div>
+            <div class="qm-read-sub">${p.star.fullZh || p.star.zh} (${p.star.py}) • ${star.title}</div>
+            <p class="qm-read-text">${star.text}</p>
+          </div>
+
+          <!-- 4. Destiny Door -->
+          <div class="qm-reading-item item-door">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-door-open" style="color: #10b981;"></i> ประตูดวงชะตาและวิถีลงมือทำ (Destiny Door • 八门)</strong>
+              <span class="qm-read-badge">${door.badge}</span>
+            </div>
+            <div class="qm-read-sub">${p.door.fullZh || (p.door.zh + '门')} (${p.door.py}) • ${door.title}</div>
+            <p class="qm-read-text">${door.text}</p>
+          </div>
+
+          <!-- 5. Wealth Flow -->
+          <div class="qm-reading-item item-wealth">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-coins" style="color: #d97706;"></i> ขุมทรัพย์และกระแสการเงิน (Wealth & Career Flow)</strong>
+              <span class="qm-read-badge">${wealthBadge}</span>
+            </div>
+            <div class="qm-read-sub">ประตูเกิด (生门) สถิตวัง ${lifeDoorPalace ? lifeDoorPalace.num : '-'} (${lifeDoorPalace ? lifeDoorPalace.pos : '-'}) สัมพันธ์กับวังชะตา</div>
+            <p class="qm-read-text">${wealthRelationText}</p>
+          </div>
+
+          <!-- 6. 3 Victories Strategy -->
+          <div class="qm-reading-item item-victory">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-trophy" style="color: #0284c7;"></i> ยุทธศาสตร์ 3 ชัยชนะประจำตัว (3 Victories • 三胜)</strong>
+              <span class="qm-read-badge">ทิศมงคลพลิกชีวิต</span>
+            </div>
+            <div class="qm-read-sub">ทิศขุมพลังฟ้า • ทิศดึงดูดทรัพย์ • ทิศแม่ทัพเกื้อหนุน</div>
+            <p class="qm-read-text">
+              • <strong>ทิศขอพร/วิสัยทัศน์ใหญ่ (${v.deity.pos} • ${v.deity.dirTh}):</strong> หันหลังให้ทิศ ${v.deity.pos} เมื่อตั้งจิต ขอพร สวดมนต์ หรือคิดกลยุทธ์ใหญ่<br>
+              • <strong>ทิศดูดทรัพย์/ปิดการขาย (${v.door.pos} • ${v.door.dirTh}):</strong> หันหน้า/เดินทางสู่ทิศ ${v.door.pos} เพื่อเปิดรับการเงิน เจรจาค้าขาย ดึงดูดกำไร<br>
+              • <strong>ทิศชนะการแข่งขัน/บารมีหนุน (${v.palace.pos} • ${v.palace.dirTh}):</strong> ใช้ทิศ ${v.palace.pos} บัญชาการ เจรจาต่อรองให้ได้เปรียบ และชนะคู่แข่ง
+            </p>
+          </div>
+
+          <!-- 7. Life Guidance & Formations -->
+          <div class="qm-reading-item item-guidance">
+            <div class="qm-read-head">
+              <strong><i class="fa-solid fa-compass-drafting" style="color: #ef4444;"></i> ข้อพึงระวังและคำแนะนำพลิกชะตา (Destiny Guidance)</strong>
+              <span class="qm-read-badge" style="color: #b91c1c;">เคล็ดลับยกระดับดวง</span>
+            </div>
+            <div class="qm-read-sub">โครงสร้างเก็กในวังชะตา: ${fList.length > 0 ? fList.map(f => f.nameTh).join(', ') : 'พลังธรรมชาติสอดประสาน'}</div>
+            <p class="qm-read-text">${guidanceText}</p>
           </div>
         </div>
       `;
