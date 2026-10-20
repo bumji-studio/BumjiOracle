@@ -3740,14 +3740,14 @@ ${window.location.href}
 
   // Helper: Capture Fortune Results into an Image Blob
   async function captureFortuneCardBlob() {
-    const step3 = document.getElementById('readingStep3');
-    if (!step3) return null;
+    const resultCard = document.getElementById('readingStep4') || document.getElementById('readingStep3');
+    if (!resultCard) return null;
     const toolbar = document.querySelector('.result-header-toolbar');
     if (toolbar) toolbar.style.visibility = 'hidden';
 
     try {
       if (typeof html2canvas === 'function') {
-        const canvas = await html2canvas(step3, {
+        const canvas = await html2canvas(resultCard, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
@@ -3823,16 +3823,16 @@ ${window.location.href}
     closeSocialShareModal();
 
     if (platform === 'fb') {
-      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! วาง (Ctrl+V) หรือแนบรูปในโพสต์ Facebook ได้เลยนะคะ 🐾');
+      showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! วาง (Ctrl+V) ในกล่องสร้างโพสต์ Facebook ได้เลยนะคะ 🐾');
       setTimeout(() => window.open('https://www.facebook.com/', '_blank'), 600);
     } else if (platform === 'tt') {
-      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
+      showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
       setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 600);
     } else if (platform === 'ig') {
-      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
+      showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
       setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
     } else if (platform === 'line') {
-      showSocialToast('📸 คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
+      showSocialToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
       setTimeout(() => {
         if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
           try {
@@ -3851,8 +3851,27 @@ ${window.location.href}
         window.open(lineUrl, '_blank');
       }, 600);
     } else {
-      showSocialToast('📸 ดาวน์โหลดรูปและก๊อปปี้ข้อความให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
+      showSocialToast('✨ ก๊อปปี้คำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
     }
+  }
+
+  // Direct 4 Social Share Icon Buttons
+  const shareFbDirectBtn = document.getElementById('shareFbDirectBtn');
+  const shareTtDirectBtn = document.getElementById('shareTtDirectBtn');
+  const shareIgDirectBtn = document.getElementById('shareIgDirectBtn');
+  const shareLineDirectBtn = document.getElementById('shareLineDirectBtn');
+
+  if (shareFbDirectBtn) {
+    shareFbDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
+  }
+  if (shareTtDirectBtn) {
+    shareTtDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('tt'));
+  }
+  if (shareIgDirectBtn) {
+    shareIgDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
+  }
+  if (shareLineDirectBtn) {
+    shareLineDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
   }
 
   if (shareToSocialBtn) {
@@ -3878,7 +3897,7 @@ ${window.location.href}
     });
   }
 
-  // Platform Button Handlers
+  // Platform Button Handlers (Modal buttons if present)
   if (shareFbBtn) {
     shareFbBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
   }

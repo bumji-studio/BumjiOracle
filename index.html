@@ -13,6 +13,9 @@
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- html2canvas for fortune card sharing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
   <!-- Cache control for mobile / LINE in-app browser -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -1188,9 +1191,21 @@
             <button class="btn btn-secondary-sm" id="copyResultTextBtn" title="คัดลอกสรุปคำทำนายทั้งหมดลงคลิปบอร์ด">
               <i class="fa-solid fa-copy"></i> คัดลอกคำทำนาย
             </button>
-            <button class="btn btn-social-share" id="shareToSocialBtn" title="แชร์คำทำนายลงโซเชียลมีเดีย">
-              <i class="fa-solid fa-share-nodes"></i> แชร์ลง Social
-            </button>
+            <div class="direct-social-share-group" role="group" aria-label="แชร์ผลทำนายลงโซเชียล">
+              <span class="direct-share-label">แชร์:</span>
+              <button type="button" class="btn-direct-social btn-direct-fb" id="shareFbDirectBtn" title="แชร์ลง Facebook (คัดลอกข้อความ + โหลดรูปให้ทันที)">
+                <i class="fa-brands fa-facebook-f"></i>
+              </button>
+              <button type="button" class="btn-direct-social btn-direct-tt" id="shareTtDirectBtn" title="แชร์ลง TikTok (คัดลอกข้อความ + โหลดรูปให้ทันที)">
+                <i class="fa-brands fa-tiktok"></i>
+              </button>
+              <button type="button" class="btn-direct-social btn-direct-ig" id="shareIgDirectBtn" title="แชร์ลง Instagram (คัดลอกข้อความ + โหลดรูปให้ทันที)">
+                <i class="fa-brands fa-instagram"></i>
+              </button>
+              <button type="button" class="btn-direct-social btn-direct-line" id="shareLineDirectBtn" title="แชร์เข้า LINE ทันที">
+                <i class="fa-brands fa-line"></i>
+              </button>
+            </div>
           </div>
         </div>
 
