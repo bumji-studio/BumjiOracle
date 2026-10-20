@@ -243,15 +243,15 @@
   };
 
   const PALACE_INFO = {
-    1: { pos: 'N', dirZh: '正北', dirEn: 'North', color: '#3b82f6', tag: 'N', numCorner: 1 },
-    2: { pos: 'SW', dirZh: '西南', dirEn: 'Southwest', color: '#f59e0b', tag: 'SW', numCorner: 0 },
-    3: { pos: 'E', dirZh: '正东', dirEn: 'East', color: '#10b981', tag: 'E', numCorner: 4 },
-    4: { pos: 'SE', dirZh: '东南', dirEn: 'Southeast', color: '#10b981', tag: 'SE', numCorner: 5 },
-    5: { pos: 'Center', dirZh: '中宫', dirEn: 'Center', color: '#64748b', tag: 'C', numCorner: 0 },
-    6: { pos: 'NW', dirZh: '西北', dirEn: 'Northwest', color: '#334155', tag: 'NW', numCorner: 2 },
-    7: { pos: 'W', dirZh: '正西', dirEn: 'West', color: '#64748b', tag: 'W', numCorner: 7 },
-    8: { pos: 'NE', dirZh: '东北', dirEn: 'Northeast', color: '#78350f', tag: 'NE', numCorner: 3 },
-    9: { pos: 'S', dirZh: '正南', dirEn: 'South', color: '#ef4444', tag: 'S', numCorner: 6 }
+    1: { pos: 'N', dirZh: '正北', dirEn: 'North', dirTh: 'ทิศเหนือ', color: '#3b82f6', tag: 'N', numCorner: 1, element: 'น้ำ' },
+    2: { pos: 'SW', dirZh: '西南', dirEn: 'Southwest', dirTh: 'ทิศตะวันตกเฉียงใต้', color: '#f59e0b', tag: 'SW', numCorner: 0, element: 'ดิน' },
+    3: { pos: 'E', dirZh: '正东', dirEn: 'East', dirTh: 'ทิศตะวันออก', color: '#10b981', tag: 'E', numCorner: 4, element: 'ไม้' },
+    4: { pos: 'SE', dirZh: '东南', dirEn: 'Southeast', dirTh: 'ทิศตะวันออกเฉียงใต้', color: '#10b981', tag: 'SE', numCorner: 5, element: 'ไม้' },
+    5: { pos: 'Center', dirZh: '中宫', dirEn: 'Center', dirTh: 'แดนกลาง', color: '#64748b', tag: 'C', numCorner: 0, element: 'ดิน' },
+    6: { pos: 'NW', dirZh: '西北', dirEn: 'Northwest', dirTh: 'ทิศตะวันตกเฉียงเหนือ', color: '#334155', tag: 'NW', numCorner: 2, element: 'ทอง' },
+    7: { pos: 'W', dirZh: '正西', dirEn: 'West', dirTh: 'ทิศตะวันตก', color: '#64748b', tag: 'W', numCorner: 7, element: 'ทอง' },
+    8: { pos: 'NE', dirZh: '东北', dirEn: 'Northeast', dirTh: 'ทิศตะวันออกเฉียงเหนือ', color: '#78350f', tag: 'NE', numCorner: 3, element: 'ดิน' },
+    9: { pos: 'S', dirZh: '正南', dirEn: 'South', dirTh: 'ทิศใต้', color: '#ef4444', tag: 'S', numCorner: 6, element: 'ไฟ' }
   };
 
   const ORIGINAL_STARS = {
@@ -778,6 +778,8 @@
           pos: info.pos,
           dirZh: info.dirZh,
           dirEn: info.dirEn,
+          dirTh: info.dirTh,
+          element: info.element,
           num: pNum,
           numCorner: sevenStars[pNum] !== undefined ? sevenStars[pNum] : 0,
           color: info.color,
@@ -820,6 +822,17 @@
       });
       const taiYiPalace = OPPOSITE_PALACES[chiefPalace] || 2;
 
+      // Find Destiny Palace (วังชะตาชีวิตประจำตัว): Day Stem on Heaven Plate
+      let destinyPalaceNum = 1;
+      const targetDayStem = dayStem;
+      const searchStem = (targetDayStem === '甲') ? (dayXun.hides || '戊') : targetDayStem;
+      for (const p of [1, 2, 3, 4, 6, 7, 8, 9]) {
+        if (palaces[p] && palaces[p].heavenStem && palaces[p].heavenStem.zh === searchStem) {
+          destinyPalaceNum = p;
+          break;
+        }
+      }
+
       const branchClashes = {
         '子': 'Horse (มะเมีย)', '丑': 'Goat (มะแม)', '寅': 'Monkey (วอก)', '卯': 'Rooster (ระกา)',
         '辰': 'Dog (จอ)', '巳': 'Pig (กุน)', '午': 'Rat (ชวด)', '未': 'Ox (ฉลู)',
@@ -858,9 +871,43 @@
           dayNobleman: getNobleman(dayStem)
         },
         palaces,
+        destinyPalaceNum: destinyPalaceNum,
         victories: {
+          deity: {
+            palaceNum: heavenPalace,
+            pos: PALACE_INFO[heavenPalace].pos,
+            dirZh: PALACE_INFO[heavenPalace].dirZh,
+            dirEn: PALACE_INFO[heavenPalace].dirEn,
+            dirTh: PALACE_INFO[heavenPalace].dirTh,
+            title: 'ชัยชนะแห่งทวยเทพ (Deity Victory / 神胜)',
+            entity: 'เทพเก้านภากาศ (九天 - Nine Heaven)',
+            sub: 'พลังหนุนหลังจากฟ้า วิสัยทัศน์กว้างไกล',
+            action: 'หันหลังให้ทิศนี้ เพื่อขอพลังสวรรค์เกื้อหนุน เจรจาการค้า ปิดดีล และสั่งการ'
+          },
+          door: {
+            palaceNum: lifePalace,
+            pos: PALACE_INFO[lifePalace].pos,
+            dirZh: PALACE_INFO[lifePalace].dirZh,
+            dirEn: PALACE_INFO[lifePalace].dirEn,
+            dirTh: PALACE_INFO[lifePalace].dirTh,
+            title: 'ชัยชนะแห่งประตูมงคล (Door Victory / 门胜)',
+            entity: 'ประตูเกิด (生门 - Life Door)',
+            sub: 'โชคลาภการเงิน ธุรกิจสำเร็จ พลิกฟื้นมั่งคั่ง',
+            action: 'หันหน้า/เดินทางสู่ทิศนี้ เพื่อเปิดรับความมั่งคั่ง เงินทอง และการเติบโต'
+          },
+          palace: {
+            palaceNum: taiYiPalace || 7,
+            pos: PALACE_INFO[taiYiPalace || 7].pos,
+            dirZh: PALACE_INFO[taiYiPalace || 7].dirZh,
+            dirEn: PALACE_INFO[taiYiPalace || 7].dirEn,
+            dirTh: PALACE_INFO[taiYiPalace || 7].dirTh,
+            title: 'ชัยชนะแห่งวังฟ้าดาวสวรรค์ (Palace Victory / 宫胜)',
+            entity: 'ไท่อี / เทียนอี่ (太一 / 天乙)',
+            sub: 'ผู้ใหญ่อุปถัมภ์ ขจัดอุปสรรค ชนะคู่แข่ง',
+            action: 'ใช้ทิศนี้ในการแข่งขัน ประมูลงาน ขอความช่วยเหลือ หรือระงับข้อพิพาท'
+          },
           daYi: PALACE_INFO[starHomePalace].pos,
-          taiYi: PALACE_INFO[OPPOSITE_PALACES[starHomePalace] || 7].pos,
+          taiYi: PALACE_INFO[taiYiPalace || 7].pos,
           tian: PALACE_INFO[heavenPalace].pos,
           sheng: PALACE_INFO[lifePalace].pos
         },
@@ -884,18 +931,94 @@
     currentHourIdx: Math.floor((new Date().getHours() + 1) % 24 / 2),
     chartData: null,
     selectedPalaceNum: 1, // default focus on Palace 1
+    isDestinyMode: true,
+    activeProfile: null,
+
+    getProfileData: function () {
+      // 1. JiutianAuth currentUser
+      if (window.JiutianAuth && window.JiutianAuth.currentUser && window.JiutianAuth.currentUser.birthDate) {
+        const u = window.JiutianAuth.currentUser;
+        return {
+          name: u.name || u.displayName || 'เจ้าของ Profile',
+          birthDate: u.birthDate,
+          birthTime: u.birthTime || '12:00',
+          gender: u.gender || 'female'
+        };
+      }
+      // 2. localStorage session
+      try {
+        const s = localStorage.getItem('jiutian_arcana_session');
+        if (s) {
+          const u = JSON.parse(s);
+          if (u && u.birthDate) {
+            return {
+              name: u.name || u.displayName || 'เจ้าของ Profile',
+              birthDate: u.birthDate,
+              birthTime: u.birthTime || '12:00',
+              gender: u.gender || 'female'
+            };
+          }
+        }
+      } catch (e) {}
+      // 3. BaZi saved profiles
+      try {
+        const raw = localStorage.getItem('bazi_saved_profiles');
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list) && list.length > 0 && list[0].birthDate) {
+            return {
+              name: list[0].name || 'เจ้าของ Profile',
+              birthDate: list[0].birthDate,
+              birthTime: list[0].birthTime || '12:00',
+              gender: list[0].gender || 'female'
+            };
+          }
+        }
+      } catch (e) {}
+      // 4. Fallback profile
+      return {
+        name: 'คุณบัมจิ (Profile)',
+        birthDate: '1998-05-18',
+        birthTime: '13:30',
+        gender: 'female'
+      };
+    },
+
+    loadProfileDestiny: function () {
+      const profile = this.getProfileData();
+      this.isDestinyMode = true;
+      this.activeProfile = profile;
+      if (this.el && this.el.btnDestiny) this.el.btnDestiny.classList.add('active');
+      if (this.el && this.el.btnRealtime) this.el.btnRealtime.classList.remove('active');
+
+      const parts = profile.birthDate.split('-').map(Number);
+      const [h, m] = (profile.birthTime || '12:00').split(':').map(Number);
+      const safeH = isNaN(h) ? 12 : h;
+      const safeM = isNaN(m) ? 0 : m;
+      this.currentDate = new Date(parts[0], parts[1] - 1, parts[2], safeH, safeM, 0);
+      this.currentHourIdx = Math.floor((safeH + 1) % 24 / 2);
+
+      this.syncInputs();
+      this.render();
+
+      if (this.chartData && this.chartData.destinyPalaceNum) {
+        this.selectPalace(this.chartData.destinyPalaceNum);
+      }
+    },
 
     init: function () {
       this.bindDOMElements();
       this.bindEvents();
-      this.render();
-      console.log('[QiMen Dun Jia] International Convention Chart Plotter Initialized.');
+      this.loadProfileDestiny();
+      console.log('[QiMen Dun Jia] International Convention Chart Plotter Initialized with Profile Destiny Chart.');
     },
 
     bindDOMElements: function () {
       this.el = {
         view: document.getElementById('qiMenAppView'),
+        btnDestiny: document.getElementById('qmBtnDestiny'),
         btnRealtime: document.getElementById('qmBtnRealtime'),
+        profileDestinyBanner: document.getElementById('qmProfileDestinyBanner'),
         datePicker: document.getElementById('qmDatePicker'),
         hourSelect: document.getElementById('qmHourSelect'),
         // Tables
@@ -915,8 +1038,17 @@
     bindEvents: function () {
       const self = this;
 
+      if (this.el.btnDestiny) {
+        this.el.btnDestiny.addEventListener('click', () => {
+          self.loadProfileDestiny();
+        });
+      }
+
       if (this.el.btnRealtime) {
         this.el.btnRealtime.addEventListener('click', () => {
+          self.isDestinyMode = false;
+          if (self.el.btnDestiny) self.el.btnDestiny.classList.remove('active');
+          self.el.btnRealtime.classList.add('active');
           self.currentDate = new Date();
           self.currentHourIdx = Math.floor((self.currentDate.getHours() + 1) % 24 / 2);
           self.syncInputs();
@@ -927,6 +1059,8 @@
       if (this.el.datePicker) {
         const onDateChange = (e) => {
           if (e.target.value) {
+            self.isDestinyMode = false;
+            if (self.el.btnDestiny) self.el.btnDestiny.classList.remove('active');
             const parts = e.target.value.split('-');
             const prevH = self.currentDate ? self.currentDate.getHours() : 12;
             const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
@@ -940,6 +1074,8 @@
 
       if (this.el.hourSelect) {
         const onHourChange = (e) => {
+          self.isDestinyMode = false;
+          if (self.el.btnDestiny) self.el.btnDestiny.classList.remove('active');
           self.currentHourIdx = parseInt(e.target.value, 10);
           const hHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
           if (self.currentDate) {
@@ -965,13 +1101,61 @@
     },
 
     onTabShow: function () {
-      this.render();
+      this.loadProfileDestiny();
     },
 
     render: function () {
       this.syncInputs();
       const chart = QiMenEngine.plot(this.currentDate, this.currentHourIdx, this.currentDate ? this.currentDate.getMinutes() : null);
       this.chartData = chart;
+
+      // 0. Render Profile Destiny Banner (Top)
+      if (this.el.profileDestinyBanner) {
+        if (this.isDestinyMode && this.activeProfile) {
+          const p = this.activeProfile;
+          const destP = chart.palaces[chart.destinyPalaceNum];
+          const destDir = destP ? `${destP.pos} • ${destP.dirZh} (${destP.dirEn})` : '';
+          const deityName = destP && destP.deity ? `${destP.deity.zh} ${destP.deity.py} (${destP.deity.th})` : '-';
+          const doorName = destP && destP.door ? `${destP.door.zh} ${destP.door.en} (${destP.door.th})` : '-';
+          const starName = destP && destP.star ? `${destP.star.zh} ${destP.star.en} (${destP.star.th})` : '-';
+          const dayStemZh = chart.fourPillars.day.stem.zh;
+          const dayStemInfo = chart.fourPillars.day.stem;
+
+          this.el.profileDestinyBanner.innerHTML = `
+            <div class="qm-destiny-header-row">
+              <div class="qm-destiny-title">
+                <i class="fa-solid fa-crown" style="color: #f59e0b; font-size: 18px;"></i>
+                <span>ผังชะตาชีวิตฉีเหมิน (Qi Men Destiny Chart): <strong>${p.name}</strong></span>
+              </div>
+              <div class="qm-destiny-pills">
+                <span class="qm-destiny-pill"><i class="fa-solid fa-cake-candles"></i> วันเกิด: ${p.birthDate} เวลา ${p.birthTime || '12:00'}</span>
+                <span class="qm-destiny-pill"><i class="fa-solid fa-yin-yang"></i> ก้านวันเกิด (Day Stem): ${dayStemZh} (${dayStemInfo.py} • ${dayStemInfo.en})</span>
+              </div>
+            </div>
+            <div class="qm-destiny-summary-grid">
+              <div class="qm-destiny-summary-item">
+                <span class="lbl"><i class="fa-solid fa-compass"></i> วังชะตาชีวิตประจำตัว (Destiny Palace):</span>
+                <span class="val" style="color: #d97706;">วังที่ ${chart.destinyPalaceNum} (${destDir})</span>
+              </div>
+              <div class="qm-destiny-summary-item">
+                <span class="lbl"><i class="fa-solid fa-shield-cat"></i> เทพพิทักษ์ประจำตัว (Guardian Deity):</span>
+                <span class="val" style="color: #7c3aed;">${deityName}</span>
+              </div>
+              <div class="qm-destiny-summary-item">
+                <span class="lbl"><i class="fa-solid fa-door-open"></i> ประตูดวงชะตา (Destiny Door):</span>
+                <span class="val" style="color: #059669;">${doorName}</span>
+              </div>
+              <div class="qm-destiny-summary-item">
+                <span class="lbl"><i class="fa-solid fa-star"></i> ดาวสวรรค์ประจำตัว (Destiny Star):</span>
+                <span class="val" style="color: #0284c7;">${starName}</span>
+              </div>
+            </div>
+          `;
+          this.el.profileDestinyBanner.style.display = 'flex';
+        } else {
+          this.el.profileDestinyBanner.style.display = 'none';
+        }
+      }
 
       // 1. Render Four Pillars Table (Top Left)
       if (this.el.fourPillarsContainer) {
@@ -1078,11 +1262,13 @@
         this.el.matrixContainer.innerHTML = matrixOrder.map(num => {
           const p = chart.palaces[num];
           const isSelected = num === this.selectedPalaceNum;
+          const isDestiny = num === chart.destinyPalaceNum;
 
           if (num === 5) {
             // Center Palace
             return `
-              <div class="qm-int-cell qm-cell-center ${isSelected ? 'selected' : ''}" data-palace="${num}">
+              <div class="qm-int-cell qm-cell-center ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''}" data-palace="${num}">
+                ${isDestiny ? '<span class="qm-badge-destiny-crown" title="วังชะตาชีวิต (Destiny Palace)"><i class="fa-solid fa-crown"></i> 本命</span>' : ''}
                 <div class="qm-cell-header-bar center-bar">Center (中)</div>
                 <div class="qm-center-stems">
                   <span class="qm-c-stem water">${p.heavenStem.zh}</span>
@@ -1098,7 +1284,8 @@
 
           const headerClass = `dir-${p.pos.toLowerCase()}`;
           return `
-            <div class="qm-int-cell ${isSelected ? 'selected' : ''}" data-palace="${num}">
+            <div class="qm-int-cell ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''}" data-palace="${num}">
+              ${isDestiny ? '<span class="qm-badge-destiny-crown" title="วังชะตาชีวิต (Destiny Palace)"><i class="fa-solid fa-crown"></i> 本命</span>' : ''}
               <!-- Direction Header Tag -->
               <div class="qm-cell-header-bar ${headerClass}">
                 <span class="qm-hdr-dir">${p.pos}</span>
@@ -1175,18 +1362,51 @@
         });
       }
 
-      // 4. Render Right Sidebar Panels
+      // 4. Render Right Sidebar Panels: 3 Victories (三胜)
       if (this.el.victoriesContainer) {
         const v = chart.victories;
         this.el.victoriesContainer.innerHTML = `
-          <div class="qm-side-panel">
-            <h4>3 Victories (三勝)</h4>
-            <div class="qm-side-row"><span>Heavenly Yi (大乙)</span><strong>${v.daYi}</strong></div>
-            <div class="qm-side-row"><span>Heavenly Yi (太乙)</span><strong>${v.taiYi}</strong></div>
-            <div class="qm-side-row"><span>Heaven (天)</span><strong>${v.tian}</strong></div>
-            <div class="qm-side-row"><span>Life (生)</span><strong>${v.sheng}</strong></div>
+          <div class="qm-victory-card">
+            <div class="qm-victory-header">
+              <span><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> ชัยชนะทั้งสาม (3 Victories • 三胜)</span>
+            </div>
+            <div class="qm-victory-list">
+              <div class="qm-victory-item victory-deity" data-palace="${v.deity.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
+                <div class="qm-vic-title-row">
+                  <span class="qm-vic-name"><i class="fa-solid fa-shield-cat" style="color: #8b5cf6;"></i> ${v.deity.title}</span>
+                  <span class="qm-vic-dir-badge">${v.deity.pos} • ${v.deity.dirZh}</span>
+                </div>
+                <div class="qm-vic-entity">${v.deity.entity} (วัง ${v.deity.palaceNum} • ${v.deity.dirTh})</div>
+                <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.deity.action}</p>
+              </div>
+              <div class="qm-victory-item victory-door" data-palace="${v.door.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
+                <div class="qm-vic-title-row">
+                  <span class="qm-vic-name"><i class="fa-solid fa-door-open" style="color: #10b981;"></i> ${v.door.title}</span>
+                  <span class="qm-vic-dir-badge">${v.door.pos} • ${v.door.dirZh}</span>
+                </div>
+                <div class="qm-vic-entity">${v.door.entity} (วัง ${v.door.palaceNum} • ${v.door.dirTh})</div>
+                <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.door.action}</p>
+              </div>
+              <div class="qm-victory-item victory-palace" data-palace="${v.palace.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
+                <div class="qm-vic-title-row">
+                  <span class="qm-vic-name"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${v.palace.title}</span>
+                  <span class="qm-vic-dir-badge">${v.palace.pos} • ${v.palace.dirZh}</span>
+                </div>
+                <div class="qm-vic-entity">${v.palace.entity} (วัง ${v.palace.palaceNum} • ${v.palace.dirTh})</div>
+                <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.palace.action}</p>
+              </div>
+            </div>
           </div>
         `;
+
+        // Click on victory card to select palace
+        const self = this;
+        this.el.victoriesContainer.querySelectorAll('.qm-victory-item').forEach(item => {
+          item.addEventListener('click', () => {
+            const pNum = parseInt(item.getAttribute('data-palace'), 10);
+            if (pNum) self.selectPalace(pNum);
+          });
+        });
       }
 
       if (this.el.palacesBox) {
@@ -1234,9 +1454,58 @@
     renderPalaceDetail: function (p) {
       if (!this.el.detailDrawer || !p) return;
 
+      const isDestiny = this.chartData && p.num === this.chartData.destinyPalaceNum;
+      const v = this.chartData ? this.chartData.victories : null;
+      let victoryBadge = '';
+      if (v) {
+        if (p.num === v.deity.palaceNum) {
+          victoryBadge = `
+            <div class="qm-destiny-palace-banner" style="background: #f5f3ff; border-color: #8b5cf6;">
+              <i class="fa-solid fa-shield-cat" style="color: #7c3aed;"></i>
+              <div>
+                <strong style="color: #6d28d9;">ทิศแห่งชัยชนะของทวยเทพ (Deity Victory • 神胜)</strong>
+                <p style="color: #5b21b6;">วังที่ประทับของ ${v.deity.entity}: ${v.deity.action}</p>
+              </div>
+            </div>
+          `;
+        } else if (p.num === v.door.palaceNum) {
+          victoryBadge = `
+            <div class="qm-destiny-palace-banner" style="background: #ecfdf5; border-color: #10b981;">
+              <i class="fa-solid fa-door-open" style="color: #059669;"></i>
+              <div>
+                <strong style="color: #065f46;">ทิศแห่งชัยชนะของประตูมงคล (Door Victory • 门胜)</strong>
+                <p style="color: #047857;">วังที่ประทับของ ${v.door.entity}: ${v.door.action}</p>
+              </div>
+            </div>
+          `;
+        } else if (p.num === v.palace.palaceNum) {
+          victoryBadge = `
+            <div class="qm-destiny-palace-banner" style="background: #fffbeb; border-color: #f59e0b;">
+              <i class="fa-solid fa-star" style="color: #d97706;"></i>
+              <div>
+                <strong style="color: #92400e;">ทิศแห่งชัยชนะของวังฟ้าดาวสวรรค์ (Palace Victory • 宫胜)</strong>
+                <p style="color: #78350f;">วังฝ่ายตรงข้ามประธานทวยเทพ (${v.palace.entity}): ${v.palace.action}</p>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      const destinyBanner = isDestiny ? `
+        <div class="qm-destiny-palace-banner">
+          <i class="fa-solid fa-crown"></i>
+          <div>
+            <strong>👑 วังชะตาชีวิตประจำตัวคุณ (Your Destiny Palace • 本命宫)</strong>
+            <p>เป็นวังประจำตัวตามก้านวันเกิด (${this.chartData.fourPillars.day.stem.zh} ${this.chartData.fourPillars.day.stem.en}) บ่งบอกตัวตนแท้จริง วาสนา จุดแข็ง เทพผู้พิทักษ์ และทิศทางแห่งความสำเร็จตลอดชีพ</p>
+          </div>
+        </div>
+      ` : '';
+
       if (p.num === 5) {
         this.el.detailDrawer.innerHTML = `
           <div class="qm-detail-card">
+            ${destinyBanner}
+            ${victoryBadge}
             <div class="qm-detail-header">
               <span class="qm-detail-badge gold">Center (中五宫)</span>
               <h3>วังกลาง (Center Palace) - แดนไท่จี๋</h3>
@@ -1252,6 +1521,8 @@
 
       this.el.detailDrawer.innerHTML = `
         <div class="qm-detail-card">
+          ${destinyBanner}
+          ${victoryBadge}
           <div class="qm-detail-header">
             <div class="qm-detail-title-wrap">
               <span class="qm-detail-badge ${isGood ? 'good' : 'bad'}">${p.pos} • ${p.dirZh} (${p.dirEn})</span>

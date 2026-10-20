@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261020_social_3cards_v3">
+  <link rel="stylesheet" href="styles.css?v=20261020_qimen_destiny_v1">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -1552,7 +1552,10 @@
       <!-- 1. Header Toolbar -->
       <div class="qm-toolbar-card">
         <div class="qm-toolbar-left">
-          <button class="qm-btn qm-btn-realtime" id="qmBtnRealtime">
+          <button class="qm-btn qm-btn-destiny active" id="qmBtnDestiny" title="แสดงผังชะตาชีวิตฉีเหมิน (Destiny Chart) ตามข้อมูลวัน-เวลาเกิดใน Profile">
+            <i class="fa-solid fa-crown"></i> ผังชะตาชีวิต (Destiny Chart)
+          </button>
+          <button class="qm-btn qm-btn-realtime" id="qmBtnRealtime" title="แสดงผังฉีเหมินตามเวลาปัจจุบัน">
             <i class="fa-solid fa-clock-rotate-left"></i> ขณะนี้ (Real-Time Chart)
           </button>
           
@@ -1583,6 +1586,11 @@
         <div class="qm-toolbar-right">
           <span class="qm-intl-badge"><i class="fa-solid fa-globe"></i> International Convention 2 Chart</span>
         </div>
+      </div>
+
+      <!-- Profile Destiny Banner -->
+      <div id="qmProfileDestinyBanner" class="qm-profile-destiny-banner">
+        <!-- Dynamically rendered in JS -->
       </div>
 
       <!-- 2. Upper Section: Four Pillars Table (Left) + Chart Info Table (Right) -->
@@ -1980,7 +1988,7 @@
   <script src="app.js?v=20261020_social_3cards_v3"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
-  <script src="qimen.js?v=20261012_qimen_renxing_v11"></script>
+  <script src="qimen.js?v=20261020_qimen_destiny_v1"></script>
   <script src="bazi.js?v=20261018_basic_nofourpillars_v15"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
