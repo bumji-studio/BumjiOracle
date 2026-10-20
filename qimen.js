@@ -505,6 +505,7 @@
     if (pair === '癸+丁') f.push({ name: 'She Yao', fullZh: '螣蛇夭矫', nameTh: 'งูไฟแผลงฤทธิ์ (螣蛇夭矫)', type: '凶', color: 'dark', desc: 'ระวังไฟไหม้ ตกใจ ปัญหาสุขภาพ การหลอกลวงต้มตุ๋น' });
     if (pair === '庚+丙') f.push({ name: 'Tai Bai Ru', fullZh: '太白入荧', nameTh: 'ดาวทองแทรกไฟ (太白入荧)', type: '凶', color: 'dark', desc: 'โจรผู้ร้าย ขโมย ทะเลาะวิวาท ถูกชิงดีชิงเด่น' });
     if (pair === '丙+庚') f.push({ name: 'Ying Ru', fullZh: '荧入太白', nameTh: 'ไฟแทรกดาวทอง (荧入太白)', type: '凶', color: 'dark', desc: 'ระวังการลงทุนขาดทุน ถูกโกง เอกสารมีปัญหา' });
+    if (pair === '丙+癸') f.push({ name: 'Ying Bai', fullZh: '荧入白', nameTh: 'ไฟแทรกขาว (Ying Bai / 荧入白)', type: '凶', color: 'dark', desc: 'ระวังการสูญเสีย การเข้าใจผิด ข้อพิพาทเรื่องการเงิน' });
     if (pair === '庚+庚') f.push({ name: 'Zhan Ge', fullZh: '战格', nameTh: 'ศึกใหญ่ (战格 / 太白同位)', type: '凶', color: 'dark', desc: 'การปะทะ แข่งขันดุเดือด แตกแยก ขัดแย้งกับคนใกล้ชิด' });
     if (pair === '庚+戊') f.push({ name: 'Fu Gong', fullZh: '伏宫格', nameTh: 'วังจม (伏宫格)', type: '凶', color: 'dark', desc: 'ชะงักงัน ถูกกักตัว ลาภผลถูกแย่งชิง ไม่ควรริเริ่ม' });
     if (pair === '戊+庚') f.push({ name: 'Fei Gong', fullZh: '飞宫格', nameTh: 'วังเหิน (飞宫格)', type: '凶', color: 'dark', desc: 'โยกย้ายหน้าที่การงาน ย้ายที่อยู่ เดินทางกะทันหัน' });
@@ -517,8 +518,14 @@
     if (pair === '癸+癸') f.push({ name: 'Tian Wang', fullZh: '天网', nameTh: 'ตาข่ายฟ้า (天网)', type: '凶', color: 'dark', desc: 'ติดตาข่าย มืดแปดด้าน ควรรอจังหวะ อย่าดึงดัน' });
     if (pair === '己+己') f.push({ name: 'Di Hu', fullZh: '地户', nameTh: 'ประตูดิน (地户逢鬼)', type: '凶', color: 'dark', desc: 'ประตูดิน มีสิ่งซ่อนเร้น ไม่โปร่งใส ควรรอบคอบ' });
     if (pair === '辛+辛') f.push({ name: 'Fu Yin', fullZh: '伏吟天庭', nameTh: 'ก้านซ้อนทับ (伏吟天庭)', type: '凶', color: 'dark', desc: 'ติดขัด ล่าช้า ทำอะไรซ้ำซ้อน ไม่คืบหน้า' });
-    if (pair === '壬+辛') f.push({ name: 'Teng Kong', fullZh: '腾蛇腾空', nameTh: 'งูเพลิงลอยฟ้า (腾蛇腾空)', type: '凶', color: 'dark', desc: 'วิตกกังวล หลอน ฝันร้าย หรือมีภาพลวงตา' });
+    if (pair === '壬+辛' && pNum !== 4) f.push({ name: 'Teng Kong', fullZh: '腾蛇腾空', nameTh: 'งูเพลิงลอยฟ้า (腾蛇腾空)', type: '凶', color: 'dark', desc: 'วิตกกังวล หลอน ฝันร้าย หรือมีภาพลวงตา' });
     if (pair === '辛+壬') f.push({ name: 'Ru Hao', fullZh: '蛇入牢狱', nameTh: 'งูเข้าคุก (蛇入牢狱)', type: '凶', color: 'dark', desc: 'งูติดกรง ข้อพิพาทเรื่องเงินทอง ยืดเยื้อ' });
+    if (pair === '癸+戊') f.push({ name: 'Fu Gong', fullZh: '伏宫', nameTh: 'วังจม (Fu Gong / 伏宫)', type: '凶', color: 'dark', desc: 'ชะงักงัน ถูกกักตัว ลาภผลถูกแย่งชิง ไม่ควรริเริ่ม' });
+
+    // Special Stem + Palace formations
+    if (hStem === '辛' && eStem === '丙') {
+      f.push({ name: 'Long Fan Xiang Zuo', fullZh: '龙返向佐', nameTh: 'มังกรหวนเกื้อหนุน (Long Fan Xiang Zuo)', type: '吉', color: 'red', desc: 'มังกรหวนคืนส่องสว่าง มีโชคลาภการงาน ผู้ใหญ่อุปถัมภ์ ดึงดูดทรัพย์สิน' });
+    }
 
     // 5. Palatial Clashes & Interactions (สัมพันธ์กับทิศและวัง)
     // 5.1 Men Po (门迫 - ประตูพิฆาตวัง)
@@ -540,28 +547,41 @@
     }
 
     // 5.3 Liu Yi Ji Xing (六仪击刑 - 6 เจี่ยถูกลงทัณฑ์)
-    if ((hStem === '戊' && pNum === 3) || (hStem === '己' && pNum === 2) || (hStem === '庚' && pNum === 8) || (hStem === '辛' && pNum === 9) || (hStem === '壬' && pNum === 4) || (hStem === '癸' && pNum === 4)) {
-      f.push({ name: 'Ji Xing', fullZh: '六仪击刑', nameTh: 'หกเจี่ยถูกลงทัณฑ์ (六仪击刑)', type: '凶', color: 'dark', desc: 'ก้าน ' + hStem + ' เกิดการลงทัณฑ์ในวังนี้ ระวังการแตกหัก บาดเจ็บ หรือเสียทรัพย์' });
+    if (hStem === '辛' && pNum === 9) {
+      f.push({ name: 'Xin Xing', fullZh: '辛仪击刑', nameTh: 'ซินถูกลงทัณฑ์ (Xin Xing / 辛刑)', type: '凶', color: 'dark', desc: 'ก้าน 辛 เกิดการลงทัณฑ์ในวังนี้ ระวังการแตกหัก บาดเจ็บ หรือเสียทรัพย์' });
+    } else if ((hStem === '戊' && pNum === 3) || (hStem === '己' && pNum === 2) || (hStem === '庚' && pNum === 8) || (hStem === '壬' && pNum === 4) || (hStem === '癸' && pNum === 4)) {
+      if (hStem !== '壬' || pNum !== 4) {
+        f.push({ name: 'Ji Xing', fullZh: '六仪击刑', nameTh: 'หกเจี่ยถูกลงทัณฑ์ (六仪击刑)', type: '凶', color: 'dark', desc: 'ก้าน ' + hStem + ' เกิดการลงทัณฑ์ในวังนี้ ระวังการแตกหัก บาดเจ็บ หรือเสียทรัพย์' });
+      }
     }
 
     // 5.4 San Qi Sheng Di (三奇升殿 - สามก้านมงคลขึ้นแท่นประทับ)
-    if ((hStem === '乙' && pNum === 3) || (hStem === '丙' && pNum === 9) || (hStem === '丁' && pNum === 9)) {
+    if (hStem === '乙' && pNum === 3) {
+      f.push({ name: 'Ri Sheng', fullZh: '日升', nameTh: 'ตะวันรุ่งโรจน์ (Ri Sheng / 日升)', type: '吉', color: 'red', desc: 'ก้านมงคล 乙 ประทับวังกำเนิดตน มีพลังอำนาจเกื้อหนุนสูงสุด' });
+    } else if ((hStem === '丙' && pNum === 9) || (hStem === '丁' && pNum === 9)) {
       f.push({ name: 'Sheng Di', fullZh: '三奇升殿', nameTh: 'สามก้านมงคลขึ้นแท่นประทับ (三奇升殿)', type: '吉', color: 'red', desc: 'ก้านมงคล ' + hStem + ' ประทับวังกำเนิดตน มีพลังอำนาจเกื้อหนุนสูงสุด' });
     }
 
-    // 5.5 Fu Yin (伏吟)
+    // 5.5 Palace Specific Special Formations
+    if (hStem === '丙' && pNum === 2) {
+      f.push({ name: 'Yue Shi', fullZh: '月使', nameTh: 'จันทราทูตสวรรค์ (Yue Shi / 月使)', type: '吉', color: 'red', desc: 'จันทราประทานพร การเรียนรู้ สติปัญญา ได้รับความกระจ่าง' });
+    }
+    if (hStem === '丁' && pNum === 8) {
+      f.push({ name: 'Xing Shi', fullZh: '星使', nameTh: 'ดาราทูตสวรรค์ (Xing Shi / 星使)', type: '吉', color: 'red', desc: 'ดารามงคลเกื้อหนุน การงานสำเร็จ ก้าวหน้า' });
+      f.push({ name: 'Xing Nu', fullZh: '刑奴', nameTh: 'ทัณฑ์ข้าทาส (Xing Nu / 刑奴)', type: '凶', color: 'dark', desc: 'ระวังความเหน็ดเหนื่อย ภาระหนักหน่วง การถูกเอารัดเอาเปรียบ' });
+    }
+
+    // 5.6 Fu Yin (伏吟)
     if (hStem === eStem && !f.some(x => x.name === 'Fu Yin')) {
       f.push({ name: 'Fu Yin', fullZh: '干伏吟', nameTh: 'ก้านซ้อนทับ (伏吟)', type: '凶', color: 'dark', desc: 'ก้านฟ้าตรงกับก้านดิน การงานหยุดนิ่ง ชะลอตัว ควรตั้งรับ' });
     }
 
-    // 5.6 Envoy & Special Palace Formations
+    // 5.7 Envoy & Special Palace Formations
     if (!isYangDun && eStem === '丁' && (isEnvoy || doorKey === '伤')) {
       f.push({ name: 'Yu Nu', fullZh: '玉女守门', nameTh: 'หยกกัลยาเฝ้าประตู (玉女守门)', type: '吉', color: 'red', desc: 'โชคลาภการเงิน ความรัก และโอกาสลับที่ไม่คาดฝัน' });
     }
     if (pNum === 4 && hStem === '壬') {
-      f.push({ name: 'Ren Xing', fullZh: '任刑', nameTh: 'ทัณฑ์เทียนเริ่น (任刑)', type: '凶', color: 'dark', desc: 'มีอุปสรรคข้อกฎหมาย หรือระเบียบขั้นตอนซับซ้อน' });
-    } else if (pNum === 4 && !['壬'].includes(hStem)) {
-      f.push({ name: 'Yue Wang', fullZh: '月旺', nameTh: 'ดวงจันทร์สุกสว่าง (月旺)', type: '吉', color: 'red', desc: 'พลังงานสมบูรณ์ รุ่งเรือง การค้าราบรื่น' });
+      f.push({ name: 'Ren Xing', fullZh: '任刑', nameTh: 'ทัณฑ์เทียนเริ่น (Ren Xing / 任刑)', type: '凶', color: 'dark', desc: 'มีอุปสรรคข้อกฎหมาย หรือระเบียบขั้นตอนซับซ้อน' });
     }
 
     return f;
@@ -905,7 +925,13 @@
         if (palaceDeities[p] === '天') heavenPalace = p;
         if (palaceDoors[p] === '生') lifePalace = p;
       });
-      const taiYiPalace = OPPOSITE_PALACES[chiefPalace] || 2;
+      // In Convention 2 (Chinese Metasoft):
+      // - Heavenly Yi (大乙): Lead Star Home Palace (starHomePalace)
+      // - Heavenly Yi (太乙): Envoy Palace (envoyPalace)
+      // - Heaven (天): Nine Heaven Palace (heavenPalace)
+      // - Life (生): Life Door Palace (lifePalace)
+      const taiYiPalace = envoyPalace || 2;
+      const daYiPalace = starHomePalace || 4;
 
       // Find Destiny Palace (วังชะตาชีวิตประจำตัว): Day Stem on Heaven Plate
       let destinyPalaceNum = 1;
@@ -964,7 +990,7 @@
             dirZh: PALACE_INFO[heavenPalace].dirZh,
             dirEn: PALACE_INFO[heavenPalace].dirEn,
             dirTh: PALACE_INFO[heavenPalace].dirTh,
-            title: 'ชัยชนะแห่งทวยเทพ (Deity Victory / 神胜)',
+            title: 'ชัยชนะแห่งทวยเทพ (Heaven • 天胜)',
             entity: 'เทพเก้านภากาศ (九天 - Nine Heaven)',
             sub: 'พลังหนุนหลังจากฟ้า วิสัยทัศน์กว้างไกล',
             action: 'หันหลังให้ทิศนี้ เพื่อขอพลังสวรรค์เกื้อหนุน เจรจาการค้า ปิดดีล และสั่งการ'
@@ -975,24 +1001,24 @@
             dirZh: PALACE_INFO[lifePalace].dirZh,
             dirEn: PALACE_INFO[lifePalace].dirEn,
             dirTh: PALACE_INFO[lifePalace].dirTh,
-            title: 'ชัยชนะแห่งประตูมงคล (Door Victory / 门胜)',
+            title: 'ชัยชนะแห่งประตูมงคล (Life • 生胜)',
             entity: 'ประตูเกิด (生门 - Life Door)',
             sub: 'โชคลาภการเงิน ธุรกิจสำเร็จ พลิกฟื้นมั่งคั่ง',
             action: 'หันหน้า/เดินทางสู่ทิศนี้ เพื่อเปิดรับความมั่งคั่ง เงินทอง และการเติบโต'
           },
           palace: {
-            palaceNum: taiYiPalace || 7,
-            pos: PALACE_INFO[taiYiPalace || 7].pos,
-            dirZh: PALACE_INFO[taiYiPalace || 7].dirZh,
-            dirEn: PALACE_INFO[taiYiPalace || 7].dirEn,
-            dirTh: PALACE_INFO[taiYiPalace || 7].dirTh,
-            title: 'ชัยชนะแห่งวังฟ้าดาวสวรรค์ (Palace Victory / 宫胜)',
-            entity: 'ไท่อี / เทียนอี่ (太一 / 天乙)',
+            palaceNum: taiYiPalace,
+            pos: PALACE_INFO[taiYiPalace].pos,
+            dirZh: PALACE_INFO[taiYiPalace].dirZh,
+            dirEn: PALACE_INFO[taiYiPalace].dirEn,
+            dirTh: PALACE_INFO[taiYiPalace].dirTh,
+            title: 'ชัยชนะแห่งวังทูตสวรรค์ (Heavenly Yi • 太乙)',
+            entity: 'ไท่อี / ทูตสวรรค์ (太乙 - ' + DOORS_INFO[envoyDoorKey].zh + '门)',
             sub: 'ผู้ใหญ่อุปถัมภ์ ขจัดอุปสรรค ชนะคู่แข่ง',
-            action: 'ใช้ทิศนี้ในการแข่งขัน ประมูลงาน ขอความช่วยเหลือ หรือระงับข้อพิพาท'
+            action: 'ใช้ทิศนี้ในการแข่งขัน ขอความช่วยเหลือ หรือเปิดประตูโอกาสใหม่'
           },
-          daYi: PALACE_INFO[starHomePalace].pos,
-          taiYi: PALACE_INFO[taiYiPalace || 7].pos,
+          daYi: PALACE_INFO[daYiPalace].pos,
+          taiYi: PALACE_INFO[taiYiPalace].pos,
           tian: PALACE_INFO[heavenPalace].pos,
           sheng: PALACE_INFO[lifePalace].pos
         },
@@ -1060,11 +1086,11 @@
           }
         }
       } catch (e) {}
-      // 4. Fallback profile
+      // 4. Fallback profile (Baseline from user's benchmark chart)
       return {
-        name: 'คุณบัมจิ (Profile)',
-        birthDate: '1998-05-18',
-        birthTime: '13:30',
+        name: 'คุณบัมจิ (Bumji)',
+        birthDate: '1977-07-23',
+        birthTime: '15:45',
         gender: 'female'
       };
     },
