@@ -427,57 +427,142 @@
     return SOLAR_TERMS[SOLAR_TERMS.length - 1];
   }
 
-  function checkFormations(hStem, eStem, doorKey, pNum, isEnvoy, deityKey, isYangDun) {
+  function checkFormations(hStem, eStem, doorKey, pNum, isEnvoy, deityKey, isYangDun, starKey) {
     const f = [];
     const pair = `${hStem}+${eStem}`;
 
-    // 1. Auspicious & Special Formations (Red font)
-    if (doorKey === '休' && deityKey === '合' && ['丁', '丙', '乙'].includes(hStem)) {
-      f.push({ name: 'Xiu Zha', color: 'red' });
+    // 1. Nine Dun Formations (九遁吉格)
+    if (hStem === '丙' && doorKey === '生' && (eStem === '丁' || deityKey === '天')) {
+      f.push({ name: 'Tian Dun', fullZh: '天遁', nameTh: 'สวรรค์เร้นกาย (天遁)', type: '吉', color: 'red', desc: 'พลังสวรรค์เกื้อหนุน บารมีสูงส่ง เจรจาการค้า มีเสน่ห์อำนาจ' });
     }
-    if (['丁', '丙', '乙'].includes(hStem) && ['开', '休', '生'].includes(doorKey)) {
-      f.push({ name: 'San Qi Zhi', color: 'red' });
+    if (hStem === '乙' && doorKey === '开' && (eStem === '己' || deityKey === '地')) {
+      f.push({ name: 'Di Dun', fullZh: '地遁', nameTh: 'ปฐพีเร้นกาย (地遁)', type: '吉', color: 'red', desc: 'ผืนดินค้ำจุน ตั้งหลักปักฐาน อสังหาริมทรัพย์ มั่นคงและปลอดภัย' });
     }
-    if (doorKey === '景' && deityKey === '天' && ['乙', '丙', '丁'].includes(hStem)) {
-      f.push({ name: 'Tian Jia', color: 'red' });
+    if (hStem === '丁' && doorKey === '休' && deityKey === '阴') {
+      f.push({ name: 'Ren Dun', fullZh: '人遁', nameTh: 'มนุษย์เร้นกาย (人遁)', type: '吉', color: 'red', desc: 'ผู้หลักผู้ใหญ่เอ็นดู เมตตามหานิยม ความรักสมหวัง พันธมิตรเกื้อกูล' });
     }
+    if (hStem === '丙' && doorKey === '生' && deityKey === '天') {
+      f.push({ name: 'Shen Dun', fullZh: '神遁', nameTh: 'เทวะเร้นกาย (神遁)', type: '吉', color: 'red', desc: 'เทพเทวาคุ้มครอง แคล้วคลาดจากภัย ปัญญาญาณเฉียบแหลม' });
+    }
+    if (hStem === '乙' && doorKey === '杜' && deityKey === '地') {
+      f.push({ name: 'Gui Dun', fullZh: '鬼遁', nameTh: 'ภูตเร้นกาย (鬼遁)', type: '吉', color: 'red', desc: 'ซ่อนตัว ซ่อนทรัพย์ รอดพ้นสายตาศัตรู วิจัยหรือทำงานลับสำเร็จ' });
+    }
+    if (hStem === '乙' && ['开', '休', '生'].includes(doorKey) && pNum === 4) {
+      f.push({ name: 'Feng Dun', fullZh: '风遁', nameTh: 'วายุเร้นกาย (风遁)', type: '吉', color: 'red', desc: 'สายลมหนุนส่ง รวดเร็ว ข่าวสารกระจายไกล ชัยชนะด้วยสปีด' });
+    }
+    if (hStem === '乙' && ['开', '休', '生'].includes(doorKey) && pNum === 2) {
+      f.push({ name: 'Yun Dun', fullZh: '云遁', nameTh: 'เมฆาเร้นกาย (云遁)', type: '吉', color: 'red', desc: 'เมฆาอำพรางตัว สงบเยือกเย็น รอจังหวะพลิกเกม ชัยชนะราบรื่น' });
+    }
+    if (hStem === '乙' && ['开', '休', '生'].includes(doorKey) && pNum === 1) {
+      f.push({ name: 'Long Dun', fullZh: '龙遁', nameTh: 'มังกรเร้นกาย (龙遁)', type: '吉', color: 'red', desc: 'มังกรลุยสายน้ำ ทรงพลัง ข้ามผ่านอุปสรรค ชนะการแข่งขันใหญ่' });
+    }
+    if ((hStem === '乙' || hStem === '庚') && ['开', '休', '生'].includes(doorKey) && pNum === 8) {
+      f.push({ name: 'Hu Dun', fullZh: '虎遁', nameTh: 'พยัคฆ์เร้นกาย (虎遁)', type: '吉', color: 'red', desc: 'พยัคฆ์คำราม อำนาจเด็ดขาด กำราบคู่แข่งและปราบอุปสรรค' });
+    }
+
+    // 2. Three Deceptions & Five Fakes (三诈五假)
+    if (['乙', '丙', '丁'].includes(hStem) && ['开', '休', '生'].includes(doorKey)) {
+      if (deityKey === '阴') f.push({ name: 'Zhen Zha', fullZh: '真诈', nameTh: 'อุบายจริง (真诈)', type: '吉', color: 'red', desc: 'แผนการแยบยล ลึกซึ้ง เหมาะแก่การวางกลยุทธ์ระยะยาว' });
+      if (deityKey === '合') f.push({ name: 'Xiu Zha', fullZh: '休诈', nameTh: 'อุบายพัก (休诈)', type: '吉', color: 'red', desc: 'ผูกมิตร เจรจาสงบศึก ค้าขายร่วมทุนราบรื่น' });
+      if (deityKey === '地') f.push({ name: 'Zhong Zha', fullZh: '重诈', nameTh: 'อุบายซ้อน (重诈)', type: '吉', color: 'red', desc: 'ตั้งรับเหนียวแน่น วางกับดัก ชัยชนะโดยไม่ต้องปะทะตรงๆ' });
+      f.push({ name: 'San Qi Zhi', fullZh: '三奇得使', nameTh: 'สามก้านมงคลได้บริวาร (三奇得使)', type: '吉', color: 'red', desc: 'ก้านมงคลประสานประตูดาว การงานราบรื่น มีผู้ช่วยงานคล่องตัว' });
+    }
+    if (doorKey === '景' && ['乙', '丙', '丁'].includes(hStem) && deityKey === '天') {
+      f.push({ name: 'Tian Jia', fullZh: '天假', nameTh: 'เทพอำพราง (天假)', type: '吉', color: 'red', desc: 'พรีเซนต์ โปรโมต การตลาด โดดเด่น ได้รับความนิยมสูง' });
+    }
+    if (doorKey === '杜' && ['丁', '己', '癸'].includes(eStem) && deityKey === '地') {
+      f.push({ name: 'Di Jia', fullZh: '地假', nameTh: 'ดินอำพราง (地假)', type: '吉', color: 'red', desc: 'ซ่อนตัว ป้องกันความลับ เหมาะแก่การตั้งรับอย่างปลอดภัย' });
+    }
+    if (doorKey === '惊' && hStem === '壬' && deityKey === '合') {
+      f.push({ name: 'Ren Jia', fullZh: '人假', nameTh: 'มนุษย์อำพราง (人假)', type: '吉', color: 'red', desc: 'สืบหาความจริง ทวงหนี้ ตรวจจับข้อผิดพลาดของคู่ค้า' });
+    }
+    if (doorKey === '死' && eStem === '癸' && deityKey === '地') {
+      f.push({ name: 'Gui Jia', fullZh: '鬼假', nameTh: 'ภูตอำพราง (鬼假)', type: '吉', color: 'red', desc: 'พิธีกรรมทางจิตวิญญาณ ทำบุญอุทิศส่วนกุศล สะเดาะเคราะห์' });
+    }
+    if (doorKey === '伤' && hStem === '丁' && deityKey === '天') {
+      f.push({ name: 'Shen Jia', fullZh: '神假', nameTh: 'เทวะอำพราง (神假)', type: '吉', color: 'red', desc: 'ขับไล่สิ่งชั่วร้าย ชนะคดีความ ฟาดฟันอุปสรรค' });
+    }
+
+    // 3. Auspicious Stem Combinations (十干吉格)
+    if (pair === '戊+丙') f.push({ name: 'Qing Long', fullZh: '青龙返首', nameTh: 'มังกรเขียวหวนคืน (青龙返首)', type: '吉', color: 'red', desc: 'มหาลาภ การเงินสำเร็จ ก้าวหน้าทุกทิศทาง โอกาสทอง' });
+    if (pair === '丙+戊') f.push({ name: 'Fei Niao', fullZh: '飞鸟跌穴', nameTh: 'วิหคถลาลม (飞鸟跌穴)', type: '吉', color: 'red', desc: 'ได้ลาภผลโดยง่าย ไม่ต้องเหน็ดเหนื่อย ประสบชัยชนะ' });
+    if (pair === '乙+丙') f.push({ name: 'Qi Shun', fullZh: '奇顺华盖', nameTh: 'ก้านไม้งามใต้ร่มทอง (奇顺华盖)', type: '吉', color: 'red', desc: 'ก้าวหน้า เจรจาการงานสำเร็จ นำเสนอผลงานได้รับการยอมรับ' });
+    if (pair === '乙+丁') f.push({ name: 'Qi Jie', fullZh: '奇捷之心', nameTh: 'ไหวพริบฉับไว (奇捷之心)', type: '吉', color: 'red', desc: 'สติปัญญาเฉียบคม แก้ไขปัญหาได้รวดเร็ว ความคิดสร้างสรรค์' });
+    if (pair === '丙+乙') f.push({ name: 'Ri Yue', fullZh: '日月并明', nameTh: 'ตะวันจันทราส่องสว่าง (日月并明)', type: '吉', color: 'red', desc: 'ชื่อเสียง บารมี ผู้ใหญ่อุปถัมภ์ค้ำชู ทำสิ่งใดก็รุ่งเรือง' });
+    if (pair === '丙+丁') f.push({ name: 'Yue Qi', fullZh: '月奇之灵', nameTh: 'จันทราศักดิ์สิทธิ์ (月奇之灵)', type: '吉', color: 'red', desc: 'เอกสาร สัญญา การเจรจาราบรื่น ค้าขายได้กำไร' });
+    if (pair === '丁+乙') f.push({ name: 'Yu Nu Fu', fullZh: '玉女伏奇', nameTh: 'หยกกัลยาสยบก้าน (玉女伏奇)', type: '吉', color: 'red', desc: 'เมตตามหานิยม มีเสน่ห์ คนรอบข้างช่วยเหลือเกื้อกูล' });
+    if (pair === '丁+丙') f.push({ name: 'Xing Qi', fullZh: '星奇入贵', nameTh: 'ดารามงคลสู่เกียรติยศ (星奇入贵)', type: '吉', color: 'red', desc: 'เลื่อนขั้น เลื่อนตำแหน่ง โชคลาภการงาน สอบแข่งขันได้คะแนนดี' });
+    if (pair === '丁+丁') f.push({ name: 'Qi Xiao', fullZh: '奇小相投', nameTh: 'ดวงดาวสมานฉันท์ (奇小相投)', type: '吉', color: 'red', desc: 'ร่วมมือร่วมใจ งานเอกสารข่าวสารรวดเร็ว ความรักสมหวัง' });
+    if (pair === '戊+丁') f.push({ name: 'Qing Long Yao', fullZh: '青龙耀明', nameTh: 'มังกรเขียวเปล่งประกาย (青龙耀明)', type: '吉', color: 'red', desc: 'พบปะผู้ใหญ่ มีเกียรติยศชื่อเสียง เปิดตัวสินค้าประสบความสำเร็จ' });
+    if (pair === '丁+戊') f.push({ name: 'Qing Long De', fullZh: '青龙得光', nameTh: 'มังกรเขียวรับแสงสว่าง (青龙得光)', type: '吉', color: 'red', desc: 'ได้รับความสว่างไสว ขจัดเมฆหมอกอุปสรรค รุ่งโรจน์' });
+    if (pair === '壬+戊') f.push({ name: 'Xiao She', fullZh: '小蛇化龙', nameTh: 'งูน้อยกลายร่างเป็นมังกร (小蛇化龙)', type: '吉', color: 'red', desc: 'พลิกฟื้นจากร้ายกลายเป็นดี ยกระดับฐานะ พลิกชีวิต' });
+    if (pair === '辛+丁') f.push({ name: 'Yu Shen', fullZh: '狱神得奇', nameTh: 'หลุดพ้นจากพันธนาการ (狱神得奇)', type: '吉', color: 'red', desc: 'หนี้สินคลี่คลาย ชนะคดีความ ปัญหาติดขัดคลี่คลาย' });
+
+    // 4. Inauspicious Stem Combinations (十干凶格)
+    if (pair === '乙+辛') f.push({ name: 'Tao Zou', fullZh: '青龙逃走', nameTh: 'มังกรเขียวหนีเตลิด (青龙逃走)', type: '凶', color: 'dark', desc: 'เสียทรัพย์ ทรัพย์สินรั่วไหล หุ้นส่วนแตกแยก ไม่ควรลงทุน' });
+    if (pair === '辛+乙') f.push({ name: 'Bai Hu', fullZh: '白虎猖狂', nameTh: 'เสือขาวอาละวาด (白虎猖狂)', type: '凶', color: 'dark', desc: 'ระวังอุบัติเหตุ ทะเลาะวิวาท การแตกหัก หรือศัตรูปองร้าย' });
+    if (pair === '丁+癸') f.push({ name: 'Que Tou', fullZh: '朱雀投江', nameTh: 'หงส์แดงดิ่งคงคา (朱雀投江)', type: '凶', color: 'dark', desc: 'ระวังเอกสารผิดพลาด คดีความ ข่าวลือเสียหาย สัญญาล้มเหลว' });
+    if (pair === '癸+丁') f.push({ name: 'She Yao', fullZh: '螣蛇夭矫', nameTh: 'งูไฟแผลงฤทธิ์ (螣蛇夭矫)', type: '凶', color: 'dark', desc: 'ระวังไฟไหม้ ตกใจ ปัญหาสุขภาพ การหลอกลวงต้มตุ๋น' });
+    if (pair === '庚+丙') f.push({ name: 'Tai Bai Ru', fullZh: '太白入荧', nameTh: 'ดาวทองแทรกไฟ (太白入荧)', type: '凶', color: 'dark', desc: 'โจรผู้ร้าย ขโมย ทะเลาะวิวาท ถูกชิงดีชิงเด่น' });
+    if (pair === '丙+庚') f.push({ name: 'Ying Ru', fullZh: '荧入太白', nameTh: 'ไฟแทรกดาวทอง (荧入太白)', type: '凶', color: 'dark', desc: 'ระวังการลงทุนขาดทุน ถูกโกง เอกสารมีปัญหา' });
+    if (pair === '庚+庚') f.push({ name: 'Zhan Ge', fullZh: '战格', nameTh: 'ศึกใหญ่ (战格 / 太白同位)', type: '凶', color: 'dark', desc: 'การปะทะ แข่งขันดุเดือด แตกแยก ขัดแย้งกับคนใกล้ชิด' });
+    if (pair === '庚+戊') f.push({ name: 'Fu Gong', fullZh: '伏宫格', nameTh: 'วังจม (伏宫格)', type: '凶', color: 'dark', desc: 'ชะงักงัน ถูกกักตัว ลาภผลถูกแย่งชิง ไม่ควรริเริ่ม' });
+    if (pair === '戊+庚') f.push({ name: 'Fei Gong', fullZh: '飞宫格', nameTh: 'วังเหิน (飞宫格)', type: '凶', color: 'dark', desc: 'โยกย้ายหน้าที่การงาน ย้ายที่อยู่ เดินทางกะทันหัน' });
+    if (pair === '庚+癸' || (hStem === '庚' && pNum === 7)) f.push({ name: 'Da Ge', fullZh: '大格', nameTh: 'อุปสรรคใหญ่ (大格)', type: '凶', color: 'dark', desc: 'อุปสรรคขวากหนามใหญ่ ยานพาหนะชำรุด การเดินทางสะดุด' });
+    if (pair === '庚+壬') f.push({ name: 'Xiao Ge', fullZh: '小格', nameTh: 'อุปสรรคย่อย (小格 / 上格)', type: '凶', color: 'dark', desc: 'ติดขัดเรื่องระยะทาง การเดินทางไกลมีอุปสรรค' });
+    if (pair === '庚+己') f.push({ name: 'Xing Ge', fullZh: '刑格', nameTh: 'การลงทัณฑ์ (刑格)', type: '凶', color: 'dark', desc: 'ถูกลงทัณฑ์ ปัญหาข้อกฎหมาย ระวังการทำผิดระเบียบ' });
+    if (pair === '戊+辛') f.push({ name: 'Zhe Zu', fullZh: '青龙折足', nameTh: 'มังกรเขียวขาหัก (青龙折足)', type: '凶', color: 'dark', desc: 'สูญเสียจังหวะ การเงินติดขัด สะดุดกระทันหัน' });
+    if (pair === '辛+戊') f.push({ name: 'Kun Long', fullZh: '困龙被伤', nameTh: 'มังกรติดหล่ม (困龙被伤)', type: '凶', color: 'dark', desc: 'มังกรติดหล่ม ถูกเบียดเบียน เสียเปรียบในข้อตกลง' });
+    if (pair === '壬+壬') f.push({ name: 'Tian Yu', fullZh: '天狱', nameTh: 'คุกสวรรค์ (天狱)', type: '凶', color: 'dark', desc: 'เหมือนติดคุก ไร้อิสรภาพ คิดไม่ออกบอกไม่ถูก' });
+    if (pair === '癸+癸') f.push({ name: 'Tian Wang', fullZh: '天网', nameTh: 'ตาข่ายฟ้า (天网)', type: '凶', color: 'dark', desc: 'ติดตาข่าย มืดแปดด้าน ควรรอจังหวะ อย่าดึงดัน' });
+    if (pair === '己+己') f.push({ name: 'Di Hu', fullZh: '地户', nameTh: 'ประตูดิน (地户逢鬼)', type: '凶', color: 'dark', desc: 'ประตูดิน มีสิ่งซ่อนเร้น ไม่โปร่งใส ควรรอบคอบ' });
+    if (pair === '辛+辛') f.push({ name: 'Fu Yin', fullZh: '伏吟天庭', nameTh: 'ก้านซ้อนทับ (伏吟天庭)', type: '凶', color: 'dark', desc: 'ติดขัด ล่าช้า ทำอะไรซ้ำซ้อน ไม่คืบหน้า' });
+    if (pair === '壬+辛') f.push({ name: 'Teng Kong', fullZh: '腾蛇腾空', nameTh: 'งูเพลิงลอยฟ้า (腾蛇腾空)', type: '凶', color: 'dark', desc: 'วิตกกังวล หลอน ฝันร้าย หรือมีภาพลวงตา' });
+    if (pair === '辛+壬') f.push({ name: 'Ru Hao', fullZh: '蛇入牢狱', nameTh: 'งูเข้าคุก (蛇入牢狱)', type: '凶', color: 'dark', desc: 'งูติดกรง ข้อพิพาทเรื่องเงินทอง ยืดเยื้อ' });
+
+    // 5. Palatial Clashes & Interactions (สัมพันธ์กับทิศและวัง)
+    // 5.1 Men Po (门迫 - ประตูพิฆาตวัง)
+    const doorElements = { '开': 'ทอง', '惊': 'ทอง', '休': 'น้ำ', '生': 'ดิน', '死': 'ดิน', '伤': 'ไม้', '杜': 'ไม้', '景': 'ไฟ' };
+    const palaceElements = { 1: 'น้ำ', 2: 'ดิน', 3: 'ไม้', 4: 'ไม้', 5: 'ดิน', 6: 'ทอง', 7: 'ทอง', 8: 'ดิน', 9: 'ไฟ' };
+    const dElem = doorElements[doorKey];
+    const pElem = palaceElements[pNum];
+    const overcomes = { 'ไม้': 'ดิน', 'ดิน': 'น้ำ', 'น้ำ': 'ไฟ', 'ไฟ': 'ทอง', 'ทอง': 'ไม้' };
+
+    if (dElem && pElem && overcomes[dElem] === pElem) {
+      f.push({ name: 'Men Po', fullZh: '门迫', nameTh: 'ประตูพิฆาตวัง (门迫)', type: '凶', color: 'dark', desc: 'ประตูธาตุ' + dElem + ' พิฆาตวังธาตุ' + pElem + ' พลังสิริมงคลของประตูลดทอนลง 50%' });
+    } else if (dElem && pElem && overcomes[pElem] === dElem) {
+      f.push({ name: 'Gong Po', fullZh: '宫迫', nameTh: 'วังพิฆาตประตู (宫迫)', type: '凶', color: 'dark', desc: 'วังธาตุ' + pElem + ' พิฆาตประตูธาตุ' + dElem + ' ทิศทางสร้างแรงกดดันต่อผลลัพธ์' });
+    }
+
+    // 5.2 San Qi Ru Mu (三奇入墓 - สามก้านมงคลลงสุสาน)
+    if ((hStem === '乙' && pNum === 2) || (hStem === '丙' && pNum === 6) || (hStem === '丁' && pNum === 8)) {
+      f.push({ name: 'Ru Mu', fullZh: '三奇入墓', nameTh: 'สามก้านมงคลลงสุสาน (三奇入墓)', type: '凶', color: 'dark', desc: 'ก้านมงคล ' + hStem + ' สูญสิ้นพลัง เปรียบเหมือนแสงสว่างที่ถูกฝังกลบ' });
+    }
+
+    // 5.3 Liu Yi Ji Xing (六仪击刑 - 6 เจี่ยถูกลงทัณฑ์)
+    if ((hStem === '戊' && pNum === 3) || (hStem === '己' && pNum === 2) || (hStem === '庚' && pNum === 8) || (hStem === '辛' && pNum === 9) || (hStem === '壬' && pNum === 4) || (hStem === '癸' && pNum === 4)) {
+      f.push({ name: 'Ji Xing', fullZh: '六仪击刑', nameTh: 'หกเจี่ยถูกลงทัณฑ์ (六仪击刑)', type: '凶', color: 'dark', desc: 'ก้าน ' + hStem + ' เกิดการลงทัณฑ์ในวังนี้ ระวังการแตกหัก บาดเจ็บ หรือเสียทรัพย์' });
+    }
+
+    // 5.4 San Qi Sheng Di (三奇升殿 - สามก้านมงคลขึ้นแท่นประทับ)
+    if ((hStem === '乙' && pNum === 3) || (hStem === '丙' && pNum === 9) || (hStem === '丁' && pNum === 9)) {
+      f.push({ name: 'Sheng Di', fullZh: '三奇升殿', nameTh: 'สามก้านมงคลขึ้นแท่นประทับ (三奇升殿)', type: '吉', color: 'red', desc: 'ก้านมงคล ' + hStem + ' ประทับวังกำเนิดตน มีพลังอำนาจเกื้อหนุนสูงสุด' });
+    }
+
+    // 5.5 Fu Yin (伏吟)
+    if (hStem === eStem && !f.some(x => x.name === 'Fu Yin')) {
+      f.push({ name: 'Fu Yin', fullZh: '干伏吟', nameTh: 'ก้านซ้อนทับ (伏吟)', type: '凶', color: 'dark', desc: 'ก้านฟ้าตรงกับก้านดิน การงานหยุดนิ่ง ชะลอตัว ควรตั้งรับ' });
+    }
+
+    // 5.6 Envoy & Special Palace Formations
     if (!isYangDun && eStem === '丁' && (isEnvoy || doorKey === '伤')) {
-      f.push({ name: 'Yu Nu', color: 'red' });
+      f.push({ name: 'Yu Nu', fullZh: '玉女守门', nameTh: 'หยกกัลยาเฝ้าประตู (玉女守门)', type: '吉', color: 'red', desc: 'โชคลาภการเงิน ความรัก และโอกาสลับที่ไม่คาดฝัน' });
     }
-    if (hStem === '壬' && pNum === 4) {
-      f.push({ name: 'Ren Xing', color: 'dark' });
+    if (pNum === 4 && hStem === '壬') {
+      f.push({ name: 'Ren Xing', fullZh: '任刑', nameTh: 'ทัณฑ์เทียนเริ่น (任刑)', type: '凶', color: 'dark', desc: 'มีอุปสรรคข้อกฎหมาย หรือระเบียบขั้นตอนซับซ้อน' });
     } else if (pNum === 4 && !['壬'].includes(hStem)) {
-      f.push({ name: 'Yue Wang', color: 'red' });
+      f.push({ name: 'Yue Wang', fullZh: '月旺', nameTh: 'ดวงจันทร์สุกสว่าง (月旺)', type: '吉', color: 'red', desc: 'พลังงานสมบูรณ์ รุ่งเรือง การค้าราบรื่น' });
     }
-    if (hStem === '丁' && pNum === 8 && doorKey === '惊') {
-      f.push({ name: 'Xing Shi', color: 'red' });
-      f.push({ name: 'Xing Wei', color: 'red' });
-    }
-
-    // 2. Inauspicious & Standard Stem Formations (Dark font)
-    if (pair === '戊+庚') f.push({ name: 'Fei Gong', color: 'dark' });
-    if (pair === '庚+癸' || (hStem === '庚' && pNum === 7)) f.push({ name: 'Da Ge', color: 'dark' });
-    if (pair === '庚+己') f.push({ name: 'Xing Ge', color: 'dark' });
-    if (pair === '庚+壬') f.push({ name: 'Xiao Ge', color: 'dark' });
-    if (pair === '庚+丙') f.push({ name: 'Tai Bai Ru Ying', color: 'dark' });
-    if (pair === '丙+庚') f.push({ name: 'Ying Ru Tai Bai', color: 'dark' });
-    if (pair === '辛+乙') f.push({ name: 'Bai Hu Chang Kuang', color: 'dark' });
-    if (pair === '乙+辛') f.push({ name: 'Qing Long Tao Zou', color: 'dark' });
-    if (pair === '丁+癸') f.push({ name: 'Que Tou Jiang', color: 'dark' });
-    if (pair === '癸+丁') f.push({ name: 'She Yao Jiao', color: 'dark' });
-    if (pair === '庚+戊') f.push({ name: 'Fu Gong', color: 'dark' });
-    if (hStem === eStem) f.push({ name: 'Fu Yin', color: 'dark' });
-
-    // Auspicious Stems
-    if (pair === '戊+丙') f.push({ name: 'Qing Long Fan Shou', color: 'red' });
-    if (pair === '丙+戊') f.push({ name: 'Fei Niao Die Xue', color: 'red' });
-
-    // Dun Formations
-    if (hStem === '丙' && doorKey === '生' && (eStem === '丁' || deityKey === '天')) f.push({ name: 'Tian Dun', color: 'red' });
-    else if (hStem === '乙' && doorKey === '开' && (eStem === '己' || deityKey === '地')) f.push({ name: 'Di Dun', color: 'red' });
-    else if (hStem === '丁' && doorKey === '休' && deityKey === '阴') f.push({ name: 'Ren Dun', color: 'red' });
-    else if (hStem === '丙' && doorKey === '生' && deityKey === '天') f.push({ name: 'Shen Dun', color: 'red' });
-    else if (hStem === '乙' && doorKey === '杜' && deityKey === '地') f.push({ name: 'Gui Dun', color: 'red' });
 
     return f;
   }
@@ -765,7 +850,7 @@
         const isHorse = (hourHorse.palace === pNum);
         const isEnvoy = (doorKey === envoyDoorKey && pNum === envoyPalace);
 
-        const formations = checkFormations(hStemChar, eStemChar, doorKey, pNum, isEnvoy, deityKey, isYangDun);
+        const formations = checkFormations(hStemChar, eStemChar, doorKey, pNum, isEnvoy, deityKey, isYangDun, starKey);
         const hex = palaceHexagrams[pNum] || getPalaceHexagram(hStemChar, eStemChar, pNum);
 
         let baseScore = (doorKey === '生' || doorKey === '开' || doorKey === '休') ? 85 : (doorKey === '景' || doorKey === '杜') ? 68 : 48;
@@ -1262,7 +1347,7 @@
         this.el.matrixContainer.innerHTML = matrixOrder.map(num => {
           const p = chart.palaces[num];
           const isSelected = num === this.selectedPalaceNum;
-          const isDestiny = num === chart.destinyPalaceNum;
+          const isDestiny = this.isDestinyMode && (num === chart.destinyPalaceNum);
 
           if (num === 5) {
             // Center Palace
@@ -1326,7 +1411,7 @@
                   ` : ''}
                 </div>
                 <div class="qm-formations-box">
-                  ${p.formations.map(f => `<span class="qm-formation-text ${typeof f === 'object' ? f.color : 'red'}">${typeof f === 'object' ? f.name : f}</span>`).join('')}
+                  ${p.formations.slice(0, 3).map(f => `<span class="qm-formation-text ${typeof f === 'object' ? f.color : 'red'}" title="${typeof f === 'object' ? f.nameTh : f}">${typeof f === 'object' ? f.name : f}</span>`).join('')}
                 </div>
               </div>
 
@@ -1363,50 +1448,57 @@
       }
 
       // 4. Render Right Sidebar Panels: 3 Victories (三胜)
+      // Only display 3 Victories when in Destiny Chart mode
       if (this.el.victoriesContainer) {
-        const v = chart.victories;
-        this.el.victoriesContainer.innerHTML = `
-          <div class="qm-victory-card">
-            <div class="qm-victory-header">
-              <span><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> ชัยชนะทั้งสาม (3 Victories • 三胜)</span>
+        if (this.isDestinyMode) {
+          this.el.victoriesContainer.style.display = 'block';
+          const v = chart.victories;
+          this.el.victoriesContainer.innerHTML = `
+            <div class="qm-victory-card">
+              <div class="qm-victory-header">
+                <span><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> ชัยชนะทั้งสาม (3 Victories • 三胜)</span>
+              </div>
+              <div class="qm-victory-list">
+                <div class="qm-victory-item victory-deity" data-palace="${v.deity.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
+                  <div class="qm-vic-title-row">
+                    <span class="qm-vic-name"><i class="fa-solid fa-shield-cat" style="color: #8b5cf6;"></i> ${v.deity.title}</span>
+                    <span class="qm-vic-dir-badge">${v.deity.pos} • ${v.deity.dirZh}</span>
+                  </div>
+                  <div class="qm-vic-entity">${v.deity.entity} (วัง ${v.deity.palaceNum} • ${v.deity.dirTh})</div>
+                  <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.deity.action}</p>
+                </div>
+                <div class="qm-victory-item victory-door" data-palace="${v.door.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
+                  <div class="qm-vic-title-row">
+                    <span class="qm-vic-name"><i class="fa-solid fa-door-open" style="color: #10b981;"></i> ${v.door.title}</span>
+                    <span class="qm-vic-dir-badge">${v.door.pos} • ${v.door.dirZh}</span>
+                  </div>
+                  <div class="qm-vic-entity">${v.door.entity} (วัง ${v.door.palaceNum} • ${v.door.dirTh})</div>
+                  <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.door.action}</p>
+                </div>
+                <div class="qm-victory-item victory-palace" data-palace="${v.palace.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
+                  <div class="qm-vic-title-row">
+                    <span class="qm-vic-name"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${v.palace.title}</span>
+                    <span class="qm-vic-dir-badge">${v.palace.pos} • ${v.palace.dirZh}</span>
+                  </div>
+                  <div class="qm-vic-entity">${v.palace.entity} (วัง ${v.palace.palaceNum} • ${v.palace.dirTh})</div>
+                  <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.palace.action}</p>
+                </div>
+              </div>
             </div>
-            <div class="qm-victory-list">
-              <div class="qm-victory-item victory-deity" data-palace="${v.deity.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
-                <div class="qm-vic-title-row">
-                  <span class="qm-vic-name"><i class="fa-solid fa-shield-cat" style="color: #8b5cf6;"></i> ${v.deity.title}</span>
-                  <span class="qm-vic-dir-badge">${v.deity.pos} • ${v.deity.dirZh}</span>
-                </div>
-                <div class="qm-vic-entity">${v.deity.entity} (วัง ${v.deity.palaceNum} • ${v.deity.dirTh})</div>
-                <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.deity.action}</p>
-              </div>
-              <div class="qm-victory-item victory-door" data-palace="${v.door.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
-                <div class="qm-vic-title-row">
-                  <span class="qm-vic-name"><i class="fa-solid fa-door-open" style="color: #10b981;"></i> ${v.door.title}</span>
-                  <span class="qm-vic-dir-badge">${v.door.pos} • ${v.door.dirZh}</span>
-                </div>
-                <div class="qm-vic-entity">${v.door.entity} (วัง ${v.door.palaceNum} • ${v.door.dirTh})</div>
-                <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.door.action}</p>
-              </div>
-              <div class="qm-victory-item victory-palace" data-palace="${v.palace.palaceNum}" style="cursor: pointer;" title="คลิกเพื่อเลือกดูวังนี้">
-                <div class="qm-vic-title-row">
-                  <span class="qm-vic-name"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> ${v.palace.title}</span>
-                  <span class="qm-vic-dir-badge">${v.palace.pos} • ${v.palace.dirZh}</span>
-                </div>
-                <div class="qm-vic-entity">${v.palace.entity} (วัง ${v.palace.palaceNum} • ${v.palace.dirTh})</div>
-                <p class="qm-vic-desc"><strong>กลยุทธ์:</strong> ${v.palace.action}</p>
-              </div>
-            </div>
-          </div>
-        `;
+          `;
 
-        // Click on victory card to select palace
-        const self = this;
-        this.el.victoriesContainer.querySelectorAll('.qm-victory-item').forEach(item => {
-          item.addEventListener('click', () => {
-            const pNum = parseInt(item.getAttribute('data-palace'), 10);
-            if (pNum) self.selectPalace(pNum);
+          // Click on victory card to select palace
+          const self = this;
+          this.el.victoriesContainer.querySelectorAll('.qm-victory-item').forEach(item => {
+            item.addEventListener('click', () => {
+              const pNum = parseInt(item.getAttribute('data-palace'), 10);
+              if (pNum) self.selectPalace(pNum);
+            });
           });
-        });
+        } else {
+          this.el.victoriesContainer.style.display = 'none';
+          this.el.victoriesContainer.innerHTML = '';
+        }
       }
 
       if (this.el.palacesBox) {
@@ -1454,8 +1546,8 @@
     renderPalaceDetail: function (p) {
       if (!this.el.detailDrawer || !p) return;
 
-      const isDestiny = this.chartData && p.num === this.chartData.destinyPalaceNum;
-      const v = this.chartData ? this.chartData.victories : null;
+      const isDestiny = this.isDestinyMode && this.chartData && (p.num === this.chartData.destinyPalaceNum);
+      const v = (this.isDestinyMode && this.chartData) ? this.chartData.victories : null;
       let victoryBadge = '';
       if (v) {
         if (p.num === v.deity.palaceNum) {
@@ -1552,6 +1644,27 @@
               <strong>ฟ้า: ${p.heavenStem.zh} (${p.heavenStem.py}) / ดิน: ${p.earthStem.zh} (${p.earthStem.py})</strong>
               <p>${p.constellation}</p>
             </div>
+          </div>
+
+          <!-- Formations Section -->
+          <div class="qm-formations-detail-section">
+            <h4><i class="fa-solid fa-chess-knight" style="color: #0284c7;"></i> รูปแบบผังพิชัยสงครามประจำทิศ (Active Formations • 格局):</h4>
+            ${p.formations && p.formations.length > 0 ? `
+              <div class="qm-formation-chips-list">
+                ${p.formations.map(f => `
+                  <div class="qm-form-chip ${f.color || 'dark'}">
+                    <div class="qm-chip-head">
+                      <span class="badge ${f.type === '吉' ? 'good' : 'bad'}">${f.type}</span>
+                      <strong>${f.name} • ${f.fullZh}</strong>
+                    </div>
+                    <div class="qm-chip-th">${f.nameTh}</div>
+                    <div class="qm-chip-desc">${f.desc}</div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <p class="qm-no-formations">ทิศนี้มีพลังงานสอดประสานตามธรรมชาติ ไม่มีโครงสร้างเก็กพิเศษ (Neutral Flow)</p>
+            `}
           </div>
 
           <div class="qm-strategic-box">

@@ -7010,6 +7010,82 @@ body.is-mobile .synthesis-box-body {
 .qm-act-pill i { color: #f59e0b; }
 .qm-act-pill strong { color: #0f172a; }
 
+/* Formations Section in Detail Drawer */
+.qm-formations-detail-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.qm-formations-detail-section h4 {
+  font-size: 13.5px;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Prompt', sans-serif;
+}
+.qm-formation-chips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.qm-form-chip {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-left: 4px solid #94a3b8;
+}
+.qm-form-chip.red {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+}
+.qm-form-chip.dark {
+  border-left-color: #475569;
+  background: #f8fafc;
+}
+.qm-chip-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.qm-chip-head .badge {
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+.qm-chip-head .badge.good { background: #dcfce7; color: #15803d; }
+.qm-chip-head .badge.bad { background: #fee2e2; color: #b91c1c; }
+.qm-chip-head strong {
+  font-size: 13px;
+  color: #0f172a;
+}
+.qm-chip-th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+}
+.qm-chip-desc {
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.35;
+}
+.qm-no-formations {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  font-style: italic;
+}
+
 /* Responsive Qi Men Dun Jia (Professional Proportions on Mobile) */
 @media (max-width: 900px) {
   #qiMenAppView:not(.hidden) {
