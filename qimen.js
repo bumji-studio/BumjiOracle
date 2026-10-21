@@ -484,19 +484,19 @@
     }
 
     // 3. Auspicious Stem Combinations (十干吉格)
-    if (pair === '戊+丙') f.push({ name: 'Qing Long', fullZh: '青龙返首', nameTh: 'มังกรเขียวหวนคืน (青龙返首)', type: '吉', color: 'red', desc: 'มหาลาภ การเงินสำเร็จ ก้าวหน้าทุกทิศทาง โอกาสทอง' });
-    if (pair === '丙+戊') f.push({ name: 'Fei Niao', fullZh: '飞鸟跌穴', nameTh: 'วิหคถลาลม (飞鸟跌穴)', type: '吉', color: 'red', desc: 'ได้ลาภผลโดยง่าย ไม่ต้องเหน็ดเหนื่อย ประสบชัยชนะ' });
-    if (pair === '乙+丙') f.push({ name: 'Qi Shun', fullZh: '奇顺华盖', nameTh: 'ก้านไม้งามใต้ร่มทอง (奇顺华盖)', type: '吉', color: 'red', desc: 'ก้าวหน้า เจรจาการงานสำเร็จ นำเสนอผลงานได้รับการยอมรับ' });
-    if (pair === '乙+丁') f.push({ name: 'Qi Jie', fullZh: '奇捷之心', nameTh: 'ไหวพริบฉับไว (奇捷之心)', type: '吉', color: 'red', desc: 'สติปัญญาเฉียบคม แก้ไขปัญหาได้รวดเร็ว ความคิดสร้างสรรค์' });
-    if (pair === '丙+乙') f.push({ name: 'Ri Yue', fullZh: '日月并明', nameTh: 'ตะวันจันทราส่องสว่าง (日月并明)', type: '吉', color: 'red', desc: 'ชื่อเสียง บารมี ผู้ใหญ่อุปถัมภ์ค้ำชู ทำสิ่งใดก็รุ่งเรือง' });
-    if (pair === '丙+丁') f.push({ name: 'Yue Qi', fullZh: '月奇之灵', nameTh: 'จันทราศักดิ์สิทธิ์ (月奇之灵)', type: '吉', color: 'red', desc: 'เอกสาร สัญญา การเจรจาราบรื่น ค้าขายได้กำไร' });
-    if (pair === '丁+乙') f.push({ name: 'Yu Nu Fu', fullZh: '玉女伏奇', nameTh: 'หยกกัลยาสยบก้าน (玉女伏奇)', type: '吉', color: 'red', desc: 'เมตตามหานิยม มีเสน่ห์ คนรอบข้างช่วยเหลือเกื้อกูล' });
-    if (pair === '丁+丙') f.push({ name: 'Xing Qi', fullZh: '星奇入贵', nameTh: 'ดารามงคลสู่เกียรติยศ (星奇入贵)', type: '吉', color: 'red', desc: 'เลื่อนขั้น เลื่อนตำแหน่ง โชคลาภการงาน สอบแข่งขันได้คะแนนดี' });
-    if (pair === '丁+丁') f.push({ name: 'Qi Xiao', fullZh: '奇小相投', nameTh: 'ดวงดาวสมานฉันท์ (奇小相投)', type: '吉', color: 'red', desc: 'ร่วมมือร่วมใจ งานเอกสารข่าวสารรวดเร็ว ความรักสมหวัง' });
-    if (pair === '戊+丁') f.push({ name: 'Qing Long Yao', fullZh: '青龙耀明', nameTh: 'มังกรเขียวเปล่งประกาย (青龙耀明)', type: '吉', color: 'red', desc: 'พบปะผู้ใหญ่ มีเกียรติยศชื่อเสียง เปิดตัวสินค้าประสบความสำเร็จ' });
-    if (pair === '丁+戊') f.push({ name: 'Qing Long De', fullZh: '青龙得光', nameTh: 'มังกรเขียวรับแสงสว่าง (青龙得光)', type: '吉', color: 'red', desc: 'ได้รับความสว่างไสว ขจัดเมฆหมอกอุปสรรค รุ่งโรจน์' });
-    if (pair === '壬+戊') f.push({ name: 'Xiao She', fullZh: '小蛇化龙', nameTh: 'งูน้อยกลายร่างเป็นมังกร (小蛇化龙)', type: '吉', color: 'red', desc: 'พลิกฟื้นจากร้ายกลายเป็นดี ยกระดับฐานะ พลิกชีวิต' });
-    if (pair === '辛+丁') f.push({ name: 'Yu Shen', fullZh: '狱神得奇', nameTh: 'หลุดพ้นจากพันธนาการ (狱神得奇)', type: '吉', color: 'red', desc: 'หนี้สินคลี่คลาย ชนะคดีความ ปัญหาติดขัดคลี่คลาย' });
+    if (pair === '戊+丙') f.push({ name: 'Qing Long', acronym: 'GDR', fullZh: '青龙返首', nameTh: 'มังกรเขียวหวนคืน (青龙返首 • GDR)', type: '吉', color: 'red', desc: 'มหาลาภ การเงินสำเร็จ ก้าวหน้าทุกทิศทาง โอกาสทอง' });
+    if (pair === '丙+戊') f.push({ name: 'Fei Niao', acronym: 'FBFIC', fullZh: '飞鸟跌穴', nameTh: 'วิหคถลาลม (飞鸟跌穴 • FBFIC)', type: '吉', color: 'red', desc: 'ได้ลาภผลโดยง่าย ไม่ต้องเหน็ดเหนื่อย ประสบชัยชนะ' });
+    if (pair === '乙+丙') f.push({ name: 'Qi Shun', acronym: 'QISHUN', fullZh: '奇顺华盖', nameTh: 'ก้านไม้งามใต้ร่มทอง (奇顺华盖)', type: '吉', color: 'red', desc: 'ก้าวหน้า เจรจาการงานสำเร็จ นำเสนอผลงานได้รับการยอมรับ' });
+    if (pair === '乙+丁') f.push({ name: 'Qi Jie', acronym: 'QIJIE', fullZh: '奇捷之心', nameTh: 'ไหวพริบฉับไว (奇捷之心)', type: '吉', color: 'red', desc: 'สติปัญญาเฉียบคม แก้ไขปัญหาได้รวดเร็ว ความคิดสร้างสรรค์' });
+    if (pair === '丙+乙') f.push({ name: 'Ri Yue', acronym: 'RIYUE', fullZh: '日月并明', nameTh: 'ตะวันจันทราส่องสว่าง (日月并明)', type: '吉', color: 'red', desc: 'ชื่อเสียง บารมี ผู้ใหญ่อุปถัมภ์ค้ำชู ทำสิ่งใดก็รุ่งเรือง' });
+    if (pair === '丙+丁') f.push({ name: 'Yue Qi', acronym: 'YUEQI', fullZh: '月奇之灵', nameTh: 'จันทราศักดิ์สิทธิ์ (月奇之灵)', type: '吉', color: 'red', desc: 'เอกสาร สัญญา การเจรจาราบรื่น ค้าขายได้กำไร' });
+    if (pair === '丁+乙') f.push({ name: 'Yu Nu Fu', acronym: 'YUNUFU', fullZh: '玉女伏奇', nameTh: 'หยกกัลยาสยบก้าน (玉女伏奇)', type: '吉', color: 'red', desc: 'เมตตามหานิยม มีเสน่ห์ คนรอบข้างช่วยเหลือเกื้อกูล' });
+    if (pair === '丁+丙') f.push({ name: 'Xing Qi', acronym: 'XINGQI', fullZh: '星奇入贵', nameTh: 'ดารามงคลสู่เกียรติยศ (星奇入贵)', type: '吉', color: 'red', desc: 'เลื่อนขั้น เลื่อนตำแหน่ง โชคลาภการงาน สอบแข่งขันได้คะแนนดี' });
+    if (pair === '丁+丁') f.push({ name: 'Qi Xiao', acronym: 'QIXIAO', fullZh: '奇小相投', nameTh: 'ดวงดาวสมานฉันท์ (奇小相投)', type: '吉', color: 'red', desc: 'ร่วมมือร่วมใจ งานเอกสารข่าวสารรวดเร็ว ความรักสมหวัง' });
+    if (pair === '戊+丁') f.push({ name: 'Qing Long Yao', acronym: 'QLYAO', fullZh: '青龙耀明', nameTh: 'มังกรเขียวเปล่งประกาย (青龙耀明)', type: '吉', color: 'red', desc: 'พบปะผู้ใหญ่ มีเกียรติยศชื่อเสียง เปิดตัวสินค้าประสบความสำเร็จ' });
+    if (pair === '丁+戊') f.push({ name: 'Qing Long De', acronym: 'QLDE', fullZh: '青龙得光', nameTh: 'มังกรเขียวรับแสงสว่าง (青龙得光)', type: '吉', color: 'red', desc: 'ได้รับความสว่างไสว ขจัดเมฆหมอกอุปสรรค รุ่งโรจน์' });
+    if (pair === '壬+戊') f.push({ name: 'Xiao She', acronym: 'XIAOSHE', fullZh: '小蛇化龙', nameTh: 'งูน้อยกลายร่างเป็นมังกร (小蛇化龙)', type: '吉', color: 'red', desc: 'พลิกฟื้นจากร้ายกลายเป็นดี ยกระดับฐานะ พลิกชีวิต' });
+    if (pair === '辛+丁') f.push({ name: 'Yu Shen', acronym: 'YUSHEN', fullZh: '狱神得奇', nameTh: 'หลุดพ้นจากพันธนาการ (狱神得奇)', type: '吉', color: 'red', desc: 'หนี้สินคลี่คลาย ชนะคดีความ ปัญหาติดขัดคลี่คลาย' });
 
     // 4. Inauspicious Stem Combinations (十干凶格)
     if (pair === '乙+辛') f.push({ name: 'Tao Zou', fullZh: '青龙逃走', nameTh: 'มังกรเขียวหนีเตลิด (青龙逃走)', type: '凶', color: 'dark', desc: 'เสียทรัพย์ ทรัพย์สินรั่วไหล หุ้นส่วนแตกแยก ไม่ควรลงทุน' });
@@ -577,8 +577,8 @@
     }
 
     // 5.7 Envoy & Special Palace Formations
-    if (!isYangDun && eStem === '丁' && (isEnvoy || doorKey === '伤')) {
-      f.push({ name: 'Yu Nu', fullZh: '玉女守门', nameTh: 'หยกกัลยาเฝ้าประตู (玉女守门)', type: '吉', color: 'red', desc: 'โชคลาภการเงิน ความรัก และโอกาสลับที่ไม่คาดฝัน' });
+    if (eStem === '丁' && (isEnvoy || doorKey === '伤')) {
+      f.push({ name: 'Yu Nu', acronym: 'YUNU', fullZh: '玉女守门', nameTh: 'หยกกัลยาเฝ้าประตู (玉女守门 • YUNU)', type: '吉', color: 'red', desc: 'โชคลาภการเงิน ความรัก และโอกาสลับที่ไม่คาดฝัน' });
     }
     if (pNum === 4 && hStem === '壬') {
       f.push({ name: 'Ren Xing', fullZh: '任刑', nameTh: 'ทัณฑ์เทียนเริ่น (Ren Xing / 任刑)', type: '凶', color: 'dark', desc: 'มีอุปสรรคข้อกฎหมาย หรือระเบียบขั้นตอนซับซ้อน' });
@@ -625,7 +625,7 @@
   }
 
   const QiMenEngine = {
-    plot: function (dateObj, hourIndex = null, minute = null) {
+    plot: function (dateObj, hourIndex = null, minute = null, chartType = 'hour') {
       const now = dateObj instanceof Date ? dateObj : new Date();
       const actualH = now.getHours();
       const actualHIdx = Math.floor((actualH + 1) % 24 / 2);
@@ -702,11 +702,51 @@
       const hourHorse = getSkyHorse(hourBranch);
       const dayHorse = getSkyHorse(dayBranch);
 
-      // Structure: Determine Yin/Yang Dun and Ju number via Chai Bu Fa (拆补法)
+      // Support 4 Chart Types: Hour (時家), Day (日家), Month (月家), Year (年家)
+      const validTypes = ['hour', 'day', 'month', 'year'];
+      const activeType = validTypes.includes(chartType) ? chartType : 'hour';
+
       const currentTerm = getSolarTerm(now);
-      const isYangDun = currentTerm.isYang;
       const yuanIdx = Math.floor(dayCycle / 5) % 3; // 0=Shang, 1=Zhong, 2=Xia
-      const juNum = currentTerm.ju[yuanIdx];
+
+      let focalStem = hourStem;
+      let focalBranch = hourBranch;
+      let focalXun = hourXun;
+      let focalHorse = hourHorse;
+      let isYangDun = currentTerm.isYang;
+      let juNum = currentTerm.ju[yuanIdx];
+      let chartTypeName = 'Hour Chart (時家奇門 - ผังยาม)';
+
+      if (activeType === 'day') {
+        focalStem = dayStem;
+        focalBranch = dayBranch;
+        focalXun = dayXun;
+        focalHorse = dayHorse;
+        isYangDun = currentTerm.isYang;
+        juNum = isYangDun ? [1, 7, 4][yuanIdx] : [9, 3, 6][yuanIdx];
+        chartTypeName = 'Day Chart (日家奇門 - ผังวัน)';
+      } else if (activeType === 'month') {
+        focalStem = monthStem;
+        focalBranch = monthBranch;
+        focalXun = getXunInfo(monthStem, monthBranch);
+        focalHorse = getSkyHorse(monthBranch);
+        isYangDun = false; // Month Dun is traditionally Yin Dun
+        if (['寅', '午', '戌'].includes(yearBranch)) juNum = 1;
+        else if (['申', '子', '辰'].includes(yearBranch)) juNum = 7;
+        else if (['巳', '酉', '丑'].includes(yearBranch)) juNum = 4;
+        else juNum = 2; // 亥、卯、未
+        chartTypeName = 'Month Chart (月家奇門 - ผังเดือน)';
+      } else if (activeType === 'year') {
+        focalStem = yearStem;
+        focalBranch = yearBranch;
+        focalXun = getXunInfo(yearStem, yearBranch);
+        focalHorse = getSkyHorse(yearBranch);
+        isYangDun = false; // Year Dun is traditionally Yin Dun
+        const sanYuanOffset = ((yr - 1864) % 180 + 180) % 180;
+        juNum = (sanYuanOffset < 60) ? 1 : (sanYuanOffset < 120) ? 4 : 7;
+        chartTypeName = 'Year Chart (年家奇門 - ผังปี)';
+      }
+
       const structureName = `${isYangDun ? 'Yang' : 'Yin'} ${juNum}`;
 
       // 1. Earth Plate (地盘)
@@ -722,9 +762,9 @@
         earthPlate[p] = stem;
       });
 
-      // 2. Xun Leader & Duty Star / Duty Envoy
-      const sIdx = stemsList.indexOf(hourStem);
-      const bIdx = branchesList.indexOf(hourBranch);
+      // 2. Xun Leader & Duty Star / Duty Envoy based on focal pillar
+      const sIdx = stemsList.indexOf(focalStem);
+      const bIdx = branchesList.indexOf(focalBranch);
       const xunDiff = (bIdx - sIdx + 12) % 12;
       const xunLeaders = {
         0: { leader: '甲子', hides: '戊' },
@@ -750,7 +790,7 @@
 
       // 3. Heaven Plate (Duty Star Target Palace & Rotation)
       let targetStarPalace = 1;
-      const targetStem = (hourStem === '甲') ? leadStemChar : hourStem;
+      const targetStem = (focalStem === '甲') ? leadStemChar : focalStem;
       for (let p = 1; p <= 9; p++) {
         if (earthPlate[p] === targetStem) {
           targetStarPalace = p;
@@ -960,6 +1000,9 @@
           year: { stem: STEMS_INFO[yearStem], branch: BRANCHES_INFO[yearBranch] }
         },
         meta: {
+          chartType: activeType,
+          chartTypeName: chartTypeName,
+          focalPillar: activeType,
           chartId: (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 12) ? (667 + (hIdx - 6)) : ((isYangDun ? 100 : 600) + juNum * 20 + hIdx),
           structure: structureName,
           leadStem: `${leadStemChar} ${STEMS_INFO[leadStemChar].py}`,
@@ -968,8 +1011,10 @@
           constellation: constellationName,
           hourJia: `${hourXun.hides} ${STEMS_INFO[hourXun.hides].py}`,
           dayJia: `${dayXun.hides} ${STEMS_INFO[dayXun.hides].py}`,
+          focalJia: `${focalXun.hides} ${STEMS_INFO[focalXun.hides].py}`,
           hourHorse: `${hourHorse.branch} ${hourHorse.py} (${hourHorse.en})`,
           dayHorse: `${dayHorse.branch} ${dayHorse.py} (${dayHorse.en})`,
+          focalHorse: `${focalHorse.branch} ${focalHorse.py} (${focalHorse.en})`,
           hourKongWang: {
             top: `${hourXun.kongWang[0]} ${BRANCHES_INFO[hourXun.kongWang[0]].py} (${BRANCHES_INFO[hourXun.kongWang[0]].en})`,
             bot: `${hourXun.kongWang[1]} ${BRANCHES_INFO[hourXun.kongWang[1]].py} (${BRANCHES_INFO[hourXun.kongWang[1]].en})`
@@ -977,6 +1022,10 @@
           dayKongWang: {
             top: `${dayXun.kongWang[0]} ${BRANCHES_INFO[dayXun.kongWang[0]].py} (${BRANCHES_INFO[dayXun.kongWang[0]].en})`,
             bot: `${dayXun.kongWang[1]} ${BRANCHES_INFO[dayXun.kongWang[1]].py} (${BRANCHES_INFO[dayXun.kongWang[1]].en})`
+          },
+          focalKongWang: {
+            top: `${focalXun.kongWang[0]} ${BRANCHES_INFO[focalXun.kongWang[0]].py} (${BRANCHES_INFO[focalXun.kongWang[0]].en})`,
+            bot: `${focalXun.kongWang[1]} ${BRANCHES_INFO[focalXun.kongWang[1]].py} (${BRANCHES_INFO[focalXun.kongWang[1]].en})`
           },
           hourNobleman: getNobleman(hourStem),
           dayNobleman: getNobleman(dayStem)
@@ -1031,6 +1080,96 @@
           hour: { '子': 'Horse', '丑': 'Goat', '寅': 'Monkey', '卯': 'Rooster', '辰': 'Dog', '巳': 'Pig', '午': 'Rat', '未': 'Ox', '申': 'Tiger', '酉': 'Rabbit', '戌': 'Dragon', '亥': 'Snake' }[hourBranch] || 'Rat'
         }
       };
+    },
+
+    scanFormationsMatchingDestiny: function (destinyChart, todayChart) {
+      if (!destinyChart || !todayChart || !destinyChart.palaces || !todayChart.palaces) {
+        return { matches: [], grandFormations: [], summary: { count: 0, gdr: false, fbfic: false, yunu: false } };
+      }
+
+      const destP = destinyChart.destinyPalaceNum;
+      const v = destinyChart.victories;
+      const matches = [];
+      const grandFormations = [];
+
+      let hasGdr = false;
+      let hasFbfic = false;
+      let hasYunu = false;
+
+      RING_8.forEach(pNum => {
+        const pal = todayChart.palaces[pNum];
+        if (!pal || !pal.formations || pal.formations.length === 0) return;
+
+        pal.formations.forEach(f => {
+          if (f.acronym === 'GDR') hasGdr = true;
+          if (f.acronym === 'FBFIC') hasFbfic = true;
+          if (f.acronym === 'YUNU') hasYunu = true;
+
+          let matchType = null;
+          let matchRank = 99;
+          let matchTitle = '';
+          let matchStrategy = '';
+
+          if (pNum === destP) {
+            matchType = 'destiny_palace';
+            matchRank = 1;
+            matchTitle = `👑 ตรงกับวังชะตาชีวิตประจำตัวคุณ (Destiny Palace • 本命宫)`;
+            matchStrategy = `ทิศ ${pal.pos} (${pal.dirTh}) วันนี้มีโครงสร้างพลังงาน “${f.nameTh}” สถิตตรงกับวังชะตากำเนิดของคุณโดยตรง เสริมพลังบารมี ความมั่นใจ และออร่าผู้นำให้โดดเด่นสูงสุด`;
+          } else if (v && pNum === v.door.palaceNum) {
+            matchType = 'door_victory';
+            matchRank = 2;
+            matchTitle = `💰 ตรงกับทิศดูดทรัพย์/ปิดการขาย (Door Victory • 门胜)`;
+            matchStrategy = `ทิศ ${pal.pos} (${pal.dirTh}) มีโครงสร้างมงคล “${f.nameTh}” เกื้อหนุนทิศประตูเกิดของคุณ เหมาะสำหรับหันหน้าไปทิศนี้เพื่อเจรจาการค้า ปิดดีลธุรกิจ และดึงดูดกระแสการเงิน`;
+          } else if (v && pNum === v.deity.palaceNum) {
+            matchType = 'deity_victory';
+            matchRank = 3;
+            matchTitle = `✨ ตรงกับทิศขุมพลังฟ้า/ขอพร (Deity Victory • 神胜)`;
+            matchStrategy = `ทิศ ${pal.pos} (${pal.dirTh}) มีโครงสร้างมงคล “${f.nameTh}” หนุนทิศเทพเก้านภากาศ หันหลังให้ทิศนี้เมื่อตั้งจิต อธิษฐาน ขอพร หรือวางแผนยุทธศาสตร์ใหญ่`;
+          } else if (v && pNum === v.palace.palaceNum) {
+            matchType = 'palace_victory';
+            matchRank = 4;
+            matchTitle = `⚔️ ตรงกับทิศบารมี/ชนะการแข่งขัน (Palace Victory • 宫胜)`;
+            matchStrategy = `ทิศ ${pal.pos} (${pal.dirTh}) หนุนทิศทูตสวรรค์ประจำตัว เหมาะสำหรับใช้ในการเจรจาต่อรองให้ได้เปรียบ และชนะคู่แข่ง`;
+          } else if (f.type === '吉') {
+            matchType = 'auspicious_sector';
+            matchRank = 5;
+            matchTitle = `🌟 ทิศมหามงคลประจำวัน (${pal.pos} • ${pal.dirTh})`;
+            matchStrategy = `สามารถเดินทางไปทางทิศ ${pal.pos} หรือนั่งทำงานโดยหันหน้าหาทิศนี้ เพื่อรับพลังงานดีประจำวัน`;
+          }
+
+          const matchItem = {
+            formation: f,
+            palaceNum: pNum,
+            palace: pal,
+            matchType,
+            matchRank,
+            matchTitle,
+            matchStrategy
+          };
+
+          if (matchRank <= 4) {
+            matches.push(matchItem);
+          }
+          if (['GDR', 'FBFIC', 'YUNU'].includes(f.acronym) || ['Tian Dun', 'Di Dun', 'Ren Dun', 'Shen Dun'].includes(f.name)) {
+            grandFormations.push(matchItem);
+          }
+        });
+      });
+
+      matches.sort((a, b) => a.matchRank - b.matchRank);
+
+      return {
+        matches,
+        grandFormations,
+        destinyPalaceNum: destP,
+        victories: v,
+        summary: {
+          count: matches.length,
+          gdr: hasGdr,
+          fbfic: hasFbfic,
+          yunu: hasYunu
+        }
+      };
     }
   };
 
@@ -1038,17 +1177,26 @@
 
   // 8. UI Controller
   const QiMenApp = {
+    activeMainTab: 'realtime', // 'realtime' | 'calculator' | 'destiny'
+    calculatorLevel: 'hour',   // 'hour' | 'day' | 'month' | 'year'
+    destinySubTab: 'chart',     // 'chart' | 'formations'
     currentDate: new Date(),
     currentHourIdx: Math.floor((new Date().getHours() + 1) % 24 / 2),
     chartData: null,
+    destinyChartData: null,
+    todayChartData: null,
     selectedPalaceNum: 1, // default focus on Palace 1
-    isDestinyMode: true,
+    isDestinyMode: false,
     activeProfile: null,
 
+    isLoggedIn: function () {
+      return !!(window.AuthManager && window.AuthManager.isLoggedIn());
+    },
+
     getProfileData: function () {
-      // 1. JiutianAuth currentUser
-      if (window.JiutianAuth && window.JiutianAuth.currentUser && window.JiutianAuth.currentUser.birthDate) {
-        const u = window.JiutianAuth.currentUser;
+      // 1. AuthManager currentUser
+      if (window.AuthManager && window.AuthManager.currentUser && window.AuthManager.currentUser.birthDate) {
+        const u = window.AuthManager.currentUser;
         return {
           name: u.name || u.displayName || 'เจ้าของ Profile',
           birthDate: u.birthDate,
@@ -1058,7 +1206,7 @@
       }
       // 2. localStorage session
       try {
-        const s = localStorage.getItem('jiutian_arcana_session');
+        const s = localStorage.getItem('jiutian_arcana_user_session');
         if (s) {
           const u = JSON.parse(s);
           if (u && u.birthDate) {
@@ -1086,7 +1234,7 @@
           }
         }
       } catch (e) {}
-      // 4. Fallback profile (Baseline from user's benchmark chart)
+      // 4. Default benchmark profile (1977-07-23 15:45)
       return {
         name: 'คุณบัมจิ (Bumji)',
         birthDate: '1977-07-23',
@@ -1097,10 +1245,8 @@
 
     loadProfileDestiny: function () {
       const profile = this.getProfileData();
-      this.isDestinyMode = true;
       this.activeProfile = profile;
-      if (this.el && this.el.btnDestiny) this.el.btnDestiny.classList.add('active');
-      if (this.el && this.el.btnRealtime) this.el.btnRealtime.classList.remove('active');
+      this.isDestinyMode = true;
 
       const parts = profile.birthDate.split('-').map(Number);
       const [h, m] = (profile.birthTime || '12:00').split(':').map(Number);
@@ -1121,16 +1267,36 @@
       this.bindDOMElements();
       this.initDropdowns();
       this.bindEvents();
-      this.loadProfileDestiny();
-      console.log('[QiMen Dun Jia] International Convention Chart Plotter Initialized with Profile Destiny Chart.');
+      this.updateLockBadges();
+
+      // Start in Real-time pure hour chart mode (Guest and Member default)
+      this.switchMainTab('realtime');
+      console.log('[QiMen Dun Jia] 3-Tier Navigation & Formations Engine Initialized.');
     },
 
     bindDOMElements: function () {
       this.el = {
         view: document.getElementById('qiMenAppView'),
-        btnDestiny: document.getElementById('qmBtnDestiny'),
-        btnRealtime: document.getElementById('qmBtnRealtime'),
+        // 3 Main Nav Tabs
+        navRealtime: document.getElementById('qmNavRealtime'),
+        navCalculator: document.getElementById('qmNavCalculator'),
+        navDestiny: document.getElementById('qmNavDestiny'),
+        calcLockBadge: document.getElementById('qmCalcLockBadge'),
+        destinyLockBadge: document.getElementById('qmDestinyLockBadge'),
+        // Secondary Bars
+        chartLevelBar: document.getElementById('qmChartLevelBar'),
+        levelButtons: document.querySelectorAll('.qm-level-btn'),
+        destinySubNavBar: document.getElementById('qmDestinySubNavBar'),
+        subPillChart: document.getElementById('qmSubPillChart'),
+        subPillFormations: document.getElementById('qmSubPillFormations'),
+        matchCountBadge: document.getElementById('qmMatchCountBadge'),
+        // Toolbar Cards & Groups
+        toolbarCard: document.getElementById('qmToolbarCard'),
+        liveStatusPill: document.getElementById('qmLiveStatusPill'),
+        dateGroup: document.getElementById('qmDateGroup'),
+        hourPickerBox: document.getElementById('qmHourPickerBox'),
         profileDestinyBanner: document.getElementById('qmProfileDestinyBanner'),
+        dailyFormationsSection: document.getElementById('qmDailyFormationsSection'),
         // Day / Month / Year & Calendar triggers
         daySelect: document.getElementById('qmDaySelect'),
         monthSelect: document.getElementById('qmMonthSelect'),
@@ -1197,24 +1363,71 @@
       this.el.daySelect.value = String(Math.min(currentVal, maxDays));
     },
 
+    updateLockBadges: function () {
+      const isAuth = this.isLoggedIn();
+      if (this.el.calcLockBadge) {
+        this.el.calcLockBadge.style.display = isAuth ? 'none' : 'inline-flex';
+      }
+      if (this.el.destinyLockBadge) {
+        this.el.destinyLockBadge.style.display = isAuth ? 'none' : 'inline-flex';
+      }
+    },
+
     bindEvents: function () {
       const self = this;
 
-      if (this.el.btnDestiny) {
-        this.el.btnDestiny.addEventListener('click', () => {
-          self.loadProfileDestiny();
+      // 1. Tier 1: Real-Time Chart Tab
+      if (this.el.navRealtime) {
+        this.el.navRealtime.addEventListener('click', () => {
+          self.switchMainTab('realtime');
         });
       }
 
-      if (this.el.btnRealtime) {
-        this.el.btnRealtime.addEventListener('click', () => {
-          self.isDestinyMode = false;
-          if (self.el.btnDestiny) self.el.btnDestiny.classList.remove('active');
-          self.el.btnRealtime.classList.add('active');
-          self.currentDate = new Date();
-          self.currentHourIdx = Math.floor((self.currentDate.getHours() + 1) % 24 / 2);
-          self.syncInputs();
-          self.render();
+      // 2. Tier 2: 4-Level Calculator Tab (Member Protected)
+      if (this.el.navCalculator) {
+        this.el.navCalculator.addEventListener('click', () => {
+          if (!self.isLoggedIn()) {
+            if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+              window.AuthManager.openModal('login', 'qimen');
+            }
+            return;
+          }
+          self.switchMainTab('calculator');
+        });
+      }
+
+      // 3. Tier 3: Profile Destiny & Daily Formations Tab (Member Protected)
+      if (this.el.navDestiny) {
+        this.el.navDestiny.addEventListener('click', () => {
+          if (!self.isLoggedIn()) {
+            if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+              window.AuthManager.openModal('login', 'qimen');
+            }
+            return;
+          }
+          self.switchMainTab('destiny');
+        });
+      }
+
+      // 4. Mode 2: 4-Chart Level Buttons (Hour / Day / Month / Year)
+      if (this.el.levelButtons) {
+        this.el.levelButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const lvl = btn.getAttribute('data-level');
+            self.switchCalculatorLevel(lvl);
+          });
+        });
+      }
+
+      // 5. Mode 3: Destiny Sub-Tabs Switcher (Chart vs Formations)
+      if (this.el.subPillChart) {
+        this.el.subPillChart.addEventListener('click', () => {
+          self.switchDestinySubTab('chart');
+        });
+      }
+      if (this.el.subPillFormations) {
+        this.el.subPillFormations.addEventListener('click', () => {
+          self.switchDestinySubTab('formations');
         });
       }
 
@@ -1229,8 +1442,8 @@
         const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
         self.currentDate = new Date(y, m - 1, d, prevH, prevM);
 
-        if (self.isDestinyMode) {
-          if (!self.activeProfile) self.activeProfile = { name: 'เจ้าของดวงชะตา' };
+        if (self.activeMainTab === 'destiny') {
+          if (!self.activeProfile) self.activeProfile = self.getProfileData();
           const sm = String(m).padStart(2, '0');
           const sd = String(d).padStart(2, '0');
           self.activeProfile.birthDate = `${y}-${sm}-${sd}`;
@@ -1266,8 +1479,8 @@
               const prevH = self.currentDate ? self.currentDate.getHours() : 12;
               const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
               self.currentDate = new Date(parts[0], parts[1] - 1, parts[2], prevH, prevM);
-              if (self.isDestinyMode) {
-                if (!self.activeProfile) self.activeProfile = { name: 'เจ้าของดวงชะตา' };
+              if (self.activeMainTab === 'destiny') {
+                if (!self.activeProfile) self.activeProfile = self.getProfileData();
                 self.activeProfile.birthDate = e.target.value;
               }
               self.syncInputs();
@@ -1285,13 +1498,232 @@
           if (self.currentDate) {
             self.currentDate.setHours(hHours[self.currentHourIdx] || 12, 30, 0, 0);
           }
-          if (self.isDestinyMode && self.activeProfile) {
+          if (self.activeMainTab === 'destiny' && self.activeProfile) {
             const sh = String(hHours[self.currentHourIdx] || 12).padStart(2, '0');
             self.activeProfile.birthTime = `${sh}:00`;
           }
           self.render();
         });
       }
+    },
+
+    switchMainTab: function (tabKey) {
+      this.updateLockBadges();
+
+      if ((tabKey === 'calculator' || tabKey === 'destiny') && !this.isLoggedIn()) {
+        if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+          window.AuthManager.openModal('login', 'qimen');
+        }
+        return;
+      }
+
+      this.activeMainTab = tabKey;
+
+      // Update Nav Pills Active UI
+      if (this.el.navRealtime) this.el.navRealtime.classList.toggle('active', tabKey === 'realtime');
+      if (this.el.navCalculator) this.el.navCalculator.classList.toggle('active', tabKey === 'calculator');
+      if (this.el.navDestiny) this.el.navDestiny.classList.toggle('active', tabKey === 'destiny');
+
+      if (tabKey === 'realtime') {
+        this.isDestinyMode = false;
+        this.currentDate = new Date();
+        this.currentHourIdx = Math.floor((this.currentDate.getHours() + 1) % 24 / 2);
+        if (this.el.chartLevelBar) this.el.chartLevelBar.style.display = 'none';
+        if (this.el.destinySubNavBar) this.el.destinySubNavBar.style.display = 'none';
+        if (this.el.dailyFormationsSection) this.el.dailyFormationsSection.style.display = 'none';
+        if (this.el.liveStatusPill) this.el.liveStatusPill.style.display = 'inline-flex';
+        if (this.el.dateGroup) this.el.dateGroup.style.display = 'none';
+        if (this.el.hourPickerBox) this.el.hourPickerBox.style.display = 'none';
+        this.render();
+      } else if (tabKey === 'calculator') {
+        this.isDestinyMode = false;
+        if (this.el.chartLevelBar) this.el.chartLevelBar.style.display = 'flex';
+        if (this.el.destinySubNavBar) this.el.destinySubNavBar.style.display = 'none';
+        if (this.el.dailyFormationsSection) this.el.dailyFormationsSection.style.display = 'none';
+        if (this.el.liveStatusPill) this.el.liveStatusPill.style.display = 'none';
+        if (this.el.dateGroup) this.el.dateGroup.style.display = 'flex';
+        if (this.el.hourPickerBox) this.el.hourPickerBox.style.display = (this.calculatorLevel === 'hour') ? 'flex' : 'none';
+        this.render();
+      } else if (tabKey === 'destiny') {
+        if (this.el.chartLevelBar) this.el.chartLevelBar.style.display = 'none';
+        if (this.el.destinySubNavBar) this.el.destinySubNavBar.style.display = 'flex';
+        this.switchDestinySubTab(this.destinySubTab || 'chart');
+      }
+    },
+
+    switchCalculatorLevel: function (level) {
+      this.calculatorLevel = level;
+      if (this.el.levelButtons) {
+        this.el.levelButtons.forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-level') === level);
+        });
+      }
+      if (this.el.hourPickerBox) {
+        this.el.hourPickerBox.style.display = (level === 'hour') ? 'flex' : 'none';
+      }
+      this.render();
+    },
+
+    switchDestinySubTab: function (subTab) {
+      this.destinySubTab = subTab;
+      if (this.el.subPillChart) this.el.subPillChart.classList.toggle('active', subTab === 'chart');
+      if (this.el.subPillFormations) this.el.subPillFormations.classList.toggle('active', subTab === 'formations');
+
+      if (subTab === 'chart') {
+        this.isDestinyMode = true;
+        this.loadProfileDestiny();
+        if (this.el.liveStatusPill) this.el.liveStatusPill.style.display = 'none';
+        if (this.el.dateGroup) this.el.dateGroup.style.display = 'flex';
+        if (this.el.hourPickerBox) this.el.hourPickerBox.style.display = 'flex';
+        if (this.el.dailyFormationsSection) this.el.dailyFormationsSection.style.display = 'none';
+      } else if (subTab === 'formations') {
+        this.isDestinyMode = true;
+        if (this.el.liveStatusPill) this.el.liveStatusPill.style.display = 'none';
+        if (this.el.dateGroup) this.el.dateGroup.style.display = 'none';
+        if (this.el.hourPickerBox) this.el.hourPickerBox.style.display = 'none';
+        this.renderDailyFormationsDashboard();
+      }
+    },
+
+    renderDailyFormationsDashboard: function () {
+      const profile = this.getProfileData();
+      const parts = profile.birthDate.split('-').map(Number);
+      const [h, m] = (profile.birthTime || '12:00').split(':').map(Number);
+      const safeH = isNaN(h) ? 12 : h;
+      const safeM = isNaN(m) ? 0 : m;
+      const destDate = new Date(parts[0], parts[1] - 1, parts[2], safeH, safeM, 0);
+      const destHourIdx = Math.floor((safeH + 1) % 24 / 2);
+
+      // 1. Calculate Destiny Chart
+      this.destinyChartData = QiMenEngine.plot(destDate, destHourIdx, safeM, 'hour');
+
+      // 2. Calculate Today's Live Chart
+      const now = new Date();
+      const nowHourIdx = Math.floor((now.getHours() + 1) % 24 / 2);
+      this.todayChartData = QiMenEngine.plot(now, nowHourIdx, now.getMinutes(), 'hour');
+      this.chartData = this.todayChartData;
+
+      // 3. Scan Formations Matching Destiny
+      const scan = QiMenEngine.scanFormationsMatchingDestiny(this.destinyChartData, this.todayChartData);
+
+      // 4. Update count badge
+      if (this.el.matchCountBadge) {
+        this.el.matchCountBadge.textContent = String(scan.matches.length);
+      }
+
+      // 5. Render Formations Dashboard
+      if (this.el.dailyFormationsSection) {
+        this.el.dailyFormationsSection.style.display = 'flex';
+        this.el.dailyFormationsSection.innerHTML = this.buildFormationsDashboardHTML(scan, profile);
+      }
+
+      // Hide destiny reading in formations sub-tab
+      if (this.el.destinyReadingSection) {
+        this.el.destinyReadingSection.style.display = 'none';
+      }
+      if (this.el.profileDestinyBanner) {
+        this.el.profileDestinyBanner.style.display = 'none';
+      }
+
+      // Render Today's 3x3 Matrix with matched highlighting
+      this.renderMatrixAndTables(this.todayChartData);
+    },
+
+    buildFormationsDashboardHTML: function (scan, profile) {
+      if (!scan) return '';
+      const destP = this.destinyChartData ? this.destinyChartData.palaces[scan.destinyPalaceNum] : null;
+      const v = scan.victories;
+
+      const gdrClass = scan.summary.gdr ? 'active-gdr' : 'dimmed';
+      const fbficClass = scan.summary.fbfic ? 'active-fbfic' : 'dimmed';
+      const yunuClass = scan.summary.yunu ? 'active-yunu' : 'dimmed';
+
+      let cardsHtml = '';
+      if (scan.matches.length > 0) {
+        cardsHtml = scan.matches.map(m => {
+          const f = m.formation;
+          const p = m.palace;
+          const isAuspicious = (f.type === '吉');
+          const borderClass = m.matchType === 'destiny_palace' ? 'match-destiny' :
+                              m.matchType === 'door_victory' ? 'match-door' :
+                              m.matchType === 'deity_victory' ? 'match-deity' :
+                              m.matchType === 'palace_victory' ? 'match-palace' : '';
+
+          const badgeBg = isAuspicious ? '#ecfdf5' : '#fef2f2';
+          const badgeColor = isAuspicious ? '#065f46' : '#991b1b';
+
+          return `
+            <div class="qm-form-match-card ${borderClass}" data-palace="${m.palaceNum}">
+              <div class="qm-match-card-top">
+                <span class="qm-match-palace-pill"><i class="fa-solid fa-compass"></i> วังที่ ${m.palaceNum} (${p.pos} • ${p.dirTh})</span>
+                ${f.acronym ? `<span class="qm-formation-acronym-badge active-${f.acronym.toLowerCase()}">${f.acronym}</span>` : `<span class="qm-formation-acronym-badge" style="background:#f1f5f9;color:#475569;">${f.name}</span>`}
+              </div>
+
+              <div class="qm-match-card-name">
+                <span>${f.nameTh}</span>
+                <span style="font-size: 13px; color: #64748b; font-weight: normal; margin-left: 6px;">${f.fullZh}</span>
+              </div>
+
+              <div class="qm-match-card-badge" style="background: ${badgeBg}; color: ${badgeColor};">
+                <i class="fa-solid fa-certificate"></i> ${m.matchTitle}
+              </div>
+
+              <p class="qm-match-card-desc">${f.desc}</p>
+
+              <div class="qm-match-card-strategy">
+                <strong><i class="fa-solid fa-bullseye" style="color: #0284c7;"></i> กลยุทธ์นำไปใช้งานวันนี้:</strong>
+                <div>${m.matchStrategy}</div>
+              </div>
+
+              <div class="qm-match-card-footer">
+                <button type="button" class="qm-btn-jump-palace" onclick="window.QiMenApp.selectPalace(${m.palaceNum})">
+                  <i class="fa-solid fa-magnifying-glass-location"></i> ส่องดูวังนี้ในผัง
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        cardsHtml = `
+          <div style="grid-column: 1 / -1; padding: 24px; text-align: center; background: #f8fafc; border-radius: 14px; border: 1px dashed #cbd5e1;">
+            <i class="fa-solid fa-circle-info" style="font-size: 24px; color: #94a3b8; margin-bottom: 8px;"></i>
+            <p style="margin: 0; color: #64748b; font-size: 14px;">วันนี้พลังงานในวังชะตาและ 3 ชัยชนะของคุณไหลเวียนอย่างสอดคล้องตามธรรมชาติ ไม่พบโครงสร้างเก็กติดลบหรือเก็กเฉพาะเจาะจง สามารถใช้ทิศมงคลตาม 3 ชัยชนะประจำตัวได้อย่างราบรื่นค่ะ</p>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="qm-form-dash-card">
+          <div class="qm-form-dash-header">
+            <div class="qm-form-dash-title">
+              <i class="fa-solid fa-chess-knight" style="color: #7c3aed; font-size: 20px;"></i>
+              <div>
+                <h3>โครงสร้างผังวันนี้ที่ Match กับผังชะตาของคุณ</h3>
+                <span style="font-size: 12.5px; color: #64748b;">
+                  เจ้าชะตา: <strong>${profile.name}</strong> • วังชะตา: วังที่ ${scan.destinyPalaceNum} (${destP ? destP.pos : '-'}) • ตรวจพบ ${scan.matches.length} โครงสร้างที่เกื้อหนุน
+                </span>
+              </div>
+            </div>
+
+            <!-- Formations Highlight Strip -->
+            <div class="qm-form-highlight-strip">
+              <span class="qm-formation-acronym-badge ${gdrClass}" title="Green Dragon Return (青龙返首 • 戊+丙)">
+                <i class="fa-solid fa-dragon"></i> GDR ${scan.summary.gdr ? '✓ มีวันนี้' : '-'}
+              </span>
+              <span class="qm-formation-acronym-badge ${fbficClass}" title="Falling Bird Flying into Cave (飞鸟跌穴 • 丙+戊)">
+                <i class="fa-solid fa-dove"></i> FBFIC ${scan.summary.fbfic ? '✓ มีวันนี้' : '-'}
+              </span>
+              <span class="qm-formation-acronym-badge ${yunuClass}" title="Yu Nu Shou Men (玉女守门 • 丁+直使门)">
+                <i class="fa-solid fa-gem"></i> YUNU ${scan.summary.yunu ? '✓ มีวันนี้' : '-'}
+              </span>
+            </div>
+          </div>
+
+          <div class="qm-form-card-grid">
+            ${cardsHtml}
+          </div>
+        </div>
+      `;
     },
 
     syncInputs: function () {
@@ -1316,17 +1748,33 @@
     },
 
     onTabShow: function () {
-      this.loadProfileDestiny();
+      this.updateLockBadges();
+      if (this.activeMainTab === 'realtime') {
+        this.switchMainTab('realtime');
+      } else if (this.activeMainTab === 'destiny') {
+        if (this.isLoggedIn()) {
+          this.switchDestinySubTab(this.destinySubTab || 'chart');
+        } else {
+          this.switchMainTab('realtime');
+        }
+      } else if (this.activeMainTab === 'calculator') {
+        if (this.isLoggedIn()) {
+          this.render();
+        } else {
+          this.switchMainTab('realtime');
+        }
+      }
     },
 
     render: function () {
       this.syncInputs();
-      const chart = QiMenEngine.plot(this.currentDate, this.currentHourIdx, this.currentDate ? this.currentDate.getMinutes() : null);
+      const chartType = (this.activeMainTab === 'calculator') ? this.calculatorLevel : 'hour';
+      const chart = QiMenEngine.plot(this.currentDate, this.currentHourIdx, this.currentDate ? this.currentDate.getMinutes() : null, chartType);
       this.chartData = chart;
 
-      // 0. Render Profile Destiny Banner (Top)
+      // 0. Render Profile Destiny Banner (Top) - Only shown in Mode 3 Destiny Chart sub-tab
       if (this.el.profileDestinyBanner) {
-        if (this.isDestinyMode && this.activeProfile) {
+        if (this.activeMainTab === 'destiny' && this.destinySubTab === 'chart' && this.activeProfile) {
           const p = this.activeProfile;
           const destP = chart.palaces[chart.destinyPalaceNum];
           const destDir = destP ? `${destP.pos} • ${destP.dirZh} (${destP.dirEn})` : '';
@@ -1372,30 +1820,58 @@
         }
       }
 
+      // Hide Daily Formations Dashboard unless active
+      if (this.el.dailyFormationsSection) {
+        if (this.activeMainTab !== 'destiny' || this.destinySubTab !== 'formations') {
+          this.el.dailyFormationsSection.style.display = 'none';
+        }
+      }
+
+      this.renderMatrixAndTables(chart);
+
+      // 5. Render Natal Destiny Reading Section (คำทำนายผังชะตากำเนิด)
+      if (this.el.destinyReadingSection) {
+        if (this.activeMainTab === 'destiny' && this.destinySubTab === 'chart') {
+          this.el.destinyReadingSection.style.display = 'flex';
+          this.el.destinyReadingSection.innerHTML = this.buildDestinyReadingHTML(chart, this.activeProfile || this.getProfileData());
+        } else {
+          this.el.destinyReadingSection.style.display = 'none';
+          this.el.destinyReadingSection.innerHTML = '';
+        }
+      }
+
+      // 6. Render Selected Palace Detail
+      this.renderPalaceDetail(chart.palaces[this.selectedPalaceNum]);
+    },
+
+    renderMatrixAndTables: function (chart) {
+      if (!chart) return;
+
       // 1. Render Four Pillars Table (Top Left)
       if (this.el.fourPillarsContainer) {
         const fp = chart.fourPillars;
+        const focal = chart.meta.focalPillar || 'hour';
         this.el.fourPillarsContainer.innerHTML = `
           <table class="qm-bazi-table">
             <thead>
               <tr>
-                <th>Hour</th>
-                <th>Day</th>
-                <th>Month</th>
-                <th>Year</th>
+                <th class="${focal === 'hour' ? 'qm-focal-th' : ''}">Hour ${focal === 'hour' ? '★' : ''}</th>
+                <th class="${focal === 'day' ? 'qm-focal-th' : ''}">Day ${focal === 'day' ? '★' : ''}</th>
+                <th class="${focal === 'month' ? 'qm-focal-th' : ''}">Month ${focal === 'month' ? '★' : ''}</th>
+                <th class="${focal === 'year' ? 'qm-focal-th' : ''}">Year ${focal === 'year' ? '★' : ''}</th>
               </tr>
               <tr class="qm-bazi-date-row">
-                <td>${chart.hourDisplay}</td>
-                <td>${this.currentDate.getDate()}</td>
-                <td>${this.currentDate.getMonth() + 1}</td>
-                <td>${this.currentDate.getFullYear()}</td>
+                <td class="${focal === 'hour' ? 'qm-focal-td' : ''}">${chart.hourDisplay}</td>
+                <td class="${focal === 'day' ? 'qm-focal-td' : ''}">${this.currentDate.getDate()}</td>
+                <td class="${focal === 'month' ? 'qm-focal-td' : ''}">${this.currentDate.getMonth() + 1}</td>
+                <td class="${focal === 'year' ? 'qm-focal-td' : ''}">${this.currentDate.getFullYear()}</td>
               </tr>
             </thead>
             <tbody>
               <!-- Stems Row -->
               <tr class="qm-bazi-stem-row">
                 ${['hour', 'day', 'month', 'year'].map(k => `
-                  <td>
+                  <td class="${focal === k ? 'qm-focal-td' : ''}">
                     <div class="qm-bazi-char ${fp[k].stem.element.toLowerCase()}">${fp[k].stem.zh}</div>
                     <div class="qm-bazi-py">${fp[k].stem.py}</div>
                     <div class="qm-bazi-en">${fp[k].stem.en}</div>
@@ -1405,7 +1881,7 @@
               <!-- Branches Row -->
               <tr class="qm-bazi-branch-row">
                 ${['hour', 'day', 'month', 'year'].map(k => `
-                  <td>
+                  <td class="${focal === k ? 'qm-focal-td' : ''}">
                     <div class="qm-bazi-char ${fp[k].branch.element.toLowerCase()}">${fp[k].branch.zh}</div>
                     <div class="qm-bazi-py">${fp[k].branch.py}</div>
                     <div class="qm-bazi-animal">${fp[k].branch.en}</div>
@@ -1425,7 +1901,9 @@
           <table class="qm-info-table">
             <thead>
               <tr>
-                <th colspan="2" class="qm-info-id">Chart Id: ${m.chartId}</th>
+                <th colspan="2" class="qm-info-id">
+                  ${m.chartTypeName || 'Qi Men Chart'} • Chart Id: ${m.chartId}
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -1440,24 +1918,24 @@
             <thead>
               <tr>
                 <th></th>
-                <th>Hour</th>
+                <th>${m.focalPillar.toUpperCase()} (Focal)</th>
                 <th>Day</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="lbl">Jia hides behind</td>
-                <td class="val">${m.hourJia}</td>
+                <td class="val">${m.focalJia || m.hourJia}</td>
                 <td class="val">${m.dayJia}</td>
               </tr>
               <tr>
                 <td class="lbl">Sky Horse</td>
-                <td class="val">${m.hourHorse}</td>
+                <td class="val">${m.focalHorse || m.hourHorse}</td>
                 <td class="val">${m.dayHorse}</td>
               </tr>
               <tr>
                 <td class="lbl">Death & Emptiness</td>
-                <td class="val">${m.hourKongWang.top}<br>${m.hourKongWang.bot}</td>
+                <td class="val">${(m.focalKongWang || m.hourKongWang).top}<br>${(m.focalKongWang || m.hourKongWang).bot}</td>
                 <td class="val">${m.dayKongWang.top}<br>${m.dayKongWang.bot}</td>
               </tr>
               <tr>
@@ -1471,16 +1949,15 @@
       }
 
       // 3. Render 3x3 Luo Shu Qi Men Chart (Middle Left)
-      // Standard order: Row 1 (SE:4, S:9, SW:2), Row 2 (E:3, Center:5, W:7), Row 3 (NE:8, N:1, NW:6)
       const matrixOrder = [4, 9, 2, 3, 5, 7, 8, 1, 6];
       if (this.el.matrixContainer) {
         this.el.matrixContainer.innerHTML = matrixOrder.map(num => {
           const p = chart.palaces[num];
           const isSelected = num === this.selectedPalaceNum;
-          const isDestiny = this.isDestinyMode && (num === chart.destinyPalaceNum);
+          // Only show crown on Destiny Palace when in Mode 3 Destiny Chart
+          const isDestiny = (this.activeMainTab === 'destiny' && this.destinySubTab === 'chart') && (num === chart.destinyPalaceNum);
 
           if (num === 5) {
-            // Center Palace
             return `
               <div class="qm-int-cell qm-cell-center ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''}" data-palace="${num}">
                 ${isDestiny ? '<span class="qm-badge-destiny-crown" title="วังชะตาชีวิต (Destiny Palace)"><i class="fa-solid fa-crown"></i> 本命</span>' : ''}
@@ -1541,7 +2018,7 @@
                   ` : ''}
                 </div>
                 <div class="qm-formations-box">
-                  ${p.formations.slice(0, 3).map(f => `<span class="qm-formation-text ${typeof f === 'object' ? f.color : 'red'}" title="${typeof f === 'object' ? f.nameTh : f}">${typeof f === 'object' ? f.name : f}</span>`).join('')}
+                  ${p.formations.slice(0, 3).map(f => `<span class="qm-formation-text ${typeof f === 'object' ? f.color : 'red'}" title="${typeof f === 'object' ? f.nameTh : f}">${typeof f === 'object' ? (f.acronym || f.name) : f}</span>`).join('')}
                 </div>
               </div>
 
@@ -1578,9 +2055,9 @@
       }
 
       // 4. Render Right Sidebar Panels: 3 Victories (三胜)
-      // Only display 3 Victories when in Destiny Chart mode
+      // Only display 3 Victories when in Destiny Chart sub-tab
       if (this.el.victoriesContainer) {
-        if (this.isDestinyMode) {
+        if (this.activeMainTab === 'destiny' && this.destinySubTab === 'chart') {
           this.el.victoriesContainer.style.display = 'block';
           const v = chart.victories;
           this.el.victoriesContainer.innerHTML = `
@@ -1655,20 +2132,6 @@
           </div>
         `;
       }
-
-      // 5. Render Natal Destiny Reading Section (คำทำนายผังชะตากำเนิด)
-      if (this.el.destinyReadingSection) {
-        if (this.isDestinyMode) {
-          this.el.destinyReadingSection.style.display = 'flex';
-          this.el.destinyReadingSection.innerHTML = this.buildDestinyReadingHTML(chart, this.activeProfile || this.getProfileData());
-        } else {
-          this.el.destinyReadingSection.style.display = 'none';
-          this.el.destinyReadingSection.innerHTML = '';
-        }
-      }
-
-      // 6. Render Selected Palace Detail
-      this.renderPalaceDetail(chart.palaces[this.selectedPalaceNum]);
     },
 
     selectPalace: function (num) {

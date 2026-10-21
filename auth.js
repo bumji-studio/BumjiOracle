@@ -10,7 +10,7 @@
   'use strict';
 
   const STORAGE_KEY = 'jiutian_arcana_user_session';
-  const LOCKED_TABS = ['tongshu', 'qimen', 'bazi', 'personality']; // Menus requiring membership (Only 'reading' is free)
+  const LOCKED_TABS = ['tongshu', 'bazi', 'personality']; // Menus requiring membership (Reading & QiMen Real-time are free for guests)
 
   const AuthManager = {
     currentUser: null,
@@ -684,6 +684,9 @@
           <button class="auth-btn-sync" id="btnSyncProfileCharts">
             <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังดวง BaZi และ Qi Men ของฉันทันที
           </button>
+          <button class="auth-btn-qimen" id="btnOpenMyQiMenDestiny" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+            <i class="fa-solid fa-crown"></i> ดูผังชะตาชีวิตฉีเหมิน &amp; Formations วันนี้
+          </button>
           <button class="auth-btn-logout" id="btnLogoutAction">
             <i class="fa-solid fa-arrow-right-from-bracket"></i> ออกจากระบบ
           </button>
@@ -746,6 +749,20 @@
           this.showToast('ซิงค์ข้อมูลดวงชะตาเข้าสู่ BaZi และ Qi Men เรียบร้อยแล้วค่ะ', 'success');
           if (typeof window.setActiveAppMode === 'function') {
             window.setActiveAppMode('bazi');
+          }
+        });
+      }
+
+      const btnQiMen = document.getElementById('btnOpenMyQiMenDestiny');
+      if (btnQiMen) {
+        btnQiMen.addEventListener('click', () => {
+          this.autoFillHoroscopes(this.currentUser);
+          this.closeModal();
+          if (typeof window.setActiveAppMode === 'function') {
+            window.setActiveAppMode('qimen');
+          }
+          if (window.QiMenApp && typeof window.QiMenApp.switchMainTab === 'function') {
+            window.QiMenApp.switchMainTab('destiny');
           }
         });
       }

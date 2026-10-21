@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261021_notosans_chinese_v6">
+  <link rel="stylesheet" href="styles.css?v=20261021_qimen_tiers_v1">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -1549,18 +1549,70 @@
   <div id="qiMenAppView" class="view-container hidden">
     <div class="qimen-app-container">
       
-      <!-- 1. Header Toolbar -->
-      <div class="qm-toolbar-card">
+      <!-- 0. Top Operational Mode Navigation (3 Tiers) -->
+      <div class="qm-top-nav-bar" id="qmTopNavBar">
+        <!-- Tier 1: Real-Time Hour Chart (Guest & Member) -->
+        <button type="button" class="qm-nav-pill active" id="qmNavRealtime" title="ผังฉีเหมิน Real Time ยามปัจจุบันล้วนๆ (ไม่นำ Profile มาประกอบ)">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span>1. ผังปัจจุบัน (Real-Time)</span>
+        </button>
+
+        <!-- Tier 2: Central 4-Level Chart Calculator (Member Locked) -->
+        <button type="button" class="qm-nav-pill" id="qmNavCalculator" title="เครื่องมือคำนวณผังฉีเหมิน 4 ระดับ (Hour / Day / Month / Year)">
+          <i class="fa-solid fa-calculator"></i>
+          <span>2. เครื่องมือคำนวณ 4 ผัง</span>
+          <span class="qm-lock-badge" id="qmCalcLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
+        </button>
+
+        <!-- Tier 3: Profile Destiny & Daily Formations (Member Locked) -->
+        <button type="button" class="qm-nav-pill" id="qmNavDestiny" title="ผังชะตากำเนิดเจ้าของ Profile &amp; โครงสร้างวันนี้ที่ Match กับดวงคุณ">
+          <i class="fa-solid fa-crown"></i>
+          <span>3. ผังชะตาของฉัน &amp; Formations</span>
+          <span class="qm-lock-badge" id="qmDestinyLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
+        </button>
+      </div>
+
+      <!-- 0.1 Secondary Bar: 4 Chart Level Switcher (Shown in Mode 2 Calculator) -->
+      <div class="qm-chart-level-bar" id="qmChartLevelBar" style="display: none;">
+        <span class="qm-level-label"><i class="fa-solid fa-layer-group"></i> เลือกระดับผัง:</span>
+        <div class="qm-level-btn-group">
+          <button type="button" class="qm-level-btn active" data-level="hour" id="qmLevelHourBtn">
+            <strong>时家 Hour Chart</strong> <span>(ผังยาม)</span>
+          </button>
+          <button type="button" class="qm-level-btn" data-level="day" id="qmLevelDayBtn">
+            <strong>日家 Day Chart</strong> <span>(ผังวัน)</span>
+          </button>
+          <button type="button" class="qm-level-btn" data-level="month" id="qmLevelMonthBtn">
+            <strong>月家 Month Chart</strong> <span>(ผังเดือน)</span>
+          </button>
+          <button type="button" class="qm-level-btn" data-level="year" id="qmLevelYearBtn">
+            <strong>年家 Year Chart</strong> <span>(ผังปี)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 0.2 Secondary Bar: Destiny Sub-Tabs Switcher (Shown in Mode 3 Destiny) -->
+      <div class="qm-destiny-subnav-bar" id="qmDestinySubNavBar" style="display: none;">
+        <button type="button" class="qm-sub-pill active" id="qmSubPillChart">
+          <i class="fa-solid fa-crown"></i> <span>1. ผังกำเนิด &amp; 3 ชัยชนะ (Destiny Chart)</span>
+        </button>
+        <button type="button" class="qm-sub-pill" id="qmSubPillFormations">
+          <i class="fa-solid fa-chess-knight"></i> <span>2. โครงสร้างวันนี้ที่ Match กับดวงคุณ (Formations)</span>
+          <span class="qm-sparkle-count" id="qmMatchCountBadge">0</span>
+        </button>
+      </div>
+
+      <!-- 1. Header Toolbar (Date/Time & Presets) -->
+      <div class="qm-toolbar-card" id="qmToolbarCard">
         <div class="qm-toolbar-left">
-          <button class="qm-btn qm-btn-destiny active" id="qmBtnDestiny" title="แสดงผังชะตาชีวิตฉีเหมิน (Destiny Chart) ตามข้อมูลวัน-เวลาเกิดใน Profile">
-            <i class="fa-solid fa-crown"></i> ผังชะตาชีวิต (Destiny Chart)
-          </button>
-          <button class="qm-btn qm-btn-realtime" id="qmBtnRealtime" title="แสดงผังฉีเหมินตามเวลาปัจจุบัน">
-            <i class="fa-solid fa-clock-rotate-left"></i> ขณะนี้ (Real-Time Chart)
-          </button>
-          
+          <!-- Real-Time Live Status Pill -->
+          <div class="qm-live-pill" id="qmLiveStatusPill">
+            <span class="status-dot green"></span>
+            <strong>ผังยามปัจจุบัน Real-Time (时家)</strong>
+          </div>
+
           <!-- Date Selectors (Day / Month / Year) -->
-          <div class="qm-date-group">
+          <div class="qm-date-group" id="qmDateGroup">
             <div class="qm-picker-box qm-picker-day">
               <span class="qm-picker-label">วัน</span>
               <select id="qmDaySelect" class="qm-select" title="เลือกวัน"></select>
@@ -1572,8 +1624,8 @@
             </div>
 
             <div class="qm-picker-box qm-picker-year">
-              <span class="qm-picker-label">ปีเกิด</span>
-              <select id="qmYearSelect" class="qm-select" title="เลือกปีเกิด (ค.ศ. / พ.ศ.)"></select>
+              <span class="qm-picker-label">ปี</span>
+              <select id="qmYearSelect" class="qm-select" title="เลือกปี (ค.ศ. / พ.ศ.)"></select>
             </div>
 
             <button type="button" class="qm-btn-cal-trigger" id="qmCalTriggerBtn" title="เปิดปฏิทินเลือกวันเดือนปี">
@@ -1584,7 +1636,7 @@
             <input type="date" id="qmDatePicker" style="display: none;">
           </div>
 
-          <div class="qm-picker-box">
+          <div class="qm-picker-box" id="qmHourPickerBox">
             <i class="fa-regular fa-clock qm-picker-icon"></i>
             <select id="qmHourSelect" class="qm-select">
               <option value="0">23:00 - 00:59 (ยามชวด • 子)</option>
@@ -1608,8 +1660,13 @@
         </div>
       </div>
 
-      <!-- Profile Destiny Banner -->
-      <div id="qmProfileDestinyBanner" class="qm-profile-destiny-banner">
+      <!-- Profile Destiny Banner (Only shown in Mode 3 Destiny) -->
+      <div id="qmProfileDestinyBanner" class="qm-profile-destiny-banner" style="display: none;">
+        <!-- Dynamically rendered in JS -->
+      </div>
+
+      <!-- Formations Dashboard (Shown in Mode 3 Sub-tab 2) -->
+      <div id="qmDailyFormationsSection" class="qm-daily-formations-section" style="display: none;">
         <!-- Dynamically rendered in JS -->
       </div>
 
@@ -2009,11 +2066,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261018_autofill_v25"></script>
+  <script src="auth.js?v=20261021_qimen_tiers_v1"></script>
   <script src="app.js?v=20261020_social_3cards_v3"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
-  <script src="qimen.js?v=20261021_datepicker_v5"></script>
+  <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
   <script src="bazi.js?v=20261018_basic_nofourpillars_v15"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
