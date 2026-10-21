@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&display=swap');
+
 /* Design System for Jiu Tian Arcana - A4 Guidebook Studio */
 
 :root {
@@ -12,8 +14,9 @@
   --color-gold-glow: rgba(197, 155, 39, 0.25);
   --color-border: rgba(197, 155, 39, 0.35);
   --color-border-focus: rgba(197, 155, 39, 0.8);
-  --font-thai-header: 'Prompt', sans-serif;
-  --font-thai-body: 'Sarabun', sans-serif;
+  --font-chinese: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-thai-header: 'Prompt', 'Noto Sans SC', sans-serif;
+  --font-thai-body: 'Sarabun', 'Noto Sans SC', sans-serif;
   --font-en: 'Cinzel', serif;
   --radius-lg: 12px;
   --radius-md: 8px;
@@ -6248,7 +6251,7 @@ body.is-mobile .synthesis-box-body {
   font-size: 34px;
   font-weight: 700;
   line-height: 1.1;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
 }
 .qm-bazi-char.fire { color: #dc2626; }
 .qm-bazi-char.earth { color: #b45309; }
@@ -6449,7 +6452,7 @@ body.is-mobile .synthesis-box-body {
   font-size: 20px;
   font-weight: 700;
   line-height: 1;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
 }
 .qm-char-big .extra {
   font-size: 13px;
@@ -6476,7 +6479,7 @@ body.is-mobile .synthesis-box-body {
   font-size: 16px;
   font-weight: 700;
   line-height: 1;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
 }
 .qm-char-med.star-color { color: #2563eb; }
 .qm-char-med.deity-color { color: #7c3aed; }
@@ -6578,7 +6581,7 @@ body.is-mobile .synthesis-box-body {
   font-size: 18px;
   font-weight: 800;
   line-height: 1;
-  font-family: 'Songti SC', 'SimSun', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
 }
 .qm-char-door.good { color: #16a34a; }
 .qm-char-door.bad { color: #dc2626; }
@@ -7745,7 +7748,7 @@ body.is-mobile .synthesis-box-body {
 }
 
 .stem-zh, .branch-zh {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 30px;
   font-weight: 800;
   line-height: 1;
@@ -8283,7 +8286,7 @@ body.is-mobile .synthesis-box-body {
   font-weight: 700;
   line-height: 1.1;
   margin: 1px 0;
-  font-family: "PingFang SC", "Microsoft YaHei", "SimSun", serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
 }
 
 .bazi-card-polarity {
@@ -11670,7 +11673,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .seal-zh {
-  font-family: 'Noto Serif SC', 'Songti SC', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 28px;
   font-weight: 900;
   background: linear-gradient(135deg, #fbcfe8, #f43f5e);
@@ -12631,7 +12634,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .story-seal {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 28px;
   font-weight: 900;
   width: 50px;
@@ -12825,7 +12828,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .seal-chars {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 40px;
   font-weight: 900;
   line-height: 1;
@@ -12913,7 +12916,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .p-pillar-chip .chip-chars {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 14px;
   font-weight: 800;
   color: #fff;
@@ -13154,7 +13157,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .profile-god-zh {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 18px;
   font-weight: 900;
 }
@@ -13541,7 +13544,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .m-god-zh {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--font-chinese, 'Noto Sans SC', sans-serif);
   font-size: 15px;
   font-weight: 900;
 }
