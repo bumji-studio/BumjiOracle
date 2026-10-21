@@ -1593,6 +1593,12 @@
         if (minSel) minSel.disabled = isUnknown;
       };
 
+      // Ensure result container is hidden on initial view if no calculation yet
+      const resultContainer = document.getElementById('baziGuestResultContainer');
+      if (resultContainer && !this.guestCurrentResult) {
+        resultContainer.classList.add('hidden');
+      }
+
       if (daySel) daySel.onchange = syncDate;
       if (monthSel) monthSel.onchange = syncDate;
       if (yearSel) yearSel.onchange = syncDate;
@@ -1624,6 +1630,13 @@
       const unknownCheck = document.getElementById('baziGuestUnknownTimeCheck');
       const questionInput = document.getElementById('baziGuestQuestionInput');
 
+      const rawQuestion = (questionInput && questionInput.value.trim()) ? questionInput.value.trim() : '';
+      if (!rawQuestion) {
+        this.showToast('🔮 กรุณาพิมพ์คำถามที่คุณอยากฟันธงก่อนนะคะ หรือแตะเลือกคำถามยอดนิยมด้านล่างได้เลยค่ะ ✨', 'warning');
+        if (questionInput) questionInput.focus();
+        return;
+      }
+
       const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'ดวงชะตาของคุณ';
       const gender = genderSelect ? genderSelect.value : 'female';
 
@@ -1652,8 +1665,6 @@
         }
       }
 
-      const rawQuestion = (questionInput && questionInput.value.trim()) ? questionInput.value.trim() : 'สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่';
-
       // Calculate Chart
       const chart = BaziEngine.calculateChart({
         birthDate,
@@ -1669,8 +1680,12 @@
 
       this.guestCurrentResult = { chart, question: rawQuestion, verdict };
 
-      // Render into Guest Result Card
+      // Render into Guest Result Card & Reveal Container
       const resultContainer = document.getElementById('baziGuestResultContainer');
+      if (resultContainer) {
+        resultContainer.classList.remove('hidden');
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
       const calcDateBadge = document.getElementById('baziGuestCalcDateBadge');
       const dmChar = document.getElementById('baziGuestDmChar');
       const dmName = document.getElementById('baziGuestDmName');

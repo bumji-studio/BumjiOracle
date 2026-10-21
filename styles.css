@@ -7855,6 +7855,11 @@ body.is-mobile .synthesis-box-body {
   animation: fadeIn 0.4s ease forwards;
 }
 
+.bazi-guest-result-container.hidden,
+#baziGuestFortuneCard.hidden {
+  display: none !important;
+}
+
 .bazi-guest-fortune-card {
   background: #ffffff;
   border: 2px solid #e9d5ff;
