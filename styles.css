@@ -6099,6 +6099,13 @@ body.is-mobile .synthesis-box-body {
   background: #fbbf24;
 }
 
+.qm-date-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .qm-picker-box {
   display: flex;
   align-items: center;
@@ -6106,29 +6113,73 @@ body.is-mobile .synthesis-box-body {
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   padding: 4px 8px;
-  gap: 6px;
+  gap: 5px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .qm-picker-box:focus-within {
   border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.12);
 }
 .qm-picker-icon {
   color: #0284c7;
   font-size: 12px;
 }
-.qm-picker-box input[type="date"],
+
+.qm-picker-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  user-select: none;
+  white-space: nowrap;
+}
+
 .qm-picker-box select {
   background: transparent;
   border: none;
   color: #0f172a;
   font-family: 'Prompt', 'Sarabun', sans-serif;
   font-size: 12.5px;
+  font-weight: 500;
   outline: none;
   color-scheme: light;
   cursor: pointer;
+  padding: 0 2px;
 }
 .qm-picker-box select option {
   background: #ffffff;
   color: #0f172a;
+}
+
+.qm-picker-day select {
+  min-width: 44px;
+}
+.qm-picker-month select {
+  min-width: 98px;
+}
+.qm-picker-year select {
+  min-width: 108px;
+}
+.qm-picker-hour select {
+  min-width: 170px;
+}
+
+.qm-btn-cal-trigger {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #0284c7;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  font-size: 13px;
+}
+.qm-btn-cal-trigger:hover {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  color: #0369a1;
 }
 
 .qm-intl-badge {

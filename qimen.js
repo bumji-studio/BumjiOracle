@@ -1119,6 +1119,7 @@
 
     init: function () {
       this.bindDOMElements();
+      this.initDropdowns();
       this.bindEvents();
       this.loadProfileDestiny();
       console.log('[QiMen Dun Jia] International Convention Chart Plotter Initialized with Profile Destiny Chart.');
@@ -1130,6 +1131,11 @@
         btnDestiny: document.getElementById('qmBtnDestiny'),
         btnRealtime: document.getElementById('qmBtnRealtime'),
         profileDestinyBanner: document.getElementById('qmProfileDestinyBanner'),
+        // Day / Month / Year & Calendar triggers
+        daySelect: document.getElementById('qmDaySelect'),
+        monthSelect: document.getElementById('qmMonthSelect'),
+        yearSelect: document.getElementById('qmYearSelect'),
+        calTriggerBtn: document.getElementById('qmCalTriggerBtn'),
         datePicker: document.getElementById('qmDatePicker'),
         hourSelect: document.getElementById('qmHourSelect'),
         // Tables
@@ -1146,6 +1152,49 @@
         // Natal Destiny Reading Section
         destinyReadingSection: document.getElementById('qmDestinyReadingSection')
       };
+    },
+
+    initDropdowns: function () {
+      // 1. Months (1-12)
+      if (this.el.monthSelect && this.el.monthSelect.options.length === 0) {
+        const thMonths = [
+          'ม.ค. (01)', 'ก.พ. (02)', 'มี.ค. (03)', 'เม.ย. (04)',
+          'พ.ค. (05)', 'มิ.ย. (06)', 'ก.ค. (07)', 'ส.ค. (08)',
+          'ก.ย. (09)', 'ต.ค. (10)', 'พ.ย. (11)', 'ธ.ค. (12)'
+        ];
+        thMonths.forEach((name, idx) => {
+          const opt = document.createElement('option');
+          opt.value = String(idx + 1);
+          opt.textContent = name;
+          this.el.monthSelect.appendChild(opt);
+        });
+      }
+
+      // 2. Years (2035 down to 1920 with Buddhist Era)
+      if (this.el.yearSelect && this.el.yearSelect.options.length === 0) {
+        for (let y = 2035; y >= 1920; y--) {
+          const opt = document.createElement('option');
+          opt.value = String(y);
+          opt.textContent = `${y} (${y + 543})`;
+          this.el.yearSelect.appendChild(opt);
+        }
+      }
+    },
+
+    adjustDaySelect: function (year, month) {
+      if (!this.el.daySelect) return;
+      const y = parseInt(year, 10) || 2026;
+      const m = parseInt(month, 10) || 1;
+      const maxDays = new Date(y, m, 0).getDate();
+      const currentVal = parseInt(this.el.daySelect.value, 10) || 1;
+      this.el.daySelect.innerHTML = '';
+      for (let d = 1; d <= maxDays; d++) {
+        const opt = document.createElement('option');
+        opt.value = String(d);
+        opt.textContent = String(d).padStart(2, '0');
+        this.el.daySelect.appendChild(opt);
+      }
+      this.el.daySelect.value = String(Math.min(currentVal, maxDays));
     },
 
     bindEvents: function () {
@@ -1169,44 +1218,97 @@
         });
       }
 
-      if (this.el.datePicker) {
-        const onDateChange = (e) => {
-          if (e.target.value) {
-            self.isDestinyMode = false;
-            if (self.el.btnDestiny) self.el.btnDestiny.classList.remove('active');
-            const parts = e.target.value.split('-');
-            const prevH = self.currentDate ? self.currentDate.getHours() : 12;
-            const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
-            self.currentDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), prevH, prevM);
-            self.render();
+      // Date Selectors: Day, Month, Year
+      const onDateSelectChange = () => {
+        if (!self.el.yearSelect || !self.el.monthSelect || !self.el.daySelect) return;
+        const y = parseInt(self.el.yearSelect.value, 10) || 1977;
+        const m = parseInt(self.el.monthSelect.value, 10) || 7;
+        self.adjustDaySelect(y, m);
+        const d = parseInt(self.el.daySelect.value, 10) || 1;
+        const prevH = self.currentDate ? self.currentDate.getHours() : 12;
+        const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
+        self.currentDate = new Date(y, m - 1, d, prevH, prevM);
+
+        if (self.isDestinyMode) {
+          if (!self.activeProfile) self.activeProfile = { name: 'เจ้าของดวงชะตา' };
+          const sm = String(m).padStart(2, '0');
+          const sd = String(d).padStart(2, '0');
+          self.activeProfile.birthDate = `${y}-${sm}-${sd}`;
+        }
+        self.render();
+      };
+
+      if (this.el.daySelect) this.el.daySelect.addEventListener('change', onDateSelectChange);
+      if (this.el.monthSelect) this.el.monthSelect.addEventListener('change', onDateSelectChange);
+      if (this.el.yearSelect) this.el.yearSelect.addEventListener('change', onDateSelectChange);
+
+      // Calendar button trigger for native datepicker
+      if (this.el.calTriggerBtn && this.el.datePicker) {
+        this.el.calTriggerBtn.addEventListener('click', () => {
+          try {
+            if (typeof self.el.datePicker.showPicker === 'function') {
+              self.el.datePicker.showPicker();
+            } else {
+              self.el.datePicker.click();
+            }
+          } catch (err) {
+            self.el.datePicker.click();
           }
-        };
-        this.el.datePicker.addEventListener('change', onDateChange);
-        this.el.datePicker.addEventListener('input', onDateChange);
+        });
       }
 
+      // Native datePicker sync
+      if (this.el.datePicker) {
+        this.el.datePicker.addEventListener('change', (e) => {
+          if (e.target.value) {
+            const parts = e.target.value.split('-').map(Number);
+            if (parts.length === 3 && !isNaN(parts[0])) {
+              const prevH = self.currentDate ? self.currentDate.getHours() : 12;
+              const prevM = self.currentDate ? self.currentDate.getMinutes() : 0;
+              self.currentDate = new Date(parts[0], parts[1] - 1, parts[2], prevH, prevM);
+              if (self.isDestinyMode) {
+                if (!self.activeProfile) self.activeProfile = { name: 'เจ้าของดวงชะตา' };
+                self.activeProfile.birthDate = e.target.value;
+              }
+              self.syncInputs();
+              self.render();
+            }
+          }
+        });
+      }
+
+      // Hour Select
       if (this.el.hourSelect) {
-        const onHourChange = (e) => {
-          self.isDestinyMode = false;
-          if (self.el.btnDestiny) self.el.btnDestiny.classList.remove('active');
+        this.el.hourSelect.addEventListener('change', (e) => {
           self.currentHourIdx = parseInt(e.target.value, 10);
           const hHours = [23, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21];
           if (self.currentDate) {
             self.currentDate.setHours(hHours[self.currentHourIdx] || 12, 30, 0, 0);
           }
+          if (self.isDestinyMode && self.activeProfile) {
+            const sh = String(hHours[self.currentHourIdx] || 12).padStart(2, '0');
+            self.activeProfile.birthTime = `${sh}:00`;
+          }
           self.render();
-        };
-        this.el.hourSelect.addEventListener('change', onHourChange);
-        this.el.hourSelect.addEventListener('input', onHourChange);
+        });
       }
     },
 
     syncInputs: function () {
+      if (!this.currentDate) return;
+      const y = this.currentDate.getFullYear();
+      const m = this.currentDate.getMonth() + 1;
+      const d = this.currentDate.getDate();
+
+      if (this.el.yearSelect) this.el.yearSelect.value = String(y);
+      if (this.el.monthSelect) this.el.monthSelect.value = String(m);
+      this.adjustDaySelect(y, m);
+      if (this.el.daySelect) this.el.daySelect.value = String(d);
+
       if (this.el.datePicker) {
-        const y = this.currentDate.getFullYear();
-        const m = String(this.currentDate.getMonth() + 1).padStart(2, '0');
-        const d = String(this.currentDate.getDate()).padStart(2, '0');
-        this.el.datePicker.value = `${y}-${m}-${d}`;
+        const sm = String(m).padStart(2, '0');
+        const sd = String(d).padStart(2, '0');
+        this.el.datePicker.value = `${y}-${sm}-${sd}`;
       }
       if (this.el.hourSelect && this.currentHourIdx !== null) {
         this.el.hourSelect.value = String(this.currentHourIdx);
