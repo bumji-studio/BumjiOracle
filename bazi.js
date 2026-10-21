@@ -1613,8 +1613,22 @@
 
     fillGuestQuestion: function (q) {
       const input = document.getElementById('baziGuestQuestionInput');
-      if (input) input.value = q;
-      this.calculateGuestFortune();
+      if (input) {
+        input.value = q;
+        input.focus();
+      }
+      // Ensure result container remains hidden until user clicks calculate
+      const resultContainer = document.getElementById('baziGuestResultContainer');
+      if (resultContainer) {
+        resultContainer.classList.add('hidden');
+      }
+      // Pulse calculate button to invite the user to click it
+      const calcBtn = document.getElementById('baziGuestCalcBtn');
+      if (calcBtn) {
+        calcBtn.classList.remove('pulse-guide');
+        void calcBtn.offsetWidth;
+        calcBtn.classList.add('pulse-guide');
+      }
     },
 
     calculateGuestFortune: function () {
@@ -2130,6 +2144,12 @@
           if (e.key === 'Enter') {
             e.preventDefault();
             this.calculateGuestFortune();
+          }
+        });
+        guestQuestionInput.addEventListener('input', () => {
+          const resultContainer = document.getElementById('baziGuestResultContainer');
+          if (resultContainer && !resultContainer.classList.contains('hidden')) {
+            resultContainer.classList.add('hidden');
           }
         });
       }
