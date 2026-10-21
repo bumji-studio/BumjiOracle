@@ -1490,14 +1490,119 @@
     },
 
     initGuestInputs: function () {
+      const daySel = document.getElementById('baziGuestBirthDay');
+      const monthSel = document.getElementById('baziGuestBirthMonth');
+      const yearSel = document.getElementById('baziGuestBirthYear');
+      const hourSel = document.getElementById('baziGuestBirthHour');
+      const minSel = document.getElementById('baziGuestBirthMinute');
+      const unknownCheck = document.getElementById('baziGuestUnknownTimeCheck');
+      const unknownWrap = document.getElementById('baziGuestUnknownTimeWrap');
+      const timeWrap = document.getElementById('baziGuestTimeSelectsWrap');
+      const timeNotice = document.getElementById('baziGuestUnknownTimeNotice');
       const dateInput = document.getElementById('baziGuestDateInput');
       const hourInput = document.getElementById('baziGuestHourInput');
-      if (dateInput && !dateInput.value) {
-        dateInput.value = '1998-08-18';
+
+      // Populate Days 1-31
+      if (daySel && daySel.options.length === 0) {
+        for (let d = 1; d <= 31; d++) {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = `วันที่ ${d}`;
+          if (d === 18) opt.selected = true;
+          daySel.appendChild(opt);
+        }
       }
-      if (hourInput && !hourInput.value) {
-        hourInput.value = '10:30';
+
+      // Populate Years (Current down to 1930)
+      if (yearSel && yearSel.options.length === 0) {
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear; y >= 1930; y--) {
+          const opt = document.createElement('option');
+          opt.value = y;
+          const beYear = y + 543;
+          opt.textContent = `${y} (พ.ศ. ${beYear})`;
+          if (y === 1998) opt.selected = true;
+          yearSel.appendChild(opt);
+        }
       }
+
+      // Populate Hours 00-23
+      if (hourSel && hourSel.options.length === 0) {
+        for (let h = 0; h < 24; h++) {
+          const opt = document.createElement('option');
+          opt.value = h;
+          const padH = String(h).padStart(2, '0');
+          const timeDesc = h < 6 ? 'ย่ำรุ่ง' : h < 11 ? 'เช้า' : h <= 13 ? 'เที่ยง' : h < 18 ? 'บ่าย' : 'ค่ำ/ดึก';
+          opt.textContent = `${padH}:00 น. (${timeDesc})`;
+          if (h === 12) opt.selected = true;
+          hourSel.appendChild(opt);
+        }
+      }
+
+      // Populate Minutes 00-55
+      if (minSel && minSel.options.length === 0) {
+        for (let m = 0; m < 60; m += 5) {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = `${String(m).padStart(2, '0')} นาที`;
+          if (m === 0) opt.selected = true;
+          minSel.appendChild(opt);
+        }
+      }
+
+      // Sync function for date dropdowns -> hidden date input
+      const syncDate = () => {
+        if (!daySel || !monthSel || !yearSel || !dateInput) return;
+        const y = parseInt(yearSel.value, 10) || 1998;
+        const m = parseInt(monthSel.value, 10) || 8;
+        let d = parseInt(daySel.value, 10) || 18;
+
+        const maxDays = new Date(y, m, 0).getDate();
+        if (d > maxDays) d = maxDays;
+
+        if (daySel.options.length !== maxDays) {
+          daySel.innerHTML = '';
+          for (let i = 1; i <= maxDays; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `วันที่ ${i}`;
+            if (i === d) opt.selected = true;
+            daySel.appendChild(opt);
+          }
+        }
+
+        dateInput.value = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      };
+
+      // Sync function for time dropdowns -> hidden time input
+      const syncTime = () => {
+        if (!hourSel || !minSel || !hourInput) return;
+        const h = parseInt(hourSel.value, 10) || 0;
+        const m = parseInt(minSel.value, 10) || 0;
+        hourInput.value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+      };
+
+      // Sync function for unknown time checkbox
+      const applyUnknownTimeState = () => {
+        if (!unknownCheck) return;
+        const isUnknown = unknownCheck.checked;
+        if (unknownWrap) unknownWrap.classList.toggle('active', isUnknown);
+        if (timeWrap) timeWrap.classList.toggle('time-disabled', isUnknown);
+        if (timeNotice) timeNotice.classList.toggle('hidden', !isUnknown);
+        if (hourSel) hourSel.disabled = isUnknown;
+        if (minSel) minSel.disabled = isUnknown;
+      };
+
+      if (daySel) daySel.onchange = syncDate;
+      if (monthSel) monthSel.onchange = syncDate;
+      if (yearSel) yearSel.onchange = syncDate;
+      if (hourSel) hourSel.onchange = syncTime;
+      if (minSel) minSel.onchange = syncTime;
+      if (unknownCheck) unknownCheck.onchange = applyUnknownTimeState;
+
+      syncDate();
+      syncTime();
+      applyUnknownTimeState();
     },
 
     fillGuestQuestion: function (q) {
@@ -1509,6 +1614,11 @@
     calculateGuestFortune: function () {
       const nameInput = document.getElementById('baziGuestNameInput');
       const genderSelect = document.getElementById('baziGuestGenderSelect');
+      const daySel = document.getElementById('baziGuestBirthDay');
+      const monthSel = document.getElementById('baziGuestBirthMonth');
+      const yearSel = document.getElementById('baziGuestBirthYear');
+      const hourSel = document.getElementById('baziGuestBirthHour');
+      const minSel = document.getElementById('baziGuestBirthMinute');
       const dateInput = document.getElementById('baziGuestDateInput');
       const hourInput = document.getElementById('baziGuestHourInput');
       const unknownCheck = document.getElementById('baziGuestUnknownTimeCheck');
@@ -1516,15 +1626,30 @@
 
       const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'ดวงชะตาของคุณ';
       const gender = genderSelect ? genderSelect.value : 'female';
-      const birthDate = (dateInput && dateInput.value) ? dateInput.value : '1998-08-18';
-      const isUnknownTime = unknownCheck && unknownCheck.checked;
+
+      let birthDate = '1998-08-18';
+      if (yearSel && monthSel && daySel && yearSel.value && monthSel.value && daySel.value) {
+        const y = parseInt(yearSel.value, 10) || 1998;
+        const m = parseInt(monthSel.value, 10) || 8;
+        const d = parseInt(daySel.value, 10) || 18;
+        birthDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+      } else if (dateInput && dateInput.value) {
+        birthDate = dateInput.value;
+      }
+
+      const isUnknownTime = !!(unknownCheck && unknownCheck.checked);
       
       let birthHour = 12;
       let birthMinute = 0;
-      if (!isUnknownTime && hourInput && hourInput.value) {
-        const parts = hourInput.value.split(':');
-        birthHour = parseInt(parts[0], 10) || 12;
-        birthMinute = parseInt(parts[1], 10) || 0;
+      if (!isUnknownTime) {
+        if (hourSel) {
+          birthHour = parseInt(hourSel.value, 10) || 12;
+          birthMinute = minSel ? (parseInt(minSel.value, 10) || 0) : 0;
+        } else if (hourInput && hourInput.value) {
+          const parts = hourInput.value.split(':');
+          birthHour = parseInt(parts[0], 10) || 12;
+          birthMinute = parseInt(parts[1], 10) || 0;
+        }
       }
 
       const rawQuestion = (questionInput && questionInput.value.trim()) ? questionInput.value.trim() : 'สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่';
@@ -1566,8 +1691,10 @@
         dmChar.style.color = dmMeta.color;
       }
       if (dmName) dmName.textContent = `${chart.dayMaster.py} (${dmMeta.th})`;
-      if (dmBadge) dmBadge.style.borderColor = dmMeta.color;
-      if (personTitle) personTitle.textContent = `${chart.name} • ดิถีธาตุ ${chart.dayMaster.zh} (${chart.dayMaster.th}) • ${chart.dayMasterProfile.title}`;
+      if (personTitle) {
+        const timeNote = isUnknownTime ? '• (ไม่ระบุเวลาเกิด: 3 เสาหลัก)' : `• (เวลาเกิด ${String(birthHour).padStart(2, '0')}:${String(birthMinute).padStart(2, '0')} น.)`;
+        personTitle.textContent = `${chart.name} • ดิถีธาตุ ${chart.dayMaster.zh} (${chart.dayMaster.th}) ${timeNote}`;
+      }
       if (daYunText) daYunText.textContent = `ช่วงอายุ ${verdict.curDaYun ? verdict.curDaYun.ageRange : '-'} (${verdict.curDaYun ? verdict.curDaYun.stem.zh + verdict.curDaYun.branch.zh : '-'} • ${verdict.curDaYun && verdict.curDaYun.tenGod ? verdict.curDaYun.tenGod.th : '-'})`;
       if (annualText) annualText.textContent = `ปี ${verdict.simY} (${verdict.simStem.zh}${verdict.simBranch.zh} • ${verdict.simBranch.zodiac.split(' ')[0]})`;
       if (questionDisplay) questionDisplay.textContent = `"${rawQuestion}"`;

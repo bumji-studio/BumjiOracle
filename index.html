@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261021_bazi_guest_oracle_v2">
+  <link rel="stylesheet" href="styles.css?v=20261021_bazi_selects_v3">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -550,35 +550,74 @@
             <span>กรอกข้อมูลวันเดือนปีเกิด และคำถามที่ต้องการฟันธง</span>
           </div>
 
-          <div class="bazi-guest-inputs-grid">
-            <!-- Name -->
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-user"></i> ชื่อ / คำเรียกแทน:</label>
-              <input type="text" id="baziGuestNameInput" value="ดวงชะตาของคุณ" placeholder="ชื่อเล่น หรือ ดวงชะตาของคุณ">
+          <div class="bazi-guest-inputs-grid-v2">
+            <!-- 1. กรอก ชื่อ -->
+            <div class="bazi-guest-field-group field-name">
+              <label for="baziGuestNameInput"><i class="fa-solid fa-user"></i> 1. กรอกชื่อ / คำเรียกแทน:</label>
+              <input type="text" id="baziGuestNameInput" class="bazi-guest-control" value="ดวงชะตาของคุณ" placeholder="พิมพ์ชื่อเล่น หรือ ฉายา">
             </div>
 
-            <!-- Gender -->
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
-              <select id="baziGuestGenderSelect">
-                <option value="male">ชาย (Male)</option>
-                <option value="female" selected>หญิง (Female)</option>
+            <!-- 2. เลือก เพศ -->
+            <div class="bazi-guest-field-group field-gender">
+              <label for="baziGuestGenderSelect"><i class="fa-solid fa-venus-mars"></i> 2. เลือกเพศกำเนิด:</label>
+              <select id="baziGuestGenderSelect" class="bazi-guest-control">
+                <option value="female" selected>♀️ หญิง (Female)</option>
+                <option value="male">♂️ ชาย (Male)</option>
               </select>
             </div>
 
-            <!-- Birth Date -->
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-calendar-day"></i> วันเกิด:</label>
-              <input type="date" id="baziGuestDateInput">
+            <!-- 3. เลือก วัน เดือน ปีเกิด -->
+            <div class="bazi-guest-field-group field-birthdate">
+              <label><i class="fa-solid fa-calendar-day"></i> 3. เลือกวันเดือนปีเกิด (วัน / เดือน / ปี):</label>
+              <div class="bazi-guest-dmy-wrap">
+                <select id="baziGuestBirthDay" class="bazi-guest-control select-day" aria-label="เลือกวันเกิด (1-31)">
+                  <!-- Populated by JS -->
+                </select>
+                <select id="baziGuestBirthMonth" class="bazi-guest-control select-month" aria-label="เลือกเดือนเกิด">
+                  <option value="1">1 - ม.ค.</option>
+                  <option value="2">2 - ก.พ.</option>
+                  <option value="3">3 - มี.ค.</option>
+                  <option value="4">4 - เม.ย.</option>
+                  <option value="5">5 - พ.ค.</option>
+                  <option value="6">6 - มิ.ย.</option>
+                  <option value="7">7 - ก.ค.</option>
+                  <option value="8" selected>8 - ส.ค.</option>
+                  <option value="9">9 - ก.ย.</option>
+                  <option value="10">10 - ต.ค.</option>
+                  <option value="11">11 - พ.ย.</option>
+                  <option value="12">12 - ธ.ค.</option>
+                </select>
+                <select id="baziGuestBirthYear" class="bazi-guest-control select-year" aria-label="เลือกปีเกิด (พ.ศ. / ค.ศ.)">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <!-- Hidden synced date input for backward-compatibility -->
+              <input type="hidden" id="baziGuestDateInput" value="1998-08-18">
             </div>
 
-            <!-- Birth Time -->
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
-              <input type="time" id="baziGuestHourInput" value="12:00">
-              <label class="bazi-unknown-time-label" title="หากไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
-                <input type="checkbox" id="baziGuestUnknownTimeCheck"> ไม่ทราบเวลา
-              </label>
+            <!-- 4. เลือก เวลาเกิด & ติ๊กไม่ทราบเวลาได้ -->
+            <div class="bazi-guest-field-group field-birthtime" id="baziGuestTimeGroup">
+              <div class="time-label-row">
+                <label for="baziGuestBirthHour"><i class="fa-solid fa-clock"></i> 4. เลือกเวลาเกิด:</label>
+                <label class="bazi-unknown-time-toggle" id="baziGuestUnknownTimeWrap" title="ติ๊กเมื่อไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
+                  <input type="checkbox" id="baziGuestUnknownTimeCheck">
+                  <span>ไม่ทราบเวลา</span>
+                </label>
+              </div>
+              <div class="bazi-guest-time-wrap" id="baziGuestTimeSelectsWrap">
+                <select id="baziGuestBirthHour" class="bazi-guest-control select-hour" aria-label="เลือกชั่วโมงเกิด">
+                  <!-- Populated by JS -->
+                </select>
+                <span class="time-sep">:</span>
+                <select id="baziGuestBirthMinute" class="bazi-guest-control select-minute" aria-label="เลือกนาทีเกิด">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div class="bazi-unknown-time-notice hidden" id="baziGuestUnknownTimeNotice">
+                <i class="fa-solid fa-circle-info"></i> ไม่ระบุเวลาเกิด: ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน) และดิถีธาตุ
+              </div>
+              <!-- Hidden synced time input for backward-compatibility -->
+              <input type="hidden" id="baziGuestHourInput" value="12:00">
             </div>
           </div>
 
@@ -2290,7 +2329,7 @@
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
-  <script src="bazi.js?v=20261021_bazi_guest_oracle_v2"></script>
+  <script src="bazi.js?v=20261021_bazi_selects_v3"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
