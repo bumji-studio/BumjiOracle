@@ -10,7 +10,7 @@
   'use strict';
 
   const STORAGE_KEY = 'jiutian_arcana_user_session';
-  const LOCKED_TABS = ['tongshu', 'bazi', 'personality']; // Menus requiring membership (Reading & QiMen Real-time are free for guests)
+  const LOCKED_TABS = ['tongshu', 'personality']; // Menus requiring membership (Reading, QiMen Real-time, and BaZi Guest Oracle are open for guests)
 
   const AuthManager = {
     currentUser: null,
@@ -23,6 +23,7 @@
       this.injectAuthUI();
       this.bindEvents();
       this.updateUI();
+      this.notifyModeChange();
       console.log('[AuthManager] Membership & Gatekeeper Engine Initialized.');
     },
 
@@ -855,6 +856,9 @@
 
     notifyModeChange: function () {
       this.updateUI();
+      if (window.BaziApp && typeof window.BaziApp.onAuthStateChange === 'function') {
+        window.BaziApp.onAuthStateChange(this.isLoggedIn(), this.currentUser);
+      }
     },
 
     showToast: function (msg, type = 'info') {

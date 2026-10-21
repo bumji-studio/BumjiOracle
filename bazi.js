@@ -1011,12 +1011,347 @@
           adviceText
         };
       });
+    },
+
+    computeOracleVerdict: function (c, rawQ, fallbackYear) {
+      if (!c) return null;
+      const q = (rawQ || '').trim().toLowerCase();
+
+      // 1. Target Year
+      let simY = fallbackYear || new Date().getFullYear() || 2026;
+      const beMatch = q.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
+      const ceMatch = q.match(/(?:ปี\s*)?(20\d{2})/);
+      if (ceMatch) {
+        simY = parseInt(ceMatch[1], 10);
+      } else if (beMatch) {
+        simY = parseInt(beMatch[1], 10) - 543;
+      } else if (q.includes('ปีหน้า')) {
+        simY = (new Date().getFullYear() || 2026) + 1;
+      } else if (q.includes('ปีที่แล้ว')) {
+        simY = (new Date().getFullYear() || 2026) - 1;
+      }
+
+      // Tai Sui (Annual Pillar)
+      const sIdx = ((simY - 4) % 10 + 10) % 10;
+      const bIdx = ((simY - 4) % 12 + 12) % 12;
+      const simStem = STEMS[sIdx];
+      const simBranch = BRANCHES[bIdx];
+      const simStemGod = getTenGod(c.dayMaster, simStem);
+      const simBranchMainStem = STEMS.find(s => s.zh === simBranch.hidden[0].stem) || simStem;
+      const simBranchGod = getTenGod(c.dayMaster, simBranchMainStem);
+      const simNaYin = getNaYin(sIdx, bIdx);
+
+      // Active Da Yun for simY
+      const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = simY - birthYear;
+      let curDaYun = (c.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      if (!curDaYun && c.daYunPillars && c.daYunPillars.length > 0) {
+        if (ageInYear < c.daYunPillars[0].ageFrom) {
+          curDaYun = {
+            ageRange: `0 - ${c.daYunPillars[0].ageFrom - 1} ปี`,
+            stem: c.pillars.month.stem,
+            branch: c.pillars.month.branch,
+            tenGod: c.pillars.month.tenGod,
+            naYin: c.pillars.month.naYin
+          };
+        } else {
+          curDaYun = c.daYunPillars[c.daYunPillars.length - 1];
+        }
+      }
+
+      // Clashes & Harmonies
+      const clashMonth = checkBranchClash(simBranch.zh, c.pillars.month.branch.zh);
+      const clashDay = checkBranchClash(simBranch.zh, c.pillars.day.branch.zh);
+      const clashYear = checkBranchClash(simBranch.zh, c.pillars.year.branch.zh);
+      const clashHour = checkBranchClash(simBranch.zh, c.pillars.hour.branch.zh);
+
+      const harmMonth = checkBranchHarmony(simBranch.zh, c.pillars.month.branch.zh);
+      const harmDay = checkBranchHarmony(simBranch.zh, c.pillars.day.branch.zh);
+      const harmYear = checkBranchHarmony(simBranch.zh, c.pillars.year.branch.zh);
+      const harmHour = checkBranchHarmony(simBranch.zh, c.pillars.hour.branch.zh);
+
+      const dyClash = curDaYun ? checkBranchClash(simBranch.zh, curDaYun.branch.zh) : null;
+      const dyHarm = curDaYun ? checkBranchHarmony(simBranch.zh, curDaYun.branch.zh) : null;
+
+      // Stars
+      const monthHasYiMa = (c.pillars.month.stars || []).some(s => s.name.includes('驛馬'));
+      const dayHasYiMa = (c.pillars.day.stars || []).some(s => s.name.includes('驛馬'));
+      const yiMaMap = {
+        '申': '寅', '子': '寅', '辰': '寅',
+        '寅': '申', '午': '申', '戌': '申',
+        '巳': '亥', '酉': '亥', '丑': '亥',
+        '亥': '巳', '卯': '巳', '未': '巳'
+      };
+      const isYearYiMa = (yiMaMap[c.pillars.year.branch.zh] === simBranch.zh || yiMaMap[c.pillars.day.branch.zh] === simBranch.zh);
+
+      // Monthly fortune timeline
+      const allMonths = BaziEngine.calculateMonthlyFortune(c, simY);
+      let selectedMonths = [];
+      let timelineLabel = '';
+      if (q.includes('สิ้นปี') || q.includes('ปลายปี')) {
+        selectedMonths = allMonths.slice(8, 12);
+        timelineLabel = `ไทม์ไลน์สารท 4 เดือนปลายปี ${simY} (เจาะลึกจุดเปลี่ยนสำคัญ)`;
+      } else if (q.includes('ต้นปี')) {
+        selectedMonths = allMonths.slice(0, 4);
+        timelineLabel = `ไทม์ไลน์สารท 4 เดือนต้นปี ${simY} (จังหวะการเริ่มต้น)`;
+      } else if (q.includes('กลางปี')) {
+        selectedMonths = allMonths.slice(4, 8);
+        timelineLabel = `ไทม์ไลน์สารท 4 เดือนกลางปี ${simY} (จังหวะขับเคลื่อน)`;
+      } else {
+        selectedMonths = [allMonths[0], allMonths[3], allMonths[7], allMonths[10]].filter(Boolean);
+        if (selectedMonths.length < 4) selectedMonths = allMonths.slice(0, 4);
+        timelineLabel = `ไทม์ไลน์สารท 4 ไตรมาสหลักของปี ${simY}`;
+      }
+
+      // Question Categories
+      const isJobChangeQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|ย้ายหน้าที่|ย้ายสายงาน|ตกงาน|เลื่อนขั้น|ตำแหน่ง/.test(q) || (/งาน/.test(q) && /สิ้นปี|ปลายปี|เปลี่ยน|ย้าย/.test(q));
+      const isWealthQuery = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|ทอง|ค้าขาย|กำไร|เงินก้อน|กู้/.test(q);
+      const isLoveQuery = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|คู่ครอง|เนื้อคู่|ความรัก/.test(q);
+      const isHealthQuery = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|ปอด|ตับ|เครียด|นอน/.test(q);
+
+      let topicTitle = '';
+      let verdictMain = '';
+      let verdictSub = '';
+      let verdictIcon = '🔮';
+      let prob = 70;
+      let probBadgeText = '';
+      let probBadgeBg = 'linear-gradient(135deg, #7c3aed 0%, #db2777 100%)';
+      let analysisPoints = [];
+      let advice = '';
+
+      if (isJobChangeQuery) {
+        verdictIcon = '🐎';
+        prob = 48;
+        if (clashMonth) prob += 24;
+        if (monthHasYiMa || isYearYiMa) prob += 16;
+        if (simStemGod.zh === '傷官' || simStemGod.zh === '七殺') prob += 14;
+        if (harmMonth) prob += 10;
+        if (dyClash) prob += 10;
+        if (checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)) prob += 8;
+        prob = Math.min(94, Math.max(32, prob));
+
+        const peakMonth = selectedMonths.find(m => m.ratingType === 'clash') || selectedMonths[2] || selectedMonths[0];
+        topicTitle = `คำนวณปาจื่อเจาะลึก: เกณฑ์การเปลี่ยนงาน & โยกย้ายหน้าที่ช่วง${q.includes('สิ้นปี') ? 'สิ้นปี ' : ''}${simY}`;
+        verdictMain = `คำวินิจฉัยปาจื่อ: มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่รับผิดชอบ ${prob >= 75 ? 'สูงมาก (ฟันธงตามผังดวง)' : 'ปานกลาง (มีโอกาสปรับบทบาท)'}`;
+        verdictSub = `ช่วงเวลาที่มีแรงส่งและโอกาสสูงสุด: ${peakMonth ? ((peakMonth.title || peakMonth.solarTh || peakMonth.labelDate || '').split('(')[0].trim() || 'ช่วงปลายปี') : 'ช่วงปลายปี'} ${simY} (${peakMonth ? peakMonth.stem.zh + peakMonth.branch.zh : ''})`;
+        probBadgeText = `โอกาสเปลี่ยนงาน ${prob}%`;
+        probBadgeBg = prob >= 75 ? 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)' : '#2563eb';
+
+        const natalClashText = checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)
+          ? `จุดปะทะในดวงเดิม (${c.pillars.year.branch.zh} 沖 ${c.pillars.month.branch.zh}): เสาปีปะทะเสาเดือน บ่งชี้ว่าสภาพแวดล้อมการทำงานมักมีการปรับเปลี่ยนเพื่อเติบโตสู่ระดับที่สูงขึ้นเสมอ`
+          : `โครงสร้างเสาเดิม: เสาเดือนเป็น ${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} มีความมั่นคงในบทบาทเดิม แต่พร้อมขยับขยายเมื่อมีพลังกระตุ้นจากปีจร`;
+
+        analysisPoints.push({
+          title: '🏛️ โครงสร้างเสาการงานในดวงเดิม (Month Pillar & Ten Gods):',
+          body: `เสาเดือนคุมการงาน อาชีพ และบทบาทสังคม เป็น ${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} (สิบเทพอ่านได้: ${c.pillars.month.tenGod.zh} - ${c.pillars.month.tenGod.th}) • ${natalClashText}`,
+          borderClass: ''
+        });
+
+        analysisPoints.push({
+          title: `⚡ ปฏิสัมพันธ์พลังปีจร ${simY} (${simStem.zh}${simBranch.zh}) & วัยจร:`,
+          body: `ปี ${simY} ส่งพลังก้านฟ้า ${simStem.zh} (${simStemGod.th}) และกิ่งดิน ${simBranch.zh} (${simBranch.zodiac.split(' ')[0]}) • ${clashMonth ? 'เกิดการปะทะเสาเดือน (沖月柱) มีแรงผลักดันให้เปลี่ยนแปลงสภาพแวดล้อมการทำงานอย่างชัดเจน' : harmMonth ? 'เกิดการสมพงศ์เสาเดือน (合月柱) มีโอกาสได้รับมอบหมายโปรเจกต์ใหม่หรือปรับตำแหน่งภายใน' : 'กระแสงานราบรื่น แต่มีพลังกระตุ้นจากความต้องการเติบโต'} ${curDaYun ? `• คุมโดยวัยจรช่วงอายุ ${curDaYun.ageRange} (${curDaYun.stem.zh}${curDaYun.branch.zh})` : ''}`,
+          borderClass: 'border-accent'
+        });
+
+        analysisPoints.push({
+          title: `📅 ${timelineLabel}:`,
+          body: selectedMonths.map(m => `สารท ${m.labelDate.split(' ')[1]} (${m.stem.zh}${m.branch.zh}): ${m.ratingType === 'clash' ? '★ จังหวะพีค มีพลังกระตุ้นการตัดสินใจเด็ดขาด' : m.ratingType === 'auspicious' ? 'พลังธาตุเกื้อหนุน เจรจาหรือสัมภาษณ์ราบรื่น' : 'เจรจาขอบเขตงาน เตรียมพร้อมล่วงหน้า'}`).join(' | '),
+          borderClass: 'border-gold'
+        });
+
+        advice = `ใช้พลังธาตุปรับดวง ${ELEMENTS_META[c.tiaoHou.element].th} และธาตุส่งเสริม ${c.favorableElements.map(k => ELEMENTS_META[k].th).join(', ')} ในการตัดสินใจ อย่าเพิ่งลาออกด้วยอารมณ์ก่อนมีหนังสือสัญญาตอบรับที่แน่นอน`;
+        analysisPoints.push({
+          title: '💡 กลยุทธ์เสริมมงคล & แนวทางปฏิบัติ:',
+          body: advice,
+          borderClass: 'border-green'
+        });
+
+      } else if (isWealthQuery) {
+        verdictIcon = '💰';
+        const dmElem = c.dayMaster.element;
+        const wealthElem = ELEMENTS_META[dmElem].controls;
+        const wealthMeta = ELEMENTS_META[wealthElem];
+        const wealthPct = c.elementPercentages[wealthElem] || 0;
+        const outputElem = ELEMENTS_META[dmElem].generates;
+        const outputMeta = ELEMENTS_META[outputElem];
+
+        let wealthScore = 3.8;
+        if (c.favorableElements.includes(simStem.element) || c.favorableElements.includes(simBranch.element)) wealthScore += 0.6;
+        if (simStemGod.zh === '正財' || simStemGod.zh === '偏財' || simStemGod.zh === '食神') wealthScore += 0.5;
+        if (clashDay || clashMonth) wealthScore -= 0.4;
+        wealthScore = Math.min(4.9, Math.max(2.5, wealthScore));
+        prob = Math.round((wealthScore / 5) * 100);
+
+        topicTitle = `คำนวณปาจื่อเจาะลึก: ฐานการเงิน โชคลาภ & การบริหารทรัพย์ปี ${simY}`;
+        verdictMain = `คำวินิจฉัยปาจื่อ: ฐานะการเงินหมุนเวียน ${wealthScore >= 4.0 ? 'คล่องตัวสูง มีเกณฑ์ได้เงินก้อนจากผลงาน' : 'ต้องวางแผนรอบคอบ ป้องกันรายจ่ายจร'}`;
+        verdictSub = `ธาตุโชคลาภคือ ${wealthMeta.th} (${wealthPct}%) | ธาตุผลิตโอกาสคือ ${outputMeta.th} (${c.elementPercentages[outputElem] || 0}%)`;
+        probBadgeText = `ดัชนีโชคลาภ ${wealthScore.toFixed(1)}/5 (${prob}%)`;
+        probBadgeBg = '#10b981';
+
+        analysisPoints.push({
+          title: '💎 ศักยภาพการสร้างความมั่งคั่งในดวงเดิม:',
+          body: `ดวงนี้มีพลังธาตุโชคลาภ (${wealthMeta.th}) ${wealthPct}% และธาตุสร้างรายได้ (${outputMeta.th}) ${c.elementPercentages[outputElem] || 0}% แสดงถึงความสามารถในการเล็งเห็นช่องทางรายได้และเปลี่ยนทักษะเป็นมูลค่าได้อย่างดี`,
+          borderClass: ''
+        });
+
+        analysisPoints.push({
+          title: `🔥 ผลกระทบจากปีจร ${simY} (${simStem.zh}${simBranch.zh}) & วัยจร:`,
+          body: `ในปี ${simY} พลังก้านฟ้าเป็น ${simStem.zh} (${simStemGod.th}) ${c.favorableElements.includes(simStem.element) ? 'เป็นธาตุส่งเสริม ช่วยเพิ่มความมั่นใจในการต่อยอดการเงิน' : 'ควรระวังเรื่องรายจ่ายจรและการลงทุนเสี่ยงสูง'} ${clashDay ? '(ปะทะเสาวัน ควรระมัดระวังเรื่องสัญญากับคนใกล้ชิด)' : 'กระแสการเงินหมุนเวียนต่อเนื่อง'} • วัยจรช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'}`,
+          borderClass: 'border-accent'
+        });
+
+        analysisPoints.push({
+          title: `📈 ${timelineLabel}:`,
+          body: selectedMonths.map(m => `สารท ${m.labelDate.split(' ')[1]} (${m.stem.zh}${m.branch.zh}): ${m.ratingType === 'auspicious' ? 'ช่วงทองการเงิน สภาพคล่องสูง' : m.ratingType === 'clash' ? 'มีเกณฑ์จ่ายเงินก้อน ควรวางแผนงบประมาณ' : 'รายได้สม่ำเสมอ'}`).join(' | '),
+          borderClass: 'border-gold'
+        });
+
+        advice = `เน้นการใช้ธาตุปรับดวง ${ELEMENTS_META[c.tiaoHou.element].th} ในการคุมสมดุลอารมณ์ ควบคุมรายจ่าย และแปลงเงินสดบางส่วนเป็นสินทรัพย์มั่นคงเพื่อป้องกันเงินรั่วไหล`;
+        analysisPoints.push({
+          title: '💡 กลยุทธ์การบริหารทรัพย์ & เสริมดวง:',
+          body: advice,
+          borderClass: 'border-green'
+        });
+
+      } else if (isLoveQuery) {
+        verdictIcon = '❤️';
+        let loveText = harmDay ? 'มีเกณฑ์พบรัก สมหวัง หรือความสัมพันธ์พัฒนาสู่ความมั่นคงสูง' : clashDay ? 'ต้องระวังความใจร้อน ความขัดแย้ง และอารมณ์เปราะบาง' : 'ความสัมพันธ์ดำเนินไปอย่างราบรื่น อบอุ่น มีความเข้าใจที่ดี';
+        prob = harmDay ? 86 : clashDay ? 52 : 75;
+
+        topicTitle = `คำนวณปาจื่อเจาะลึก: ความรัก คู่ครอง & ชีวิตคู่ปี ${simY}`;
+        verdictMain = `คำวินิจฉัยปาจื่อ: ${loveText}`;
+        verdictSub = `เสาคู่ครอง (Day Branch) คือ ${c.pillars.day.branch.zh} (${c.pillars.day.branch.zodiac.split(' ')[0]}) ${harmDay ? '• ได้รับการสมพงศ์จากปีจร' : clashDay ? '• มีจุดปะทะจากปีจร' : '• ธาตุเกื้อกูลกลมกลืน'}`;
+        probBadgeText = `ดัชนีเสน่ห์รัก ${prob}%`;
+        probBadgeBg = '#ec4899';
+
+        analysisPoints.push({
+          title: '🌹 ฐานคู่ครองในดวงเดิม (Day Branch & Spouse Palace):',
+          body: `เสาวันคุมเรือนคู่ครองและชีวิตคู่ เป็น ${c.pillars.day.stem.zh}${c.pillars.day.branch.zh} (คู่แท้มีลักษณะ: ${c.dayMasterProfile.title}) บ่งบอกถึงความต้องการคู่ชีวิตที่เข้าใจและสนับสนุนเป้าหมายของกันและกัน`,
+          borderClass: ''
+        });
+
+        analysisPoints.push({
+          title: `💫 พลังความรักปีจร ${simY} (${simStem.zh}${simBranch.zh}):`,
+          body: `ในปี ${simY} กิ่งดิน ${simBranch.zh} ${harmDay ? 'สมพงศ์กับเรือนคู่ครองโดยตรง ส่งผลให้คนโสดมีโอกาสเจอคนที่ถูกใจ ส่วนคนมีคู่ความสัมพันธ์จะแน่นแฟ้นยิ่งขึ้น' : clashDay ? 'มีจุดปะทะกับเรือนคู่ครอง ควรใช้สติ ลดทิฐิ และหลีกเลี่ยงการใช้อารมณ์ตัดสินปัญหา' : 'ดำเนินไปอย่างราบรื่น มีความเข้าใจเกื้อกูล'} • วัยจรช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'}`,
+          borderClass: 'border-accent'
+        });
+
+        analysisPoints.push({
+          title: `📅 ${timelineLabel}:`,
+          body: selectedMonths.map(m => `สารท ${m.labelDate.split(' ')[1]}: ${m.ratingType === 'auspicious' ? 'จังหวะหัวใจเบ่งบาน เสน่ห์โดดเด่น' : m.ratingType === 'clash' ? 'มีเกณฑ์เข้าใจผิด ควรใจเย็น' : 'อบอุ่นราบรื่น'}`).join(' | '),
+          borderClass: 'border-gold'
+        });
+
+        advice = `ใช้ธาตุปรับดวง ${ELEMENTS_META[c.tiaoHou.element].th} ในการปรับสมดุลอารมณ์ รับฟังคนรักให้มากขึ้น และพากันไปทำบุญหรือเปลี่ยนบรรยากาศสถานที่ใหม่ๆ`;
+        analysisPoints.push({
+          title: '💡 กลยุทธ์กระชับความสัมพันธ์ & เสริมเสน่ห์:',
+          body: advice,
+          borderClass: 'border-green'
+        });
+
+      } else if (isHealthQuery) {
+        verdictIcon = '🌿';
+        const elemPcts = c.elementPercentages;
+        const weakestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] < elemPcts[b] ? a : b);
+        const strongestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] > elemPcts[b] ? a : b);
+        prob = clashDay ? 58 : 78;
+
+        topicTitle = `คำนวณปาจื่อเจาะลึก: สมดุลเบญจธาตุ & สุขภาพตามแพทย์จีนปี ${simY}`;
+        verdictMain = `คำวินิจฉัยปาจื่อ: เฝ้าระวังอวัยวะธาตุ${ELEMENTS_META[weakestElem].th} (${ELEMENTS_META[weakestElem].organ}) และการพักผ่อน`;
+        verdictSub = `ธาตุที่น้อยที่สุดคือ ${ELEMENTS_META[weakestElem].th} (${elemPcts[weakestElem]}%) | ธาตุสูงสุดคือ ${ELEMENTS_META[strongestElem].th} (${elemPcts[strongestElem]}%)`;
+        probBadgeText = `เกณฑ์สุขภาพ: ${clashDay ? 'เฝ้าระวังสมดุล' : 'สมบูรณ์ดี'}`;
+        probBadgeBg = '#0284c7';
+
+        analysisPoints.push({
+          title: '🫀 อวัยวะที่ต้องดูแลตามหลักเบญจธาตุแพทย์จีน:',
+          body: `ระบบ${ELEMENTS_META[weakestElem].organ} (ธาตุ${ELEMENTS_META[weakestElem].th}): สัดส่วน ${elemPcts[weakestElem]}% ควรบำรุงและลดพฤติกรรมเสี่ยง • ระบบ${ELEMENTS_META[strongestElem].organ} (ธาตุ${ELEMENTS_META[strongestElem].th}): สัดส่วน ${elemPcts[strongestElem]}% มีพลังงานหนาแน่น ควรระบายพลังงานด้วยการออกกำลังกาย`,
+          borderClass: ''
+        });
+
+        analysisPoints.push({
+          title: `🌿 อิทธิพลปีจร ${simY} (${simStem.zh}${simBranch.zh}) & วัยจร:`,
+          body: `ในปี ${simY} ธาตุประจำปีคือ ${simStem.element} และ ${simBranch.element} ${clashDay ? 'มีจุดปะทะเสาวัน (สุขภาพกายใจ) ควรเน้นการนอนหลับให้พอเพียงและงดทำงานหามรุ่งหามค่ำ' : 'ช่วยปรับกระแสชี่ให้ไหลเวียนราบรื่น'} • วัยจรช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'}`,
+          borderClass: 'border-accent'
+        });
+
+        analysisPoints.push({
+          title: `📅 ${timelineLabel}:`,
+          body: selectedMonths.map(m => `สารท ${m.labelDate.split(' ')[1]}: ${m.ratingType === 'clash' ? 'ควรพักผ่อน งดกิจกรรมเสี่ยง' : 'ร่างกายสดชื่น สมดุลดี'}`).join(' | '),
+          borderClass: 'border-gold'
+        });
+
+        advice = `บำรุงอาหารตามธาตุ ${ELEMENTS_META[weakestElem].th} ดื่มน้ำสะอาดสม่ำเสมอ และออกกำลังกายยืดเหยียดเพื่อคลายความตึงตัวของกล้ามเนื้อ`;
+        analysisPoints.push({
+          title: '💡 กลยุทธ์การดูแลสุขภาพ & สมดุลชีวิต:',
+          body: advice,
+          borderClass: 'border-green'
+        });
+
+      } else {
+        // General query
+        verdictIcon = '🔮';
+        prob = 78;
+        topicTitle = rawQ ? `ผลการคำนวณวิเคราะห์เจาะลึก: "${rawQ}" (ปี ${simY})` : `ผลการคำนวณจำลองปีจร ${simY} (${simStem.zh}${simBranch.zh})`;
+        verdictMain = `ผลการคำนวณจำลองปีจร ${simY} (${simStem.zh}${simBranch.zh} • ${simBranch.zodiac.split(' ')[0]})`;
+        verdictSub = `ก้านฟ้า: ${simStem.zh} (${simStemGod.th}) | กิ่งดิน: ${simBranch.zh} (${simBranch.element}) | นั่บอิม: ${simNaYin.split(' ')[0]}`;
+        probBadgeText = `ดัชนีภาพรวม 4.3/5`;
+        probBadgeBg = 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)';
+
+        analysisPoints.push({
+          title: `🌌 การปฏิสัมพันธ์ฟ้าดินในรอบปี ${simY}:`,
+          body: `ในปี ${simY} พลังก้านฟ้าเป็น ${simStem.zh} (${simStemGod.th}) ส่งผลต่อมุมมองและการตัดสินใจ กิ่งดิน ${simBranch.zh} ปฏิสัมพันธ์กับดวงชะตาเดิม ${clashMonth ? '(ปะทะเสาการงาน มีการปรับเปลี่ยน)' : clashDay ? '(ปะทะเสาวัน เฝ้าระวังอารมณ์)' : '(มีพลังส่งเสริมเกื้อหนุนอย่างราบรื่น)'}`,
+          borderClass: ''
+        });
+
+        analysisPoints.push({
+          title: `⏳ อิทธิพลวัยจร 10 ปี (大運):`,
+          body: `ช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'} คุมโดยก้านฟ้า-กิ่งดิน ${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : '-'} (${curDaYun && curDaYun.tenGod ? curDaYun.tenGod.th : '-'}) เป็นช่วงเวลาแห่งการพัฒนาศักยภาพและการสะสมผลงานสำคัญ`,
+          borderClass: 'border-accent'
+        });
+
+        analysisPoints.push({
+          title: `📅 ${timelineLabel}:`,
+          body: selectedMonths.map(m => `สารท ${m.labelDate.split(' ')[1]} (${m.stem.zh}${m.branch.zh}): ${m.ratingType === 'auspicious' ? 'จังหวะมงคลยิ่ง' : m.ratingType === 'clash' ? 'มีจุดปะทะ ควรตัดสินใจรอบคอบ' : 'กระแสไหลเวียนราบรื่น'}`).join(' | '),
+          borderClass: 'border-gold'
+        });
+
+        advice = `ใช้ธาตุปรับดวง ${ELEMENTS_META[c.tiaoHou.element].th} ควบคู่กับธาตุส่งเสริม ${c.favorableElements.map(k => ELEMENTS_META[k].th).join(', ')} เพื่อสร้างสมดุลและดึงศักยภาพสูงสุดออกมาใช้`;
+        analysisPoints.push({
+          title: '💡 กลยุทธ์การปรับใช้ & เสริมดวง:',
+          body: advice,
+          borderClass: 'border-green'
+        });
+      }
+
+      return {
+        simY,
+        simStem,
+        simBranch,
+        simStemGod,
+        simBranchGod,
+        simNaYin,
+        curDaYun,
+        clashMonth, clashDay, clashYear, clashHour,
+        harmMonth, harmDay, harmYear, harmHour,
+        prob,
+        probBadgeText,
+        probBadgeBg,
+        verdictIcon,
+        verdictMain,
+        verdictSub,
+        topicTitle,
+        analysisPoints,
+        selectedMonths,
+        timelineLabel,
+        advice
+      };
     }
   };
 
   // 12. BaZi UI App Controller
   const BaziApp = {
     currentChart: null,
+    guestCurrentResult: null,
     savedProfiles: [],
     selectedDaYunIndex: null,
     selectedYear: new Date().getFullYear(),
@@ -1026,17 +1361,27 @@
         const urlParams = new URLSearchParams(window.location.search);
         const paramMode = urlParams.get('mode');
         if (paramMode === 'expert' || paramMode === 'basic') return paramMode;
-        return localStorage.getItem('bazi_display_mode_v2') || 'expert';
-      } catch (e) { return 'expert'; }
+        return localStorage.getItem('bazi_display_mode_v2') || 'basic';
+      } catch (e) { return 'basic'; }
     })(),
     activeExpertQuery: 'geju',
 
     init: function () {
       this.loadSavedProfiles();
       this.setDefaultCurrentDateTimeInputs();
+      this.initGuestInputs();
       this.renderQuickProfileSelect();
       this.bindEvents();
-      this.calculateFromInputs(false);
+
+      const isAuth = !!(window.AuthManager && window.AuthManager.isLoggedIn());
+      const curUser = window.AuthManager ? window.AuthManager.currentUser : null;
+      this.updateViewForAuthState(isAuth, curUser);
+
+      if (isAuth) {
+        this.loadMyProfileChart();
+      } else {
+        this.calculateFromInputs(false);
+      }
       this.switchMode(this.currentMode, true);
 
       // If arriving with explicit parameters from another view or URL query
@@ -1063,6 +1408,316 @@
           this.fillAndRunCustomQuery(queryQ);
         }
       } catch (e) {}
+    },
+
+    onAuthStateChange: function (isLoggedIn, currentUser) {
+      this.updateViewForAuthState(isLoggedIn, currentUser);
+      if (isLoggedIn) {
+        this.loadMyProfileChart();
+      }
+    },
+
+    updateViewForAuthState: function (isLoggedIn, currentUser) {
+      const guestView = document.getElementById('baziGuestLandingView');
+      const loggedInView = document.getElementById('baziLoggedInAppView');
+
+      if (!isLoggedIn) {
+        if (guestView) guestView.style.display = 'flex';
+        if (loggedInView) loggedInView.style.display = 'none';
+        this.initGuestInputs();
+      } else {
+        if (guestView) guestView.style.display = 'none';
+        if (loggedInView) loggedInView.style.display = 'flex';
+        this.updateMemberHeader(currentUser);
+        this.renderQuickProfileSelect();
+      }
+    },
+
+    updateMemberHeader: function (user) {
+      const nameEl = document.getElementById('baziMemberName');
+      const metaEl = document.getElementById('baziMemberMeta');
+      const avatarEl = document.getElementById('baziMemberAvatar');
+      const countTop = document.getElementById('baziSavedCountTop');
+      if (countTop) countTop.textContent = this.savedProfiles.length;
+
+      if (!user) {
+        if (nameEl) nameEl.textContent = 'ผังชะตาของ: คุณผู้ใช้';
+        if (metaEl) metaEl.textContent = 'กรุณาระบุวันเดือนปีเกิดในหน้าโปรไฟล์';
+        return;
+      }
+
+      if (nameEl) {
+        nameEl.textContent = `ผังชะตาของ: ${user.name || user.firstName || 'สมาชิก'}`;
+      }
+      if (metaEl) {
+        const bDate = user.birthDate || 'ยังไม่ได้ระบุวันเกิด';
+        const bTime = user.birthTime ? `${user.birthTime} น.` : 'ไม่ระบุเวลา';
+        const gender = user.gender === 'female' ? 'หญิง' : 'ชาย';
+        metaEl.textContent = `วันเกิด: ${bDate} • เวลา: ${bTime} • เพศ: ${gender}`;
+      }
+      if (avatarEl) {
+        if (user.photoURL) {
+          avatarEl.innerHTML = `<img src="${user.photoURL}" alt="avatar" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+          avatarEl.innerHTML = `<i class="fa-solid fa-circle-user"></i>`;
+        }
+      }
+    },
+
+    loadMyProfileChart: function () {
+      const user = window.AuthManager ? window.AuthManager.currentUser : null;
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+      const quickSel = document.getElementById('baziQuickProfileSelect');
+
+      const name = (user && (user.name || user.firstName)) ? (user.name || user.firstName) : 'ดวงของฉัน';
+      const birthDate = (user && user.birthDate) ? user.birthDate : '1998-08-18';
+      const birthTime = (user && user.birthTime) ? user.birthTime : '10:30';
+      const gender = (user && user.gender) ? user.gender : 'female';
+
+      if (nameInput) nameInput.value = name;
+      if (dateInput) dateInput.value = birthDate;
+      if (hourInput) hourInput.value = birthTime;
+      if (genderSelect) genderSelect.value = gender;
+      if (quickSel) quickSel.value = '__my_profile__';
+
+      // Default mode after login is Basic!
+      this.switchMode('basic');
+      this.calculateFromInputs(false);
+      this.showToast(`แสดงผังดวงของ "${name}" (โหมด Basic) เรียบร้อยแล้วค่ะ`);
+    },
+
+    initGuestInputs: function () {
+      const dateInput = document.getElementById('baziGuestDateInput');
+      const hourInput = document.getElementById('baziGuestHourInput');
+      if (dateInput && !dateInput.value) {
+        dateInput.value = '1998-08-18';
+      }
+      if (hourInput && !hourInput.value) {
+        hourInput.value = '10:30';
+      }
+    },
+
+    fillGuestQuestion: function (q) {
+      const input = document.getElementById('baziGuestQuestionInput');
+      if (input) input.value = q;
+      this.calculateGuestFortune();
+    },
+
+    calculateGuestFortune: function () {
+      const nameInput = document.getElementById('baziGuestNameInput');
+      const genderSelect = document.getElementById('baziGuestGenderSelect');
+      const dateInput = document.getElementById('baziGuestDateInput');
+      const hourInput = document.getElementById('baziGuestHourInput');
+      const unknownCheck = document.getElementById('baziGuestUnknownTimeCheck');
+      const questionInput = document.getElementById('baziGuestQuestionInput');
+
+      const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'ดวงชะตาของคุณ';
+      const gender = genderSelect ? genderSelect.value : 'female';
+      const birthDate = (dateInput && dateInput.value) ? dateInput.value : '1998-08-18';
+      const isUnknownTime = unknownCheck && unknownCheck.checked;
+      
+      let birthHour = 12;
+      let birthMinute = 0;
+      if (!isUnknownTime && hourInput && hourInput.value) {
+        const parts = hourInput.value.split(':');
+        birthHour = parseInt(parts[0], 10) || 12;
+        birthMinute = parseInt(parts[1], 10) || 0;
+      }
+
+      const rawQuestion = (questionInput && questionInput.value.trim()) ? questionInput.value.trim() : 'สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่';
+
+      // Calculate Chart
+      const chart = BaziEngine.calculateChart({
+        birthDate,
+        birthHour,
+        birthMinute,
+        gender,
+        name
+      });
+
+      // Compute Oracle Verdict
+      const verdict = BaziEngine.computeOracleVerdict(chart, rawQuestion, this.selectedYear);
+      if (!verdict) return;
+
+      this.guestCurrentResult = { chart, question: rawQuestion, verdict };
+
+      // Render into Guest Result Card
+      const resultContainer = document.getElementById('baziGuestResultContainer');
+      const calcDateBadge = document.getElementById('baziGuestCalcDateBadge');
+      const dmChar = document.getElementById('baziGuestDmChar');
+      const dmName = document.getElementById('baziGuestDmName');
+      const dmBadge = document.getElementById('baziGuestDmBadge');
+      const personTitle = document.getElementById('baziGuestResultPersonTitle');
+      const daYunText = document.getElementById('baziGuestDaYunText');
+      const annualText = document.getElementById('baziGuestAnnualText');
+      const questionDisplay = document.getElementById('baziGuestQuestionDisplay');
+      const verdictIcon = document.getElementById('baziGuestVerdictIcon');
+      const verdictHeadline = document.getElementById('baziGuestVerdictHeadline');
+      const verdictSubline = document.getElementById('baziGuestVerdictSubline');
+      const probPill = document.getElementById('baziGuestProbPill');
+      const analysisGrid = document.getElementById('baziGuestAnalysisGrid');
+
+      const dmMeta = ELEMENTS_META[chart.dayMaster.element];
+      if (dmChar) {
+        dmChar.textContent = chart.dayMaster.zh;
+        dmChar.style.color = dmMeta.color;
+      }
+      if (dmName) dmName.textContent = `${chart.dayMaster.py} (${dmMeta.th})`;
+      if (dmBadge) dmBadge.style.borderColor = dmMeta.color;
+      if (personTitle) personTitle.textContent = `${chart.name} • ดิถีธาตุ ${chart.dayMaster.zh} (${chart.dayMaster.th}) • ${chart.dayMasterProfile.title}`;
+      if (daYunText) daYunText.textContent = `ช่วงอายุ ${verdict.curDaYun ? verdict.curDaYun.ageRange : '-'} (${verdict.curDaYun ? verdict.curDaYun.stem.zh + verdict.curDaYun.branch.zh : '-'} • ${verdict.curDaYun && verdict.curDaYun.tenGod ? verdict.curDaYun.tenGod.th : '-'})`;
+      if (annualText) annualText.textContent = `ปี ${verdict.simY} (${verdict.simStem.zh}${verdict.simBranch.zh} • ${verdict.simBranch.zodiac.split(' ')[0]})`;
+      if (questionDisplay) questionDisplay.textContent = `"${rawQuestion}"`;
+      if (verdictIcon) verdictIcon.textContent = verdict.verdictIcon;
+      if (verdictHeadline) verdictHeadline.textContent = verdict.verdictMain;
+      if (verdictSubline) verdictSubline.textContent = verdict.verdictSub;
+      if (probPill) {
+        probPill.textContent = verdict.probBadgeText;
+        probPill.style.background = verdict.probBadgeBg;
+      }
+
+      if (calcDateBadge) {
+        calcDateBadge.textContent = `คำนวณเมื่อ: ${new Date().toLocaleDateString('th-TH')}`;
+      }
+
+      if (analysisGrid) {
+        analysisGrid.innerHTML = verdict.analysisPoints.map(p => `
+          <div class="guest-point-card ${p.borderClass || ''}">
+            <div class="guest-point-header">${p.title}</div>
+            <p class="guest-point-body">${p.body}</p>
+          </div>
+        `).join('');
+      }
+
+      if (resultContainer) {
+        resultContainer.classList.remove('hidden');
+        resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      this.showToast(`คำนวณปาจื่อและฟันธงคำตอบเรียบร้อยแล้วค่ะ! ✨`);
+    },
+
+    generateGuestShareText: function () {
+      if (!this.guestCurrentResult) return '🔮 ผลคำนวณดวงชะตา ปาจื่อ (BaZi Four Pillars Oracle) - แม่หมอติ๊ดติ๊ด 🐾✨';
+      const { chart, question, verdict } = this.guestCurrentResult;
+      const dmMeta = ELEMENTS_META[chart.dayMaster.element];
+      return `🔮 ผลคำนวณดวงชะตา ปาจื่อ (BaZi Four Pillars Oracle) - แม่หมอติ๊ดติ๊ด 🐾✨\n` +
+        `👤 เจ้าชะตา: ${chart.name} (ดิถีธาตุ ${chart.dayMaster.zh} ${chart.dayMaster.th} • ${chart.strengthText})\n` +
+        `❓ คำถาม: "${question}"\n` +
+        `🎯 คำวินิจฉัยฟันธง: ${verdict.verdictMain}\n` +
+        `📊 ${verdict.probBadgeText}\n` +
+        `⚡ วัยจร 10 ปี (大運): ช่วงอายุ ${verdict.curDaYun ? verdict.curDaYun.ageRange : '-'} (${verdict.curDaYun ? verdict.curDaYun.stem.zh + verdict.curDaYun.branch.zh : ''})\n` +
+        `🌟 อิทธิพลปีจร: ปี ${verdict.simY} (${verdict.simStem.zh}${verdict.simBranch.zh})\n` +
+        `💡 กลยุทธ์เสริมดวง: ${verdict.advice}\n` +
+        `---\n` +
+        `✨ ดูดวงปาจื่อแม่นๆ ฟรีได้ที่ แม่หมอติ๊ดติ๊ด 🐾`;
+    },
+
+    shareGuestResult: async function (platform) {
+      if (!this.guestCurrentResult) {
+        this.calculateGuestFortune();
+      }
+      if (!this.guestCurrentResult) return;
+
+      const text = this.generateGuestShareText();
+      this.showToast('🔮 กำลังเตรียมรูปภาพคำทำนายและข้อความ... 🐾✨');
+
+      let imageBlob = null;
+      const cardEl = document.getElementById('baziGuestFortuneCard');
+      if (cardEl && typeof html2canvas === 'function') {
+        try {
+          const canvas = await html2canvas(cardEl, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+            logging: false
+          });
+          imageBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 0.95));
+        } catch (e) {
+          console.warn('Capture bazi card error:', e);
+        }
+      }
+
+      const imageFile = imageBlob ? new File([imageBlob], 'MaeMorTidTid_BaZi_' + Date.now() + '.png', { type: 'image/png' }) : null;
+
+      // 1. Mobile Web Share API
+      if (navigator.canShare && imageFile && navigator.canShare({ files: [imageFile] })) {
+        try {
+          await navigator.share({
+            title: 'ผลคำนวณดวงชะตา ปาจื่อ - แม่หมอติ๊ดติ๊ด 🐾✨',
+            text: text,
+            files: [imageFile]
+          });
+          this.showToast('✨ ระบบนำรูปและข้อความไปวางในแอปแล้วค่ะ! 💖');
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      // 2. Fallback
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      }
+
+      if (imageBlob) {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(imageBlob);
+        a.download = 'MaeMorTidTid_BaZi_' + Date.now() + '.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+      }
+
+      if (platform === 'fb') {
+        this.showToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! วาง (Ctrl+V) ใน Facebook ได้เลยนะคะ 🐾');
+        setTimeout(() => window.open('https://www.facebook.com/', '_blank'), 600);
+      } else if (platform === 'tt') {
+        this.showToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
+        setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 600);
+      } else if (platform === 'ig') {
+        this.showToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
+        setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
+      } else if (platform === 'line') {
+        this.showToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
+        setTimeout(() => {
+          if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
+            try {
+              if (liff.isApiAvailable('shareTargetPicker')) {
+                liff.shareTargetPicker([{ type: 'text', text }]);
+                return;
+              } else if (liff.isInClient()) {
+                liff.sendMessages([{ type: 'text', text }]);
+                return;
+              }
+            } catch (err) {}
+          }
+          const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
+          window.open(lineUrl, '_blank');
+        }, 600);
+      }
+    },
+
+    copyGuestResultText: function () {
+      const text = this.generateGuestShareText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          this.showToast('คัดลอกสรุปคำทำนายลงคลิปบอร์ดเรียบร้อยแล้วค่ะ! ✨');
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        this.showToast('คัดลอกสรุปคำทำนายลงคลิปบอร์ดเรียบร้อยแล้วค่ะ! ✨');
+      }
     },
 
     resetToNow: function () {
@@ -1147,13 +1802,19 @@
     updateSavedCountBadge: function () {
       const el = document.getElementById('baziSavedCount');
       if (el) el.textContent = this.savedProfiles.length;
+      const elTop = document.getElementById('baziSavedCountTop');
+      if (elTop) elTop.textContent = this.savedProfiles.length;
     },
 
     renderQuickProfileSelect: function () {
       const select = document.getElementById('baziQuickProfileSelect');
       if (!select) return;
 
-      let html = `<option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>`;
+      let html = '';
+      if (window.AuthManager && window.AuthManager.isLoggedIn()) {
+        html += `<option value="__my_profile__">👤 ดวงของฉัน (Profile Owner)</option>`;
+      }
+      html += `<option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>`;
       if (this.savedProfiles && this.savedProfiles.length > 0) {
         html += `<optgroup label="ลูกดวงที่บันทึกไว้ (${this.savedProfiles.length} ท่าน)">`;
         this.savedProfiles.forEach(p => {
@@ -1165,7 +1826,9 @@
     },
 
     onQuickProfileChange: function (val) {
-      if (val === '__now__') {
+      if (val === '__my_profile__') {
+        this.loadMyProfileChart();
+      } else if (val === '__now__') {
         this.setDefaultCurrentDateTimeInputs();
         this.calculateFromInputs();
         this.showToast('ตั้งค่าเป็นดวงวันเวลาปัจจุบันเรียบร้อยแล้วค่ะ');
@@ -1311,12 +1974,57 @@
           if (y) this.selectAnnualYear(y);
         });
       });
+
+      // Guest calculation button
+      const guestCalcBtn = document.getElementById('baziGuestCalcBtn');
+      if (guestCalcBtn) {
+        guestCalcBtn.addEventListener('click', () => this.calculateGuestFortune());
+      }
+
+      // Guest question input Enter key
+      const guestQuestionInput = document.getElementById('baziGuestQuestionInput');
+      if (guestQuestionInput) {
+        guestQuestionInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            this.calculateGuestFortune();
+          }
+        });
+      }
+
+      // Guest social share buttons
+      const shareFbBtn = document.getElementById('baziShareFbBtn');
+      const shareTtBtn = document.getElementById('baziShareTtBtn');
+      const shareIgBtn = document.getElementById('baziShareIgBtn');
+      const shareLineBtn = document.getElementById('baziShareLineBtn');
+      const guestCopyBtn = document.getElementById('baziGuestCopyBtn');
+
+      if (shareFbBtn) shareFbBtn.addEventListener('click', () => this.shareGuestResult('fb'));
+      if (shareTtBtn) shareTtBtn.addEventListener('click', () => this.shareGuestResult('tt'));
+      if (shareIgBtn) shareIgBtn.addEventListener('click', () => this.shareGuestResult('ig'));
+      if (shareLineBtn) shareLineBtn.addEventListener('click', () => this.shareGuestResult('line'));
+      if (guestCopyBtn) guestCopyBtn.addEventListener('click', () => this.copyGuestResultText());
+
+      // Member header actions
+      const btnMyChart = document.getElementById('baziBtnMyChart');
+      if (btnMyChart) {
+        btnMyChart.addEventListener('click', () => this.loadMyProfileChart());
+      }
+      const openSavedModalBtnTop = document.getElementById('baziOpenSavedModalBtnTop');
+      if (openSavedModalBtnTop) {
+        openSavedModalBtnTop.addEventListener('click', () => this.openSavedModal());
+      }
     },
 
     onTabShow: function () {
-      if (!this.currentChart) {
-        this.setDefaultCurrentDateTimeInputs();
-        this.calculateFromInputs(false);
+      const isAuth = !!(window.AuthManager && window.AuthManager.isLoggedIn());
+      this.updateViewForAuthState(isAuth, window.AuthManager ? window.AuthManager.currentUser : null);
+      if (isAuth) {
+        if (!this.currentChart) {
+          this.loadMyProfileChart();
+        }
+      } else {
+        this.initGuestInputs();
       }
     },
 

@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261021_qimen_tiers_v1">
+  <link rel="stylesheet" href="styles.css?v=20261021_bazi_guest_oracle_v2">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -526,84 +526,301 @@
   <div id="baziAppView" class="view-container hidden">
     <div class="bazi-app-container">
       
-      <!-- 1. Toolbar & Birth Input Card -->
-      <section class="bazi-toolbar-card">
-        <div class="bazi-input-group">
-          <div class="bazi-field bazi-field-profile">
-            <label><i class="fa-solid fa-address-book"></i> เลือกลูกดวง:</label>
-            <select id="baziQuickProfileSelect" class="bazi-quick-profile-select">
-              <option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>
-            </select>
+      <!-- ================================================================= -->
+      <!-- 1. GUEST / BEFORE LOGIN VIEW (หน้าแรกปาจื่อสำหรับผู้ที่ยังไม่ได้ Login) -->
+      <!-- ================================================================= -->
+      <div id="baziGuestLandingView" class="bazi-guest-landing-view">
+        <!-- Hero Header Card -->
+        <div class="bazi-guest-hero-card">
+          <div class="bazi-guest-badge">
+            <i class="fa-solid fa-yin-yang"></i> ศาสตร์ทำนายจีน 4 เสาชะตาฟ้าดิน (BaZi Four Pillars Oracle)
           </div>
-          <div class="bazi-field">
-            <label><i class="fa-solid fa-user"></i> ชื่อลูกดวง:</label>
-            <input type="text" id="baziNameInput" value="ดวงปัจจุบัน" placeholder="ชื่อ / นามสกุล">
+          <h1 class="bazi-guest-title">
+            🔮 ถามคำถามชะตาชีวิต เทียบวัยจร 10 ปี (大運) &amp; ปีจร (流年)
+          </h1>
+          <p class="bazi-guest-subtitle">
+            กรอกวันเดือนปีเวลาเกิด และพิมพ์คำถามที่อยากรู้ ระบบจะคำนวณ 4 เสาชะตากำเนิด เปรียบเทียบกำลังธาตุ วัยจร 10 ปี และปีจร เพื่อฟันธงคำตอบตามหลักวิชาการปาจื่อให้ทันที พร้อมแชร์คำทำนายลงโซเชียลได้ทันใจ
+          </p>
+        </div>
+
+        <!-- Guest Form Card: Birth Info & Question -->
+        <div class="bazi-guest-form-card">
+          <div class="guest-card-header">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7;"></i>
+            <span>กรอกข้อมูลวันเดือนปีเกิด และคำถามที่ต้องการฟันธง</span>
           </div>
-          <div class="bazi-field">
-            <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
-            <select id="baziGenderSelect">
-              <option value="male">ชาย (Male)</option>
-              <option value="female">หญิง (Female)</option>
-            </select>
+
+          <div class="bazi-guest-inputs-grid">
+            <!-- Name -->
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-user"></i> ชื่อ / คำเรียกแทน:</label>
+              <input type="text" id="baziGuestNameInput" value="ดวงชะตาของคุณ" placeholder="ชื่อเล่น หรือ ดวงชะตาของคุณ">
+            </div>
+
+            <!-- Gender -->
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
+              <select id="baziGuestGenderSelect">
+                <option value="male">ชาย (Male)</option>
+                <option value="female" selected>หญิง (Female)</option>
+              </select>
+            </div>
+
+            <!-- Birth Date -->
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-calendar-day"></i> วันเกิด:</label>
+              <input type="date" id="baziGuestDateInput">
+            </div>
+
+            <!-- Birth Time -->
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
+              <input type="time" id="baziGuestHourInput" value="12:00">
+              <label class="bazi-unknown-time-label" title="หากไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
+                <input type="checkbox" id="baziGuestUnknownTimeCheck"> ไม่ทราบเวลา
+              </label>
+            </div>
           </div>
-          <div class="bazi-field">
-            <label><i class="fa-solid fa-calendar-day"></i> วันเกิด:</label>
-            <input type="date" id="baziDateInput">
-          </div>
-          <div class="bazi-field">
-            <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
-            <input type="time" id="baziHourInput">
+
+          <!-- Question Input & Chips -->
+          <div class="bazi-guest-question-wrap">
+            <label class="question-label" for="baziGuestQuestionInput">
+              <i class="fa-solid fa-circle-question" style="color: #7c3aed;"></i>
+              <span>คำถามเฉพาะเจาะจงที่คุณอยากรู้:</span>
+            </label>
+            <div class="bazi-guest-input-action-row">
+              <input type="text" id="baziGuestQuestionInput" class="bazi-guest-question-input" placeholder="พิมพ์คำถาม เช่น 'สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่', 'การเงินปีนี้เป็นอย่างไร'" value="สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่">
+              <button type="button" class="bazi-btn-guest-calc" id="baziGuestCalcBtn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณ &amp; ตอบคำถาม
+              </button>
+            </div>
+
+            <!-- Popular Question Chips -->
+            <div class="bazi-guest-question-chips">
+              <span class="chips-label">🎯 คำถามยอดนิยม (คลิกถามทันที):</span>
+              <button type="button" class="guest-chip-btn" onclick="window.BaziApp.fillGuestQuestion('สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่')">
+                💼 สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่
+              </button>
+              <button type="button" class="guest-chip-btn" onclick="window.BaziApp.fillGuestQuestion('ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร มีโอกาสได้เงินก้อนไหม')">
+                💰 ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร
+              </button>
+              <button type="button" class="guest-chip-btn" onclick="window.BaziApp.fillGuestQuestion('จังหวะความรักและคนรู้ใจช่วงนี้เป็นอย่างไร')">
+                ❤️ จังหวะความรักและคนรู้ใจช่วงนี้เป็นอย่างไร
+              </button>
+              <button type="button" class="guest-chip-btn" onclick="window.BaziApp.fillGuestQuestion('สุขภาพและสมดุลเบญจธาตุที่ต้องระวังปีนี้')">
+                🌿 สุขภาพและสมดุลเบญจธาตุที่ต้องระวัง
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="bazi-toolbar-actions">
-          <button class="bazi-btn-primary" id="baziCalcBtn" onclick="window.BaziApp.calculateFromInputs(true)">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> วิเคราะห์ดวงชะตา (Calculate)
-          </button>
-          <button class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()" title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
-            <i class="fa-solid fa-bookmark"></i> บันทึกดวงนี้
-          </button>
-          <button class="bazi-btn-saved-list" id="baziOpenSavedModalBtn" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
-            <i class="fa-solid fa-folder-open"></i> หน้ารวมดวงที่บันทึก (<span id="baziSavedCount">0</span>)
-          </button>
-          <button class="bazi-btn-secondary" id="baziPresetNowBtn" onclick="window.BaziApp.resetToNow()" title="กลับไปที่วันและเวลาปัจจุบัน">
-            <i class="fa-solid fa-rotate-right"></i> ขณะนี้ (วันปัจจุบัน)
-          </button>
-          <button class="bazi-btn-secondary" id="baziForceReloadBtn" onclick="window.BaziApp.forceHardReload()" title="ล้างแคชเบราว์เซอร์และรีโหลดโค้ดเวอร์ชันล่าสุด">
-            <i class="fa-solid fa-arrows-rotate" style="color: #0284c7;"></i> รีเฟรชล้างแคช
-          </button>
-          <button class="bazi-btn-secondary" id="baziCopySummaryBtn" onclick="window.BaziApp.copySummary()" title="คัดลอกสรุปคำทำนาย">
-            <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
-          </button>
-          <button class="bazi-btn-secondary" id="baziOpenDeskToolbarBtn" onclick="window.BaziApp.openDeskFromToolbar()" title="เปิดหน้าโต๊ะหมอดูเพื่อดู 4 หัวข้อวิชาการ" style="border-color: #c084fc; color: #7c3aed; background: #faf5ff;">
-            <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 🪑 โต๊ะหมอดู
-          </button>
-        </div>
-      </section>
+        <!-- Guest Result Container (Hidden until calculated) -->
+        <div id="baziGuestResultContainer" class="bazi-guest-result-container hidden">
+          <!-- Capturable Fortune Card for Sharing -->
+          <div id="baziGuestFortuneCard" class="bazi-guest-fortune-card">
+            <div class="card-watermark-seal">八字</div>
+            <div class="guest-card-top-bar">
+              <div class="card-brand-badge">
+                <i class="fa-solid fa-yin-yang"></i> แม่หมอติ๊ดติ๊ด • BaZi Oracle
+              </div>
+              <div class="card-date-badge" id="baziGuestCalcDateBadge">
+                คำนวณเมื่อ: วันนี้
+              </div>
+            </div>
 
-      <!-- MODE SWITCHER (Basic vs Expert) -->
-      <section class="bazi-mode-switcher-bar">
-        <div class="bazi-mode-toggle-group">
-          <button type="button" class="bazi-mode-btn" id="baziModeBasicBtn" onclick="window.BaziApp.switchMode('basic')">
-            <i class="fa-solid fa-user-check"></i> <strong>โหมด Basic</strong>
-            <span class="mode-sub">ข้อมูลพื้นฐาน เข้าใจง่าย</span>
-          </button>
-          <button type="button" class="bazi-mode-btn active" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
-            <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong>
-            <span class="mode-sub">สำหรับหมอดู & คำนวณเจาะลึก</span>
-          </button>
-        </div>
-        <div class="bazi-mode-hint-box" id="baziModeHintBox">
-          <div id="baziModeBasicInfo" class="mode-banner-content hidden">
-            <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
-            <span><strong>โหมด Basic:</strong> สรุปผลวิเคราะห์ดวงชะตา ธาตุสำคัญ วัยจร 10 ปี ดวงรายปี และคำแนะนำกลยุทธ์ชีวิตเพื่อการนำไปใช้งานทันที</span>
+            <!-- Owner Day Master & Da Yun Summary Banner -->
+            <div class="guest-profile-summary-bar">
+              <div class="guest-dm-badge" id="baziGuestDmBadge">
+                <span class="guest-dm-char" id="baziGuestDmChar">丁</span>
+                <span class="guest-dm-name" id="baziGuestDmName">ไฟหยิน</span>
+              </div>
+              <div class="guest-profile-summary-text">
+                <h3 id="baziGuestResultPersonTitle">ดวงชะตาของคุณ • ดิถีธาตุ 丁 (เต็ง)</h3>
+                <p id="baziGuestPillarsComparison">
+                  เปรียบเทียบ: <strong>วัยจร 10 ปี (大運)</strong> <span id="baziGuestDaYunText">-</span> กับ <strong>ปีจร (流年)</strong> <span id="baziGuestAnnualText">-</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Question & Verdict Banner -->
+            <div class="guest-verdict-box" id="baziGuestVerdictBox">
+              <div class="guest-question-display">
+                <i class="fa-solid fa-quote-left"></i>
+                <span id="baziGuestQuestionDisplay">-</span>
+                <i class="fa-solid fa-quote-right"></i>
+              </div>
+              <div class="guest-verdict-main-row">
+                <div class="guest-verdict-left">
+                  <div class="guest-verdict-icon" id="baziGuestVerdictIcon">🎯</div>
+                  <div>
+                    <div class="guest-verdict-headline" id="baziGuestVerdictHeadline">คำวินิจฉัยปาจื่อ: -</div>
+                    <div class="guest-verdict-subline" id="baziGuestVerdictSubline">-</div>
+                  </div>
+                </div>
+                <div class="guest-prob-pill" id="baziGuestProbPill">โอกาส 75%</div>
+              </div>
+            </div>
+
+            <!-- Detailed Analysis Points Grid -->
+            <div class="guest-analysis-grid" id="baziGuestAnalysisGrid">
+              <!-- Dynamically populated -->
+            </div>
           </div>
-          <div id="baziModeExpertInfo" class="mode-banner-content">
-            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-            <span><strong>โหมด Expert:</strong> เปิดชุดเครื่องมือหมอดูเต็มรูปแบบ: โต๊ะถาม-ตอบ/คำนวณเฉพาะกิจ, ตารางเทพและดาวชะตา (神煞), ตารางปะทะ-ฮะ (刑沖合害), และแจกแจงสูตรคำนวณวั่งซ่วย & เตี้ยวโฮ่ว</span>
+
+          <!-- Social Share & Actions Bar (เหมือนเมนูทำนายไพ่) -->
+          <div class="bazi-guest-actions-bar">
+            <div class="direct-social-share-group" role="group" aria-label="แชร์ผลทำนายลงโซเชียล">
+              <span class="direct-share-label">แชร์คำทำนาย:</span>
+              <button type="button" class="btn-direct-social btn-direct-fb" id="baziShareFbBtn" title="แชร์ลง Facebook (คัดลอกข้อความ + โหลดรูปให้ทันที)">
+                <i class="fa-brands fa-facebook-f"></i>
+              </button>
+              <button type="button" class="btn-direct-social btn-direct-tt" id="baziShareTtBtn" title="แชร์ลง TikTok (คัดลอกข้อความ + โหลดรูปให้ทันที)">
+                <i class="fa-brands fa-tiktok"></i>
+              </button>
+              <button type="button" class="btn-direct-social btn-direct-ig" id="baziShareIgBtn" title="แชร์ลง Instagram (คัดลอกข้อความ + โหลดรูปให้ทันที)">
+                <i class="fa-brands fa-instagram"></i>
+              </button>
+              <button type="button" class="btn-direct-social btn-direct-line" id="baziShareLineBtn" title="แชร์เข้า LINE ทันที">
+                <i class="fa-brands fa-line"></i>
+              </button>
+            </div>
+
+            <button type="button" class="btn btn-secondary-sm" id="baziGuestCopyBtn" title="คัดลอกสรุปคำทำนายลงคลิปบอร์ด">
+              <i class="fa-solid fa-copy"></i> คัดลอกคำทำนาย
+            </button>
+          </div>
+
+          <!-- IN-DEPTH LOGIN CTA CARD (มีปุ่ม อยากดูดวงเชิงลึก คลิก ให้ login) -->
+          <div class="bazi-cta-login-card">
+            <div class="cta-left">
+              <div class="cta-icon-wrap">
+                <i class="fa-solid fa-crown"></i>
+              </div>
+              <div class="cta-text-wrap">
+                <h3 class="cta-title">✨ อยากดูดวงเชิงลึก ปลดล็อกผังชะตา 6 เสา &amp; เคล็ดลับชีวิตครบวงจร?</h3>
+                <p class="cta-desc">
+                  เข้าสู่ระบบเพื่อดู <strong>ผังชะตาของตัวคุณเอง (โหมด Basic)</strong> พร้อมเครื่องมือสำหรับหมอดู <strong>โหมด Expert</strong>: ตารางเทพและดาวชะตา (神煞), ตารางปะทะ-ฮะ (刑沖合害), วัยจร 10 ปีทุกช่วงอายุ, และบันทึกดวงชะตาได้ไม่จำกัด
+                </p>
+              </div>
+            </div>
+            <div class="cta-right">
+              <button type="button" class="bazi-btn-cta-login" id="baziCtaLoginBtn" onclick="window.AuthManager.openModal('login', 'bazi')">
+                <i class="fa-solid fa-lock-open"></i> อยากดูดวงเชิงลึก คลิกเพื่อเข้าสู่ระบบ
+              </button>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- 2. LOGGED IN VIEW (หน้าผังชะตาสมาชิก: Basic เป็น Default & Expert พร้อมบันทึกดวง) -->
+      <!-- ================================================================= -->
+      <div id="baziLoggedInAppView" class="bazi-logged-in-app-view">
+        
+        <!-- Profile Owner Header Card -->
+        <div class="bazi-member-header-card" id="baziMemberHeaderCard">
+          <div class="member-header-left">
+            <div class="member-avatar" id="baziMemberAvatar">
+              <i class="fa-solid fa-user-circle"></i>
+            </div>
+            <div class="member-info">
+              <div class="member-badge"><i class="fa-solid fa-shield-cat"></i> สมาชิกแม่หมอติ๊ดติ๊ด</div>
+              <h2 class="member-name" id="baziMemberName">ผังชะตาของ: คุณผู้ใช้</h2>
+              <p class="member-meta" id="baziMemberMeta">วันเกิด: - • เวลา: - • เพศ: -</p>
+            </div>
+          </div>
+          <div class="member-header-right">
+            <button type="button" class="bazi-btn-my-chart active" id="baziBtnMyChart" onclick="window.BaziApp.loadMyProfileChart()" title="ดูผังดวงของเจ้าของ Profile">
+              <i class="fa-solid fa-user"></i> ผังดวงของฉัน
+            </button>
+            <button type="button" class="bazi-btn-saved-list" id="baziOpenSavedModalBtnTop" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
+              <i class="fa-solid fa-folder-open"></i> ดวงที่บันทึก (<span id="baziSavedCountTop">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Toolbar & Birth Input Card (คำนวณผังชะตา & เลือกลูกดวง / Save เก็บไว้) -->
+        <section class="bazi-toolbar-card" id="baziToolbarCard">
+          <div class="bazi-toolbar-desc-bar">
+            <span><i class="fa-solid fa-sliders" style="color: #7c3aed;"></i> <strong>เครื่องมือคำนวณผังชะตา:</strong> สามารถกรอกวันเดือนปีเวลาเกิดเพื่อคำนวณ หรือดึงรายชื่อดวงที่บันทึกไว้</span>
+          </div>
+          <div class="bazi-input-group">
+            <div class="bazi-field bazi-field-profile">
+              <label><i class="fa-solid fa-address-book"></i> เลือกลูกดวง:</label>
+              <select id="baziQuickProfileSelect" class="bazi-quick-profile-select">
+                <option value="__my_profile__">👤 ดวงของฉัน (Profile Owner)</option>
+                <option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>
+              </select>
+            </div>
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-user"></i> ชื่อลูกดวง:</label>
+              <input type="text" id="baziNameInput" value="ดวงของฉัน" placeholder="ชื่อ / นามสกุล">
+            </div>
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
+              <select id="baziGenderSelect">
+                <option value="male">ชาย (Male)</option>
+                <option value="female">หญิง (Female)</option>
+              </select>
+            </div>
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-calendar-day"></i> วันเกิด:</label>
+              <input type="date" id="baziDateInput">
+            </div>
+            <div class="bazi-field">
+              <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
+              <input type="time" id="baziHourInput">
+            </div>
+          </div>
+
+          <div class="bazi-toolbar-actions">
+            <button class="bazi-btn-primary" id="baziCalcBtn" onclick="window.BaziApp.calculateFromInputs(true)">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา (Calculate)
+            </button>
+            <button class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()" title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
+              <i class="fa-solid fa-bookmark"></i> บันทึกดวงนี้
+            </button>
+            <button class="bazi-btn-saved-list" id="baziOpenSavedModalBtn" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
+              <i class="fa-solid fa-folder-open"></i> หน้ารวมดวงที่บันทึก (<span id="baziSavedCount">0</span>)
+            </button>
+            <button class="bazi-btn-secondary" id="baziPresetNowBtn" onclick="window.BaziApp.resetToNow()" title="กลับไปที่วันและเวลาปัจจุบัน">
+              <i class="fa-solid fa-rotate-right"></i> ขณะนี้
+            </button>
+            <button class="bazi-btn-secondary" id="baziForceReloadBtn" onclick="window.BaziApp.forceHardReload()" title="ล้างแคชเบราว์เซอร์และรีโหลดโค้ดเวอร์ชันล่าสุด">
+              <i class="fa-solid fa-arrows-rotate" style="color: #0284c7;"></i> รีเฟรชล้างแคช
+            </button>
+            <button class="bazi-btn-secondary" id="baziCopySummaryBtn" onclick="window.BaziApp.copySummary()" title="คัดลอกสรุปคำทำนาย">
+              <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
+            </button>
+            <button class="bazi-btn-secondary" id="baziOpenDeskToolbarBtn" onclick="window.BaziApp.openDeskFromToolbar()" title="เปิดหน้าโต๊ะหมอดูเพื่อดู 4 หัวข้อวิชาการ" style="border-color: #c084fc; color: #7c3aed; background: #faf5ff;">
+              <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 🪑 โต๊ะหมอดู
+            </button>
+          </div>
+        </section>
+
+        <!-- MODE SWITCHER (Basic vs Expert) - Basic is DEFAULT for Profile Owner -->
+        <section class="bazi-mode-switcher-bar">
+          <div class="bazi-mode-toggle-group">
+            <button type="button" class="bazi-mode-btn active" id="baziModeBasicBtn" onclick="window.BaziApp.switchMode('basic')">
+              <i class="fa-solid fa-user-check"></i> <strong>โหมด Basic</strong>
+              <span class="mode-sub">ผังดวงเจ้าของโปรไฟล์ • เข้าใจง่าย</span>
+            </button>
+            <button type="button" class="bazi-mode-btn" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
+              <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong>
+              <span class="mode-sub">คำนวณผังชะตา &amp; หมอดูเจาะลึก</span>
+            </button>
+          </div>
+          <div class="bazi-mode-hint-box" id="baziModeHintBox">
+            <div id="baziModeBasicInfo" class="mode-banner-content">
+              <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
+              <span><strong>โหมด Basic (ค่าเริ่มต้น):</strong> แสดงผังดวงชะตาของเจ้าของโปรไฟล์ สรุปดิถีธาตุ สมดุลเบญจธาตุ ธาตุส่งเสริม วัยจร 10 ปี ดวงรายปี และคำแนะนำกลยุทธ์ชีวิต 6 ด้าน</span>
+            </div>
+            <div id="baziModeExpertInfo" class="mode-banner-content hidden">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+              <span><strong>โหมด Expert:</strong> เปิดชุดเครื่องมือคำนวณผังชะตา 6 เสาเต็มรูปแบบ: ตารางเทพและดาวชะตา (神煞), ตารางปะทะ-ฮะ (刑沖合害), โต๊ะหมอดู 4 หัวข้อวิชาการ, และบันทึก/ดึงรายชื่อดวงได้ไม่จำกัด</span>
+            </div>
+          </div>
+        </section>
 
       <!-- SUB-NAVIGATION BAR (เฉพาะเมื่อเปิดโหมด Expert: สลับระหว่าง ผังดวง 6 เสา กับ โต๊ะหมอดู) -->
       <div id="baziExpertSubBar" class="bazi-expert-subbar">
@@ -1052,6 +1269,8 @@
       </section>
 
       </div> <!-- END baziMainChartSections -->
+
+      </div> <!-- END baziLoggedInAppView -->
 
     </div>
   </div>
@@ -2066,12 +2285,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261021_qimen_tiers_v1"></script>
+  <script src="auth.js?v=20261021_bazi_guest_oracle_v2"></script>
   <script src="app.js?v=20261020_social_3cards_v3"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
-  <script src="bazi.js?v=20261018_basic_nofourpillars_v15"></script>
+  <script src="bazi.js?v=20261021_bazi_guest_oracle_v2"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
