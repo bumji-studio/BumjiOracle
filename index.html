@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261022_unified_oracle_v1">
+  <link rel="stylesheet" href="styles.css?v=20261022_clean_oracle_v2">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -1221,77 +1221,6 @@
             </button>
           </div>
 
-          <!-- Metaphysics Booster: BaZi & Timing Link (ตัวเลือกเสริมพลังด้วยวันเกิดและดวงปาจื่อ) -->
-          <div class="oracle-bazi-booster-card">
-            <div class="booster-header">
-              <label class="booster-toggle-label" for="oracleEnableBaziCheck">
-                <input type="checkbox" id="oracleEnableBaziCheck">
-                <span class="booster-switch-slider"></span>
-                <span class="booster-toggle-text">
-                  <strong><i class="fa-solid fa-yin-yang" style="color: #7c3aed;"></i> เสริมพลังวิเคราะห์ด้วยวันเกิด &amp; ดวงปาจื่อ (BaZi Link)</strong>
-                  <small>นำดิถีธาตุ 10 เทพ และปีจร 2026 มาร่วมฟันธงคำตอบควบคู่กับไพ่</small>
-                </span>
-              </label>
-              <button type="button" class="btn-booster-autofill hidden" id="oracleBaziAutoFillBtn" title="ดึงวันเดือนปีเกิดจากโปรไฟล์ของฉัน">
-                <i class="fa-solid fa-user-check"></i> ใช้ข้อมูลดวงของฉัน
-              </button>
-            </div>
-            
-            <div class="booster-body hidden" id="oracleBaziBody">
-              <div class="booster-inputs-grid">
-                <div class="booster-field booster-field-name">
-                  <label for="oracleBaziName"><i class="fa-solid fa-user"></i> ชื่อ / คำเรียกแทน:</label>
-                  <input type="text" id="oracleBaziName" class="booster-input" value="ดวงชะตาของคุณ" placeholder="ชื่อเล่นหรือฉายา">
-                </div>
-                <div class="booster-field booster-field-gender">
-                  <label for="oracleBaziGender"><i class="fa-solid fa-venus-mars"></i> เพศกำเนิด:</label>
-                  <select id="oracleBaziGender" class="booster-select">
-                    <option value="female" selected>♀️ หญิง (Female)</option>
-                    <option value="male">♂️ ชาย (Male)</option>
-                  </select>
-                </div>
-                <div class="booster-field booster-field-dmy">
-                  <label><i class="fa-solid fa-calendar-day"></i> วัน / เดือน / ปีเกิด:</label>
-                  <div class="booster-dmy-wrap">
-                    <select id="oracleBaziDay" class="booster-select select-day" aria-label="เลือกวันเกิด"></select>
-                    <select id="oracleBaziMonth" class="booster-select select-month" aria-label="เลือกเดือนเกิด">
-                      <option value="1">1 - ม.ค.</option>
-                      <option value="2">2 - ก.พ.</option>
-                      <option value="3">3 - มี.ค.</option>
-                      <option value="4">4 - เม.ย.</option>
-                      <option value="5">5 - พ.ค.</option>
-                      <option value="6">6 - มิ.ย.</option>
-                      <option value="7">7 - ก.ค.</option>
-                      <option value="8" selected>8 - ส.ค.</option>
-                      <option value="9">9 - ก.ย.</option>
-                      <option value="10">10 - ต.ค.</option>
-                      <option value="11">11 - พ.ย.</option>
-                      <option value="12">12 - ธ.ค.</option>
-                    </select>
-                    <select id="oracleBaziYear" class="booster-select select-year" aria-label="เลือกปีเกิด"></select>
-                  </div>
-                </div>
-                <div class="booster-field booster-field-time">
-                  <div class="booster-time-label-row">
-                    <label for="oracleBaziHour"><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
-                    <label class="booster-unknown-check" id="oracleBaziUnknownTimeWrap" title="ติ๊กเมื่อไม่ทราบเวลาเกิด">
-                      <input type="checkbox" id="oracleBaziUnknownTimeCheck">
-                      <span>ไม่ทราบเวลา</span>
-                    </label>
-                  </div>
-                  <div class="booster-time-wrap" id="oracleBaziTimeWrap">
-                    <select id="oracleBaziHour" class="booster-select select-hour" aria-label="เลือกชั่วโมงเกิด"></select>
-                    <span class="time-sep">:</span>
-                    <select id="oracleBaziMinute" class="booster-select select-minute" aria-label="เลือกนาทีเกิด"></select>
-                  </div>
-                </div>
-              </div>
-              <div class="booster-hint-text">
-                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> ระบบจะคำนวณดิถีธาตุและเทียบกับปีจร 2026 (丙午) เพื่อนำมาสกัดเป็นคำแนะนำเฉพาะคุณร่วมกับไพ่ 3 ใบ
-              </div>
-            </div>
-          </div>
-
           <!-- Smart Pattern Recommendation Box (Hidden from UI, runs silently in background) -->
           <div id="smartPatternBox" class="smart-pattern-box hidden" style="display: none !important;">
             <div class="smart-pattern-header">
@@ -2249,11 +2178,11 @@
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
   <script src="auth.js?v=20261021_bazi_guest_oracle_v2"></script>
-  <script src="app.js?v=20261022_unified_oracle_v1"></script>
+  <script src="app.js?v=20261022_clean_oracle_v2"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
-  <script src="bazi.js?v=20261022_unified_oracle_v1"></script>
+  <script src="bazi.js?v=20261022_clean_oracle_v2"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
