@@ -1418,12 +1418,27 @@
     },
 
     updateViewForAuthState: function (isLoggedIn, currentUser) {
+      const guestView = document.getElementById('baziGuestLandingView');
       const loggedInView = document.getElementById('baziLoggedInAppView');
+      const memberHeader = document.getElementById('baziMemberHeaderCard');
+      const profileField = document.querySelector('.bazi-field-profile');
+
       if (loggedInView) {
         loggedInView.style.display = 'flex';
       }
-      this.updateMemberHeader(currentUser);
-      this.renderQuickProfileSelect();
+
+      if (!isLoggedIn) {
+        if (guestView) guestView.style.display = 'block';
+        if (memberHeader) memberHeader.style.display = 'none';
+        if (profileField) profileField.style.display = 'none';
+        this.initGuestInputs();
+      } else {
+        if (guestView) guestView.style.display = 'none';
+        if (memberHeader) memberHeader.style.display = 'flex';
+        if (profileField) profileField.style.display = 'flex';
+        this.updateMemberHeader(currentUser);
+        this.renderQuickProfileSelect();
+      }
     },
 
     updateMemberHeader: function (user) {
@@ -1626,6 +1641,50 @@
     },
 
     calculateGuestFortune: function () {
+      const nameInput = document.getElementById('baziGuestNameInput');
+      const genderSelect = document.getElementById('baziGuestGenderSelect');
+      const daySel = document.getElementById('baziGuestBirthDay');
+      const monthSel = document.getElementById('baziGuestBirthMonth');
+      const yearSel = document.getElementById('baziGuestBirthYear');
+      const hourSel = document.getElementById('baziGuestBirthHour');
+      const minSel = document.getElementById('baziGuestBirthMinute');
+      const unknownCheck = document.getElementById('baziGuestUnknownTimeCheck');
+
+      const name = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : 'ดวงชะตาของคุณ';
+      const gender = genderSelect ? genderSelect.value : 'female';
+
+      const y = (yearSel && yearSel.value) ? parseInt(yearSel.value, 10) : 1998;
+      const m = (monthSel && monthSel.value) ? parseInt(monthSel.value, 10) : 8;
+      const d = (daySel && daySel.value) ? parseInt(daySel.value, 10) : 18;
+      const birthDate = y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+
+      const isUnknownTime = !!(unknownCheck && unknownCheck.checked);
+      const birthHour = (!isUnknownTime && hourSel) ? (parseInt(hourSel.value, 10) || 12) : 12;
+      const birthMinute = (!isUnknownTime && minSel) ? (parseInt(minSel.value, 10) || 0) : 0;
+      const birthTime = String(birthHour).padStart(2, '0') + ':' + String(birthMinute).padStart(2, '0');
+
+      // Sync into toolbar inputs
+      const targetName = document.getElementById('baziNameInput');
+      const targetGender = document.getElementById('baziGenderSelect');
+      const targetDate = document.getElementById('baziDateInput');
+      const targetHour = document.getElementById('baziHourInput');
+
+      if (targetName) targetName.value = name;
+      if (targetGender) targetGender.value = gender;
+      if (targetDate) targetDate.value = birthDate;
+      if (targetHour) targetHour.value = birthTime;
+
+      // Calculate Chart
+      this.calculateFromInputs(false);
+
+      // Smooth scroll to chart sections
+      const chartSection = document.getElementById('baziMainChartSections') || document.getElementById('baziToolbarCard');
+      if (chartSection) {
+        chartSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    },
+    _legacyCalcGuestFortune: function () {
       const nameInput = document.getElementById('baziGuestNameInput');
       const genderSelect = document.getElementById('baziGuestGenderSelect');
       const daySel = document.getElementById('baziGuestBirthDay');

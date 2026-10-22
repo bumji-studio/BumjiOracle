@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261022_oracle_sitemap_v1">
+  <link rel="stylesheet" href="styles.css?v=20261022_bazi_clean_v3">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -527,9 +527,100 @@
     <div class="bazi-app-container">
       
       <!-- ================================================================= -->
-      <!-- BAZI PRO ASTROLOGER WORKSPACE (Four Pillars Matrix & Academic Engine) -->
+      <!-- 1. GUEST / BEFORE LOGIN VIEW (กรอกข้อมูลเพื่อตั้งผังดวง - ไม่มีกล่องถามคำถาม) -->
       <!-- ================================================================= -->
-            <div id="baziLoggedInAppView" class="bazi-logged-in-app-view">
+      <div id="baziGuestLandingView" class="bazi-guest-landing-view">
+        <!-- Hero Header Card -->
+        <div class="bazi-guest-hero-card">
+          <div class="bazi-guest-badge">
+            <i class="fa-solid fa-yin-yang"></i> เครื่องมือผูกดวงจีน 4 เสาชะตา (BaZi Four Pillars Matrix)
+          </div>
+          <h1 class="bazi-guest-title">
+            📜 กรอกข้อมูลวันเกิด &amp; เวลาเกิด เพื่อตั้งผังดวงปาจื่อ
+          </h1>
+          <p class="bazi-guest-subtitle">
+            ระบุวันเดือนปีและเวลาเกิดของคุณ ระบบจะคำนวณ 4 เสาชะตากำเนิด (ปี เดือน วัน ยาม) ถอดรหัสดิถีธาตุ สมดุลเบญจธาตุ ธาตุปรับสมดุล และวงจรวัยจร 10 ปี (大運) ให้ครบถ้วนทันที
+          </p>
+        </div>
+
+        <!-- Guest Form Card: Birth Info Only (No Question Box) -->
+        <div class="bazi-guest-form-card">
+          <div class="guest-card-header">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+            <span>กรอกข้อมูลเพื่อคำนวณตั้งผังดวงชะตา</span>
+          </div>
+
+          <div class="bazi-guest-inputs-grid-v2">
+            <!-- 1. กรอก ชื่อ -->
+            <div class="bazi-guest-field-group field-name">
+              <label for="baziGuestNameInput"><i class="fa-solid fa-user"></i> 1. กรอกชื่อ / คำเรียกแทน:</label>
+              <input type="text" id="baziGuestNameInput" class="bazi-guest-control" value="ดวงชะตาของคุณ" placeholder="พิมพ์ชื่อเล่น หรือ ฉายา">
+            </div>
+
+            <!-- 2. เลือก เพศ -->
+            <div class="bazi-guest-field-group field-gender">
+              <label for="baziGuestGenderSelect"><i class="fa-solid fa-venus-mars"></i> 2. เลือกเพศกำเนิด:</label>
+              <select id="baziGuestGenderSelect" class="bazi-guest-control">
+                <option value="female" selected>♀️ หญิง (Female)</option>
+                <option value="male">♂️ ชาย (Male)</option>
+              </select>
+            </div>
+
+            <!-- 3. เลือก วัน เดือน ปีเกิด -->
+            <div class="bazi-guest-field-group field-birthdate">
+              <label><i class="fa-solid fa-calendar-day"></i> 3. เลือกวันเดือนปีเกิด (วัน / เดือน / ปี):</label>
+              <div class="bazi-guest-dmy-wrap">
+                <select id="baziGuestBirthDay" class="bazi-guest-control select-day" aria-label="เลือกวันเกิด (1-31)"></select>
+                <select id="baziGuestBirthMonth" class="bazi-guest-control select-month" aria-label="เลือกเดือนเกิด">
+                  <option value="1">1 - ม.ค.</option>
+                  <option value="2">2 - ก.พ.</option>
+                  <option value="3">3 - มี.ค.</option>
+                  <option value="4">4 - เม.ย.</option>
+                  <option value="5">5 - พ.ค.</option>
+                  <option value="6">6 - มิ.ย.</option>
+                  <option value="7">7 - ก.ค.</option>
+                  <option value="8" selected>8 - ส.ค.</option>
+                  <option value="9">9 - ก.ย.</option>
+                  <option value="10">10 - ต.ค.</option>
+                  <option value="11">11 - พ.ย.</option>
+                  <option value="12">12 - ธ.ค.</option>
+                </select>
+                <select id="baziGuestBirthYear" class="bazi-guest-control select-year" aria-label="เลือกปีเกิด (พ.ศ. / ค.ศ.)"></select>
+              </div>
+              <input type="hidden" id="baziGuestDateInput" value="1998-08-18">
+            </div>
+
+            <!-- 4. เลือก เวลาเกิด & ติ๊กไม่ทราบเวลาได้ -->
+            <div class="bazi-guest-field-group field-birthtime" id="baziGuestTimeGroup">
+              <div class="time-label-row">
+                <label for="baziGuestBirthHour"><i class="fa-solid fa-clock"></i> 4. เลือกเวลาเกิด:</label>
+                <label class="bazi-unknown-time-toggle" id="baziGuestUnknownTimeWrap" title="ติ๊กเมื่อไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
+                  <input type="checkbox" id="baziGuestUnknownTimeCheck">
+                  <span>ไม่ทราบเวลา</span>
+                </label>
+              </div>
+              <div class="bazi-guest-time-wrap" id="baziGuestTimeSelectsWrap">
+                <select id="baziGuestBirthHour" class="bazi-guest-control select-hour" aria-label="เลือกชั่วโมงเกิด"></select>
+                <span class="time-sep">:</span>
+                <select id="baziGuestBirthMinute" class="bazi-guest-control select-minute" aria-label="เลือกนาทีเกิด"></select>
+              </div>
+              <div class="bazi-unknown-time-notice hidden" id="baziGuestUnknownTimeNotice">
+                <i class="fa-solid fa-circle-info"></i> ไม่ระบุเวลาเกิด: ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน) และดิถีธาตุ
+              </div>
+              <input type="hidden" id="baziGuestHourInput" value="12:00">
+            </div>
+          </div>
+
+          <!-- Action Row: Calculate Chart Button (No Question Box!) -->
+          <div class="bazi-guest-action-row" style="margin-top: 16px; display: flex; justify-content: center;">
+            <button type="button" class="bazi-btn-primary" id="baziGuestCalcBtn" style="padding: 12px 32px; font-size: 15px; border-radius: 24px; font-weight: 700; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณตั้งผังดวง (Calculate BaZi Chart)
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div id="baziLoggedInAppView" class="bazi-logged-in-app-view">
         
         <!-- Profile Owner Header Card -->
         <div class="bazi-member-header-card" id="baziMemberHeaderCard">
@@ -1047,40 +1138,7 @@
         </div>
       </section>
 
-      <!-- 9. BaZi Oracle AI (กล่องถามคำถามและคำนวณวิเคราะห์ดวงชะตาเจาะลึก) - อยู่ด้านล่างสุดของหน้า -->
-      <section class="bazi-section-card bazi-expert-card bazi-custom-calc-card" id="baziOracleAiSection" style="margin-top: 20px;">
-        <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <div>
-            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i> ถามหรือให้คำนวณดวงชะตาตามต้องการ (BaZi Oracle AI Calculator)
-          </div>
-          <span class="expert-badge"><i class="fa-solid fa-sparkles"></i> BaZi Oracle AI</span>
-        </div>
-        <p style="color: #64748b; font-size: 13px; margin-top: -6px; margin-bottom: 12px;">
-          พิมพ์คำถามเฉพาะเจาะจงที่ต้องการ เพื่อให้ AI คำนวณและวิเคราะห์ตามกฎเกณฑ์ของศาสตร์ปาจื่อได้อย่างแม่นยำ
-        </p>
-
-        <!-- Custom Query Form -->
-        <div class="expert-custom-query-bar">
-          <div style="flex: 1; display: flex; width: 100%;">
-            <input type="text" id="baziExpertCustomInput" class="bazi-expert-custom-input" placeholder="พิมพ์คำถามที่ต้องการถาม... (เช่น 'สิ้นปีนี้มีเปลี่ยนงานหรือไม่', 'ปี 2026 การเงินเป็นอย่างไร', 'จังหวะความรัก', 'สุขภาพ')" value="">
-          </div>
-          <button class="bazi-btn-primary" id="baziRunCustomQueryBtn" onclick="window.BaziApp.runCustomExpertQuery()">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณวิเคราะห์
-          </button>
-        </div>
-
-        <!-- Quick Suggestions Pills -->
-        <div class="expert-suggestion-tags">
-          <span class="tag-label">คำถามยอดนิยม:</span>
-          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('สิ้นปีนี้มีเปลี่ยนงานหรือไม่')">สิ้นปีนี้มีเปลี่ยนงานหรือไม่</button>
-          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร')">ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร</button>
-          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('จังหวะความรักและคู่ครองเป็นอย่างไร')">จังหวะความรักและคู่ครองเป็นอย่างไร</button>
-          <button type="button" class="expert-tag-pill" onclick="window.BaziApp.fillAndRunCustomQuery('สุขภาพและอวัยวะที่ต้องระวังปีนี้')">สุขภาพและอวัยวะที่ต้องระวังปีนี้</button>
-        </div>
-
-        <!-- Query Result Box (แสดงผลเมื่อกดคำนวณวิเคราะห์) -->
-        <div id="baziExpertQueryResult" class="expert-result-box" style="margin-top: 14px; display: none;"></div>
-      </section>
+      
 
       </div> <!-- END baziMainChartSections -->
 
@@ -2191,11 +2249,11 @@
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
   <script src="auth.js?v=20261021_bazi_guest_oracle_v2"></script>
-  <script src="app.js?v=20261022_oracle_sitemap_v1"></script>
+  <script src="app.js?v=20261022_bazi_clean_v3"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261010_cal_hours"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
-  <script src="bazi.js?v=20261022_oracle_sitemap_v1"></script>
+  <script src="bazi.js?v=20261022_bazi_clean_v3"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
