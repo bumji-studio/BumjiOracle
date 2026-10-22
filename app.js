@@ -2177,7 +2177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  async function fetchThepMeowAIFortune({ question, drawn, positions }) {
+  async function fetchThepMeowAIFortune({ question, drawn, positions, baziCtx = null }) {
     const apiKey = getGroqApiKey();
     if (!apiKey) {
       throw new Error('No Groq API key available');
@@ -2191,6 +2191,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const pos2Title = positions[1]?.title || 'ใบที่ 2: อุปสรรค / สภาวะจริง';
     const pos3Title = positions[2]?.title || 'ใบที่ 3: ทางออก / กลยุทธ์แก้ไข';
 
+    let baziPromptText = '';
+    if (baziCtx && baziCtx.chartData) {
+      const dm = baziCtx.chartData.dayMaster || {};
+      const yrPillar = baziCtx.chartData.pillars?.year || {};
+      baziPromptText = `\nข้อมูลดวงชะตาปาจื่อของผู้ถาม (เบญจธาตุ & จังหวะชีวิต):\n- ดิถีธาตุกำเนิด (Day Master): ${dm.zh || ''} (${dm.th || ''})\n- เสาปีเกิด: ${yrPillar.stem?.zh || ''}${yrPillar.branch?.zh || ''} (${yrPillar.stem?.th || ''})\n- เปรียบเทียบกับปีจร 2026: ปีม้าไฟ (丙午 - เปี้ยโง่ว)\nคำสั่งพิเศษ: ให้นำดิถีธาตุและจังหวะปีจร 2026 นี้ มาช่วยวิเคราะห์เสริมพลังคำตอบให้เจาะจงลึกซึ้งยิ่งขึ้นในส่วน bazi_insight\n`;
+    }
+
     const prompt = `
 คุณคือ "แม่หมอเทพเหมียว" เทพแมวพยากรณ์สุดศักดิ์สิทธิ์และแสนใจดีแห่งสำรับไพ่เทพเหมียว (Thep Meow Oracle)
 บุคลิก: น่ารัก อบอุ่น มีเมตตา อารมณ์ดี พูดจาไพเราะ มีคำลงท้ายน่ารักเช่น "เมี๊ยววว~ 🐾", "เจ้ามนุษย์ที่รัก"
@@ -2198,7 +2205,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ข้อมูลคำถามของผู้ใช้:
 คำถาม: "${question}"
-
+${baziPromptText}
 ข้อมูลไพ่ 3 ใบที่เปิดได้จากฐานข้อมูล:
 1. ${pos1Title}: ไพ่ "${c1.name_th || c1.name}" (ธาตุ ${c1.element || 'น้ำ'})
    - แก่นแท้: ${c1.core_meaning || c1.meanings?.core || ''}
@@ -2216,6 +2223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 3. ส่งผลลัพธ์กลับมาเป็น JSON ตามรูปแบบนี้เท่านั้น (ห้ามมี markdown code block อื่นนอกเหนือจาก json):
 {
   "direct_verdict": "คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจนและอบอุ่น",
+  "bazi_insight": "บทวิเคราะห์จังหวะชีวิตและพลังธาตุปาจื่อที่เชื่อมโยงกับคำถาม (ถ้ามีข้อมูล)",
   "card1_reading": "การทำนายไพ่ใบที่ 1 ให้เชื่อมโยงกับคำถามอย่างลึกซึ้ง",
   "card2_reading": "การทำนายไพ่ใบที่ 2 ให้สะท้อนสภาวะจริงตามคำถาม",
   "card3_reading": "การทำนายไพ่ใบที่ 3 สรุปแนวโน้มและทางออกข้างหน้า",
@@ -2253,7 +2261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return JSON.parse(cleanJson);
   }
 
-  function renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData }) {
+  function renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx = null }) {
     const c1 = drawn[0] || {};
     const c2 = drawn[1] || drawn[0] || {};
     const c3 = drawn[2] || drawn[drawn.length - 1] || {};
@@ -2322,6 +2330,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     return `
       <div class="thepmeow-dossier">
+        <!-- BaZi Booster Banner if enabled -->
+        ${(baziCtx && baziCtx.chartData) ? `
+        <div class="oracle-bazi-insight-banner">
+          <div class="bazi-insight-header">
+            <div class="bazi-dm-badge">
+              <span class="dm-char">${baziCtx.chartData.dayMaster?.zh || '丁'}</span>
+              <span class="dm-name">${baziCtx.chartData.dayMaster?.th ? baziCtx.chartData.dayMaster.th.slice(0, 7) : 'ดิถีธาตุ'}</span>
+            </div>
+            <div class="bazi-insight-title-group">
+              <h4>✨ พลังหนุนจากดวงชะตาปาจื่อ &amp; ปีจร 2026</h4>
+              <p>ดิถีธาตุ <strong>${baziCtx.chartData.dayMaster?.th || 'ประจำตัว'}</strong> • เทียบพลังปีจร <strong>2026 (丙午 - ม้าไฟ)</strong></p>
+            </div>
+          </div>
+          <div class="bazi-insight-verdict">
+            <i class="fa-solid fa-yin-yang"></i>
+            <div>${aiData.bazi_insight || 'ดิถีธาตุของคุณในปีจร 2026 มีจังหวะพลังงานธาตุส่งเสริม เป็นช่วงเวลาที่ควรคว้าโอกาสและบริหารความสมดุลของธาตุในดวง'}</div>
+          </div>
+        </div>` : ''}
+
         <!-- Layer 1: คำทำนายไพ่เทพเหมียว -->
         <div class="thepmeow-verdict-box">
           <div class="thepmeow-verdict-top">
@@ -2488,9 +2515,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // 1. Try Gemini AI Engine
-      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions });
+      const baziCtx = typeof getOracleBaziContext === 'function' ? getOracleBaziContext() : null;
+      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions, baziCtx });
       if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
-      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData });
+      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx });
     } catch (err) {
       if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
       console.warn('[ThepMeow] AI generation fallback to local engine:', err);
@@ -4012,6 +4040,180 @@ document.addEventListener('DOMContentLoaded', () => {
     shareLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
   }
   setTimeout(initLineLiff, 500);
+
+  // ==========================================================================
+  // ORACLE BAZI BOOSTER & POPULAR QUESTION CHIPS CONTROLLER
+  // ==========================================================================
+  function initOracleBaziBooster() {
+    const enableCheck = document.getElementById('oracleEnableBaziCheck');
+    const boosterBody = document.getElementById('oracleBaziBody');
+    const autofillBtn = document.getElementById('oracleBaziAutoFillBtn');
+    const daySel = document.getElementById('oracleBaziDay');
+    const monthSel = document.getElementById('oracleBaziMonth');
+    const yearSel = document.getElementById('oracleBaziYear');
+    const hourSel = document.getElementById('oracleBaziHour');
+    const minSel = document.getElementById('oracleBaziMinute');
+    const unknownCheck = document.getElementById('oracleBaziUnknownTimeCheck');
+    const unknownWrap = document.getElementById('oracleBaziUnknownTimeWrap');
+    const timeWrap = document.getElementById('oracleBaziTimeWrap');
+    const genderSel = document.getElementById('oracleBaziGender');
+    const nameInput = document.getElementById('oracleBaziName');
+
+    // Populate days 1-31
+    if (daySel && daySel.options.length === 0) {
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = 'วันที่ ' + d;
+        if (d === 18) opt.selected = true;
+        daySel.appendChild(opt);
+      }
+    }
+
+    // Populate years
+    if (yearSel && yearSel.options.length === 0) {
+      const currentYear = new Date().getFullYear();
+      for (let y = currentYear; y >= 1930; y--) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y + ' (พ.ศ. ' + (y + 543) + ')';
+        if (y === 1998) opt.selected = true;
+        yearSel.appendChild(opt);
+      }
+    }
+
+    // Populate hours
+    if (hourSel && hourSel.options.length === 0) {
+      for (let h = 0; h < 24; h++) {
+        const opt = document.createElement('option');
+        opt.value = h;
+        const padH = String(h).padStart(2, '0');
+        opt.textContent = padH + ':00 น.';
+        if (h === 12) opt.selected = true;
+        hourSel.appendChild(opt);
+      }
+    }
+
+    // Populate minutes
+    if (minSel && minSel.options.length === 0) {
+      for (let m = 0; m < 60; m += 5) {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = String(m).padStart(2, '0') + ' นาที';
+        if (m === 0) opt.selected = true;
+        minSel.appendChild(opt);
+      }
+    }
+
+    // Toggle booster body
+    if (enableCheck) {
+      enableCheck.addEventListener('change', () => {
+        const isChecked = enableCheck.checked;
+        if (boosterBody) boosterBody.classList.toggle('hidden', !isChecked);
+      });
+    }
+
+    // Unknown time checkbox
+    if (unknownCheck) {
+      unknownCheck.addEventListener('change', () => {
+        const isUnknown = unknownCheck.checked;
+        if (hourSel) hourSel.disabled = isUnknown;
+        if (minSel) minSel.disabled = isUnknown;
+        if (timeWrap) timeWrap.style.opacity = isUnknown ? '0.4' : '1';
+      });
+    }
+
+    // Popular question chips
+    document.querySelectorAll('.oracle-chip-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const q = btn.getAttribute('data-q');
+        if (q && userQuestionInput) {
+          userQuestionInput.value = q;
+          userQuestionInput.focus();
+          const fan = document.getElementById('deckFanWrapper');
+          if (fan) fan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      });
+    });
+
+    // Autofill button check
+    const syncAutofillVisibility = () => {
+      const user = window.AuthManager ? window.AuthManager.currentUser : null;
+      if (autofillBtn) {
+        autofillBtn.classList.toggle('hidden', !user);
+      }
+    };
+    syncAutofillVisibility();
+
+    if (autofillBtn) {
+      autofillBtn.addEventListener('click', () => {
+        const user = window.AuthManager ? window.AuthManager.currentUser : null;
+        if (!user) return;
+        if (nameInput) nameInput.value = user.name || user.firstName || 'ดวงของฉัน';
+        if (genderSel && user.gender) genderSel.value = user.gender;
+        if (user.birthDate && yearSel && monthSel && daySel) {
+          const parts = user.birthDate.split('-');
+          if (parts.length === 3) {
+            yearSel.value = parseInt(parts[0], 10);
+            monthSel.value = parseInt(parts[1], 10);
+            daySel.value = parseInt(parts[2], 10);
+          }
+        }
+        if (user.birthTime && hourSel && minSel) {
+          const tParts = user.birthTime.split(':');
+          if (tParts.length >= 2) {
+            hourSel.value = parseInt(tParts[0], 10);
+            minSel.value = Math.floor(parseInt(tParts[1], 10) / 5) * 5;
+          }
+        }
+      });
+    }
+  }
+
+  function getOracleBaziContext() {
+    const check = document.getElementById('oracleEnableBaziCheck');
+    if (!check || !check.checked) return null;
+
+    const daySel = document.getElementById('oracleBaziDay');
+    const monthSel = document.getElementById('oracleBaziMonth');
+    const yearSel = document.getElementById('oracleBaziYear');
+    const hourSel = document.getElementById('oracleBaziHour');
+    const minSel = document.getElementById('oracleBaziMinute');
+    const genderSel = document.getElementById('oracleBaziGender');
+    const unknownCheck = document.getElementById('oracleBaziUnknownTimeCheck');
+    const nameInput = document.getElementById('oracleBaziName');
+
+    const y = parseInt(yearSel?.value, 10) || 1998;
+    const m = parseInt(monthSel?.value, 10) || 8;
+    const d = parseInt(daySel?.value, 10) || 18;
+    const gender = genderSel?.value || 'female';
+    const isUnknown = unknownCheck?.checked || false;
+    const timeStr = isUnknown ? '12:00' : (String(hourSel?.value || 12).padStart(2, '0') + ':' + String(minSel?.value || 0).padStart(2, '0'));
+    const dateStr = y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    const personName = nameInput?.value?.trim() || 'ดวงชะตาของคุณ';
+
+    let chartData = null;
+    if (window.BaziEngine && typeof window.BaziEngine.calculate === 'function') {
+      try {
+        chartData = window.BaziEngine.calculate(dateStr, timeStr, gender);
+      } catch (e) {
+        console.warn('[Oracle] BaziEngine error:', e);
+      }
+    }
+
+    return {
+      enabled: true,
+      personName,
+      dateStr,
+      timeStr,
+      gender,
+      chartData
+    };
+  }
+
+  // Initialize Oracle BaZi Booster
+  initOracleBaziBooster();
+
 
   // Responsive fan deck re-render on orientation change or window resize
   let resizeTimer = null;

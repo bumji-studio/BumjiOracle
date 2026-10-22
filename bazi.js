@@ -1418,19 +1418,12 @@
     },
 
     updateViewForAuthState: function (isLoggedIn, currentUser) {
-      const guestView = document.getElementById('baziGuestLandingView');
       const loggedInView = document.getElementById('baziLoggedInAppView');
-
-      if (!isLoggedIn) {
-        if (guestView) guestView.style.display = 'flex';
-        if (loggedInView) loggedInView.style.display = 'none';
-        this.initGuestInputs();
-      } else {
-        if (guestView) guestView.style.display = 'none';
-        if (loggedInView) loggedInView.style.display = 'flex';
-        this.updateMemberHeader(currentUser);
-        this.renderQuickProfileSelect();
+      if (loggedInView) {
+        loggedInView.style.display = 'flex';
       }
+      this.updateMemberHeader(currentUser);
+      this.renderQuickProfileSelect();
     },
 
     updateMemberHeader: function (user) {
@@ -1441,8 +1434,9 @@
       if (countTop) countTop.textContent = this.savedProfiles.length;
 
       if (!user) {
-        if (nameEl) nameEl.textContent = 'ผังชะตาของ: คุณผู้ใช้';
-        if (metaEl) metaEl.textContent = 'กรุณาระบุวันเดือนปีเกิดในหน้าโปรไฟล์';
+        if (nameEl) nameEl.textContent = 'ผังชะตาปาจื่อ (BaZi Pro Matrix)';
+        if (metaEl) metaEl.textContent = 'เครื่องมือผูกดวง 4 เสาชะตา วัยจร 10 ปี และโต๊ะหมอดูระดับซินแส';
+        if (avatarEl) avatarEl.innerHTML = `<i class="fa-solid fa-yin-yang" style="color: #7c3aed; font-size: 26px;"></i>`;
         return;
       }
 
