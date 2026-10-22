@@ -18155,3 +18155,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     grid-column: 1 / -1 !important;
   }
 }
+
+
+.thepmeow-overall-analysis-text {
+  font-family: 'Prompt', sans-serif;
+  font-size: 15.5px;
+  line-height: 1.9;
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(244, 114, 182, 0.25);
+  border-radius: 16px;
+  padding: 22px 26px;
+  box-shadow: 0 4px 18px rgba(236, 72, 153, 0.05);
+  margin-top: 10px;
+}
+
+.thepmeow-overall-analysis-text p {
+  margin-bottom: 14px;
+}
+
+.thepmeow-overall-analysis-text p:last-child {
+  margin-bottom: 0;
+}
+
+.thepmeow-overall-analysis-text strong {
+  color: #831843;
+}

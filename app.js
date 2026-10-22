@@ -2040,47 +2040,46 @@ document.addEventListener('DOMContentLoaded', () => {
     return { verdict, reason, badgeClass };
   }
 
-  // 1. Master Prophecy Builder (Synthesized from 3 cards, positions & meanings in Thep Meow Voice)
-  function buildThepMeowMainProphecy({ question, drawn, positions, qCtx }) {
-    const c1 = drawn[0];
-    const c2 = drawn[1] || drawn[0];
-    const c3 = drawn[2] || drawn[drawn.length - 1];
+  // 1. Master Prophecy Builder (Unified Overall Analysis - No Card 1,2,3 split, No separate Cat Summary)
+  function buildThepMeowMainProphecy({ question, drawn, positions, qCtx, intent }) {
+    const c1 = drawn[0] || {};
+    const c2 = drawn[1] || drawn[0] || {};
+    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
 
-    const pos1 = positions[0] || { title: 'ใบที่ 1: รากฐาน / อดีตที่ส่งผล' };
-    const pos2 = positions[1] || { title: 'ใบที่ 2: ปัจจุบัน / สภาวะจริง' };
-    const pos3 = positions[2] || { title: 'ใบที่ 3: อนาคต / แนวโน้มผลลัพธ์' };
+    const pos1 = positions[0] || { title: 'ตัวเลือก A' };
+    const pos2 = positions[1] || { title: 'ตัวเลือก B' };
+    const pos3 = positions[2] || { title: 'คำแนะนำ' };
 
     const c1Name = c1 ? (c1.name_th || c1.name) : 'ไพ่ใบแรก';
     const c2Name = c2 ? (c2.name_th || c2.name) : 'ไพ่ใบที่สอง';
     const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่ใบที่สาม';
 
-    const elem1 = c1 ? getBaseElement(c1.element) : 'น้ำ';
-    const elem2 = c2 ? getBaseElement(c2.element) : 'ไฟ';
-    const elem3 = c3 ? getBaseElement(c3.element) : 'ไม้';
+    const topic = qCtx ? qCtx.topic : (intent ? (intent.topic || intent) : 'general');
+    const r1 = typeof getThepMeowCardReading === 'function' ? getThepMeowCardReading(c1, topic) : '';
+    const r2 = typeof getThepMeowCardReading === 'function' ? getThepMeowCardReading(c2, topic) : '';
+    const r3 = typeof getThepMeowCardReading === 'function' ? getThepMeowCardReading(c3, topic) : '';
 
-    const elem1Info = ELEMENT_INFO[elem1] || { icon: '💧', color: '#0284c7' };
-    const elem2Info = ELEMENT_INFO[elem2] || { icon: '🔥', color: '#ef4444' };
-    const elem3Info = ELEMENT_INFO[elem3] || { icon: '🌿', color: '#10b981' };
+    const isComparison = /หรือ|กับ|อันไหน|ทางไหน|ดีกว่า|เลือก/i.test(question) || (pos1.title && pos1.title.includes('ตัวเลือก'));
 
-    const r1 = getThepMeowCardReading(c1, qCtx.topic);
-    const r2 = getThepMeowCardReading(c2, qCtx.topic);
-    const r3 = getThepMeowCardReading(c3, qCtx.topic);
+    let directVerdict = '';
+    let overallText = '';
 
-    // Get direct answer
-    const directAns = generateDirectAnswer(qCtx, drawn);
-
-    // Intent specific thematic intro
-    let intentTheme = '';
-    if (qCtx.topic === 'love') {
-      intentTheme = 'คลื่นพลังงานของหัวใจและความสัมพันธ์';
-    } else if (qCtx.topic === 'career') {
-      intentTheme = 'เส้นทางความก้าวหน้าในหน้าที่การงาน';
-    } else if (qCtx.topic === 'finance') {
-      intentTheme = 'กระแสโชคลาภและการหมุนเวียนทางการเงิน';
-    } else if (qCtx.topic === 'study') {
-      intentTheme = 'พลังสติปัญญาและผลลัพธ์การเรียนการสอบ';
+    if (isComparison) {
+      directVerdict = `ภาพรวมไพ่ชี้ว่า ${pos2.title} (“${c2Name}”) มีเกณฑ์พลังงานที่เกื้อหนุนและมีโอกาสสำเร็จโดดเด่นมากกว่าในระยะยาวค่ะ`;
+      overallText = `
+        <p>เจ้ามนุษย์ที่รัก... สำหรับคำถามที่ว่า <strong>“${question}”</strong> เมื่อแม่หมอเทพเหมียวตั้งจิตเชื่อมโยงพลังจากไพ่ทั้งสามใบเข้าด้วยกัน ภาพรวมสรุปได้ชัดเจนดังนี้ค่ะ:</p>
+        <p>ในฝั่งของ <strong>${pos1.title} (“${c1Name}”)</strong> กำลังสะท้อนสภาวะที่ต้องใช้ความรอบคอบอย่างสูง <em>“${r1}”</em> ซึ่งเป็นทางเลือกที่ยังมีจุดต้องประเมินและแบกรับความเสี่ยงอยู่พอสมควร</p>
+        <p>ในขณะที่ฝั่งของ <strong>${pos2.title} (“${c2Name}”)</strong> กลับปรากฏพลังงานบวกที่ชัดเจนกว่ามาก <em>“${r2}”</em> ชี้ให้เห็นถึงความมั่นคง โอกาสที่จะได้รับผลตอบแทนที่ดี และความสำเร็จที่คุ้มค่ากว่า</p>
+        <p>โดยมี <strong>${pos3.title} (“${c3Name}”)</strong> เป็นแสงสว่างชี้นำว่า <em>“${r3}”</em> สรุปภาพรวมแล้ว ขอให้คุณมั่นใจและเลือกเดินหน้าในเส้นทางที่มีพลังเกื้อหนุนมากกว่า แล้วผลลัพธ์จะนำพาความสำเร็จและความสบายใจมาให้คุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾💖</p>
+      `;
     } else {
-      intentTheme = 'ภาพรวมพลังงานชีวิตและจุดเปลี่ยนสำคัญ';
+      directVerdict = `ภาพรวมพลังงานกำลังเปิดทางสู่ความสำเร็จ โดยมีแนวทางสำคัญคือการปรับตัวอย่างมีสติและมั่นใจค่ะ`;
+      overallText = `
+        <p>เจ้ามนุษย์ที่รัก... สำหรับข้อสงสัยในเรื่อง <strong>“${question}”</strong> เมื่อเชื่อมโยงกระแสพลังงานจากไพ่ทั้ง 3 ใบเข้าด้วยกัน จะเห็นภาพรวมอย่างชัดเจนว่า:</p>
+        <p>จุดเริ่มต้นและสภาวะที่คุณกำลังเผชิญได้รับอิทธิพลจากพลังของ <strong>“${c1Name}”</strong> ซึ่งบ่งบอกถึง <em>“${r1}”</em> เป็นรากฐานสำคัญที่ส่งผลมาถึงจุดนี้</p>
+        <p>เมื่อขับเคลื่อนต่อเนื่องมา จึงปรากฏพลังของ <strong>“${c2Name}”</strong> เข้ามาหนุนเสริมและเผยให้เห็นว่า <em>“${r2}”</em> นี่คือจังหวะที่ต้องมีสติและโฟกัสกับเป้าหมายตรงหน้าอย่างแน่วแน่</p>
+        <p>และปลายทางของเรื่องนี้ส่งมอบผ่านพลังของ <strong>“${c3Name}”</strong> ชี้ว่า <em>“${r3}”</em> ทุกอย่างจะคลี่คลายไปในทิศทางที่สดใสและคุ้มค่ากับความทุ่มเทของคุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾✨</p>
+      `;
     }
 
     return `
@@ -2094,68 +2093,21 @@ document.addEventListener('DOMContentLoaded', () => {
           “${question}”
         </h3>
 
-        <!-- DIRECT ANSWER CALLOUT AT TOP -->
+        <!-- Direct Answer Callout -->
         <div class="thepmeow-direct-answer-callout">
           <div class="direct-answer-header">
             <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
-            <strong>คำตอบชัดเจนสำหรับคำถาม: “${question}”</strong>
+            <strong>คำตอบฟันธงสำหรับ: “${question}”</strong>
           </div>
-          <div class="direct-answer-verdict ${directAns.badgeClass}">
-            ${directAns.verdict}
+          <div class="direct-answer-verdict verdict-badge-favorable">
+            ${directVerdict}
           </div>
-          <p class="direct-answer-reason">
-            <strong>เหตุผลจากหน้าไพ่:</strong> ${directAns.reason}
-          </p>
         </div>
 
+        <!-- OVERALL ANALYSIS (บทวิเคราะห์ภาพรวม ไม่แยกใบ ไม่แยกบทสรุป) -->
         <div class="thepmeow-prophecy-body">
-          <p class="prophecy-intro-text">
-            “เจ้ามนุษย์ที่รัก... เทพเหมียวตั้งจิตกางกรงเล็บสัมผัส${intentTheme}จากไพ่ทั้ง 3 ใบให้แล้วนะคะ เมื่อเชื่อมโยงพลังงานตามตำแหน่ง หน้าไพ่ และแก่นความหมายเข้าด้วยกัน เรื่องราวของคำถามนี้กำลังสื่อสารออกมาอย่างชัดเจนเลยค่ะ เมี๊ยววว~ 🐾✨”
-          </p>
-
-          <div class="prophecy-cards-narrative">
-            <div class="prophecy-card-block">
-              <div class="prophecy-block-header">
-                <span class="prophecy-step-badge">1</span>
-                <strong>${pos1.title}:</strong>
-                <span class="prophecy-card-highlight">“${c1Name}”</span>
-                <span class="prophecy-elem-tag" style="color: ${elem1Info.color};">(${elem1Info.icon} ธาตุ${elem1})</span>
-              </div>
-              <p class="prophecy-block-desc">
-                รากเหง้าของเรื่องนี้เปิดด้วยพลังของ <strong>“${c1Name}”</strong> บ่งบอกว่าที่ผ่านมาเรื่องราวนี้ถูกขับเคลื่อนด้วย <em>“${r1}”</em> สิ่งที่คุณสั่งสมหรือเผชิญมาก่อนหน้านี้ไม่ได้สูญเปล่าเลยนะคะ มันคือฐานพลังสำคัญที่กำลังส่งผลต่อเนื่องมาถึงจุดนี้
-              </p>
-            </div>
-
-            <div class="prophecy-card-block">
-              <div class="prophecy-block-header">
-                <span class="prophecy-step-badge">2</span>
-                <strong>${pos2.title}:</strong>
-                <span class="prophecy-card-highlight">“${c2Name}”</span>
-                <span class="prophecy-elem-tag" style="color: ${elem2Info.color};">(${elem2Info.icon} ธาตุ${elem2})</span>
-              </div>
-              <p class="prophecy-block-desc">
-                เมื่อไหลเวียนมาสู่ใจกลางสถานการณ์ปัจจุบัน ไพ่ <strong>“${c2Name}”</strong> เข้ามาสะท้อนสภาวะจริงตรงหน้าว่า <em>“${r2}”</em> นี่คือจุดหมุนที่คุณต้องตั้งสติให้มั่น ไม่ต้องเตลิดตามความเร่งร้อน ให้โฟกัสอยู่กับความเป็นจริงตรงหน้าแล้วคุณจะคุมเกมอยู่ค่ะ
-              </p>
-            </div>
-
-            <div class="prophecy-card-block">
-              <div class="prophecy-block-header">
-                <span class="prophecy-step-badge">3</span>
-                <strong>${pos3.title}:</strong>
-                <span class="prophecy-card-highlight">“${c3Name}”</span>
-                <span class="prophecy-elem-tag" style="color: ${elem3Info.color};">(${elem3Info.icon} ธาตุ${elem3})</span>
-              </div>
-              <p class="prophecy-block-desc">
-                และปลายทางทิศทางข้างหน้าถูกส่งมอบผ่านไพ่ <strong>“${c3Name}”</strong> เผยให้เห็นคำตอบและแนวโน้มที่กำลังจะผลิดอกออกผล คือ <em>“${r3}”</em> เมื่อคุณประคองจังหวะตามคำแนะนำของไพ่ทั้งสามใบ สิ่งที่ตั้งใจไว้จะเปิดทางสว่างสดใสและทำให้คุณยิ้มได้แน่นอนค่ะ
-              </p>
-            </div>
-          </div>
-
-          <div class="prophecy-summary-box">
-            <i class="fa-solid fa-sparkles" style="color: #d946ef; font-size: 16px; margin-top: 2px;"></i>
-            <div class="prophecy-summary-text">
-              <strong>บทสรุปภาษาเทพเหมียว:</strong> “มองภาพรวมแล้ว เรื่องนี้กำลังดำเนินไปในทิศทางที่เติบโต เพียงแต่ระหว่างทางต้องอาศัยความใจเย็นและไว้ใจในศักยภาพของตัวเอง ไม่ต้องแบกโลกทั้งใบไว้คนเดียวนะคะ ก้าวทีละสเต็ปอย่างสง่างามเหมือนแมวเดินบนกำแพง แล้วความสำเร็จจะเป็นของคุณแน่นอนค่ะ เมี๊ยววว~ 🐾💖”
-            </div>
+          <div class="thepmeow-overall-analysis-text">
+            ${overallText}
           </div>
         </div>
       </div>
@@ -2200,13 +2152,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const prompt = `
 คุณคือ "แม่หมอเทพเหมียว" เทพแมวพยากรณ์สุดศักดิ์สิทธิ์และแสนใจดีแห่งสำรับไพ่เทพเหมียว (Thep Meow Oracle)
-บุคลิก: น่ารัก อบอุ่น มีเมตตา อารมณ์ดี พูดจาไพเราะ มีคำลงท้ายน่ารักเช่น "เมี๊ยววว~ 🐾", "เจ้ามนุษย์ที่รัก"
-จุดสำคัญที่สุด: **ต้องตอบตรงคำถามอย่างแม่นยำ จริงใจ และตรงประเด็นเป็นอันดับแรก ไม่พูดอ้อมค้อม**
+บุคลิก: น่ารัก อบอุ่น ฟันธงตรงไปตรงมา แม่นยำ มีเมตตา มีคำลงท้ายน่ารักเช่น "เมี๊ยววว~ 🐾", "เจ้ามนุษย์ที่รัก"
 
-ข้อมูลคำถามของผู้ใช้:
-คำถาม: "${question}"
+คำถามของผู้ใช้: "${question}"
 ${baziPromptText}
-ข้อมูลไพ่ 3 ใบที่เปิดได้จากฐานข้อมูล:
+ข้อมูลไพ่ 3 ใบที่เปิดได้:
 1. ${pos1Title}: ไพ่ "${c1.name_th || c1.name}" (ธาตุ ${c1.element || 'น้ำ'})
    - แก่นแท้: ${c1.core_meaning || c1.meanings?.core || ''}
    - ข้อความเทพ: ${c1.deity_message || c1.summary || ''}
@@ -2217,23 +2167,25 @@ ${baziPromptText}
    - แก่นแท้: ${c3.core_meaning || c3.meanings?.core || ''}
    - ข้อความเทพ: ${c3.deity_message || c3.summary || ''}
 
-คำสั่งสำคัญ:
-1. วิเคราะห์คำถามของผู้ใช้ให้แตกฉาน หากถามเรื่องอาหารให้ตอบเรื่องอาหาร หากถามเรื่องความรักให้ตีความเรื่องความรัก หากถามเรื่องงานให้ตีความเรื่องงาน ห้ามตอบหลุดประเด็นเด็ดขาด!
-2. ตอบตรงคำถามในส่วน direct_verdict ทันที ฟันธงชัดเจนและอบอุ่น
-3. ส่งผลลัพธ์กลับมาเป็น JSON ตามรูปแบบนี้เท่านั้น (ห้ามมี markdown code block อื่นนอกเหนือจาก json):
+คำสั่งสำคัญที่สุด (CRITICAL INSTRUCTIONS):
+1. **ตอบตรงคำถามและฟันธงอย่างแม่นยำเป็นอันดับแรก**:
+   - ถ้าถามว่า "อันไหนดีกว่ากัน" หรือเป็นคำถามตัวเลือก A vs B ต้องฟันธงชัดเจนว่าทางไหนดีกว่า เปรียบเทียบทั้งสองทางให้เห็นภาพว่าฝั่งไหนมีพลังบวก/ความก้าวหน้ามากกว่า
+   - ถ้าถามเรื่องการงาน/การเงิน/ความรัก ต้องเจาะจงตอบตรงเรื่องนั้น ห้ามตอบกว้างๆ หรือเฉไฉเด็ดขาด!
+2. **นำเสนอผลคำทำนายเป็น "ภาพรวมชิ้นเดียว (Overall Analysis)"**:
+   - **ห้าม** แยกไพ่เป็นใบที่ 1, ใบที่ 2, ใบที่ 3
+   - **ห้าม** ทำกล่องบทสรุปภาษาเทพเหมียวแยกต่างหาก
+   - ให้ร้อยเรียงแก่นความหมายของไพ่ทั้ง 3 ใบเข้าด้วยกัน ออกมาเป็นบทวิเคราะห์ภาพรวมเนื้อความเดียวที่ลึกซึ้ง ไหลลื่น จบในตัว และให้คำตอบฟันธงแก่ผู้ใช้ทันที
+3. ส่งผลลัพธ์เป็น JSON เท่านั้น ตามรูปแบบนี้:
 {
-  "direct_verdict": "คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจนและอบอุ่น",
+  "direct_verdict": "คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจน (1-2 ประโยค)",
   "bazi_insight": "บทวิเคราะห์จังหวะชีวิตและพลังธาตุปาจื่อที่เชื่อมโยงกับคำถาม (ถ้ามีข้อมูล)",
-  "card1_reading": "การทำนายไพ่ใบที่ 1 ให้เชื่อมโยงกับคำถามอย่างลึกซึ้ง",
-  "card2_reading": "การทำนายไพ่ใบที่ 2 ให้สะท้อนสภาวะจริงตามคำถาม",
-  "card3_reading": "การทำนายไพ่ใบที่ 3 สรุปแนวโน้มและทางออกข้างหน้า",
-  "summary": "บทสรุปภาษาเทพเหมียว (ลงท้ายด้วย เมี๊ยววว~ 🐾💖)",
+  "overall_analysis": "บทวิเคราะห์ภาพรวมทั้งหมดแบบร้อยเรียงไพ่ทั้ง 3 ใบเข้ากับคำถามโดยตรง เปรียบเทียบทางเลือกและให้คำแนะนำอย่างเห็นภาพ ไหลลื่นเป็นเนื้อความเดียวกันอย่างอบอุ่นและมีพลัง",
   "blessing_quote": "ข้อคิดเสริมมงคลสั้นๆ 1 ประโยค"
 }
 `;
 
     const payload = {
-      model: 'openai/gpt-oss-120b',
+      model: 'qwen/qwen3.8-27b',
       messages: [
         { role: 'system', content: 'You are an oracle AI that outputs valid JSON only.' },
         { role: 'user', content: prompt }
@@ -2258,75 +2210,30 @@ ${baziPromptText}
     const data = await res.json();
     const rawContent = data.choices?.[0]?.message?.content || '{}';
     const cleanJson = rawContent.replace(/```json|```/g, '').trim();
+    const match = cleanJson.match(/\{[\s\S]*\}/);
+    if (match) {
+      return JSON.parse(match[0]);
+    }
     return JSON.parse(cleanJson);
   }
 
   function renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx = null }) {
-    const c1 = drawn[0] || {};
-    const c2 = drawn[1] || drawn[0] || {};
-    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
+    let rawAnalysis = aiData.overall_analysis || aiData.summary || '';
+    if (!rawAnalysis && (aiData.card1_reading || aiData.card2_reading || aiData.card3_reading)) {
+      rawAnalysis = [aiData.card1_reading, aiData.card2_reading, aiData.card3_reading].filter(Boolean).join('\n\n');
+    }
 
-    const pos1 = positions[0] || { title: 'ใบที่ 1: สิ่งที่เกิดขึ้น / อดีตที่ส่งผล' };
-    const pos2 = positions[1] || { title: 'ใบที่ 2: สิ่งที่ซ่อนอยู่ / สภาวะจริง' };
-    const pos3 = positions[2] || { title: 'ใบที่ 3: แนวโน้มผลลัพธ์ / อนาคต' };
-
-    const c1Name = c1.name_th || c1.name || 'ไพ่ใบแรก';
-    const c2Name = c2.name_th || c2.name || 'ไพ่ใบที่สอง';
-    const c3Name = c3.name_th || c3.name || 'ไพ่ใบที่สาม';
-
-    const elem1 = getBaseElement(c1.element) || 'น้ำ';
-    const elem2 = getBaseElement(c2.element) || 'ไฟ';
-    const elem3 = getBaseElement(c3.element) || 'ไม้';
-
-    const elem1Info = ELEMENT_INFO[elem1] || { icon: '💧', color: '#0284c7' };
-    const elem2Info = ELEMENT_INFO[elem2] || { icon: '🔥', color: '#ef4444' };
-    const elem3Info = ELEMENT_INFO[elem3] || { icon: '🌿', color: '#10b981' };
-
-    const cardThemes = [
-      {
-        themeClass: 'card-theme-rose',
-        badgeIcon: 'fa-heart',
-        badgeText: 'เคล็ดลับที่ 1 • ใจฟู',
-        cuteTag: '🐾 #ฮีลใจเมี๊ยวว'
-      },
-      {
-        themeClass: 'card-theme-amber',
-        badgeIcon: 'fa-wand-magic-sparkles',
-        badgeText: 'เคล็ดลับที่ 2 • เสกพลังบวก',
-        cuteTag: '✨ #ดึงดูดสิ่งดีงาม'
-      },
-      {
-        themeClass: 'card-theme-emerald',
-        badgeIcon: 'fa-clover',
-        badgeText: 'เคล็ดลับที่ 3 • ก้าวต่อไปอย่างมั่นใจ',
-        cuteTag: '🍀 #เปิดดวงรับโชค'
-      }
-    ];
-
-    const rawActions = (aiData.actions && aiData.actions.length > 0) ? aiData.actions : [
-      { title: 'ตามใจเสียงแรกในใจ', desc: 'เชื่อมั่นในสัญชาตญาณแรกของตัวเอง ไม่ต้องลังเลเปรียบเทียบให้เหนื่อยใจ' },
-      { title: 'เติมพลังด้วยความอบอุ่น', desc: 'หาเครื่องดื่มหรืออาหารอุ่นๆ ผ่อนคลายร่างกายและจิตใจ' },
-      { title: 'วางความกังวลแล้วกอดตัวเอง', desc: 'วันนี้ทำเต็มที่แล้ว ให้เวลาตัวเองได้พักผ่อนอย่างมีความสุข' }
-    ];
-
-    const actionsHtml = rawActions.map((act, idx) => {
-      const theme = cardThemes[idx % cardThemes.length];
-      return `
-        <div class="secret-healing-card ${theme.themeClass}">
-          <div class="card-glass-glow"></div>
-          <div class="card-stamp-badge">
-            <i class="fa-solid ${theme.badgeIcon} stamp-icon"></i> ${theme.badgeText}
-          </div>
-          <h4 class="secret-card-title">${act.title}</h4>
-          <div class="secret-card-body">
-            <p>${act.desc}</p>
-          </div>
-          <div class="secret-card-footer">
-            <span class="cute-tag"><i class="fa-solid fa-sparkles"></i> ${theme.cuteTag}</span>
-          </div>
-        </div>
-      `;
-    }).join('');
+    let formattedAnalysis = '';
+    if (rawAnalysis.includes('<p>') || rawAnalysis.includes('<div>')) {
+      formattedAnalysis = rawAnalysis;
+    } else {
+      formattedAnalysis = rawAnalysis
+        .split(/\n\n+/)
+        .map(p => p.trim())
+        .filter(p => p.length > 0)
+        .map(p => `<p>${p}</p>`)
+        .join('');
+    }
 
     return `
       <div class="thepmeow-dossier">
@@ -2349,11 +2256,11 @@ ${baziPromptText}
           </div>
         </div>` : ''}
 
-        <!-- Layer 1: คำทำนายไพ่เทพเหมียว -->
+        <!-- Layer 1: คำทำนายภาพรวมไพ่เทพเหมียว -->
         <div class="thepmeow-verdict-box">
           <div class="thepmeow-verdict-top">
             <span class="thepmeow-avatar-badge">
-              <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์ (AI พลังจิตสัมผัส)
+              <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์
             </span>
           </div>
           <h3 class="thepmeow-verdict-question">
@@ -2364,69 +2271,22 @@ ${baziPromptText}
           <div class="thepmeow-direct-answer-callout">
             <div class="direct-answer-header">
               <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
-              <strong>คำตอบชัดเจนสำหรับคำถาม: “${question}”</strong>
+              <strong>คำตอบฟันธงสำหรับ: “${question}”</strong>
             </div>
             <div class="direct-answer-verdict verdict-badge-favorable">
-              ${aiData.direct_verdict}
+              ${aiData.direct_verdict || 'ไพ่เปิดเผยคำตอบและทิศทางที่สดใสให้แก่คุณ'}
             </div>
-            ${aiData.direct_reason ? `<p class="direct-answer-reason"><strong>เหตุผลจากหน้าไพ่:</strong> ${aiData.direct_reason}</p>` : ''}
           </div>
 
+          <!-- OVERALL ANALYSIS (บทวิเคราะห์ภาพรวม ไม่แยกใบ ไม่แยกบทสรุป) -->
           <div class="thepmeow-prophecy-body">
-            <p class="prophecy-intro-text">
-              “เจ้ามนุษย์ที่รัก... เทพเหมียวตั้งจิตกางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบเข้ากับคำถามของคุณให้แล้วนะคะ เมื่อเชื่อมโยงพลังงานตามตำแหน่ง หน้าไพ่ และแก่นความหมายเข้าด้วยกัน เรื่องราวของคำถามนี้กำลังสื่อสารออกมาอย่างชัดเจนเลยค่ะ เมี๊ยววว~ 🐾✨”
-            </p>
-
-            <div class="prophecy-cards-narrative">
-              <div class="prophecy-card-block">
-                <div class="prophecy-block-header">
-                  <span class="prophecy-step-badge">1</span>
-                  <strong>${pos1.title}:</strong>
-                  <span class="prophecy-card-highlight">“${c1Name}”</span>
-                  <span class="prophecy-elem-tag" style="color: ${elem1Info.color};">(${elem1Info.icon} ธาตุ${elem1})</span>
-                </div>
-                <p class="prophecy-block-desc">
-                  ${aiData.card1_reading}
-                </p>
-              </div>
-
-              <div class="prophecy-card-block">
-                <div class="prophecy-block-header">
-                  <span class="prophecy-step-badge">2</span>
-                  <strong>${pos2.title}:</strong>
-                  <span class="prophecy-card-highlight">“${c2Name}”</span>
-                  <span class="prophecy-elem-tag" style="color: ${elem2Info.color};">(${elem2Info.icon} ธาตุ${elem2})</span>
-                </div>
-                <p class="prophecy-block-desc">
-                  ${aiData.card2_reading}
-                </p>
-              </div>
-
-              <div class="prophecy-card-block">
-                <div class="prophecy-block-header">
-                  <span class="prophecy-step-badge">3</span>
-                  <strong>${pos3.title}:</strong>
-                  <span class="prophecy-card-highlight">“${c3Name}”</span>
-                  <span class="prophecy-elem-tag" style="color: ${elem3Info.color};">(${elem3Info.icon} ธาตุ${elem3})</span>
-                </div>
-                <p class="prophecy-block-desc">
-                  ${aiData.card3_reading}
-                </p>
-              </div>
-            </div>
-
-            <div class="prophecy-summary-box">
-              <i class="fa-solid fa-sparkles" style="color: #d946ef; font-size: 16px; margin-top: 2px;"></i>
-              <div class="prophecy-summary-text">
-                <strong>บทสรุปภาษาเทพเหมียว:</strong> “${aiData.summary}”
-              </div>
+            <div class="thepmeow-overall-analysis-text">
+              ${formattedAnalysis}
             </div>
           </div>
         </div>
 
-
-
-        <!-- Layer 3: พรเสริมมงคลจากเทพเหมียว -->
+        <!-- Layer 2: พรเสริมมงคลจากเทพเหมียว -->
         <div class="thepmeow-blessing-card">
           <div class="thepmeow-blessing-badge">
             <i class="fa-solid fa-sparkles"></i> พรเสริมมงคลจากเทพเหมียว
@@ -2435,7 +2295,7 @@ ${baziPromptText}
             “${aiData.blessing_quote || 'ขอให้เชื่อมั่นในพลังแห่งแสงสว่างในตัวคุณ'}”
           </p>
           <p class="thepmeow-blessing-author">
-            — ส่งพลังรัก ปัดเป่าความกังวล และส่งอ้อมกอดอุ่นๆ โดย เทพเหมียว เมี๊ยววว~ 🐾💖
+            — ส่งพลังรักและอ้อมกอดอุ่นๆ โดย เทพเหมียว เมี๊ยววว~ 🐾💖
           </p>
         </div>
       </div>
@@ -3088,42 +2948,43 @@ ${baziPromptText}
 
   // 1. Master Prophecy Builder (Synthesized from 3 cards, positions & meanings in Thep Meow Voice)
   function buildThepMeowMainProphecy({ question, drawn, positions, intent }) {
-    const c1 = drawn[0];
-    const c2 = drawn[1] || drawn[0];
-    const c3 = drawn[2] || drawn[drawn.length - 1];
+    const c1 = drawn[0] || {};
+    const c2 = drawn[1] || drawn[0] || {};
+    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
 
-    const pos1 = positions[0] || { title: 'ใบที่ 1: รากฐาน / อดีตที่ส่งผล' };
-    const pos2 = positions[1] || { title: 'ใบที่ 2: ปัจจุบัน / สภาวะจริง' };
-    const pos3 = positions[2] || { title: 'ใบที่ 3: อนาคต / แนวโน้มผลลัพธ์' };
+    const pos1 = positions[0] || { title: 'ตัวเลือก A' };
+    const pos2 = positions[1] || { title: 'ตัวเลือก B' };
+    const pos3 = positions[2] || { title: 'คำแนะนำ' };
 
     const c1Name = c1 ? (c1.name_th || c1.name) : 'ไพ่ใบแรก';
     const c2Name = c2 ? (c2.name_th || c2.name) : 'ไพ่ใบที่สอง';
     const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่ใบที่สาม';
 
-    const elem1 = c1 ? getBaseElement(c1.element) : 'น้ำ';
-    const elem2 = c2 ? getBaseElement(c2.element) : 'ไฟ';
-    const elem3 = c3 ? getBaseElement(c3.element) : 'ไม้';
-
-    const elem1Info = ELEMENT_INFO[elem1] || { icon: '💧', color: '#0284c7' };
-    const elem2Info = ELEMENT_INFO[elem2] || { icon: '🔥', color: '#ef4444' };
-    const elem3Info = ELEMENT_INFO[elem3] || { icon: '🌿', color: '#10b981' };
-
     const r1 = getThepMeowCardReading(c1, intent);
     const r2 = getThepMeowCardReading(c2, intent);
     const r3 = getThepMeowCardReading(c3, intent);
 
-    // Intent specific thematic intro
-    let intentTheme = '';
-    if (intent === 'relationship') {
-      intentTheme = 'คลื่นพลังงานของหัวใจและความผูกพัน';
-    } else if (intent === 'career_finance') {
-      intentTheme = 'เส้นทางความก้าวหน้าและการจัดการโอกาส';
-    } else if (intent === 'will_it_happen') {
-      intentTheme = 'ทิศทางแนวโน้มความสำเร็จและจังหวะเวลา';
-    } else if (intent === 'how_to') {
-      intentTheme = 'กุญแจสำคัญและแนวทางปลดล็อกสถานการณ์';
+    const isComparison = /หรือ|กับ|อันไหน|ทางไหน|ดีกว่า|เลือก/i.test(question) || (pos1.title && pos1.title.includes('ตัวเลือก'));
+
+    let directVerdict = '';
+    let overallText = '';
+
+    if (isComparison) {
+      directVerdict = `ภาพรวมไพ่ชี้ว่า ${pos2.title} (“${c2Name}”) มีเกณฑ์พลังงานที่เกื้อหนุนและมีโอกาสสำเร็จโดดเด่นมากกว่าในระยะยาวค่ะ`;
+      overallText = `
+        <p>เจ้ามนุษย์ที่รัก... สำหรับคำถามที่ว่า <strong>“${question}”</strong> เมื่อแม่หมอเทพเหมียวตั้งจิตเชื่อมโยงพลังจากไพ่ทั้งสามใบเข้าด้วยกัน ภาพรวมสรุปได้ชัดเจนดังนี้ค่ะ:</p>
+        <p>ในฝั่งของ <strong>${pos1.title} (“${c1Name}”)</strong> กำลังสะท้อนสภาวะที่ต้องใช้ความรอบคอบอย่างสูง <em>“${r1}”</em> ซึ่งเป็นทางเลือกที่ยังมีจุดต้องประเมินและแบกรับความเสี่ยงอยู่พอสมควร</p>
+        <p>ในขณะที่ฝั่งของ <strong>${pos2.title} (“${c2Name}”)</strong> กลับปรากฏพลังงานบวกที่ชัดเจนกว่ามาก <em>“${r2}”</em> ชี้ให้เห็นถึงความมั่นคง โอกาสที่จะได้รับผลตอบแทนที่ดี และความสำเร็จที่คุ้มค่ากว่า</p>
+        <p>โดยมี <strong>${pos3.title} (“${c3Name}”)</strong> เป็นแสงสว่างชี้นำว่า <em>“${r3}”</em> สรุปภาพรวมแล้ว ขอให้คุณมั่นใจและเลือกเดินหน้าในเส้นทางที่มีพลังเกื้อหนุนมากกว่า แล้วผลลัพธ์จะนำพาความสำเร็จและความสบายใจมาให้คุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾💖</p>
+      `;
     } else {
-      intentTheme = 'ภาพรวมพลังงานชีวิตและจุดเปลี่ยนสำคัญ';
+      directVerdict = `ภาพรวมพลังงานกำลังเปิดทางสู่ความสำเร็จ โดยมีแนวทางสำคัญคือการปรับตัวอย่างมีสติและมั่นใจค่ะ`;
+      overallText = `
+        <p>เจ้ามนุษย์ที่รัก... สำหรับข้อสงสัยในเรื่อง <strong>“${question}”</strong> เมื่อเชื่อมโยงกระแสพลังงานจากไพ่ทั้ง 3 ใบเข้าด้วยกัน จะเห็นภาพรวมอย่างชัดเจนว่า:</p>
+        <p>จุดเริ่มต้นและสภาวะที่คุณกำลังเผชิญได้รับอิทธิพลจากพลังของ <strong>“${c1Name}”</strong> ซึ่งบ่งบอกถึง <em>“${r1}”</em> เป็นรากฐานสำคัญที่ส่งผลมาถึงจุดนี้</p>
+        <p>เมื่อขับเคลื่อนต่อเนื่องมา จึงปรากฏพลังของ <strong>“${c2Name}”</strong> เข้ามาหนุนเสริมและเผยให้เห็นว่า <em>“${r2}”</em> นี่คือจังหวะที่ต้องมีสติและโฟกัสกับเป้าหมายตรงหน้าอย่างแน่วแน่</p>
+        <p>และปลายทางของเรื่องนี้ส่งมอบผ่านพลังของ <strong>“${c3Name}”</strong> ชี้ว่า <em>“${r3}”</em> ทุกอย่างจะคลี่คลายไปในทิศทางที่สดใสและคุ้มค่ากับความทุ่มเทของคุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾✨</p>
+      `;
     }
 
     return `
@@ -3137,62 +2998,27 @@ ${baziPromptText}
           “${question}”
         </h3>
 
-        <div class="thepmeow-prophecy-body">
-          <p class="prophecy-intro-text">
-            “เจ้ามนุษย์ที่รัก... เทพเหมียวตั้งจิตกางกรงเล็บสัมผัส${intentTheme}จากไพ่ทั้ง 3 ใบให้แล้วนะคะ เมื่อเชื่อมโยงพลังงานตามตำแหน่ง หน้าไพ่ และแก่นความหมายเข้าด้วยกัน เรื่องราวของคำถามนี้กำลังสื่อสารออกมาอย่างชัดเจนเลยค่ะ เมี๊ยววว~ 🐾✨”
-          </p>
-
-          <div class="prophecy-cards-narrative">
-            <div class="prophecy-card-block">
-              <div class="prophecy-block-header">
-                <span class="prophecy-step-badge">1</span>
-                <strong>${pos1.title}:</strong>
-                <span class="prophecy-card-highlight">“${c1Name}”</span>
-                <span class="prophecy-elem-tag" style="color: ${elem1Info.color};">(${elem1Info.icon} ธาตุ${elem1})</span>
-              </div>
-              <p class="prophecy-block-desc">
-                รากเหง้าของเรื่องนี้เปิดด้วยพลังของ <strong>“${c1Name}”</strong> บ่งบอกว่าที่ผ่านมาเรื่องราวนี้ถูกขับเคลื่อนด้วย <em>“${r1}”</em> สิ่งที่คุณสั่งสมหรือเผชิญมาก่อนหน้านี้ไม่ได้สูญเปล่าเลยนะคะ มันคือฐานพลังสำคัญที่กำลังส่งผลต่อเนื่องมาถึงจุดนี้
-              </p>
-            </div>
-
-            <div class="prophecy-card-block">
-              <div class="prophecy-block-header">
-                <span class="prophecy-step-badge">2</span>
-                <strong>${pos2.title}:</strong>
-                <span class="prophecy-card-highlight">“${c2Name}”</span>
-                <span class="prophecy-elem-tag" style="color: ${elem2Info.color};">(${elem2Info.icon} ธาตุ${elem2})</span>
-              </div>
-              <p class="prophecy-block-desc">
-                เมื่อไหลเวียนมาสู่ใจกลางสถานการณ์ปัจจุบัน ไพ่ <strong>“${c2Name}”</strong> เข้ามาสะท้อนสภาวะจริงตรงหน้าว่า <em>“${r2}”</em> นี่คือจุดหมุนที่คุณต้องตั้งสติให้มั่น ไม่ต้องเตลิดตามความเร่งร้อน ให้โฟกัสอยู่กับความเป็นจริงตรงหน้าแล้วคุณจะคุมเกมอยู่ค่ะ
-              </p>
-            </div>
-
-            <div class="prophecy-card-block">
-              <div class="prophecy-block-header">
-                <span class="prophecy-step-badge">3</span>
-                <strong>${pos3.title}:</strong>
-                <span class="prophecy-card-highlight">“${c3Name}”</span>
-                <span class="prophecy-elem-tag" style="color: ${elem3Info.color};">(${elem3Info.icon} ธาตุ${elem3})</span>
-              </div>
-              <p class="prophecy-block-desc">
-                และปลายทางทิศทางข้างหน้าถูกส่งมอบผ่านไพ่ <strong>“${c3Name}”</strong> เผยให้เห็นคำตอบและแนวโน้มที่กำลังจะผลิดอกออกผล คือ <em>“${r3}”</em> เมื่อคุณประคองจังหวะตามคำแนะนำของไพ่ทั้งสามใบ สิ่งที่ตั้งใจไว้จะเปิดทางสว่างสดใสและทำให้คุณยิ้มได้แน่นอนค่ะ
-              </p>
-            </div>
+        <!-- Direct Answer Callout -->
+        <div class="thepmeow-direct-answer-callout">
+          <div class="direct-answer-header">
+            <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
+            <strong>คำตอบฟันธงสำหรับ: “${question}”</strong>
           </div>
+          <div class="direct-answer-verdict verdict-badge-favorable">
+            ${directVerdict}
+          </div>
+        </div>
 
-          <div class="prophecy-summary-box">
-            <i class="fa-solid fa-sparkles" style="color: #d946ef; font-size: 16px; margin-top: 2px;"></i>
-            <div class="prophecy-summary-text">
-              <strong>บทสรุปภาษาเทพเหมียว:</strong> “มองภาพรวมแล้ว เรื่องนี้กำลังดำเนินไปในทิศทางที่เติบโต เพียงแต่ระหว่างทางต้องอาศัยความใจเย็นและไว้ใจในศักยภาพของตัวเอง ไม่ต้องแบกโลกทั้งใบไว้คนเดียวนะคะ ก้าวทีละสเต็ปอย่างสง่างามเหมือนแมวเดินบนกำแพง แล้วความสำเร็จจะเป็นของคุณแน่นอนค่ะ เมี๊ยววว~ 🐾💖”
-            </div>
+        <!-- OVERALL ANALYSIS (บทวิเคราะห์ภาพรวม ไม่แยกใบ ไม่แยกบทสรุป) -->
+        <div class="thepmeow-prophecy-body">
+          <div class="thepmeow-overall-analysis-text">
+            ${overallText}
           </div>
         </div>
       </div>
     `;
   }
 
-  // 2. เคล็ดลับฮีลใจ (Alchemize any negative/challenging aspects into deep comfort, relief & motivation)
-  // 2. เคล็ดลับฮีลใจ (Removed as requested)
   function buildThepMeowHealingTips() {
     return '';
   }
@@ -3296,9 +3122,10 @@ ${baziPromptText}
     }, 2400);
 
     try {
-      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions });
+      const baziCtx = typeof getOracleBaziContext === 'function' ? getOracleBaziContext() : null;
+      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions, baziCtx });
       if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
-      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData });
+      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx });
     } catch (err) {
       if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
       console.warn('[ThepMeow] AI generation fallback to local engine:', err);
