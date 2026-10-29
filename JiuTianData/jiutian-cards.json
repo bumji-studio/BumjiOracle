@@ -2,6 +2,7 @@
   {
     "id": 1,
     "card_no": 0,
+    "keyword": "เริ่มต้นใหม่, อิสรภาพ, ผจญภัย, กล้าเสี่ยง, ไม่คิดมาก",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -72,6 +73,7 @@
   {
     "id": 2,
     "card_no": 1,
+    "keyword": "สร้างสรรค์, นวัตกรรม, นักคิด, แปรธาตุ, เสกให้เป็นจริง",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -135,6 +137,7 @@
   {
     "id": 3,
     "card_no": 2,
+    "keyword": "สัญชาตญาณ, ลึกลับ, จิตวิทยา, อ่านใจ, มองทะลุแก่นแท้",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -204,6 +207,7 @@
   {
     "id": 4,
     "card_no": 3,
+    "keyword": "ความเป็นแม่, โอบอุ้ม, ทำนุบำรุง, เยียวยาใจ, อุดมสมบูรณ์",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -285,6 +289,7 @@
   {
     "id": 5,
     "card_no": 4,
+    "keyword": "อำนาจปกครอง, กฎระเบียบ, เหตุผล, ความเป็นพ่อ, เด็ดขาด",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -358,6 +363,7 @@
   {
     "id": 6,
     "card_no": 5,
+    "keyword": "ปัญญาความรู้, ศีลธรรม, สิ่งศักดิ์สิทธิ์, ครูอาจารย์, จริยธรรม",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -427,6 +433,7 @@
   {
     "id": 7,
     "card_no": 6,
+    "keyword": "คู่แท้, ความรักมั่นคง, ความผูกพัน, การรอคอย, เพียรเพื่อรัก",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -488,6 +495,7 @@
   {
     "id": 8,
     "card_no": 7,
+    "keyword": "พุ่งทะยาน, ความเร็ว, มุ่งมั่น, กล้าหาญ, ลุยถึงเป้าหมาย",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -559,6 +567,7 @@
   {
     "id": 9,
     "card_no": 8,
+    "keyword": "เข้มแข็งภายใน, เมตตาธรรม, ขันติ, สติปัญญา, อ่อนโยนสยบแข็งกร้าว",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -628,6 +637,7 @@
   {
     "id": 10,
     "card_no": 9,
+    "keyword": "ปลีกวิเวก, สันโดษ, สงบนิ่ง, ทบทวนตัวเอง, ปรัชญาชีวิต",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -711,6 +721,7 @@
   {
     "id": 11,
     "card_no": 10,
+    "keyword": "กงล้อโชคชะตา, ดวงเปลี่ยน, จุดเปลี่ยนใหญ่, จังหวะเวลา, วัฏจักร",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -766,6 +777,7 @@
   {
     "id": 12,
     "card_no": 11,
+    "keyword": "ความยุติธรรม, เที่ยงธรรม, หลักฐาน, การตัดสิน, คดีความ",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -835,6 +847,7 @@
   {
     "id": 13,
     "card_no": 12,
+    "keyword": "มุมมองกลับด้าน, คิดต่าง, หยุดนิ่งมีสติ, อดทนรอคอย, ค้นพบสัจธรรม",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -898,6 +911,7 @@
   {
     "id": 14,
     "card_no": 13,
+    "keyword": "สิ้นสุดสิ่งเก่า, คัดทิ้งสิ่งไม่จำเป็น, เปลี่ยนผ่าน, ตัดจบ, เกิดใหม่",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -963,6 +977,7 @@
   {
     "id": 15,
     "card_no": 14,
+    "keyword": "สมดุล, ทางสายกลาง, ประสานความต่าง, เป็นกลาง, กลมกลืน",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1022,6 +1037,7 @@
   {
     "id": 16,
     "card_no": 15,
+    "keyword": "ความลุ่มหลง, กิเลสตัณหา, เสน่ห์เย้ายวน, ความโลภ, ภาพลวงตา",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1105,6 +1121,7 @@
   {
     "id": 17,
     "card_no": 16,
+    "keyword": "เปลี่ยนแปลงฉับพลัน, พังทลายกะทันหัน, จุดเปลี่ยนฟ้าผ่า, วิกฤต, ตื่นรู้",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1168,6 +1185,7 @@
   {
     "id": 18,
     "card_no": 17,
+    "keyword": "ความหวัง, โชคดี, ผู้ใหญ่อุปถัมภ์, ลาภลอย, เรื่องดีงาม",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1229,6 +1247,7 @@
   {
     "id": 19,
     "card_no": 18,
+    "keyword": "คลุมเครือ, สับสน, วังวนอารมณ์, ความเหงา, ความลับซ่อนเร้น",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1302,6 +1321,7 @@
   {
     "id": 20,
     "card_no": 19,
+    "keyword": "รุ่งโรจน์, สว่างสดใส, ชีวิตใหม่, ราบรื่น, ความสำเร็จ",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1361,6 +1381,7 @@
   {
     "id": 21,
     "card_no": 20,
+    "keyword": "โอกาสครั้งใหม่, ตื่นรู้, มีผู้ชี้ทาง, ปลดปล่อย, แก้ไขตัวเอง",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1416,6 +1437,7 @@
   {
     "id": 22,
     "card_no": 21,
+    "keyword": "สมบูรณ์แบบ, สมหวังทุกประการ, สำเร็จด้วยตัวเอง, ครอบครอง, รวมเป็นหนึ่ง",
     "type": "major",
     "suit_name_th": "เมเจอร์ อาร์คานา (Major)",
     "suit_name_en": "Major Arcana",
@@ -1473,6 +1495,7 @@
   {
     "id": 23,
     "card_no": 1,
+    "keyword": "เมล็ดพันธุ์โอกาส, การเริ่มต้น, เติบโตช้าๆ, ฟูมฟักดูแล, พัฒนาความรู้",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1532,6 +1555,7 @@
   {
     "id": 24,
     "card_no": 2,
+    "keyword": "ทางแยก, เลือกเส้นทาง, ลังเลตัดสินใจ, วางแผนอนาคต, กำหนดทิศทาง",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1589,6 +1613,7 @@
   {
     "id": 25,
     "card_no": 3,
+    "keyword": "เพื่อนร่วมทาง, อุดมการณ์เดียวกัน, พันธมิตร, ร่วมมือกัน, เป้าหมายร่วม",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1650,6 +1675,7 @@
   {
     "id": 26,
     "card_no": 4,
+    "keyword": "สร้างรากฐาน, เริ่มจากศูนย์, ก่อร่างสร้างตัว, เข้าที่เข้าทาง, มั่นคง",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1709,6 +1735,7 @@
   {
     "id": 27,
     "card_no": 5,
+    "keyword": "อัตตาสูง, ยึดความคิดตน, ถกเถียง, ไม่ยอมกัน, ขัดแย้งทางความคิด",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1778,6 +1805,7 @@
   {
     "id": 28,
     "card_no": 6,
+    "keyword": "เกียรติยศ, ได้รับคำชม, เป็นที่ยอมรับ, มีชื่อเสียง, นับหน้าถือตา",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1835,6 +1863,7 @@
   {
     "id": 29,
     "card_no": 7,
+    "keyword": "ยืนหยัดจุดยืน, มั่นคงในหลักการ, ไม่วอกแวก, กล้าคิดต่าง, เด็ดเดี่ยว",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1896,6 +1925,7 @@
   {
     "id": 30,
     "card_no": 8,
+    "keyword": "ข่าวสารรวดเร็ว, ข้อมูลฉับไว, การติดต่อสื่อสาร, ข่าวดีเร่งด่วน, ความคืบหน้า",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -1957,6 +1987,7 @@
   {
     "id": 31,
     "card_no": 9,
+    "keyword": "ประสบการณ์สูง, ความรู้ลึกซึ้ง, อาวุโส, เชี่ยวชาญ, ผู้รู้จริง",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -2018,6 +2049,7 @@
   {
     "id": 32,
     "card_no": 10,
+    "keyword": "โหมงานหนัก, แบกภาระเกินตัว, บ้างาน, เหนื่อยล้าสะสม, ลืมดูแลตัวเอง",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -2081,6 +2113,7 @@
   {
     "id": 33,
     "card_no": 11,
+    "keyword": "การเรียนการศึกษา, งานเอกสาร, ทฤษฎีความรู้, ใฝ่รู้, นักศึกษา",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -2144,6 +2177,7 @@
   {
     "id": 34,
     "card_no": 12,
+    "keyword": "ผู้นำยามวิกฤต, มุ่งมั่นเด็ดขาด, กล้าทำสิ่งยาก, แม่นยำ, กอบกู้สถานการณ์",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -2207,6 +2241,7 @@
   {
     "id": 35,
     "card_no": 13,
+    "keyword": "เยียวยารักษา, อ่อนโยนมีหลักการ, เมตตา, รักธรรมชาติ, จิตใจบริสุทธิ์",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -2272,6 +2307,7 @@
   {
     "id": 36,
     "card_no": 14,
+    "keyword": "วิสัยทัศน์ไกล, ปกครองด้วยหลักการ, มั่นคงระยะยาว, เป็นร่มเงาพึ่งพิง, มาตรฐานสูง",
     "type": "wood",
     "suit_name_th": "ธาตุไม้ (Wood)",
     "suit_name_en": "Suit of Wood",
@@ -2343,6 +2379,7 @@
   {
     "id": 37,
     "card_no": 1,
+    "keyword": "แรงบันดาลใจ, ไอเดียบรรเจิด, ไฟสร้างสรรค์, ตื่นเต้นสดใส, เริ่มต้นคึกคัก",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2401,6 +2438,7 @@
   {
     "id": 38,
     "card_no": 2,
+    "keyword": "วางยุทธศาสตร์, เห็นเป้าหมายชัด, กำหนดแนวทาง, วิสัยทัศน์, แผนการรุก",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2456,6 +2494,7 @@
   {
     "id": 39,
     "card_no": 3,
+    "keyword": "ขยายอาณาเขต, เปิดตลาดใหม่, ขยับขยาย, ก้าวหน้า, มองการณ์ไกล",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2515,6 +2554,7 @@
   {
     "id": 40,
     "card_no": 4,
+    "keyword": "เฉลิมฉลอง, ความสุขปัจจุบัน, สังสรรค์ยินดี, พักใจให้สุข, มิตรภาพอบอุ่น",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2578,6 +2618,7 @@
   {
     "id": 41,
     "card_no": 5,
+    "keyword": "การแข่งขัน, ประลองฝีมือ, แสดงศักยภาพ, ชิงไหวชิงพริบ, ท้าทาย",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2639,6 +2680,7 @@
   {
     "id": 42,
     "card_no": 6,
+    "keyword": "ชัยชนะ, เกียรติยศ, เป็นที่ยอมรับ, สำเร็จโดดเด่น, ความภาคภูมิใจ",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2702,6 +2744,7 @@
   {
     "id": 43,
     "card_no": 7,
+    "keyword": "ยืนหยัดต่อสู้, ปกป้องพื้นที่, ไม่ยอมแพ้, คุ้มครองพวกพ้อง, กล้าต้านทาน",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2763,6 +2806,7 @@
   {
     "id": 44,
     "card_no": 8,
+    "keyword": "ลงมือทันที, พุ่งทะลวง, จังหวะทอง, รวดเร็วฉับไว, คว้าโอกาส",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2826,6 +2870,7 @@
   {
     "id": 45,
     "card_no": 9,
+    "keyword": "ทุ่มหมดหน้าตัก, ปักหลักสู้, เดิมพันครั้งใหญ่, อึดสู้สุดใจ, ไม่ถอย",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2891,6 +2936,7 @@
   {
     "id": 46,
     "card_no": 10,
+    "keyword": "ทุ่มเทสุดหัวใจ, เสียสละเต็มที่, รักในภารกิจ, ยอมเหนื่อยเพื่อฝัน, ศรัทธาแรงกล้า",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -2954,6 +3000,7 @@
   {
     "id": 47,
     "card_no": 11,
+    "keyword": "กล้าได้กล้าเสีย, ดื้อรั้น, ไหวพริบดี, รักอิสระ, โฟกัสปัจจุบัน",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -3025,6 +3072,7 @@
   {
     "id": 48,
     "card_no": 12,
+    "keyword": "ลุยแหลก, ใจร้อนรวดเร็ว, แก้ปัญหาเฉพาะหน้าเก่ง, คึกคะนอง, พลังล้นเหลือ",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -3082,6 +3130,7 @@
   {
     "id": 49,
     "card_no": 13,
+    "keyword": "สง่างาม, คุณธรรมสูงส่ง, เมตตาเอื้อเฟื้อ, สร้างแรงบันดาลใจ, สันติภาพ",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -3161,6 +3210,7 @@
   {
     "id": 50,
     "card_no": 14,
+    "keyword": "ผู้นำทรงพลัง, มั่นใจสูงสุด, ตัดสินใจเด็ดขาด, รับผิดชอบ, คุมเกมอยู่หมัด",
     "type": "fire",
     "suit_name_th": "ธาตุไฟ (Fire)",
     "suit_name_en": "Suit of Fire",
@@ -3225,6 +3275,7 @@
   {
     "id": 51,
     "card_no": 1,
+    "keyword": "จุดเริ่มต้นความมั่งคั่ง, พบทรัพย์สินมีค่า, โอกาสการเงิน, โชคลาภจับต้องได้, มั่นคง",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3284,6 +3335,7 @@
   {
     "id": 52,
     "card_no": 2,
+    "keyword": "หมุนเวียนการเงิน, จัดสมดุล, บริหารสภาพคล่อง, ประสานสองสิ่ง, ยืดหยุ่น",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3342,6 +3394,7 @@
   {
     "id": 53,
     "card_no": 3,
+    "keyword": "รวมผู้เชี่ยวชาญ, ทีมเวิร์กมืออาชีพ, ร่วมมือสร้างสรรค์, ประสานความถนัด, งานคุณภาพ",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3399,6 +3452,7 @@
   {
     "id": 54,
     "card_no": 4,
+    "keyword": "หวงแหนทรัพย์สิน, มัธยัสถ์, ตระหนี่, ปกป้องผลประโยชน์, เก็บออม",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3462,6 +3516,7 @@
   {
     "id": 55,
     "card_no": 5,
+    "keyword": "ขัดสนการเงิน, ลำบากอัตคัด, ต้องการความช่วยเหลือ, โดดเดี่ยว, ขาดที่พึ่ง",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3533,6 +3588,7 @@
   {
     "id": 56,
     "card_no": 6,
+    "keyword": "เอื้อเฟื้อเผื่อแผ่, ใจบุญสุนทาน, แบ่งปัน, ช่วยเหลือเกื้อกูล, อุปถัมภ์",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3598,6 +3654,7 @@
   {
     "id": 57,
     "card_no": 7,
+    "keyword": "หยุดคิดไตร่ตรอง, คำนวณคุ้มค่า, ประเมินผลงาน, รอบคอบ, วางแผนระยะยาว",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3667,6 +3724,7 @@
   {
     "id": 58,
     "card_no": 8,
+    "keyword": "ฝึกฝนชำนาญ, ประณีตละเอียด, มีวินัย, รักความสมบูรณ์แบบ, พัฒนาฝีมือ",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3732,6 +3790,7 @@
   {
     "id": 59,
     "card_no": 9,
+    "keyword": "อิสรภาพทางการเงิน, พึ่งพาตนเอง, มีรสนิยม, โลกส่วนตัวสูง, สำเร็จด้วยตัวเอง",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3799,6 +3858,7 @@
   {
     "id": 60,
     "card_no": 10,
+    "keyword": "มั่งคั่งยั่งยืน, มรดกตระกูล, ความมั่นคงครอบครัว, สืบทอดกิจการ, รับผิดชอบสูง",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3864,6 +3924,7 @@
   {
     "id": 61,
     "card_no": 11,
+    "keyword": "เก็บเล็กผสมน้อย, รักการสะสม, เห็นคุณค่าสิ่งเล็กน้อย, มองโลกแง่ดี, ขยันออม",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -3931,6 +3992,7 @@
   {
     "id": 62,
     "card_no": 12,
+    "keyword": "ขยันหาเงิน, ใจป้ำหน้าใหญ่, ใช้จ่ายคล่องมือ, ร่ำรวย, ใจกว้าง",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -4000,6 +4062,7 @@
   {
     "id": 63,
     "card_no": 13,
+    "keyword": "หนักแน่นมั่นคง, อบอุ่นใจกว้าง, อดทนระยะยาว, บริหารงานใหญ่, เป็นที่พึ่งพิง",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -4065,6 +4128,7 @@
   {
     "id": 64,
     "card_no": 14,
+    "keyword": "บารมีสูงส่ง, ศูนย์กลางอำนาจ, รับผิดชอบส่วนรวม, มองภาพรวมใหญ่, มั่นคงดั่งขุนเขา",
     "type": "earth",
     "suit_name_th": "ธาตุดิน (Earth)",
     "suit_name_en": "Suit of Earth",
@@ -4138,6 +4202,7 @@
   {
     "id": 65,
     "card_no": 1,
+    "keyword": "โองการฟ้ากำหนด, ตัดสินใจเด็ดขาด, เฉียบคม, ตัดจบชัดเจน, มุ่งตรงเป้าหมาย",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4199,6 +4264,7 @@
   {
     "id": 66,
     "card_no": 2,
+    "keyword": "ใช้วิจารณญาณ, ชั่งน้ำหนักใจ, พิจารณาลึกซึ้ง, มองด้วยปัญญา, รอบคอบ",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4254,6 +4320,7 @@
   {
     "id": 67,
     "card_no": 3,
+    "keyword": "ถูกหักหลัง, ผิดหวังเสียใจ, คำนินทาว่าร้าย, ความไม่ซื่อสัตย์, บาดแผลในใจ",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4315,6 +4382,7 @@
   {
     "id": 68,
     "card_no": 4,
+    "keyword": "พักรบชั่วคราว, พักผ่อนฟื้นฟู, วางเรื่องวุ่นวาย, สงบใจ, ถอยมาตั้งหลัก",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4372,6 +4440,7 @@
   {
     "id": 69,
     "card_no": 5,
+    "keyword": "ถูกกดดันบังคับ, อึดอัดใจ, จำยอมทำตาม, ไร้ทางหนีทีไล่, เสียเปรียบ",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4435,6 +4504,7 @@
   {
     "id": 70,
     "card_no": 6,
+    "keyword": "มุ่งสู่ทิศทางใหม่, โยกย้ายเปลี่ยนแปลง, พ้นวิกฤต, มีผู้ชี้แนะ, เดินหน้าต่อ",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4492,6 +4562,7 @@
   {
     "id": 71,
     "card_no": 7,
+    "keyword": "กุศโลบาย, วางแผนแยบยล, ใช้ชั้นเชิง, พลิกแพลง, กลยุทธ์ลับ",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4545,6 +4616,7 @@
   {
     "id": 72,
     "card_no": 8,
+    "keyword": "ติดกับดักความคิด, ขังตัวเอง, ไม่กล้าก้าวออก, ยึดติด Comfort Zone, ลังเล",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4604,6 +4676,7 @@
   {
     "id": 73,
     "card_no": 9,
+    "keyword": "วิตกกังวล, คิดมากนอนไม่หลับ, ยึดติดเรื่องอดีต, ความเครียดสะสม, หวาดระแวง",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4665,6 +4738,7 @@
   {
     "id": 74,
     "card_no": 10,
+    "keyword": "สูงสุดคืนสู่สามัญ, สิ้นสุดฉับพลัน, พังทลายเพื่อเริ่มใหม่, จุดจบสมบูรณ์, ปล่อยวางอดีต",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4720,6 +4794,7 @@
   {
     "id": 75,
     "card_no": 11,
+    "keyword": "ปัญญาเฉียบแหลม, เรียนรู้ไว, การสอบแข่งขัน, ช่างสังเกตวิจารณ์, เก็บรายละเอียด",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4791,6 +4866,7 @@
   {
     "id": 76,
     "card_no": 12,
+    "keyword": "มองทะลุปัญหา, แก้ที่ต้นตอ, เซนส์เฉียบคม, เผชิญความจริง, ตัดสินใจฉับไว",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4856,6 +4932,7 @@
   {
     "id": 77,
     "card_no": 13,
+    "keyword": "ฉลาดหลักแหลม, มาตรฐานสูง, นอกดุในอ่อนโยน, ยึดหลักตรรกะ, มีระเบียบวินัย",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4919,6 +4996,7 @@
   {
     "id": 78,
     "card_no": 14,
+    "keyword": "ผู้นำเที่ยงธรรม, วิเคราะห์เฉียบขาด, เข้มงวดมาตรฐานสูง, ชี้ขาดชัดเจน, ยึดความถูกต้อง",
     "type": "metal",
     "suit_name_th": "ธาตุทอง (Metal)",
     "suit_name_en": "Suit of Metal",
@@ -4986,6 +5064,7 @@
   {
     "id": 79,
     "card_no": 1,
+    "keyword": "ความรู้สึกแรกแย้ม, สัญชาตญาณบริสุทธิ์, ต้นกำเนิดอารมณ์, จิตใจไร้เดียงสา, เปิดใจ",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5049,6 +5128,7 @@
   {
     "id": 80,
     "card_no": 2,
+    "keyword": "ร่วมมือประสานใจ, เข้าอกเข้าใจ, มองตารู้ใจ, กลมกลืน, มิตรภาพลึกซึ้ง",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5112,6 +5192,7 @@
   {
     "id": 81,
     "card_no": 3,
+    "keyword": "สังสรรค์เฮฮา, ปาร์ตี้เพื่อนฝูง, มิตรภาพเครือข่าย, สนุกสนาน, พูดคุยแลกเปลี่ยน",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5175,6 +5256,7 @@
   {
     "id": 82,
     "card_no": 4,
+    "keyword": "เบื่อหน่ายเฉยชา, เหม่อลอย, หมดไฟชั่วคราว, ไม่สนใจสิ่งรอบตัว, ปล่อยเบลอ",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5238,6 +5320,7 @@
   {
     "id": 83,
     "card_no": 5,
+    "keyword": "จมกับความเศร้า, ยึดติดอดีต, ยังไม่มูฟออน, เสียดายสิ่งที่เสียไป, อาลัยอาวรณ์",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5301,6 +5384,7 @@
   {
     "id": 84,
     "card_no": 6,
+    "keyword": "ความทรงจำเก่า, คนคุ้นเคยในอดีต, มิตรภาพวัยเยาว์, เรื่องราวเก่าส่งผล, หวนรำลึก",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5362,6 +5446,7 @@
   {
     "id": 85,
     "card_no": 7,
+    "keyword": "วาดฝันจินตนาการ, ตัวเลือกมากมาย, คาดหวังสูง, เพ้อฝัน, คิดแต่ยังไม่ทำ",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5423,6 +5508,7 @@
   {
     "id": 86,
     "card_no": 8,
+    "keyword": "หลีกหนีความวุ่นวาย, แสวงหาความสงบ, ปลีกตัว, เดินทางไกล, ค้นหาความหมายชีวิต",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5482,6 +5568,7 @@
   {
     "id": 87,
     "card_no": 9,
+    "keyword": "สมปรารถนา, ได้ดั่งใจหวัง, ความสุขท่วมท้น, พึงพอใจ, อิ่มเอมใจ",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5535,6 +5622,7 @@
   {
     "id": 88,
     "card_no": 10,
+    "keyword": "สุขสมบูรณ์พร้อม, ครอบครัวอบอุ่น, อิ่มเอมในรัก, พึงพอใจในสิ่งที่มี, ร่มเย็นเป็นสุข",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5598,6 +5686,7 @@
   {
     "id": 89,
     "card_no": 11,
+    "keyword": "อ่อนโยนละเมียดละไม, ช่างสังเกตความรู้สึก, สัญชาตญาณดี, เห็นอกเห็นใจ, จิตใจงดงาม",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5667,6 +5756,7 @@
   {
     "id": 90,
     "card_no": 12,
+    "keyword": "โรแมนติกมีเสน่ห์, อ่อนไหวตามอารมณ์, ปกป้องคนรัก, ทุ่มเทเพื่อรัก, หึงหวง",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5740,6 +5830,7 @@
   {
     "id": 91,
     "card_no": 13,
+    "keyword": "เมตตาปรานี, ใจเย็นรับฟัง, ที่พึ่งทางใจ, ชี้แนะแนวทาง, วุฒิภาวะอารมณ์สูง",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5805,6 +5896,7 @@
   {
     "id": 92,
     "card_no": 14,
+    "keyword": "ลึกซึ้งดั่งมหาสมุทร, สุนทรีย์อารมณ์ศิลป์, สุขนิยม, ความรู้กว้างขวาง, อารมณ์ซับซ้อน",
     "type": "water",
     "suit_name_th": "ธาตุน้ำ (Water)",
     "suit_name_en": "Suit of Water",
@@ -5872,6 +5964,7 @@
   {
     "id": 93,
     "card_no": 93,
+    "keyword": "ซื่อสัตย์, รักษาคำสัตย์, คุณธรรม, บารมี, ศักดิ์ศรี",
     "type": "special",
     "suit_name_th": "ไพ่พิเศษจิ่วเทียน (Special)",
     "suit_name_en": "Special Arcana",
@@ -5925,6 +6018,7 @@
   {
     "id": 94,
     "card_no": 94,
+    "keyword": "พลิกชะตา, ปัญญาสวรรค์, ยุทธศาสตร์, ชี้ทางสว่าง, เหนือลิขิต",
     "type": "special",
     "suit_name_th": "ไพ่พิเศษจิ่วเทียน (Special)",
     "suit_name_en": "Special Arcana",
@@ -5978,6 +6072,7 @@
   {
     "id": 95,
     "card_no": 95,
+    "keyword": "ปาฏิหาริย์, พรศักดิ์สิทธิ์, มหาโชค, บุญหนุนนำ, สมหวังเหนือคาด",
     "type": "special",
     "suit_name_th": "ไพ่พิเศษจิ่วเทียน (Special)",
     "suit_name_en": "Special Arcana",
@@ -6031,6 +6126,7 @@
   {
     "id": 96,
     "card_no": 96,
+    "keyword": "จักรวาลสมบูรณ์, สำเร็จสูงสุด, สมดุลฟ้าดิน, ปัญญาญาณ, มหามงคล",
     "type": "special",
     "suit_name_th": "ไพ่พิเศษจิ่วเทียน (Special)",
     "suit_name_en": "Special Arcana",

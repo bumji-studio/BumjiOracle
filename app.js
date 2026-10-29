@@ -10,145 +10,145 @@ document.addEventListener('DOMContentLoaded', () => {
     // DOM Elements
     const cardList = document.getElementById('cardList');
     if (!cardList) return;
-  const searchCards = document.getElementById('searchCards');
-  const filterElement = document.getElementById('filterElement');
-  const borderStyleSelect = document.getElementById('borderStyleSelect');
-  const resetDataBtn = document.getElementById('resetDataBtn');
-  const exportPdfBtn = document.getElementById('exportPdfBtn');
-  const importPdfBtn = document.getElementById('importPdfBtn');
-  const pdfFileInput = document.getElementById('pdfFileInput');
-  const backupJsonBtn = document.getElementById('backupJsonBtn');
-  const restoreJsonBtn = document.getElementById('restoreJsonBtn');
-  const jsonFileInput = document.getElementById('jsonFileInput');
-  
-  // Form Fields
-  const editCardId = document.getElementById('editCardId');
-  const editCardName = document.getElementById('editCardName');
-  const editCardElement = document.getElementById('editCardElement');
-  const editCardKeywords = document.getElementById('editCardKeywords');
-  const editCardImage = document.getElementById('editCardImage');
-  const localImageFile = document.getElementById('localImageFile');
-  const editGeneralMeaning = document.getElementById('editGeneralMeaning');
-  const editLoveMeaning = document.getElementById('editLoveMeaning');
-  const editWorkMeaning = document.getElementById('editWorkMeaning');
-  const editAdvice = document.getElementById('editAdvice');
-  const activeCardIndicator = document.getElementById('activeCardIndicator');
-  
-  // A4 Preview Fields
-  const a4PreviewPage = document.getElementById('a4PreviewPage');
-  const previewCardName = document.getElementById('previewCardName');
-  const previewPageElement = document.getElementById('previewPageElement');
-  const previewKeywords = document.getElementById('previewKeywords');
-  const previewCardArt = document.getElementById('previewCardArt');
-  const previewCardArtText = document.getElementById('previewCardArtText');
-  const previewCardIdBadge = document.getElementById('previewCardIdBadge');
-  const previewGeneralMeaning = document.getElementById('previewGeneralMeaning');
-  const previewLoveMeaning = document.getElementById('previewLoveMeaning');
-  const previewWorkMeaning = document.getElementById('previewWorkMeaning');
-  const previewAdvice = document.getElementById('previewAdvice');
-  const previewPageNum = document.getElementById('previewPageNum');
-  const saveStatus = document.getElementById('saveStatus');
+    const searchCards = document.getElementById('searchCards');
+    const filterElement = document.getElementById('filterElement');
+    const borderStyleSelect = document.getElementById('borderStyleSelect');
+    const resetDataBtn = document.getElementById('resetDataBtn');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    const importPdfBtn = document.getElementById('importPdfBtn');
+    const pdfFileInput = document.getElementById('pdfFileInput');
+    const backupJsonBtn = document.getElementById('backupJsonBtn');
+    const restoreJsonBtn = document.getElementById('restoreJsonBtn');
+    const jsonFileInput = document.getElementById('jsonFileInput');
 
-  // Progress Overlay
-  const progressOverlay = document.getElementById('progressOverlay');
-  const progressBar = document.getElementById('progressBar');
-  const progressPercent = document.getElementById('progressPercent');
-  const progressPageCount = document.getElementById('progressPageCount');
-  const progressTitle = document.getElementById('progressTitle');
-  const pdfPrintBuffer = document.getElementById('pdfPrintBuffer');
+    // Form Fields
+    const editCardId = document.getElementById('editCardId');
+    const editCardName = document.getElementById('editCardName');
+    const editCardElement = document.getElementById('editCardElement');
+    const editCardKeywords = document.getElementById('editCardKeywords');
+    const editCardImage = document.getElementById('editCardImage');
+    const localImageFile = document.getElementById('localImageFile');
+    const editGeneralMeaning = document.getElementById('editGeneralMeaning');
+    const editLoveMeaning = document.getElementById('editLoveMeaning');
+    const editWorkMeaning = document.getElementById('editWorkMeaning');
+    const editAdvice = document.getElementById('editAdvice');
+    const activeCardIndicator = document.getElementById('activeCardIndicator');
 
-  // 2. Data Initialization
-  function initApp() {
-    // Load from local storage or defaults
-    const savedData = localStorage.getItem('jiutian_cards_data');
-    if (savedData) {
-      try {
-        cards = JSON.parse(savedData);
-      } catch (e) {
-        console.error('Error parsing saved cards, loading defaults', e);
-        cards = [...window.DEFAULT_CARDS];
-      }
-    } else {
-      cards = [...window.DEFAULT_CARDS];
-      saveToLocalStorage();
-    }
+    // A4 Preview Fields
+    const a4PreviewPage = document.getElementById('a4PreviewPage');
+    const previewCardName = document.getElementById('previewCardName');
+    const previewPageElement = document.getElementById('previewPageElement');
+    const previewKeywords = document.getElementById('previewKeywords');
+    const previewCardArt = document.getElementById('previewCardArt');
+    const previewCardArtText = document.getElementById('previewCardArtText');
+    const previewCardIdBadge = document.getElementById('previewCardIdBadge');
+    const previewGeneralMeaning = document.getElementById('previewGeneralMeaning');
+    const previewLoveMeaning = document.getElementById('previewLoveMeaning');
+    const previewWorkMeaning = document.getElementById('previewWorkMeaning');
+    const previewAdvice = document.getElementById('previewAdvice');
+    const previewPageNum = document.getElementById('previewPageNum');
+    const saveStatus = document.getElementById('saveStatus');
 
-    // Sync card images and authentic PDF meanings with window.DEFAULT_CARDS mapping
-    if (window.DEFAULT_CARDS && window.DEFAULT_CARDS.length > 0) {
-      cards = window.DEFAULT_CARDS.map(def => {
-        const existing = cards.find(c => c.id === def.id);
-        let cardImg = def.image;
-        if (existing && existing.image && existing.image.startsWith('data:image/')) {
-          cardImg = existing.image;
+    // Progress Overlay
+    const progressOverlay = document.getElementById('progressOverlay');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercent = document.getElementById('progressPercent');
+    const progressPageCount = document.getElementById('progressPageCount');
+    const progressTitle = document.getElementById('progressTitle');
+    const pdfPrintBuffer = document.getElementById('pdfPrintBuffer');
+
+    // 2. Data Initialization
+    function initApp() {
+      // Load from local storage or defaults
+      const savedData = localStorage.getItem('jiutian_cards_data');
+      if (savedData) {
+        try {
+          cards = JSON.parse(savedData);
+        } catch (e) {
+          console.error('Error parsing saved cards, loading defaults', e);
+          cards = [...window.DEFAULT_CARDS];
         }
-        return {
-          ...existing,
-          ...def, // Authentic PDF meanings, elements, keywords, and deity titles take precedence
-          image: cardImg
-        };
-      });
-      saveToLocalStorage();
-    }
-
-    // Load border style
-    const savedBorder = localStorage.getItem(borderStyleKey) || 'border-gold-ornate';
-    borderStyleSelect.value = savedBorder;
-    updatePageBorder(savedBorder);
-
-    // Render list & select first card
-    renderCardList();
-    selectCard(1);
-  }
-
-  function saveToLocalStorage() {
-    localStorage.setItem('jiutian_cards_data', JSON.stringify(cards));
-    showSavedIndicator();
-  }
-
-  function showSavedIndicator() {
-    saveStatus.style.opacity = '1';
-    saveStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> บันทึกข้อมูลแล้ว (Local)';
-    saveStatus.style.color = '#10b981';
-    saveStatus.style.background = 'rgba(16, 185, 129, 0.1)';
-  }
-
-  function showEditingIndicator() {
-    saveStatus.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังอัปเดต...';
-    saveStatus.style.color = '#f59e0b';
-    saveStatus.style.background = 'rgba(245, 158, 11, 0.1)';
-  }
-
-  // 3. Render Card List in Sidebar
-  function renderCardList() {
-    const query = searchCards.value.trim().toLowerCase();
-    const elementFilter = filterElement.value;
-    
-    cardList.innerHTML = '';
-
-    const filteredCards = cards.filter(card => {
-      const matchQuery = card.name.toLowerCase().includes(query) || 
-                         card.id.toString() === query ||
-                         (card.keywords && card.keywords.some(k => k.toLowerCase().includes(query)));
-      
-      const matchElement = elementFilter === 'all' || card.element.includes(elementFilter);
-      
-      return matchQuery && matchElement;
-    });
-
-    filteredCards.forEach(card => {
-      const cardItem = document.createElement('div');
-      cardItem.className = `card-item ${card.id === activeCardId ? 'active' : ''}`;
-      cardItem.dataset.id = card.id;
-      
-      const isCustomized = localStorage.getItem(`jiutian_card_customized_${card.id}`) === 'true';
-
-      // We can display the card preview image in list item if available
-      let imgTag = `<div class="card-item-num">${String(card.id).padStart(2, '0')}</div>`;
-      if (card.image) {
-        imgTag = `<div class="card-item-num" style="background-image: url('${card.image}'); background-size: cover; background-position: center; border-radius: 4px; color: transparent; border: 1px solid var(--color-gold);">.</div>`;
+      } else {
+        cards = [...window.DEFAULT_CARDS];
+        saveToLocalStorage();
       }
 
-      cardItem.innerHTML = `
+      // Sync card images and authentic PDF meanings with window.DEFAULT_CARDS mapping
+      if (window.DEFAULT_CARDS && window.DEFAULT_CARDS.length > 0) {
+        cards = window.DEFAULT_CARDS.map(def => {
+          const existing = cards.find(c => c.id === def.id);
+          let cardImg = def.image;
+          if (existing && existing.image && existing.image.startsWith('data:image/')) {
+            cardImg = existing.image;
+          }
+          return {
+            ...existing,
+            ...def, // Authentic PDF meanings, elements, keywords, and deity titles take precedence
+            image: cardImg
+          };
+        });
+        saveToLocalStorage();
+      }
+
+      // Load border style
+      const savedBorder = localStorage.getItem(borderStyleKey) || 'border-gold-ornate';
+      borderStyleSelect.value = savedBorder;
+      updatePageBorder(savedBorder);
+
+      // Render list & select first card
+      renderCardList();
+      selectCard(1);
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem('jiutian_cards_data', JSON.stringify(cards));
+      showSavedIndicator();
+    }
+
+    function showSavedIndicator() {
+      saveStatus.style.opacity = '1';
+      saveStatus.innerHTML = '<i class="fa-solid fa-circle-check"></i> บันทึกข้อมูลแล้ว (Local)';
+      saveStatus.style.color = '#10b981';
+      saveStatus.style.background = 'rgba(16, 185, 129, 0.1)';
+    }
+
+    function showEditingIndicator() {
+      saveStatus.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังอัปเดต...';
+      saveStatus.style.color = '#f59e0b';
+      saveStatus.style.background = 'rgba(245, 158, 11, 0.1)';
+    }
+
+    // 3. Render Card List in Sidebar
+    function renderCardList() {
+      const query = searchCards.value.trim().toLowerCase();
+      const elementFilter = filterElement.value;
+
+      cardList.innerHTML = '';
+
+      const filteredCards = cards.filter(card => {
+        const matchQuery = card.name.toLowerCase().includes(query) ||
+          card.id.toString() === query ||
+          (card.keywords && card.keywords.some(k => k.toLowerCase().includes(query)));
+
+        const matchElement = elementFilter === 'all' || card.element.includes(elementFilter);
+
+        return matchQuery && matchElement;
+      });
+
+      filteredCards.forEach(card => {
+        const cardItem = document.createElement('div');
+        cardItem.className = `card-item ${card.id === activeCardId ? 'active' : ''}`;
+        cardItem.dataset.id = card.id;
+
+        const isCustomized = localStorage.getItem(`jiutian_card_customized_${card.id}`) === 'true';
+
+        // We can display the card preview image in list item if available
+        let imgTag = `<div class="card-item-num">${String(card.id).padStart(2, '0')}</div>`;
+        if (card.image) {
+          imgTag = `<div class="card-item-num" style="background-image: url('${card.image}'); background-size: cover; background-position: center; border-radius: 4px; color: transparent; border: 1px solid var(--color-gold);">.</div>`;
+        }
+
+        cardItem.innerHTML = `
         ${imgTag}
         <div class="card-item-info">
           <div class="card-item-name">${card.name}</div>
@@ -157,476 +157,476 @@ document.addEventListener('DOMContentLoaded', () => {
         ${isCustomized ? '<div class="card-item-status"><i class="fa-solid fa-pen-nib"></i></div>' : ''}
       `;
 
-      cardItem.addEventListener('click', () => {
-        selectCard(card.id);
-      });
+        cardItem.addEventListener('click', () => {
+          selectCard(card.id);
+        });
 
-      cardList.appendChild(cardItem);
-    });
-  }
-
-  // 4. Select Card for Editing and Previewing
-  function selectCard(id) {
-    activeCardId = id;
-    const card = cards.find(c => c.id === id);
-    if (!card) return;
-
-    // Highlight active list item
-    document.querySelectorAll('.card-item').forEach(item => {
-      item.classList.toggle('active', parseInt(item.dataset.id) === id);
-    });
-
-    // Populate Editor Fields
-    if (editCardId) editCardId.value = card.id;
-    if (editCardName) editCardName.value = card.name;
-    if (editCardElement) editCardElement.value = card.element;
-    if (editCardKeywords) editCardKeywords.value = card.keywords ? card.keywords.join(', ') : '';
-    if (editCardImage) editCardImage.value = card.image || '';
-    if (editGeneralMeaning) editGeneralMeaning.value = card.general_meaning || '';
-    if (editLoveMeaning) editLoveMeaning.value = card.love_meaning || '';
-    if (editWorkMeaning) editWorkMeaning.value = card.work_meaning || '';
-    if (editAdvice) editAdvice.value = card.advice || '';
-    
-    if (activeCardIndicator) activeCardIndicator.textContent = `ไพ่ใบที่ ${card.id}`;
-
-    // Update A4 Live Preview
-    updateLivePreview(card);
-  }
-
-  // 5. Update Live Preview from Data
-  function updateLivePreview(card) {
-    if (previewCardName) previewCardName.textContent = card.name || `ไพ่ใบที่ ${card.id}`;
-    if (previewPageElement) previewPageElement.textContent = card.element || '-';
-    if (previewCardIdBadge) previewCardIdBadge.textContent = String(card.id).padStart(2, '0');
-    
-    // Keywords formatting
-    if (previewKeywords) {
-      previewKeywords.innerHTML = '';
-      const kStr = (editCardKeywords && editCardKeywords.value) || '';
-      const keywords = kStr.split(',').map(k => k.trim()).filter(k => k !== '');
-      keywords.forEach(keyword => {
-        const span = document.createElement('span');
-        span.textContent = keyword;
-        previewKeywords.appendChild(span);
+        cardList.appendChild(cardItem);
       });
     }
 
-    // Text content
-    if (previewGeneralMeaning) previewGeneralMeaning.textContent = card.general_meaning || 'ไม่มีรายละเอียดความหมายทั่วไป...';
-    if (previewLoveMeaning) previewLoveMeaning.textContent = card.love_meaning || 'ไม่มีรายละเอียดความรัก...';
-    if (previewWorkMeaning) previewWorkMeaning.textContent = card.work_meaning || 'ไม่มีรายละเอียดการงานและการเงิน...';
-    if (previewAdvice) previewAdvice.textContent = card.advice || 'ไม่มีรายละเอียดคำแนะนำ...';
-    if (previewPageNum) previewPageNum.textContent = `หน้า ${card.id + 1}`; // Page 1 is cover, cards start at Page 2
+    // 4. Select Card for Editing and Previewing
+    function selectCard(id) {
+      activeCardId = id;
+      const card = cards.find(c => c.id === id);
+      if (!card) return;
 
-    // Image preview
-    if (previewCardArt) {
-      if (card.image) {
-        previewCardArt.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
-      } else {
-        // Show default placeholder with icons
-        previewCardArt.innerHTML = `
+      // Highlight active list item
+      document.querySelectorAll('.card-item').forEach(item => {
+        item.classList.toggle('active', parseInt(item.dataset.id) === id);
+      });
+
+      // Populate Editor Fields
+      if (editCardId) editCardId.value = card.id;
+      if (editCardName) editCardName.value = card.name;
+      if (editCardElement) editCardElement.value = card.element;
+      if (editCardKeywords) editCardKeywords.value = card.keywords ? card.keywords.join(', ') : '';
+      if (editCardImage) editCardImage.value = card.image || '';
+      if (editGeneralMeaning) editGeneralMeaning.value = card.general_meaning || '';
+      if (editLoveMeaning) editLoveMeaning.value = card.love_meaning || '';
+      if (editWorkMeaning) editWorkMeaning.value = card.work_meaning || '';
+      if (editAdvice) editAdvice.value = card.advice || '';
+
+      if (activeCardIndicator) activeCardIndicator.textContent = `ไพ่ใบที่ ${card.id}`;
+
+      // Update A4 Live Preview
+      updateLivePreview(card);
+    }
+
+    // 5. Update Live Preview from Data
+    function updateLivePreview(card) {
+      if (previewCardName) previewCardName.textContent = card.name || `ไพ่ใบที่ ${card.id}`;
+      if (previewPageElement) previewPageElement.textContent = card.element || '-';
+      if (previewCardIdBadge) previewCardIdBadge.textContent = String(card.id).padStart(2, '0');
+
+      // Keywords formatting
+      if (previewKeywords) {
+        previewKeywords.innerHTML = '';
+        const kStr = (editCardKeywords && editCardKeywords.value) || '';
+        const keywords = kStr.split(',').map(k => k.trim()).filter(k => k !== '');
+        keywords.forEach(keyword => {
+          const span = document.createElement('span');
+          span.textContent = keyword;
+          previewKeywords.appendChild(span);
+        });
+      }
+
+      // Text content
+      if (previewGeneralMeaning) previewGeneralMeaning.textContent = card.general_meaning || 'ไม่มีรายละเอียดความหมายทั่วไป...';
+      if (previewLoveMeaning) previewLoveMeaning.textContent = card.love_meaning || 'ไม่มีรายละเอียดความรัก...';
+      if (previewWorkMeaning) previewWorkMeaning.textContent = card.work_meaning || 'ไม่มีรายละเอียดการงานและการเงิน...';
+      if (previewAdvice) previewAdvice.textContent = card.advice || 'ไม่มีรายละเอียดคำแนะนำ...';
+      if (previewPageNum) previewPageNum.textContent = `หน้า ${card.id + 1}`; // Page 1 is cover, cards start at Page 2
+
+      // Image preview
+      if (previewCardArt) {
+        if (card.image) {
+          previewCardArt.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
+        } else {
+          // Show default placeholder with icons
+          previewCardArt.innerHTML = `
           <i class="fa-solid fa-bahai art-icon"></i>
           <span>${card.name}</span>
         `;
+        }
       }
     }
-  }
 
-  // 6. Handle Form Inputs (Live binding)
-  function handleFormInput() {
-    showEditingIndicator();
-    
-    const id = parseInt(editCardId.value);
-    const cardIndex = cards.findIndex(c => c.id === id);
-    if (cardIndex === -1) return;
+    // 6. Handle Form Inputs (Live binding)
+    function handleFormInput() {
+      showEditingIndicator();
 
-    // Update state
-    cards[cardIndex].name = editCardName.value;
-    cards[cardIndex].element = editCardElement.value;
-    cards[cardIndex].keywords = editCardKeywords.value.split(',').map(k => k.trim()).filter(k => k !== '');
-    cards[cardIndex].image = editCardImage.value;
-    cards[cardIndex].general_meaning = editGeneralMeaning.value;
-    cards[cardIndex].love_meaning = editLoveMeaning.value;
-    cards[cardIndex].work_meaning = editWorkMeaning.value;
-    cards[cardIndex].advice = editAdvice.value;
+      const id = parseInt(editCardId.value);
+      const cardIndex = cards.findIndex(c => c.id === id);
+      if (cardIndex === -1) return;
 
-    // Mark as customized
-    localStorage.setItem(`jiutian_card_customized_${id}`, 'true');
+      // Update state
+      cards[cardIndex].name = editCardName.value;
+      cards[cardIndex].element = editCardElement.value;
+      cards[cardIndex].keywords = editCardKeywords.value.split(',').map(k => k.trim()).filter(k => k !== '');
+      cards[cardIndex].image = editCardImage.value;
+      cards[cardIndex].general_meaning = editGeneralMeaning.value;
+      cards[cardIndex].love_meaning = editLoveMeaning.value;
+      cards[cardIndex].work_meaning = editWorkMeaning.value;
+      cards[cardIndex].advice = editAdvice.value;
 
-    // Debounce save to localStorage to avoid performance hits
-    clearTimeout(window.saveTimeout);
-    window.saveTimeout = setTimeout(() => {
-      saveToLocalStorage();
-      renderCardList();
-    }, 500);
+      // Mark as customized
+      localStorage.setItem(`jiutian_card_customized_${id}`, 'true');
 
-    // Update live preview directly
-    updateLivePreview(cards[cardIndex]);
-  }
+      // Debounce save to localStorage to avoid performance hits
+      clearTimeout(window.saveTimeout);
+      window.saveTimeout = setTimeout(() => {
+        saveToLocalStorage();
+        renderCardList();
+      }, 500);
 
-  // Bind inputs to handleFormInput
-  [editCardName, editCardElement, editCardKeywords, editCardImage, 
-   editGeneralMeaning, editLoveMeaning, editWorkMeaning, editAdvice,
-   document.getElementById('editCardNameEn'),
-   document.getElementById('editCardNameTh'),
-   document.getElementById('editCardNameZh'),
-   document.getElementById('editCardMainQuote'),
-   document.getElementById('editCardCoreEnergy'),
-   document.getElementById('editCardDeity'),
-   document.getElementById('editCardCategory'),
-   document.getElementById('editCardMythology'),
-   document.getElementById('editCardPersonality'),
-   document.getElementById('editCardCareers'),
-   document.getElementById('editCardIfDrawn'),
-   document.getElementById('editCardDeityMessage'),
-   document.getElementById('editCardStrategyKeywords')].filter(Boolean).forEach(input => {
-    input.addEventListener('input', handleFormInput);
-  });
-
-  // 7. Local File Upload Helper (Convert to Base64)
-  localImageFile.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      editCardImage.value = event.target.result;
-      handleFormInput();
-    };
-    reader.readAsDataURL(file);
-  });
-
-  // 8. Search & Filters
-  searchCards.addEventListener('input', renderCardList);
-  filterElement.addEventListener('change', renderCardList);
-
-  // 9. Border Style customizer
-  borderStyleSelect.addEventListener('change', (e) => {
-    const style = e.target.value;
-    localStorage.setItem(borderStyleKey, style);
-    updatePageBorder(style);
-  });
-
-  function updatePageBorder(styleClass) {
-    a4PreviewPage.className = `a4-page ${styleClass}`;
-  }
-
-  // 10. Reset Data to defaults
-  resetDataBtn.addEventListener('click', () => {
-    if (confirm('คุณต้องการรีเซ็ตข้อมูลไพ่ทั้งหมดกลับไปเป็นค่าเริ่มต้นใช่หรือไม่? (การแก้ไขของคุณจะหายไปทั้งหมด)')) {
-      localStorage.clear();
-      // Remove customized statuses
-      for (let i = 1; i <= 94; i++) {
-        localStorage.removeItem(`jiutian_card_customized_${i}`);
-      }
-      initApp();
-      alert('รีเซ็ตข้อมูลไพ่ทั้ง 94 ใบเรียบร้อยแล้ว!');
+      // Update live preview directly
+      updateLivePreview(cards[cardIndex]);
     }
-  });
 
-  // 11. PDF Import (Import from existing guidebook file)
-  if (importPdfBtn && pdfFileInput) {
-    importPdfBtn.addEventListener('click', () => {
-      pdfFileInput.click();
-    });
+    // Bind inputs to handleFormInput
+    [editCardName, editCardElement, editCardKeywords, editCardImage,
+      editGeneralMeaning, editLoveMeaning, editWorkMeaning, editAdvice,
+      document.getElementById('editCardNameEn'),
+      document.getElementById('editCardNameTh'),
+      document.getElementById('editCardNameZh'),
+      document.getElementById('editCardMainQuote'),
+      document.getElementById('editCardCoreEnergy'),
+      document.getElementById('editCardDeity'),
+      document.getElementById('editCardCategory'),
+      document.getElementById('editCardMythology'),
+      document.getElementById('editCardPersonality'),
+      document.getElementById('editCardCareers'),
+      document.getElementById('editCardIfDrawn'),
+      document.getElementById('editCardDeityMessage'),
+      document.getElementById('editCardStrategyKeywords')].filter(Boolean).forEach(input => {
+        input.addEventListener('input', handleFormInput);
+      });
 
-    pdfFileInput.addEventListener('change', async (e) => {
+    // 7. Local File Upload Helper (Convert to Base64)
+    localImageFile.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
-      // Check if pdf.js library is loaded
-      if (typeof pdfjsLib === 'undefined') {
-        alert('ตรวจพบปัญหา: ไลบรารี pdf.js ยังไม่ถูกโหลดในหน้านี้ กรุณาเชื่อมต่ออินเทอร์เน็ตเพื่อโหลดเครื่องมือวิเคราะห์ PDF');
-        return;
-      }
-      
-      // Set worker source URL
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-      progressOverlay.classList.add('show');
-      updateProgress(5, 'กำลังเปิดไฟล์ PDF...', 'อ่านไฟล์...');
-
       const reader = new FileReader();
-      reader.onload = async function() {
-        try {
-          const typedarray = new Uint8Array(this.result);
-          const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
-          
-          const totalPdfPages = pdf.numPages;
-          updateProgress(10, `วิเคราะห์สำเร็จ! ตรวจพบจำนวนหน้าทั้งหมด: ${totalPdfPages} หน้า`, 'คำนวณสัดส่วนหน้าการ์ด...');
-          await delay(800);
+      reader.onload = function (event) {
+        editCardImage.value = event.target.result;
+        handleFormInput();
+      };
+      reader.readAsDataURL(file);
+    });
 
-          // Heuristic page mapping:
-          // Cards guidebook is 94 cards.
-          // If totalPages is 94: map pages 1-94 to cards 1-94
-          // If totalPages is >= 95: assume page 1 is cover, pages 2 to 95 are cards 1-94
-          let startPage = 1;
-          if (totalPdfPages >= 95) {
-            startPage = 2; // page 1 is cover/introduction
-          }
-          
-          const importedCards = [];
-          // Limit to max 94 cards
-          const maxCards = Math.min(94, totalPdfPages - startPage + 1);
+    // 8. Search & Filters
+    searchCards.addEventListener('input', renderCardList);
+    filterElement.addEventListener('change', renderCardList);
 
-          for (let i = 0; i < maxCards; i++) {
-            const pageNum = startPage + i;
-            const cardId = i + 1;
-            
-            updateProgress(
-              10 + Math.round((i / maxCards) * 75), 
-              `กำลังสแกนหน้า ${pageNum} เพื่อสกัดเนื้อหาของไพ่ใบที่ ${cardId}...`, 
-              `กำลังดำเนินการ ${cardId} / ${maxCards} ใบ`
-            );
+    // 9. Border Style customizer
+    borderStyleSelect.addEventListener('change', (e) => {
+      const style = e.target.value;
+      localStorage.setItem(borderStyleKey, style);
+      updatePageBorder(style);
+    });
 
-            const page = await pdf.getPage(pageNum);
-            
-            // Extract text items
-            const textContent = await page.getTextContent();
-            const textItems = textContent.items.map(item => item.str);
-            const fullPageText = textItems.join('\n');
-            const lines = textItems.map(t => t.trim()).filter(t => t !== '');
+    function updatePageBorder(styleClass) {
+      a4PreviewPage.className = `a4-page ${styleClass}`;
+    }
 
-            // Parse fields
-            let cardName = `ไพ่ใบที่ ${cardId}`;
-            let element = 'ธาตุทั่วไป';
-            let keywords = [];
-            let general_meaning = '';
-            let love_meaning = '';
-            let work_meaning = '';
-            let advice = '';
+    // 10. Reset Data to defaults
+    resetDataBtn.addEventListener('click', () => {
+      if (confirm('คุณต้องการรีเซ็ตข้อมูลไพ่ทั้งหมดกลับไปเป็นค่าเริ่มต้นใช่หรือไม่? (การแก้ไขของคุณจะหายไปทั้งหมด)')) {
+        localStorage.clear();
+        // Remove customized statuses
+        for (let i = 1; i <= 94; i++) {
+          localStorage.removeItem(`jiutian_card_customized_${i}`);
+        }
+        initApp();
+        alert('รีเซ็ตข้อมูลไพ่ทั้ง 94 ใบเรียบร้อยแล้ว!');
+      }
+    });
 
-            if (lines.length > 0) {
-              // Heuristic 1: Find Card Name
-              // Usually the first non-empty line with text
-              cardName = lines[0];
-              
-              // Heuristic 2: Find Element
-              const elementLine = lines.find(l => l.includes('ธาตุ') || l.includes('Metal') || l.includes('Wood') || l.includes('Water') || l.includes('Fire') || l.includes('Earth'));
-              if (elementLine) {
-                element = elementLine;
+    // 11. PDF Import (Import from existing guidebook file)
+    if (importPdfBtn && pdfFileInput) {
+      importPdfBtn.addEventListener('click', () => {
+        pdfFileInput.click();
+      });
+
+      pdfFileInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Check if pdf.js library is loaded
+        if (typeof pdfjsLib === 'undefined') {
+          alert('ตรวจพบปัญหา: ไลบรารี pdf.js ยังไม่ถูกโหลดในหน้านี้ กรุณาเชื่อมต่ออินเทอร์เน็ตเพื่อโหลดเครื่องมือวิเคราะห์ PDF');
+          return;
+        }
+
+        // Set worker source URL
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        progressOverlay.classList.add('show');
+        updateProgress(5, 'กำลังเปิดไฟล์ PDF...', 'อ่านไฟล์...');
+
+        const reader = new FileReader();
+        reader.onload = async function () {
+          try {
+            const typedarray = new Uint8Array(this.result);
+            const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+
+            const totalPdfPages = pdf.numPages;
+            updateProgress(10, `วิเคราะห์สำเร็จ! ตรวจพบจำนวนหน้าทั้งหมด: ${totalPdfPages} หน้า`, 'คำนวณสัดส่วนหน้าการ์ด...');
+            await delay(800);
+
+            // Heuristic page mapping:
+            // Cards guidebook is 94 cards.
+            // If totalPages is 94: map pages 1-94 to cards 1-94
+            // If totalPages is >= 95: assume page 1 is cover, pages 2 to 95 are cards 1-94
+            let startPage = 1;
+            if (totalPdfPages >= 95) {
+              startPage = 2; // page 1 is cover/introduction
+            }
+
+            const importedCards = [];
+            // Limit to max 94 cards
+            const maxCards = Math.min(94, totalPdfPages - startPage + 1);
+
+            for (let i = 0; i < maxCards; i++) {
+              const pageNum = startPage + i;
+              const cardId = i + 1;
+
+              updateProgress(
+                10 + Math.round((i / maxCards) * 75),
+                `กำลังสแกนหน้า ${pageNum} เพื่อสกัดเนื้อหาของไพ่ใบที่ ${cardId}...`,
+                `กำลังดำเนินการ ${cardId} / ${maxCards} ใบ`
+              );
+
+              const page = await pdf.getPage(pageNum);
+
+              // Extract text items
+              const textContent = await page.getTextContent();
+              const textItems = textContent.items.map(item => item.str);
+              const fullPageText = textItems.join('\n');
+              const lines = textItems.map(t => t.trim()).filter(t => t !== '');
+
+              // Parse fields
+              let cardName = `ไพ่ใบที่ ${cardId}`;
+              let element = 'ธาตุทั่วไป';
+              let keywords = [];
+              let general_meaning = '';
+              let love_meaning = '';
+              let work_meaning = '';
+              let advice = '';
+
+              if (lines.length > 0) {
+                // Heuristic 1: Find Card Name
+                // Usually the first non-empty line with text
+                cardName = lines[0];
+
+                // Heuristic 2: Find Element
+                const elementLine = lines.find(l => l.includes('ธาตุ') || l.includes('Metal') || l.includes('Wood') || l.includes('Water') || l.includes('Fire') || l.includes('Earth'));
+                if (elementLine) {
+                  element = elementLine;
+                }
+
+                // Heuristic 3: Segment Sections
+                const sections = parseThaiGuidebookText(fullPageText, cardId);
+                general_meaning = sections.general;
+                love_meaning = sections.love;
+                work_meaning = sections.work;
+                advice = sections.advice;
+                keywords = sections.keywords;
               }
 
-              // Heuristic 3: Segment Sections
-              const sections = parseThaiGuidebookText(fullPageText, cardId);
-              general_meaning = sections.general;
-              love_meaning = sections.love;
-              work_meaning = sections.work;
-              advice = sections.advice;
-              keywords = sections.keywords;
-            }
+              // Generate low-res thumbnail image from PDF page representation
+              let thumbnailBase64 = '';
+              try {
+                // Scale down to a small resolution (width ~ 120px) to stay within localStorage limits
+                const viewport = page.getViewport({ scale: 0.15 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
 
-            // Generate low-res thumbnail image from PDF page representation
-            let thumbnailBase64 = '';
-            try {
-              // Scale down to a small resolution (width ~ 120px) to stay within localStorage limits
-              const viewport = page.getViewport({ scale: 0.15 });
-              const canvas = document.createElement('canvas');
-              const context = canvas.getContext('2d');
-              canvas.width = viewport.width;
-              canvas.height = viewport.height;
-              
-              await page.render({
-                canvasContext: context,
-                viewport: viewport
-              }).promise;
+                await page.render({
+                  canvasContext: context,
+                  viewport: viewport
+                }).promise;
 
-              // Save as low-quality compressed jpeg
-              thumbnailBase64 = canvas.toDataURL('image/jpeg', 0.5);
-            } catch (canvasErr) {
-              console.warn(`Could not render thumbnail for page ${pageNum}`, canvasErr);
-            }
+                // Save as low-quality compressed jpeg
+                thumbnailBase64 = canvas.toDataURL('image/jpeg', 0.5);
+              } catch (canvasErr) {
+                console.warn(`Could not render thumbnail for page ${pageNum}`, canvasErr);
+              }
 
-            importedCards.push({
-              id: cardId,
-              name: cardName,
-              image: thumbnailBase64 || `card_${String(cardId).padStart(2, '0')}.png`,
-              element: element,
-              keywords: keywords,
-              general_meaning: general_meaning,
-              love_meaning: love_meaning,
-              work_meaning: work_meaning,
-              advice: advice
-            });
-
-            await delay(10); // Yield main thread
-          }
-
-          // If we imported some cards, update our state
-          if (importedCards.length > 0) {
-            // Fill up remaining slots to make exactly 94 cards if needed
-            for (let i = importedCards.length; i < 94; i++) {
               importedCards.push({
-                ...window.DEFAULT_CARDS[i],
-                id: i + 1
+                id: cardId,
+                name: cardName,
+                image: thumbnailBase64 || `card_${String(cardId).padStart(2, '0')}.png`,
+                element: element,
+                keywords: keywords,
+                general_meaning: general_meaning,
+                love_meaning: love_meaning,
+                work_meaning: work_meaning,
+                advice: advice
               });
+
+              await delay(10); // Yield main thread
             }
 
-            cards = importedCards;
-            saveToLocalStorage();
-            
-            // Mark all imported cards as customized in local state
-            for (let i = 1; i <= 94; i++) {
-              localStorage.setItem(`jiutian_card_customized_${i}`, 'true');
+            // If we imported some cards, update our state
+            if (importedCards.length > 0) {
+              // Fill up remaining slots to make exactly 94 cards if needed
+              for (let i = importedCards.length; i < 94; i++) {
+                importedCards.push({
+                  ...window.DEFAULT_CARDS[i],
+                  id: i + 1
+                });
+              }
+
+              cards = importedCards;
+              saveToLocalStorage();
+
+              // Mark all imported cards as customized in local state
+              for (let i = 1; i <= 94; i++) {
+                localStorage.setItem(`jiutian_card_customized_${i}`, 'true');
+              }
+
+              initApp();
+              updateProgress(100, 'สกัดข้อมูลและนำเข้าคู่มือสำเร็จ!', 'บันทึกข้อมูลแล้ว!');
+              await delay(1200);
+              alert(`[สำเร็จ] นำเข้าข้อมูลไพ่ทั้ง ${maxCards} หน้าเรียบร้อยแล้ว!\n\nระบบได้สกัดเอาเนื้อหา ความหมาย และสร้างรูปย่อจาก PDF แต่ละหน้าเข้ามาให้คุณเรียบร้อย คุณสามารถตรวจทาน ปรับแต่งข้อความ หรือใส่กรอบภาพหน้าจอ A4 ก่อนส่งออกเป็น PDF ทับไปใหม่ได้เลยครับ`);
             }
 
-            initApp();
-            updateProgress(100, 'สกัดข้อมูลและนำเข้าคู่มือสำเร็จ!', 'บันทึกข้อมูลแล้ว!');
-            await delay(1200);
-            alert(`[สำเร็จ] นำเข้าข้อมูลไพ่ทั้ง ${maxCards} หน้าเรียบร้อยแล้ว!\n\nระบบได้สกัดเอาเนื้อหา ความหมาย และสร้างรูปย่อจาก PDF แต่ละหน้าเข้ามาให้คุณเรียบร้อย คุณสามารถตรวจทาน ปรับแต่งข้อความ หรือใส่กรอบภาพหน้าจอ A4 ก่อนส่งออกเป็น PDF ทับไปใหม่ได้เลยครับ`);
+          } catch (err) {
+            console.error('Import PDF Error:', err);
+            alert('ขออภัย! ระบบไม่สามารถอ่านและแปลงข้อมูล PDF นี้ได้: ' + err.message);
+          } finally {
+            progressOverlay.classList.remove('show');
+            pdfFileInput.value = '';
           }
+        };
+        reader.readAsArrayBuffer(file);
+      });
+    }
 
-        } catch (err) {
-          console.error('Import PDF Error:', err);
-          alert('ขออภัย! ระบบไม่สามารถอ่านและแปลงข้อมูล PDF นี้ได้: ' + err.message);
-        } finally {
-          progressOverlay.classList.remove('show');
-          pdfFileInput.value = '';
-        }
+    // Helper parser for Thai esoteric guidebook text
+    function parseThaiGuidebookText(text, cardId) {
+      const result = {
+        general: '',
+        love: '',
+        work: '',
+        advice: '',
+        keywords: []
       };
-      reader.readAsArrayBuffer(file);
-    });
-  }
 
-  // Helper parser for Thai esoteric guidebook text
-  function parseThaiGuidebookText(text, cardId) {
-    const result = {
-      general: '',
-      love: '',
-      work: '',
-      advice: '',
-      keywords: []
-    };
+      // Replace linebreaks and standard cleanups
+      const cleanText = text.replace(/\r\n/g, '\n').replace(/\n+/g, '\n');
 
-    // Replace linebreaks and standard cleanups
-    const cleanText = text.replace(/\r\n/g, '\n').replace(/\n+/g, '\n');
-
-    // Extract keywords (matching "คำสำคัญ", "คีย์เวิร์ด", "Keywords")
-    const keywordMatches = cleanText.match(/(?:คำสำคัญ|คีย์เวิร์ด|Keywords)[:\s]+([^\n]+)/i);
-    if (keywordMatches && keywordMatches[1]) {
-      result.keywords = keywordMatches[1].split(/[,|•\/\\-]/).map(k => k.trim()).filter(k => k !== '');
-    }
-    
-    // Fallback if keywords are empty
-    if (result.keywords.length === 0) {
-      result.keywords = [`ธาตุประจำตัว`, `พลังดวงชะตา`, `วิถีอาร์คานา`];
-    }
-
-    // Identify indices of headers
-    const sectionHeaders = [
-      { key: 'love', regex: /(?:ความหมายด้านความรัก|ความรัก|Love|Relationship)/i },
-      { key: 'work', regex: /(?:การงานและการเงิน|การงาน|การเงิน|Career|Finance|Work)/i },
-      { key: 'advice', regex: /(?:คำแนะนำ|ข้อควรระวัง|ข้อพึงระวัง|Advice|Warning)/i },
-      { key: 'general', regex: /(?:ความหมายทั่วไป|ความหมายของไพ่|General)/i }
-    ];
-
-    const matches = [];
-    sectionHeaders.forEach(sh => {
-      const match = sh.regex.exec(cleanText);
-      if (match) {
-        matches.push({
-          key: sh.key,
-          index: match.index,
-          length: match[0].length,
-          header: match[0]
-        });
-      }
-    });
-
-    // Sort by appearance index
-    matches.sort((a, b) => a.index - b.index);
-
-    if (matches.length === 0) {
-      // Split raw lines to distribute into columns
-      const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l !== '');
-      if (lines.length >= 6) {
-        result.general = lines.slice(1, Math.floor(lines.length * 0.4)).join('\n');
-        result.love = lines.slice(Math.floor(lines.length * 0.4), Math.floor(lines.length * 0.6)).join('\n');
-        result.work = lines.slice(Math.floor(lines.length * 0.6), Math.floor(lines.length * 0.8)).join('\n');
-        result.advice = lines.slice(Math.floor(lines.length * 0.8)).join('\n');
-      } else {
-        result.general = cleanText;
-      }
-    } else {
-      // Extract texts between header offsets
-      for (let i = 0; i < matches.length; i++) {
-        const current = matches[i];
-        const next = matches[i + 1];
-        const start = current.index + current.length;
-        const end = next ? next.index : cleanText.length;
-        
-        let content = cleanText.substring(start, end).trim();
-        // Remove leading symbols
-        content = content.replace(/^[:\-=\s\.]*/, '');
-        
-        result[current.key] = content;
+      // Extract keywords (matching "คำสำคัญ", "คีย์เวิร์ด", "Keywords")
+      const keywordMatches = cleanText.match(/(?:คำสำคัญ|คีย์เวิร์ด|Keywords)[:\s]+([^\n]+)/i);
+      if (keywordMatches && keywordMatches[1]) {
+        result.keywords = keywordMatches[1].split(/[,|•\/\\-]/).map(k => k.trim()).filter(k => k !== '');
       }
 
-      // Pre-header text goes to general meaning
-      if (matches[0].index > 0 && !result.general) {
-        const preHeaderContent = cleanText.substring(0, matches[0].index).trim();
-        // Remove card name and element lines if duplicated
-        const lines = preHeaderContent.split('\n');
-        if (lines.length > 2) {
-          result.general = lines.slice(2).join('\n').trim();
+      // Fallback if keywords are empty
+      if (result.keywords.length === 0) {
+        result.keywords = [`ธาตุประจำตัว`, `พลังดวงชะตา`, `วิถีอาร์คานา`];
+      }
+
+      // Identify indices of headers
+      const sectionHeaders = [
+        { key: 'love', regex: /(?:ความหมายด้านความรัก|ความรัก|Love|Relationship)/i },
+        { key: 'work', regex: /(?:การงานและการเงิน|การงาน|การเงิน|Career|Finance|Work)/i },
+        { key: 'advice', regex: /(?:คำแนะนำ|ข้อควรระวัง|ข้อพึงระวัง|Advice|Warning)/i },
+        { key: 'general', regex: /(?:ความหมายทั่วไป|ความหมายของไพ่|General)/i }
+      ];
+
+      const matches = [];
+      sectionHeaders.forEach(sh => {
+        const match = sh.regex.exec(cleanText);
+        if (match) {
+          matches.push({
+            key: sh.key,
+            index: match.index,
+            length: match[0].length,
+            header: match[0]
+          });
+        }
+      });
+
+      // Sort by appearance index
+      matches.sort((a, b) => a.index - b.index);
+
+      if (matches.length === 0) {
+        // Split raw lines to distribute into columns
+        const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l !== '');
+        if (lines.length >= 6) {
+          result.general = lines.slice(1, Math.floor(lines.length * 0.4)).join('\n');
+          result.love = lines.slice(Math.floor(lines.length * 0.4), Math.floor(lines.length * 0.6)).join('\n');
+          result.work = lines.slice(Math.floor(lines.length * 0.6), Math.floor(lines.length * 0.8)).join('\n');
+          result.advice = lines.slice(Math.floor(lines.length * 0.8)).join('\n');
         } else {
-          result.general = preHeaderContent;
+          result.general = cleanText;
+        }
+      } else {
+        // Extract texts between header offsets
+        for (let i = 0; i < matches.length; i++) {
+          const current = matches[i];
+          const next = matches[i + 1];
+          const start = current.index + current.length;
+          const end = next ? next.index : cleanText.length;
+
+          let content = cleanText.substring(start, end).trim();
+          // Remove leading symbols
+          content = content.replace(/^[:\-=\s\.]*/, '');
+
+          result[current.key] = content;
+        }
+
+        // Pre-header text goes to general meaning
+        if (matches[0].index > 0 && !result.general) {
+          const preHeaderContent = cleanText.substring(0, matches[0].index).trim();
+          // Remove card name and element lines if duplicated
+          const lines = preHeaderContent.split('\n');
+          if (lines.length > 2) {
+            result.general = lines.slice(2).join('\n').trim();
+          } else {
+            result.general = preHeaderContent;
+          }
         }
       }
+
+      // Double check to make sure sections are populated
+      if (!result.general) result.general = `คำวิเคราะห์ภาพรวมความหมายของไพ่ใบที่ ${cardId}`;
+      if (!result.love) result.love = `การวิเคราะห์เรื่องความรักความสัมพันธ์ของไพ่ใบนี้`;
+      if (!result.work) result.work = `การวิเคราะห์ด้านการงาน การทำธุรกิจ และกระแสทรัพย์ทางการเงิน`;
+      if (!result.advice) result.advice = `คำชี้แนะพิเศษและข้อพึงระวังตามหลักโหราศาสตร์`;
+
+      return result;
     }
 
-    // Double check to make sure sections are populated
-    if (!result.general) result.general = `คำวิเคราะห์ภาพรวมความหมายของไพ่ใบที่ ${cardId}`;
-    if (!result.love) result.love = `การวิเคราะห์เรื่องความรักความสัมพันธ์ของไพ่ใบนี้`;
-    if (!result.work) result.work = `การวิเคราะห์ด้านการงาน การทำธุรกิจ และกระแสทรัพย์ทางการเงิน`;
-    if (!result.advice) result.advice = `คำชี้แนะพิเศษและข้อพึงระวังตามหลักโหราศาสตร์`;
+    // 12. PDF Compilation & Copy-Protection Generator (html2pdf)
+    exportPdfBtn.addEventListener('click', async () => {
+      if (!confirm('ยืนยันสร้างเอกสารคู่มือ A4 จำนวน 94 หน้า?\n\nกระบวนการนี้จะทำการสแกนหน้ากระดาษ A4 ทั้งหมดแล้วเซฟเป็นภาพความละเอียดสูงรวมเป็น PDF ป้องกันไม่ให้บุคคลภายนอกกดคัดลอกข้อความ (Copy Text) ได้ง่าย')) {
+        return;
+      }
 
-    return result;
-  }
+      // Show Progress Screen
+      progressOverlay.classList.add('show');
+      progressBar.style.width = '0%';
+      progressPercent.textContent = '0%';
+      progressPageCount.textContent = '0 / 94 หน้า';
 
-  // 12. PDF Compilation & Copy-Protection Generator (html2pdf)
-  exportPdfBtn.addEventListener('click', async () => {
-    if (!confirm('ยืนยันสร้างเอกสารคู่มือ A4 จำนวน 94 หน้า?\n\nกระบวนการนี้จะทำการสแกนหน้ากระดาษ A4 ทั้งหมดแล้วเซฟเป็นภาพความละเอียดสูงรวมเป็น PDF ป้องกันไม่ให้บุคคลภายนอกกดคัดลอกข้อความ (Copy Text) ได้ง่าย')) {
-      return;
-    }
+      // Clear Buffer
+      pdfPrintBuffer.innerHTML = '';
 
-    // Show Progress Screen
-    progressOverlay.classList.add('show');
-    progressBar.style.width = '0%';
-    progressPercent.textContent = '0%';
-    progressPageCount.textContent = '0 / 94 หน้า';
+      // Generate Cover Page (Page 1)
+      const coverPageHtml = createCoverPageHtml();
+      pdfPrintBuffer.appendChild(coverPageHtml);
 
-    // Clear Buffer
-    pdfPrintBuffer.innerHTML = '';
-    
-    // Generate Cover Page (Page 1)
-    const coverPageHtml = createCoverPageHtml();
-    pdfPrintBuffer.appendChild(coverPageHtml);
-    
-    // Generate Card pages (Page 2 to 95)
-    const totalPages = cards.length;
-    const borderStyle = borderStyleSelect.value;
+      // Generate Card pages (Page 2 to 95)
+      const totalPages = cards.length;
+      const borderStyle = borderStyleSelect.value;
 
-    for (let i = 0; i < totalPages; i++) {
-      const card = cards[i];
-      const pageEl = document.createElement('div');
-      pageEl.className = `a4-page ${borderStyle}`;
-      pageEl.style.transform = 'none'; // No scaled shrinkage in buffer
-      pageEl.style.margin = '0';
-      
-      const keywordsHtml = card.keywords.map(k => `<span>${k}</span>`).join('');
-      
-      let imgHtml = `
+      for (let i = 0; i < totalPages; i++) {
+        const card = cards[i];
+        const pageEl = document.createElement('div');
+        pageEl.className = `a4-page ${borderStyle}`;
+        pageEl.style.transform = 'none'; // No scaled shrinkage in buffer
+        pageEl.style.margin = '0';
+
+        const keywordsHtml = card.keywords.map(k => `<span>${k}</span>`).join('');
+
+        let imgHtml = `
         <div class="card-art-placeholder">
           <i class="fa-solid fa-bahai art-icon"></i>
           <span>${card.name}</span>
         </div>
       `;
-      if (card.image && (card.image.startsWith('data:image/') || card.image.startsWith('http://') || card.image.startsWith('https://'))) {
-        imgHtml = `<div class="card-art-placeholder"><img src="${card.image}" alt="${card.name}"></div>`;
-      }
+        if (card.image && (card.image.startsWith('data:image/') || card.image.startsWith('http://') || card.image.startsWith('https://'))) {
+          imgHtml = `<div class="card-art-placeholder"><img src="${card.image}" alt="${card.name}"></div>`;
+        }
 
-      pageEl.innerHTML = `
+        pageEl.innerHTML = `
         <!-- Decorative Corners -->
         <div class="corner corner-tl"></div>
         <div class="corner corner-tr"></div>
@@ -690,65 +690,65 @@ document.addEventListener('DOMContentLoaded', () => {
         </footer>
       `;
 
-      pdfPrintBuffer.appendChild(pageEl);
-      
-      // Update UI thread on buffer assembly
-      if (i % 5 === 0 || i === totalPages - 1) {
-        const percent = Math.round(((i + 1) / totalPages) * 25);
-        updateProgress(percent, `กำลังรวบรวมข้อมูล A4...`, `${i + 1} / ${totalPages} หน้า`);
-        await delay(30);
+        pdfPrintBuffer.appendChild(pageEl);
+
+        // Update UI thread on buffer assembly
+        if (i % 5 === 0 || i === totalPages - 1) {
+          const percent = Math.round(((i + 1) / totalPages) * 25);
+          updateProgress(percent, `กำลังรวบรวมข้อมูล A4...`, `${i + 1} / ${totalPages} หน้า`);
+          await delay(30);
+        }
       }
-    }
 
-    // 13. Run html2pdf to render image-based PDF page sheets
-    updateProgress(35, "กำลังเริ่มต้นการเรนเดอร์รูปภาพ...", "กำลังจัดเตรียมเอนจินประมวลผล...");
-    await delay(200);
+      // 13. Run html2pdf to render image-based PDF page sheets
+      updateProgress(35, "กำลังเริ่มต้นการเรนเดอร์รูปภาพ...", "กำลังจัดเตรียมเอนจินประมวลผล...");
+      await delay(200);
 
-    const filename = `Jiu_Tian_Arcana_Guidebook_${new Date().toISOString().slice(0,10)}.pdf`;
-    
-    const opt = {
-      margin:       0,
-      filename:     filename,
-      image:        { type: 'jpeg', quality: 0.95 },
-      html2canvas:  { 
-        scale: 2, // Scale 2 ensures crisp printing details
-        useCORS: true, 
-        letterRendering: true,
-        logging: false
-      },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+      const filename = `Jiu_Tian_Arcana_Guidebook_${new Date().toISOString().slice(0, 10)}.pdf`;
 
-    try {
-      const worker = html2pdf().set(opt).from(pdfPrintBuffer);
-      
-      updateProgress(50, "กำลังเซฟรูปหน้ากระดาษเพื่อบล็อกการก๊อปปี้...", "สแกนหน้าเพจ 50%...");
-      await delay(500);
+      const opt = {
+        margin: 0,
+        filename: filename,
+        image: { type: 'jpeg', quality: 0.95 },
+        html2canvas: {
+          scale: 2, // Scale 2 ensures crisp printing details
+          useCORS: true,
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
 
-      updateProgress(75, "กำลังเย็บหน้าหนังสือและสร้างเลย์เอาต์ไฟล์ PDF...", "สแกนหน้าเพจ 75%...");
-      await delay(500);
+      try {
+        const worker = html2pdf().set(opt).from(pdfPrintBuffer);
 
-      await worker.save();
-      
-      updateProgress(100, "สร้างไฟล์คู่มือ A4 ป้องกันการก๊อปปี้เรียบร้อย!", "ดาวน์โหลดสมบูรณ์!");
-      await delay(1200);
-    } catch (error) {
-      console.error('PDF Generation failed:', error);
-      alert('ขออภัย! การสร้าง PDF ไม่สำเร็จ โปรดตรวจสอบหน่วยความจำเครื่อง หรือลองเปิดใช้งานผ่านเซิร์ฟเวอร์แบบ HTTP');
-    } finally {
-      progressOverlay.classList.remove('show');
-      pdfPrintBuffer.innerHTML = '';
-    }
-  });
+        updateProgress(50, "กำลังเซฟรูปหน้ากระดาษเพื่อบล็อกการก๊อปปี้...", "สแกนหน้าเพจ 50%...");
+        await delay(500);
 
-  // Helper to create a beautiful cover page
-  function createCoverPageHtml() {
-    const cover = document.createElement('div');
-    cover.className = `a4-page ${borderStyleSelect.value}`;
-    cover.style.transform = 'none';
-    cover.style.margin = '0';
-    
-    cover.innerHTML = `
+        updateProgress(75, "กำลังเย็บหน้าหนังสือและสร้างเลย์เอาต์ไฟล์ PDF...", "สแกนหน้าเพจ 75%...");
+        await delay(500);
+
+        await worker.save();
+
+        updateProgress(100, "สร้างไฟล์คู่มือ A4 ป้องกันการก๊อปปี้เรียบร้อย!", "ดาวน์โหลดสมบูรณ์!");
+        await delay(1200);
+      } catch (error) {
+        console.error('PDF Generation failed:', error);
+        alert('ขออภัย! การสร้าง PDF ไม่สำเร็จ โปรดตรวจสอบหน่วยความจำเครื่อง หรือลองเปิดใช้งานผ่านเซิร์ฟเวอร์แบบ HTTP');
+      } finally {
+        progressOverlay.classList.remove('show');
+        pdfPrintBuffer.innerHTML = '';
+      }
+    });
+
+    // Helper to create a beautiful cover page
+    function createCoverPageHtml() {
+      const cover = document.createElement('div');
+      cover.className = `a4-page ${borderStyleSelect.value}`;
+      cover.style.transform = 'none';
+      cover.style.margin = '0';
+
+      cover.innerHTML = `
       <div class="corner corner-tl"></div>
       <div class="corner corner-tr"></div>
       <div class="corner corner-bl"></div>
@@ -783,79 +783,79 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="footer-page-num">หน้า 1</span>
       </footer>
     `;
-    return cover;
-  }
+      return cover;
+    }
 
-  // Utilities
-  function updateProgress(percent, title, subtitle) {
-    progressBar.style.width = `${percent}%`;
-    progressPercent.textContent = `${percent}%`;
-    progressTitle.textContent = title;
-    if (subtitle) progressPageCount.textContent = subtitle;
-  }
+    // Utilities
+    function updateProgress(percent, title, subtitle) {
+      progressBar.style.width = `${percent}%`;
+      progressPercent.textContent = `${percent}%`;
+      progressTitle.textContent = title;
+      if (subtitle) progressPageCount.textContent = subtitle;
+    }
 
-  function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+    function delay(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-  // 14. Backup & Restore JSON Data
-  if (backupJsonBtn) {
-    backupJsonBtn.addEventListener('click', () => {
-      try {
-        const jsonStr = JSON.stringify(cards, null, 2);
-        const blob = new Blob([jsonStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `jiutian_cards_backup_${new Date().toISOString().slice(0,10)}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } catch (err) {
-        alert('เกิดข้อผิดพลาดในการสำรองข้อมูล: ' + err.message);
-      }
-    });
-  }
-
-  if (restoreJsonBtn && jsonFileInput) {
-    restoreJsonBtn.addEventListener('click', () => {
-      jsonFileInput.click();
-    });
-
-    jsonFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(event) {
+    // 14. Backup & Restore JSON Data
+    if (backupJsonBtn) {
+      backupJsonBtn.addEventListener('click', () => {
         try {
-          const importedData = JSON.parse(event.target.result);
-          if (!Array.isArray(importedData)) {
-            throw new Error('โครงสร้างข้อมูลในไฟล์ไม่ใช่ Array (ไม่ถูกต้อง)');
-          }
-          
-          if (confirm(`คุณต้องการโหลดข้อมูลสำรองนี้ใช่หรือไม่? ข้อมูลการ์ดปัจจุบันทั้งหมดจะถูกเขียนทับด้วยข้อมูลจากไฟล์นี้`)) {
-            cards = importedData;
-            saveToLocalStorage();
-            
-            // Mark customized status based on loaded items
-            for (let i = 1; i <= 94; i++) {
-              localStorage.setItem(`jiutian_card_customized_${i}`, 'true');
-            }
-            
-            initApp();
-            alert('โหลดข้อมูลสำรองไฟล์ JSON สำเร็จ!');
-          }
+          const jsonStr = JSON.stringify(cards, null, 2);
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `jiutian_cards_backup_${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
         } catch (err) {
-          alert('ไม่สามารถอ่านไฟล์สำรองได้: ' + err.message);
-        } finally {
-          jsonFileInput.value = '';
+          alert('เกิดข้อผิดพลาดในการสำรองข้อมูล: ' + err.message);
         }
-      };
-      reader.readAsText(file);
-    });
-  }
+      });
+    }
+
+    if (restoreJsonBtn && jsonFileInput) {
+      restoreJsonBtn.addEventListener('click', () => {
+        jsonFileInput.click();
+      });
+
+      jsonFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          try {
+            const importedData = JSON.parse(event.target.result);
+            if (!Array.isArray(importedData)) {
+              throw new Error('โครงสร้างข้อมูลในไฟล์ไม่ใช่ Array (ไม่ถูกต้อง)');
+            }
+
+            if (confirm(`คุณต้องการโหลดข้อมูลสำรองนี้ใช่หรือไม่? ข้อมูลการ์ดปัจจุบันทั้งหมดจะถูกเขียนทับด้วยข้อมูลจากไฟล์นี้`)) {
+              cards = importedData;
+              saveToLocalStorage();
+
+              // Mark customized status based on loaded items
+              for (let i = 1; i <= 94; i++) {
+                localStorage.setItem(`jiutian_card_customized_${i}`, 'true');
+              }
+
+              initApp();
+              alert('โหลดข้อมูลสำรองไฟล์ JSON สำเร็จ!');
+            }
+          } catch (err) {
+            alert('ไม่สามารถอ่านไฟล์สำรองได้: ' + err.message);
+          } finally {
+            jsonFileInput.value = '';
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
   } // end initLegacyStudio
   initLegacyStudio();
 
@@ -883,10 +883,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Responsive Viewport & Device Detector (Strict Mobile < 768px, Tablet/Desktop >= 768px)
   function updateResponsiveViewMode() {
-    const isMobile = window.innerWidth < 768 || 
+    const isMobile = window.innerWidth < 768 ||
       /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
       (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches && window.innerWidth < 768);
-    
+
     document.documentElement.classList.toggle('is-mobile', isMobile);
     document.documentElement.classList.toggle('is-desktop', !isMobile);
     document.body.classList.toggle('is-mobile', isMobile);
@@ -994,7 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.location.hash.replace('#', '').toLowerCase() !== mode) {
           history.replaceState(null, '', '#' + mode);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     // Trigger TongShu live update when activated
@@ -1426,7 +1426,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return SPREAD_CONFIGS['5cards'].positions;
     }
     const patId = fortuneState.patternId || 'pattern2';
-    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId]) 
+    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId])
       || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
     return pat ? pat.positions : [];
   }
@@ -1436,7 +1436,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return SPREAD_CONFIGS['5cards'].title;
     }
     const patId = fortuneState.patternId || 'pattern2';
-    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId]) 
+    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId])
       || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
     return pat ? pat.title : 'ไพ่ 3 ใบ (Trinity Spread)';
   }
@@ -1843,56 +1843,23 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'favorable';
   }
 
-  // Get dynamic domain or core wisdom with STRICT topic filtering (no business jargon in love!)
+  // Helper to get the primary new 'keyword' field from a card
+  function getCardPrimaryKeyword(card) {
+    if (!card) return '';
+    if (card.keyword && typeof card.keyword === 'string' && card.keyword.trim()) {
+      return card.keyword.trim();
+    }
+    if (Array.isArray(card.keywords) && card.keywords.length > 0) {
+      return card.keywords.join(', ');
+    }
+    return card.core_meaning || card.concept || '';
+  }
+
+  // Read card directly from the new `keyword` field
   function getThepMeowCardReading(card, topic) {
     if (!card) return 'พลังแห่งการเริ่มต้นใหม่และความหวัง';
-    
-    const isGenericTemplate = (txt) => !txt || /ตามแนวทางของ\s*ธาตุ/i.test(txt) || /พลังธาตุ.*จิ่วเทียน/i.test(txt);
-
-    if (topic === 'love') {
-      let loveText = card.meanings?.domains?.love || card.reading_love;
-      if (loveText && !isGenericTemplate(loveText) && !/ธุรกิจ|พอร์ต|ลงทุน|audit|poc|sunk cost|บอร์ดบริหาร/i.test(loveText)) {
-        return cleanThepMeowCardText(loveText);
-      }
-      // Love-specific contextual fallbacks
-      const name = card.name_th || card.name || '';
-      if (/เดิมพัน/i.test(name)) return 'ความสัมพันธ์ที่เหนื่อยล้าจากการประคับประคองมานาน เหมือนต้องทุ่มเทและแบกรับความพยายามอยู่เพียงลำพัง';
-      if (/วิกฤต/i.test(name)) return 'ช่วงเวลาเปราะบางทางอารมณ์ ความขัดแย้งหรือบาดแผลในใจที่ต้องใช้ความนิ่ง ไม่เร่งร้อนปะทะ';
-      if (/หยุดคิด/i.test(name)) return 'การหยุดพักเพื่อทบทวนความรู้สึก เว้นระยะห่างให้แต่ละฝ่ายได้สำรวจหัวใจตนเองว่าควรไปต่อหรือปรับตัวอย่างไร';
-      if (/หนิวหลาง/i.test(name)) return 'ความรักแท้และความผูกพันที่ก้าวข้ามกาลเวลา การเชื่อมใจที่อบอุ่นและเข้าใจกันลึกซึ้ง';
-      if (/ฉางเอ๋อ/i.test(name)) return 'ความคิดถึงและความเหงาในใจ แต่แสงจันทร์จะค่อยๆ ปลอบประโลมให้หัวใจสงบขึ้น';
-      if (/เฉินถวน/i.test(name)) return 'การถอยกลับมาพักใจในพื้นที่ส่วนตัว เพื่อฟื้นฟูพลังใจให้กลับมามั่นคง';
-      if (card.deity?.title && card.deity.title.length > 10) return cleanThepMeowCardText(card.deity.title);
-      return 'การเรียนรู้ที่จะรักและเข้าใจตนเอง เพื่อสร้างความสัมพันธ์ที่มั่นคงและสบายใจ';
-    }
-
-    if (topic === 'career') {
-      let careerText = card.meanings?.domains?.career || card.reading_work;
-      if (careerText && !isGenericTemplate(careerText)) return cleanThepMeowCardText(careerText);
-    } else if (topic === 'finance') {
-      let finText = card.meanings?.domains?.finance || card.reading_finance;
-      if (finText && !isGenericTemplate(finText)) return cleanThepMeowCardText(finText);
-    } else if (topic === 'study') {
-      let studyText = card.meanings?.domains?.career || card.reading_work;
-      if (studyText && !isGenericTemplate(studyText)) return cleanThepMeowCardText(studyText);
-    } else if (topic === 'health') {
-      let healthText = card.meanings?.domains?.health || card.reading_health;
-      if (healthText && !isGenericTemplate(healthText)) return cleanThepMeowCardText(healthText);
-    }
-
-    // High quality core fallbacks
-    if (card.meanings?.core && !isGenericTemplate(card.meanings.core)) {
-      return cleanThepMeowCardText(card.meanings.core);
-    }
-    if (card.summary) {
-      return cleanThepMeowCardText(card.summary);
-    }
-    if (card.deity_message && !isGenericTemplate(card.deity_message)) {
-      return cleanThepMeowCardText(card.deity_message);
-    }
-    if (card.meanings?.light_side) {
-      return cleanThepMeowCardText(card.meanings.light_side);
-    }
+    const kw = getCardPrimaryKeyword(card);
+    if (kw) return kw;
     return cleanThepMeowCardText(card.core_meaning || card.name_th || card.name);
   }
 
@@ -2135,13 +2102,13 @@ document.addEventListener('DOMContentLoaded', () => {
       throw new Error('No Groq API key available');
     }
 
-    const c1 = drawn[0] || {};
-    const c2 = drawn[1] || drawn[0] || {};
-    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
-
-    const pos1Title = positions[0]?.title || 'ใบที่ 1: สถานการณ์ / สิ่งที่เผชิญ';
-    const pos2Title = positions[1]?.title || 'ใบที่ 2: อุปสรรค / สภาวะจริง';
-    const pos3Title = positions[2]?.title || 'ใบที่ 3: ทางออก / กลยุทธ์แก้ไข';
+    const cardsPromptLines = drawn.map((card, idx) => {
+      const c = card || {};
+      const posTitle = positions[idx]?.title || `ใบที่ ${idx + 1}`;
+      const kw = getCardPrimaryKeyword(c);
+      const elem = c.element_th || c.element || 'น้ำ';
+      return `${idx + 1}. ${posTitle}: ไพ่ "${c.name_th || c.name}" (${elem})\n   - keyword ประจำไพ่: ${kw}`;
+    }).join('\n');
 
     let baziPromptText = '';
     if (baziCtx && baziCtx.chartData) {
@@ -2156,65 +2123,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
 คำถามของผู้ใช้: "${question}"
 ${baziPromptText}
-ข้อมูลไพ่ 3 ใบที่เปิดได้:
-1. ${pos1Title}: ไพ่ "${c1.name_th || c1.name}" (ธาตุ ${c1.element || 'น้ำ'})
-   - แก่นแท้: ${c1.core_meaning || c1.meanings?.core || ''}
-   - ข้อความเทพ: ${c1.deity_message || c1.summary || ''}
-2. ${pos2Title}: ไพ่ "${c2.name_th || c2.name}" (ธาตุ ${c2.element || 'ไฟ'})
-   - แก่นแท้: ${c2.core_meaning || c2.meanings?.core || ''}
-   - ข้อความเทพ: ${c2.deity_message || c2.summary || ''}
-3. ${pos3Title}: ไพ่ "${c3.name_th || c3.name}" (ธาตุ ${c3.element || 'ดิน'})
-   - แก่นแท้: ${c3.core_meaning || c3.meanings?.core || ''}
-   - ข้อความเทพ: ${c3.deity_message || c3.summary || ''}
+ข้อมูลไพ่ที่เปิดได้ (ให้อ่านจากฟิลด์ keyword ของไพ่แต่ละใบเท่านั้น):
+${cardsPromptLines}
 
 คำสั่งสำคัญที่สุด (CRITICAL INSTRUCTIONS):
-1. **ตอบตรงคำถามและฟันธงอย่างแม่นยำเป็นอันดับแรก**:
-   - ถ้าถามว่า "อันไหนดีกว่ากัน" หรือเป็นคำถามตัวเลือก A vs B ต้องฟันธงชัดเจนว่าทางไหนดีกว่า เปรียบเทียบทั้งสองทางให้เห็นภาพว่าฝั่งไหนมีพลังบวก/ความก้าวหน้ามากกว่า
-   - ถ้าถามเรื่องการงาน/การเงิน/ความรัก ต้องเจาะจงตอบตรงเรื่องนั้น ห้ามตอบกว้างๆ หรือเฉไฉเด็ดขาด!
+1. **การอ่านไพ่ต้องอ่านจากฟิลด์ keyword ที่ให้ไว้ของไพ่แต่ละใบ แล้วนำมาตีความตามคำถามของผู้ใช้โดยตรง**:
+   - นำคำสำคัญใน keyword ของแต่ละใบ มาแปลความหมายให้เข้ากับบริบทของคำถาม "${question}" และตำแหน่งของไพ่ใบนั้นๆ
+   - ถ้าถามว่า "อันไหนดีกว่ากัน" หรือเป็นคำถามตัวเลือก A vs B ต้องฟันธงชัดเจนว่าทางไหนดีกว่า โดยเปรียบเทียบจาก keyword ของไพ่ทั้งสองฝั่งและไพ่คำแนะนำ
+   - ถ้าถามเรื่องการงาน/การเงิน/ความรัก/สุขภาพ ต้องนำ keyword ของไพ่มาตีความเจาะจงตอบตรงเรื่องนั้น ห้ามตอบกว้างๆ หรือเฉไฉเด็ดขาด!
 2. **นำเสนอผลคำทำนายเป็น "ภาพรวมชิ้นเดียว (Overall Analysis)"**:
-   - **ห้าม** แยกไพ่เป็นใบที่ 1, ใบที่ 2, ใบที่ 3
+   - **ห้าม** แยกหัวข้อเป็นใบที่ 1, ใบที่ 2, ใบที่ 3
    - **ห้าม** ทำกล่องบทสรุปภาษาเทพเหมียวแยกต่างหาก
-   - ให้ร้อยเรียงแก่นความหมายของไพ่ทั้ง 3 ใบเข้าด้วยกัน ออกมาเป็นบทวิเคราะห์ภาพรวมเนื้อความเดียวที่ลึกซึ้ง ไหลลื่น จบในตัว และให้คำตอบฟันธงแก่ผู้ใช้ทันที
+   - ให้ร้อยเรียงการตีความจาก keyword ของไพ่ทุกใบเข้าด้วยกัน ออกมาเป็นบทวิเคราะห์ภาพรวมเนื้อความเดียวที่ลึกซึ้ง ไหลลื่น จบในตัว และให้คำตอบฟันธงแก่ผู้ใช้ทันที
 3. ส่งผลลัพธ์เป็น JSON เท่านั้น ตามรูปแบบนี้:
 {
-  "direct_verdict": "คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจน (1-2 ประโยค)",
+  "direct_verdict": "คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจน โดยตีความจาก keyword ของไพ่ (1-2 ประโยค)",
   "bazi_insight": "บทวิเคราะห์จังหวะชีวิตและพลังธาตุปาจื่อที่เชื่อมโยงกับคำถาม (ถ้ามีข้อมูล)",
-  "overall_analysis": "บทวิเคราะห์ภาพรวมทั้งหมดแบบร้อยเรียงไพ่ทั้ง 3 ใบเข้ากับคำถามโดยตรง เปรียบเทียบทางเลือกและให้คำแนะนำอย่างเห็นภาพ ไหลลื่นเป็นเนื้อความเดียวกันอย่างอบอุ่นและมีพลัง",
+  "overall_analysis": "บทวิเคราะห์ภาพรวมทั้งหมดที่นำ keyword ของไพ่ทุกใบมาตีความตามคำถามโดยตรง เปรียบเทียบทางเลือกและให้คำแนะนำอย่างเห็นภาพ ไหลลื่นเป็นเนื้อความเดียวกันอย่างอบอุ่นและมีพลัง",
   "blessing_quote": "ข้อคิดเสริมมงคลสั้นๆ 1 ประโยค"
 }
 `;
 
-    const payload = {
-      model: 'qwen/qwen3.8-27b',
-      messages: [
-        { role: 'system', content: 'You are an oracle AI that outputs valid JSON only.' },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 800
-    };
+    const modelsToTry = ['llama-3.3-70b-versatile', 'qwen/qwen3-32b', 'llama-3.1-8b-instant'];
+    let lastErr = null;
 
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + apiKey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
+    for (const modelName of modelsToTry) {
+      try {
+        const payload = {
+          model: modelName,
+          messages: [
+            { role: 'system', content: 'You are an oracle AI that reads card keywords and interprets them in Thai according to the user question. Output valid JSON only.' },
+            { role: 'user', content: prompt }
+          ],
+          temperature: 0.7,
+          max_tokens: 1000
+        };
 
-    if (!res.ok) {
-      throw new Error('Groq API error status: ' + res.status);
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + apiKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          lastErr = new Error(`Groq API error (${modelName}): ${res.status}`);
+          continue;
+        }
+
+        const data = await res.json();
+        const rawContent = data.choices?.[0]?.message?.content || '{}';
+        const cleanJson = rawContent
+          .replace(/<think>[\s\S]*?<\/think>/gi, '')
+          .replace(/```json|```/g, '')
+          .trim();
+        const match = cleanJson.match(/\{[\s\S]*\}/);
+        if (match) {
+          return JSON.parse(match[0]);
+        }
+        return JSON.parse(cleanJson);
+      } catch (err) {
+        lastErr = err;
+      }
     }
 
-    const data = await res.json();
-    const rawContent = data.choices?.[0]?.message?.content || '{}';
-    const cleanJson = rawContent.replace(/```json|```/g, '').trim();
-    const match = cleanJson.match(/\{[\s\S]*\}/);
-    if (match) {
-      return JSON.parse(match[0]);
-    }
-    return JSON.parse(cleanJson);
+    throw lastErr || new Error('All Groq AI models failed');
   }
 
   function renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx = null }) {
@@ -2365,7 +2340,7 @@ ${baziPromptText}
         const item = liveMessages[currentMsgIdx];
         const statusText = document.getElementById('thepmeowStatusText');
         if (statusText) statusText.textContent = item.text;
-        
+
         const dot2 = document.getElementById('loadingStepDot2');
         const dot3 = document.getElementById('loadingStepDot3');
         if (item.step >= 2 && dot2) dot2.classList.add('active');
@@ -2440,11 +2415,11 @@ ${baziPromptText}
     const isMobile = winW < 768;
     const isWidescreen = winW >= 1200;
     const backImg = getDeckBackImage();
-    
+
     // Dynamic card count and width according to screen
     const cardCount = isMobile ? 18 : (isWidescreen ? 34 : 26);
     const cardWidth = isMobile ? 62 : (isWidescreen ? 122 : 108);
-    
+
     // Calculate spread step so cards fill the available width smoothly across desktop or mobile
     const containerWidth = deckFanWrapper.clientWidth || (isMobile ? winW - 32 : Math.min(winW - 64, 1260));
     const maxSpan = Math.max(containerWidth - cardWidth - (isMobile ? 16 : 48), 220);
@@ -2482,7 +2457,7 @@ ${baziPromptText}
     // Pick random unpicked card from pool
     const pool = fortuneState.activeCardsPool;
     const available = pool.filter(c => !fortuneState.drawnCards.some(dc => dc && dc.id === c.id));
-    const randomCard = available.length > 0 
+    const randomCard = available.length > 0
       ? available[Math.floor(Math.random() * available.length)]
       : pool[Math.floor(Math.random() * pool.length)];
 
@@ -2573,7 +2548,7 @@ ${baziPromptText}
       const totalSlots = fortuneState.drawnCards.length;
       const fanCards = deckFanWrapper ? Array.from(deckFanWrapper.querySelectorAll('.fan-card-item:not(.card-picked)')) : [];
       const shuffled = [...pool].sort(() => 0.5 - Math.random());
-      
+
       let delay = 0;
       for (let i = 0; i < totalSlots; i++) {
         if (fortuneState.drawnCards[i] === null) {
@@ -2696,11 +2671,12 @@ ${baziPromptText}
         const matchNameTh = c.name_th && c.name_th.toLowerCase().includes(query);
         const matchNameCn = c.name_cn && c.name_cn.toLowerCase().includes(query);
         const matchId = String(c.id) === query;
+        const matchPrimaryKw = c.keyword && c.keyword.toLowerCase().includes(query);
         const matchKeywords = c.keywords && c.keywords.some(k => k.toLowerCase().includes(query));
         const matchKeywordsTh = c.keywords_th && c.keywords_th.some(k => k.toLowerCase().includes(query));
         const matchCore = (c.core_meaning || c.concept) && (c.core_meaning || c.concept).toLowerCase().includes(query);
         const matchElem = c.element && c.element.toLowerCase().includes(query);
-        if (!(matchName || matchNameEn || matchNameTh || matchNameCn || matchId || matchKeywords || matchKeywordsTh || matchCore || matchElem)) {
+        if (!(matchName || matchNameEn || matchNameTh || matchNameCn || matchId || matchPrimaryKw || matchKeywords || matchKeywordsTh || matchCore || matchElem)) {
           return false;
         }
       }
@@ -2710,6 +2686,7 @@ ${baziPromptText}
     filtered.forEach(card => {
       const itemEl = document.createElement('div');
       itemEl.className = 'modal-card-item';
+      const primaryKw = getCardPrimaryKeyword(card);
 
       const metaHtml = `
         <strong style="font-size: 13.5px; color: #1e293b;">${card.id}. ${card.name_cn ? card.name_cn + ' ' : ''}${card.name_th || card.name}</strong>
@@ -2717,10 +2694,7 @@ ${baziPromptText}
           ${card.element_icon || '🎴'} ${card.element || ''} (${card.suit_name_th || ''})
         </span>
         <span style="font-size: 11px; color: #475569; margin-top: 2px;">
-          ✨ ${(card.concept || card.core_meaning || '').slice(0, 48)}${(card.concept || card.core_meaning || '').length > 48 ? '...' : ''}
-        </span>
-        <span style="font-size: 11px; color: #64748b; margin-top: 2px;">
-          🏷️ ${card.keywords_th && card.keywords_th.length ? card.keywords_th.slice(0, 3).join(', ') : (card.keywords ? card.keywords.slice(0, 3).join(', ') : '')}
+          🏷️ ${primaryKw}
         </span>
       `;
 
@@ -2783,8 +2757,8 @@ ${baziPromptText}
     }
     if (resultDateBadge) {
       const now = new Date();
-      resultDateBadge.textContent = now.toLocaleDateString('th-TH', { 
-        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+      resultDateBadge.textContent = now.toLocaleDateString('th-TH', {
+        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
       });
     }
 
@@ -2815,6 +2789,7 @@ ${baziPromptText}
 
       const baseElem = getBaseElement(card.element);
       const elemInfo = ELEMENT_INFO[baseElem] || { name: baseElem, cn: '', color: '#0284c7', bg: '#f0f9ff', icon: '🎴' };
+      const primaryKw = getCardPrimaryKeyword(card);
 
       cardEl.innerHTML = `
         <div class="result-pos-header">
@@ -2828,7 +2803,7 @@ ${baziPromptText}
           <h4 class="result-card-name" style="text-align: center; color: #0f172a; font-size: 18px; font-weight: 800; margin: 4px 0 2px 0; width: 100%;">
             ${card.name_th || card.name} ${card.name_cn ? `<small style="font-size: 13.5px; color: #64748b; font-weight: 600;">(${card.name_cn})</small>` : ''}
           </h4>
-          ${card.deity?.title ? `<div style="font-size: 12px; color: #b45309; font-weight: 600; margin-bottom: 6px; line-height: 1.3;">“${card.deity.title}”</div>` : ''}
+          ${primaryKw ? `<div style="font-size: 12px; color: #b45309; font-weight: 600; margin-bottom: 6px; line-height: 1.35;">“${primaryKw}”</div>` : ''}
           <div style="display: flex; justify-content: center;">
             <span class="elem-badge-small" style="background: ${elemInfo.bg}; color: ${elemInfo.color}; border: 1px solid ${elemInfo.border || elemInfo.color}; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
               ${elemInfo.icon} ธาตุ${baseElem} ${elemInfo.cn ? `(${elemInfo.cn})` : ''}
@@ -2861,43 +2836,11 @@ ${baziPromptText}
       .trim();
   }
 
-  // Get dynamic domain or core wisdom from card depending on user's question intent
+  // Read card directly from the new `keyword` field
   function getThepMeowCardReading(card, intent) {
     if (!card) return 'พลังแห่งการเริ่มต้นใหม่และความหวัง';
-    
-    // Check if domain-specific reading is relevant and not a generic element boilerplate
-    const isGenericTemplate = (txt) => !txt || /ตามแนวทางของ\s*ธาตุ/i.test(txt) || /พลังธาตุ.*จิ่วเทียน/i.test(txt);
-
-    let domainText = '';
-    if (intent === 'relationship') {
-      domainText = card.meanings?.domains?.love || card.reading_love;
-    } else if (intent === 'career_finance') {
-      domainText = card.meanings?.domains?.career || card.reading_work || card.meanings?.domains?.finance || card.reading_finance;
-    } else if (intent === 'health') {
-      domainText = card.meanings?.domains?.health || card.reading_health;
-    }
-
-    if (domainText && !isGenericTemplate(domainText)) {
-      return cleanThepMeowCardText(domainText);
-    }
-
-    // High quality core fallbacks
-    if (card.meanings?.core && !isGenericTemplate(card.meanings.core)) {
-      return cleanThepMeowCardText(card.meanings.core);
-    }
-    if (card.summary) {
-      return cleanThepMeowCardText(card.summary);
-    }
-    if (card.deity_message && !isGenericTemplate(card.deity_message)) {
-      return cleanThepMeowCardText(card.deity_message);
-    }
-    if (card.meanings?.light_side) {
-      return cleanThepMeowCardText(card.meanings.light_side);
-    }
-    if (card.keywords && card.keywords.length > 0) {
-      const validKws = card.keywords.filter(k => !['พลังธาตุ', 'จิ่วเทียนอาร์คานา', 'โชคชะตา'].includes(k));
-      if (validKws.length > 0) return validKws.slice(0, 3).join(' • ');
-    }
+    const kw = getCardPrimaryKeyword(card);
+    if (kw) return kw;
     return cleanThepMeowCardText(card.core_meaning || card.name_th || card.name);
   }
 
@@ -3113,7 +3056,7 @@ ${baziPromptText}
         const item = liveMessages[currentMsgIdx];
         const statusText = document.getElementById('thepmeowStatusText');
         if (statusText) statusText.textContent = item.text;
-        
+
         const dot2 = document.getElementById('loadingStepDot2');
         const dot3 = document.getElementById('loadingStepDot3');
         if (item.step >= 2 && dot2) dot2.classList.add('active');
@@ -3435,207 +3378,207 @@ ${baziPromptText}
 });
 
 
-  // --------------------------------------------------------------------------
-  // LINE LIFF INTEGRATION (LINE Official Account)
-  // --------------------------------------------------------------------------
-  const LIFF_ID = '2011798499-hm8dJi7C';
-  let lineUserProfile = null;
+// --------------------------------------------------------------------------
+// LINE LIFF INTEGRATION (LINE Official Account)
+// --------------------------------------------------------------------------
+const LIFF_ID = '2011798499-hm8dJi7C';
+let lineUserProfile = null;
 
-  async function initLineLiff() {
-    if (typeof liff === 'undefined') {
-      console.log('LIFF SDK not loaded or offline');
-      return;
+async function initLineLiff() {
+  if (typeof liff === 'undefined') {
+    console.log('LIFF SDK not loaded or offline');
+    return;
+  }
+
+  try {
+    await liff.init({ liffId: LIFF_ID });
+    console.log('LIFF initialized successfully');
+
+    if (liff.isLoggedIn()) {
+      lineUserProfile = await liff.getProfile();
+      applyLineUserProfile(lineUserProfile);
+    } else if (liff.isInClient()) {
+      lineUserProfile = await liff.getProfile();
+      applyLineUserProfile(lineUserProfile);
     }
 
+    // Show Line Share button
+    const shareBtn = document.getElementById('shareToLineBtn');
+    if (shareBtn) {
+      shareBtn.classList.remove('hidden');
+    }
+  } catch (err) {
+    console.log('LIFF init info:', err);
+  }
+}
+
+function applyLineUserProfile(profile) {
+  if (!profile) return;
+  const badgeEl = document.getElementById('lineUserBadge');
+  const avatarEl = document.getElementById('lineUserAvatar');
+  const nameEl = document.getElementById('lineUserName');
+
+  if (badgeEl && nameEl) {
+    nameEl.textContent = profile.displayName || 'LINE User';
+    if (avatarEl && profile.pictureUrl) {
+      avatarEl.src = profile.pictureUrl;
+    }
+    badgeEl.classList.remove('hidden');
+  }
+
+  // Friendly greeting on question step
+  const step1Title = document.querySelector('.step1-title');
+  if (step1Title && profile.displayName) {
+    step1Title.innerHTML = `สวัสดีคุณ ${profile.displayName} ✨ ไพ่ My Cat & I พร้อมตอบ 🔮`;
+  }
+}
+
+// --------------------------------------------------------------------------
+// SOCIAL SHARE MODAL & PLATFORM ACTIONS (FB, TT, IG, LINE)
+// --------------------------------------------------------------------------
+const shareToSocialBtn = document.getElementById('shareToSocialBtn');
+const shareToLineBtn = document.getElementById('shareToLineBtn');
+const socialShareModal = document.getElementById('socialShareModal');
+const closeSocialShareBtn = document.getElementById('closeSocialShareBtn');
+const socialSharePreviewText = document.getElementById('socialSharePreviewText');
+const socialShareToast = document.getElementById('socialShareToast');
+const socialToastMessage = document.getElementById('socialToastMessage');
+
+const shareFbBtn = document.getElementById('shareFbBtn');
+const shareTtBtn = document.getElementById('shareTtBtn');
+const shareIgBtn = document.getElementById('shareIgBtn');
+const shareLineBtn = document.getElementById('shareLineBtn');
+
+function generateSocialShareText() {
+  const state = window.fortuneState || (typeof fortuneState !== 'undefined' ? fortuneState : {});
+  const question = (state.question || document.getElementById('userQuestionInput')?.value || 'คำถามดวงชะตา').trim();
+  const deckName = 'ไพ่เทพเหมียว (92 ใบ)';
+  const cards = state.drawnCards || [];
+  const positions = (typeof getActivePositions === 'function') ? getActivePositions() : [];
+
+  let cardListText = '';
+  cards.forEach((c, idx) => {
+    if (!c) return;
+    const pos = positions[idx] || { title: `ใบที่ ${idx + 1}` };
+    const baseElem = (typeof getBaseElement === 'function') ? getBaseElement(c.element) : (c.element || '');
+    const elemStr = baseElem ? ` [ธาตุ${baseElem}]` : '';
+    cardListText += `${idx + 1}️⃣ ${pos.title}: ${c.name_th || c.name}${c.name_cn ? ` (${c.name_cn})` : ''}${elemStr}\n`;
+  });
+
+  let synthesisText = '';
+  const synthesisEl = document.getElementById('resultSynthesisContainer');
+  if (synthesisEl && synthesisEl.innerText && synthesisEl.innerText.trim()) {
+    synthesisText = synthesisEl.innerText.trim();
+  }
+
+  let text = `🔮 ผลทำนายไพ่: ${deckName} 🐾✨\n`;
+  text += `❓ คำถาม: "${question}"\n\n`;
+
+  if (cardListText) {
+    text += `🎴 ไพ่ 3 ใบที่เปิดได้:\n${cardListText}\n`;
+  }
+
+  if (synthesisText) {
+    text += `📜 【เนื้อหาคำทำนายทั้งหมด】\n${synthesisText}\n\n`;
+  }
+
+  text += `🐾 เช็กดวงเปิดไพ่กับแม่หมอติ๊ดติ๊ดได้ที่นี่เลย:\n${window.location.href}\n`;
+  text += `#แม่หมอติ๊ดติ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ`;
+
+  return text;
+}
+
+function showSocialToast(msg) {
+  if (!socialShareToast) return;
+  if (socialToastMessage) socialToastMessage.innerText = msg;
+  socialShareToast.classList.remove('hidden');
+  clearTimeout(window.__socialToastTimer);
+  window.__socialToastTimer = setTimeout(() => {
+    socialShareToast.classList.add('hidden');
+  }, 3500);
+}
+
+async function copyToClipboardFallback(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
     try {
-      await liff.init({ liffId: LIFF_ID });
-      console.log('LIFF initialized successfully');
-
-      if (liff.isLoggedIn()) {
-        lineUserProfile = await liff.getProfile();
-        applyLineUserProfile(lineUserProfile);
-      } else if (liff.isInClient()) {
-        lineUserProfile = await liff.getProfile();
-        applyLineUserProfile(lineUserProfile);
-      }
-
-      // Show Line Share button
-      const shareBtn = document.getElementById('shareToLineBtn');
-      if (shareBtn) {
-        shareBtn.classList.remove('hidden');
-      }
+      await navigator.clipboard.writeText(text);
+      return true;
     } catch (err) {
-      console.log('LIFF init info:', err);
+      console.warn('Navigator clipboard error, trying textarea fallback:', err);
     }
   }
-
-  function applyLineUserProfile(profile) {
-    if (!profile) return;
-    const badgeEl = document.getElementById('lineUserBadge');
-    const avatarEl = document.getElementById('lineUserAvatar');
-    const nameEl = document.getElementById('lineUserName');
-
-    if (badgeEl && nameEl) {
-      nameEl.textContent = profile.displayName || 'LINE User';
-      if (avatarEl && profile.pictureUrl) {
-        avatarEl.src = profile.pictureUrl;
-      }
-      badgeEl.classList.remove('hidden');
-    }
-
-    // Friendly greeting on question step
-    const step1Title = document.querySelector('.step1-title');
-    if (step1Title && profile.displayName) {
-      step1Title.innerHTML = `สวัสดีคุณ ${profile.displayName} ✨ ไพ่ My Cat & I พร้อมตอบ 🔮`;
-    }
+  try {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const success = document.execCommand('copy');
+    document.body.removeChild(textArea);
+    return success;
+  } catch (err) {
+    console.error('All copy fallbacks failed:', err);
+    return false;
   }
+}
 
-  // --------------------------------------------------------------------------
-  // SOCIAL SHARE MODAL & PLATFORM ACTIONS (FB, TT, IG, LINE)
-  // --------------------------------------------------------------------------
-  const shareToSocialBtn = document.getElementById('shareToSocialBtn');
-  const shareToLineBtn = document.getElementById('shareToLineBtn');
-  const socialShareModal = document.getElementById('socialShareModal');
-  const closeSocialShareBtn = document.getElementById('closeSocialShareBtn');
-  const socialSharePreviewText = document.getElementById('socialSharePreviewText');
-  const socialShareToast = document.getElementById('socialShareToast');
-  const socialToastMessage = document.getElementById('socialToastMessage');
-
-  const shareFbBtn = document.getElementById('shareFbBtn');
-  const shareTtBtn = document.getElementById('shareTtBtn');
-  const shareIgBtn = document.getElementById('shareIgBtn');
-  const shareLineBtn = document.getElementById('shareLineBtn');
-
-  function generateSocialShareText() {
-    const state = window.fortuneState || (typeof fortuneState !== 'undefined' ? fortuneState : {});
-    const question = (state.question || document.getElementById('userQuestionInput')?.value || 'คำถามดวงชะตา').trim();
-    const deckName = 'ไพ่เทพเหมียว (92 ใบ)';
-    const cards = state.drawnCards || [];
-    const positions = (typeof getActivePositions === 'function') ? getActivePositions() : [];
-    
-    let cardListText = '';
-    cards.forEach((c, idx) => {
-      if (!c) return;
-      const pos = positions[idx] || { title: `ใบที่ ${idx + 1}` };
-      const baseElem = (typeof getBaseElement === 'function') ? getBaseElement(c.element) : (c.element || '');
-      const elemStr = baseElem ? ` [ธาตุ${baseElem}]` : '';
-      cardListText += `${idx + 1}️⃣ ${pos.title}: ${c.name_th || c.name}${c.name_cn ? ` (${c.name_cn})` : ''}${elemStr}\n`;
-    });
-
-    let synthesisText = '';
-    const synthesisEl = document.getElementById('resultSynthesisContainer');
-    if (synthesisEl && synthesisEl.innerText && synthesisEl.innerText.trim()) {
-      synthesisText = synthesisEl.innerText.trim();
-    }
-
-    let text = `🔮 ผลทำนายไพ่: ${deckName} 🐾✨\n`;
-    text += `❓ คำถาม: "${question}"\n\n`;
-
-    if (cardListText) {
-      text += `🎴 ไพ่ 3 ใบที่เปิดได้:\n${cardListText}\n`;
-    }
-
-    if (synthesisText) {
-      text += `📜 【เนื้อหาคำทำนายทั้งหมด】\n${synthesisText}\n\n`;
-    }
-
-    text += `🐾 เช็กดวงเปิดไพ่กับแม่หมอติ๊ดติ๊ดได้ที่นี่เลย:\n${window.location.href}\n`;
-    text += `#แม่หมอติ๊ดติ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ`;
-
-    return text;
+function openSocialShareModal() {
+  if (!socialShareModal) return;
+  const shareText = generateSocialShareText();
+  if (socialSharePreviewText) {
+    socialSharePreviewText.innerText = shareText;
   }
+  socialShareModal.classList.remove('hidden');
+}
 
-  function showSocialToast(msg) {
-    if (!socialShareToast) return;
-    if (socialToastMessage) socialToastMessage.innerText = msg;
-    socialShareToast.classList.remove('hidden');
-    clearTimeout(window.__socialToastTimer);
-    window.__socialToastTimer = setTimeout(() => {
-      socialShareToast.classList.add('hidden');
-    }, 3500);
-  }
+function closeSocialShareModal() {
+  if (!socialShareModal) return;
+  socialShareModal.classList.add('hidden');
+}
 
-  async function copyToClipboardFallback(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch (err) {
-        console.warn('Navigator clipboard error, trying textarea fallback:', err);
-      }
+// Helper: Capture 3 Cards [1][2][3] Side-by-Side into a Share Image (No long synthesis)
+async function captureFortuneCardBlob() {
+  const cardsBoard = document.getElementById('resultCardsBoard');
+  if (!cardsBoard) return null;
+
+  const questionBanner = document.getElementById('resultQuestionBanner');
+  const questionText = questionBanner ? (questionBanner.querySelector('.result-question-title')?.innerText || '') : '';
+  const deckBadge = questionBanner ? (questionBanner.querySelector('.badge-deck')?.innerText || 'ไพ่เทพเหมียว (92 ใบ)') : 'ไพ่เทพเหมียว';
+
+  // Clone the cards board and force horizontal 3-card side-by-side layout [1][2][3]
+  const cloneBoard = cardsBoard.cloneNode(true);
+
+  // Copy computed image sources to cloned images to guarantee instant render
+  const origImages = cardsBoard.querySelectorAll('img');
+  const cloneImages = cloneBoard.querySelectorAll('img');
+  origImages.forEach((img, idx) => {
+    if (cloneImages[idx]) {
+      cloneImages[idx].src = img.currentSrc || img.src;
     }
-    try {
-      const textArea = document.createElement('textarea');
-      textArea.value = text;
-      textArea.style.position = 'fixed';
-      textArea.style.left = '-999999px';
-      textArea.style.top = '-999999px';
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-      const success = document.execCommand('copy');
-      document.body.removeChild(textArea);
-      return success;
-    } catch (err) {
-      console.error('All copy fallbacks failed:', err);
-      return false;
-    }
-  }
+  });
 
-  function openSocialShareModal() {
-    if (!socialShareModal) return;
-    const shareText = generateSocialShareText();
-    if (socialSharePreviewText) {
-      socialSharePreviewText.innerText = shareText;
-    }
-    socialShareModal.classList.remove('hidden');
-  }
+  // Create an elegant capture card container with fixed desktop-grade width (960px)
+  const captureWrapper = document.createElement('div');
+  captureWrapper.style.position = 'fixed';
+  captureWrapper.style.left = '-99999px';
+  captureWrapper.style.top = '0';
+  captureWrapper.style.width = '960px';
+  captureWrapper.style.background = '#ffffff';
+  captureWrapper.style.borderRadius = '24px';
+  captureWrapper.style.padding = '24px 28px 28px 28px';
+  captureWrapper.style.boxSizing = 'border-box';
+  captureWrapper.style.fontFamily = "'Prompt', -apple-system, BlinkMacSystemFont, sans-serif";
+  captureWrapper.style.border = '1.5px solid #f1f5f9';
 
-  function closeSocialShareModal() {
-    if (!socialShareModal) return;
-    socialShareModal.classList.add('hidden');
-  }
-
-  // Helper: Capture 3 Cards [1][2][3] Side-by-Side into a Share Image (No long synthesis)
-  async function captureFortuneCardBlob() {
-    const cardsBoard = document.getElementById('resultCardsBoard');
-    if (!cardsBoard) return null;
-
-    const questionBanner = document.getElementById('resultQuestionBanner');
-    const questionText = questionBanner ? (questionBanner.querySelector('.result-question-title')?.innerText || '') : '';
-    const deckBadge = questionBanner ? (questionBanner.querySelector('.badge-deck')?.innerText || 'ไพ่เทพเหมียว (92 ใบ)') : 'ไพ่เทพเหมียว';
-
-    // Clone the cards board and force horizontal 3-card side-by-side layout [1][2][3]
-    const cloneBoard = cardsBoard.cloneNode(true);
-    
-    // Copy computed image sources to cloned images to guarantee instant render
-    const origImages = cardsBoard.querySelectorAll('img');
-    const cloneImages = cloneBoard.querySelectorAll('img');
-    origImages.forEach((img, idx) => {
-      if (cloneImages[idx]) {
-        cloneImages[idx].src = img.currentSrc || img.src;
-      }
-    });
-
-    // Create an elegant capture card container with fixed desktop-grade width (960px)
-    const captureWrapper = document.createElement('div');
-    captureWrapper.style.position = 'fixed';
-    captureWrapper.style.left = '-99999px';
-    captureWrapper.style.top = '0';
-    captureWrapper.style.width = '960px';
-    captureWrapper.style.background = '#ffffff';
-    captureWrapper.style.borderRadius = '24px';
-    captureWrapper.style.padding = '24px 28px 28px 28px';
-    captureWrapper.style.boxSizing = 'border-box';
-    captureWrapper.style.fontFamily = "'Prompt', -apple-system, BlinkMacSystemFont, sans-serif";
-    captureWrapper.style.border = '1.5px solid #f1f5f9';
-
-    // Compact Header banner with branding & question
-    const headerDiv = document.createElement('div');
-    headerDiv.style.marginBottom = '20px';
-    headerDiv.style.paddingBottom = '14px';
-    headerDiv.style.borderBottom = '2px solid #f1f5f9';
-    headerDiv.innerHTML = `
+  // Compact Header banner with branding & question
+  const headerDiv = document.createElement('div');
+  headerDiv.style.marginBottom = '20px';
+  headerDiv.style.paddingBottom = '14px';
+  headerDiv.style.borderBottom = '2px solid #f1f5f9';
+  headerDiv.innerHTML = `
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;">🐾 ${deckBadge}</span>
@@ -3650,405 +3593,405 @@ ${baziPromptText}
       </div>` : ''}
     `;
 
-    // Count how many cards are present
-    const cardItems = cloneBoard.querySelectorAll('.result-card-item');
-    const cardCount = cardItems.length || 3;
+  // Count how many cards are present
+  const cardItems = cloneBoard.querySelectorAll('.result-card-item');
+  const cardCount = cardItems.length || 3;
 
-    // Force cloneBoard into horizontal [1][2][3] layout
-    cloneBoard.style.display = 'grid';
-    cloneBoard.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
-    cloneBoard.style.gap = '18px';
-    cloneBoard.style.margin = '0';
-    cloneBoard.style.padding = '0';
-    cloneBoard.style.width = '100%';
-    cloneBoard.style.boxSizing = 'border-box';
+  // Force cloneBoard into horizontal [1][2][3] layout
+  cloneBoard.style.display = 'grid';
+  cloneBoard.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
+  cloneBoard.style.gap = '18px';
+  cloneBoard.style.margin = '0';
+  cloneBoard.style.padding = '0';
+  cloneBoard.style.width = '100%';
+  cloneBoard.style.boxSizing = 'border-box';
 
-    // Normalize each card item for optimal crisp rendering
-    cardItems.forEach(item => {
-      item.style.display = 'flex';
-      item.style.flexDirection = 'column';
-      item.style.width = '100%';
-      item.style.boxSizing = 'border-box';
-      item.style.background = '#ffffff';
-      item.style.borderRadius = '18px';
-      item.style.border = '1px solid #e2e8f0';
-      item.style.padding = '12px 12px 14px 12px';
-      item.style.boxShadow = '0 4px 16px rgba(0,0,0,0.04)';
-      item.style.overflow = 'hidden';
+  // Normalize each card item for optimal crisp rendering
+  cardItems.forEach(item => {
+    item.style.display = 'flex';
+    item.style.flexDirection = 'column';
+    item.style.width = '100%';
+    item.style.boxSizing = 'border-box';
+    item.style.background = '#ffffff';
+    item.style.borderRadius = '18px';
+    item.style.border = '1px solid #e2e8f0';
+    item.style.padding = '12px 12px 14px 12px';
+    item.style.boxShadow = '0 4px 16px rgba(0,0,0,0.04)';
+    item.style.overflow = 'hidden';
 
-      const media = item.querySelector('.result-card-media');
-      if (media) {
-        media.style.width = '100%';
-        media.style.borderRadius = '12px';
-        media.style.overflow = 'hidden';
-      }
-
-      const img = item.querySelector('img');
-      if (img) {
-        img.style.width = '100%';
-        img.style.height = 'auto';
-        img.style.display = 'block';
-        img.style.borderRadius = '12px';
-        img.style.aspectRatio = '3/5';
-        img.style.objectFit = 'cover';
-      }
-    });
-
-    captureWrapper.appendChild(headerDiv);
-    captureWrapper.appendChild(cloneBoard);
-    document.body.appendChild(captureWrapper);
-
-    try {
-      if (typeof html2canvas === 'function') {
-        const canvas = await html2canvas(captureWrapper, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          logging: false,
-          width: 960
-        });
-        return await new Promise((resolve) => {
-          canvas.toBlob((blob) => resolve(blob), 'image/png', 0.95);
-        });
-      }
-    } catch (err) {
-      console.warn('html2canvas capture error:', err);
-    } finally {
-      if (captureWrapper.parentNode) {
-        captureWrapper.parentNode.removeChild(captureWrapper);
-      }
-    }
-    return null;
-  }
-
-  // Unified Handler: Share with Auto Image & Text to Social (User confirms Post)
-  async function handleSocialShareWithMedia(platform = 'all') {
-    const text = generateSocialShareText();
-    showSocialToast('🔮 กำลังเตรียมรูปภาพคำทำนายและข้อความ... 🐾✨');
-
-    let imageBlob = null;
-    try {
-      imageBlob = await captureFortuneCardBlob();
-    } catch (e) {
-      console.warn('Capture error:', e);
+    const media = item.querySelector('.result-card-media');
+    if (media) {
+      media.style.width = '100%';
+      media.style.borderRadius = '12px';
+      media.style.overflow = 'hidden';
     }
 
-    const imageFile = imageBlob ? new File([imageBlob], 'MaeMorTidTid_Fortune_' + Date.now() + '.png', { type: 'image/png' }) : null;
-
-    // 1. Mobile & Web Share API (นำทั้งรูปภาพและแคปชั่นไปใส่ในโพสต์ของแอปโซเชียลอัตโนมัติ โดย user กดปุ่มโพสต์เอง)
-    if (navigator.canShare && imageFile && navigator.canShare({ files: [imageFile] })) {
-      try {
-        closeSocialShareModal();
-        await navigator.share({
-          title: 'ผลทำนายไพ่เทพเหมียว - แม่หมอตึ๊ดตึ๊ด 🐾✨',
-          text: text,
-          files: [imageFile]
-        });
-        showSocialToast('✨ ระบบนำรูปและข้อความไปวางในโพสต์แล้ว ตรวจสอบแล้วกดโพสต์ได้เลยนะคะ 💖');
-        return;
-      } catch (err) {
-        if (err.name === 'AbortError') return; // User closed share sheet
-        console.warn('Native share failed, fallback to clipboard/browser:', err);
-      }
+    const img = item.querySelector('img');
+    if (img) {
+      img.style.width = '100%';
+      img.style.height = 'auto';
+      img.style.display = 'block';
+      img.style.borderRadius = '12px';
+      img.style.aspectRatio = '3/5';
+      img.style.objectFit = 'cover';
     }
-
-    // 2. Fallback on Desktop or unsupported browsers:
-    await copyToClipboardFallback(text);
-
-    if (imageBlob && navigator.clipboard && window.ClipboardItem) {
-      try {
-        await navigator.clipboard.write([
-          new ClipboardItem({ 'image/png': imageBlob })
-        ]);
-      } catch (clipErr) {
-        console.log('Clipboard image item skipped:', clipErr);
-      }
-    }
-
-    if (imageBlob) {
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(imageBlob);
-      a.download = 'MaeMorTidTid_Fortune_' + Date.now() + '.png';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(a.href), 10000);
-    }
-
-    closeSocialShareModal();
-
-    if (platform === 'fb') {
-      showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! วาง (Ctrl+V) ในกล่องสร้างโพสต์ Facebook ได้เลยนะคะ 🐾');
-      setTimeout(() => window.open('https://www.facebook.com/', '_blank'), 600);
-    } else if (platform === 'tt') {
-      showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
-      setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 600);
-    } else if (platform === 'ig') {
-      showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
-      setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
-    } else if (platform === 'line') {
-      showSocialToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
-      setTimeout(() => {
-        if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
-          try {
-            if (liff.isApiAvailable('shareTargetPicker')) {
-              liff.shareTargetPicker([{ type: 'text', text }]);
-              return;
-            } else if (liff.isInClient()) {
-              liff.sendMessages([{ type: 'text', text }]);
-              return;
-            }
-          } catch (err) {
-            console.log('LINE share error:', err);
-          }
-        }
-        const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
-        window.open(lineUrl, '_blank');
-      }, 600);
-    } else {
-      showSocialToast('✨ ก๊อปปี้คำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
-    }
-  }
-
-  // Direct 4 Social Share Icon Buttons
-  const shareFbDirectBtn = document.getElementById('shareFbDirectBtn');
-  const shareTtDirectBtn = document.getElementById('shareTtDirectBtn');
-  const shareIgDirectBtn = document.getElementById('shareIgDirectBtn');
-  const shareLineDirectBtn = document.getElementById('shareLineDirectBtn');
-
-  if (shareFbDirectBtn) {
-    shareFbDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
-  }
-  if (shareTtDirectBtn) {
-    shareTtDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('tt'));
-  }
-  if (shareIgDirectBtn) {
-    shareIgDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
-  }
-  if (shareLineDirectBtn) {
-    shareLineDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
-  }
-
-  if (shareToSocialBtn) {
-    shareToSocialBtn.addEventListener('click', () => {
-      if (navigator.share && navigator.canShare && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        handleSocialShareWithMedia('all');
-      } else {
-        openSocialShareModal();
-      }
-    });
-  }
-  if (shareToLineBtn) {
-    shareToLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
-  }
-  if (closeSocialShareBtn) {
-    closeSocialShareBtn.addEventListener('click', closeSocialShareModal);
-  }
-  if (socialShareModal) {
-    socialShareModal.addEventListener('click', (e) => {
-      if (e.target === socialShareModal) {
-        closeSocialShareModal();
-      }
-    });
-  }
-
-  // Platform Button Handlers (Modal buttons if present)
-  if (shareFbBtn) {
-    shareFbBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
-  }
-  if (shareTtBtn) {
-    shareTtBtn.addEventListener('click', () => handleSocialShareWithMedia('tt'));
-  }
-  if (shareIgBtn) {
-    shareIgBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
-  }
-  if (shareLineBtn) {
-    shareLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
-  }
-  setTimeout(initLineLiff, 500);
-
-  // ==========================================================================
-  // ORACLE BAZI BOOSTER & POPULAR QUESTION CHIPS CONTROLLER
-  // ==========================================================================
-  function initOracleBaziBooster() {
-    const enableCheck = document.getElementById('oracleEnableBaziCheck');
-    const boosterBody = document.getElementById('oracleBaziBody');
-    const autofillBtn = document.getElementById('oracleBaziAutoFillBtn');
-    const daySel = document.getElementById('oracleBaziDay');
-    const monthSel = document.getElementById('oracleBaziMonth');
-    const yearSel = document.getElementById('oracleBaziYear');
-    const hourSel = document.getElementById('oracleBaziHour');
-    const minSel = document.getElementById('oracleBaziMinute');
-    const unknownCheck = document.getElementById('oracleBaziUnknownTimeCheck');
-    const unknownWrap = document.getElementById('oracleBaziUnknownTimeWrap');
-    const timeWrap = document.getElementById('oracleBaziTimeWrap');
-    const genderSel = document.getElementById('oracleBaziGender');
-    const nameInput = document.getElementById('oracleBaziName');
-
-    // Populate days 1-31
-    if (daySel && daySel.options.length === 0) {
-      for (let d = 1; d <= 31; d++) {
-        const opt = document.createElement('option');
-        opt.value = d;
-        opt.textContent = 'วันที่ ' + d;
-        if (d === 18) opt.selected = true;
-        daySel.appendChild(opt);
-      }
-    }
-
-    // Populate years
-    if (yearSel && yearSel.options.length === 0) {
-      const currentYear = new Date().getFullYear();
-      for (let y = currentYear; y >= 1930; y--) {
-        const opt = document.createElement('option');
-        opt.value = y;
-        opt.textContent = y + ' (พ.ศ. ' + (y + 543) + ')';
-        if (y === 1998) opt.selected = true;
-        yearSel.appendChild(opt);
-      }
-    }
-
-    // Populate hours
-    if (hourSel && hourSel.options.length === 0) {
-      for (let h = 0; h < 24; h++) {
-        const opt = document.createElement('option');
-        opt.value = h;
-        const padH = String(h).padStart(2, '0');
-        opt.textContent = padH + ':00 น.';
-        if (h === 12) opt.selected = true;
-        hourSel.appendChild(opt);
-      }
-    }
-
-    // Populate minutes
-    if (minSel && minSel.options.length === 0) {
-      for (let m = 0; m < 60; m += 5) {
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = String(m).padStart(2, '0') + ' นาที';
-        if (m === 0) opt.selected = true;
-        minSel.appendChild(opt);
-      }
-    }
-
-    // Toggle booster body
-    if (enableCheck) {
-      enableCheck.addEventListener('change', () => {
-        const isChecked = enableCheck.checked;
-        if (boosterBody) boosterBody.classList.toggle('hidden', !isChecked);
-      });
-    }
-
-    // Unknown time checkbox
-    if (unknownCheck) {
-      unknownCheck.addEventListener('change', () => {
-        const isUnknown = unknownCheck.checked;
-        if (hourSel) hourSel.disabled = isUnknown;
-        if (minSel) minSel.disabled = isUnknown;
-        if (timeWrap) timeWrap.style.opacity = isUnknown ? '0.4' : '1';
-      });
-    }
-
-    // Popular question chips
-    document.querySelectorAll('.oracle-chip-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const q = btn.getAttribute('data-q');
-        if (q && userQuestionInput) {
-          userQuestionInput.value = q;
-          userQuestionInput.focus();
-          const fan = document.getElementById('deckFanWrapper');
-          if (fan) fan.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      });
-    });
-
-    // Autofill button check
-    const syncAutofillVisibility = () => {
-      const user = window.AuthManager ? window.AuthManager.currentUser : null;
-      if (autofillBtn) {
-        autofillBtn.classList.toggle('hidden', !user);
-      }
-    };
-    syncAutofillVisibility();
-
-    if (autofillBtn) {
-      autofillBtn.addEventListener('click', () => {
-        const user = window.AuthManager ? window.AuthManager.currentUser : null;
-        if (!user) return;
-        if (nameInput) nameInput.value = user.name || user.firstName || 'ดวงของฉัน';
-        if (genderSel && user.gender) genderSel.value = user.gender;
-        if (user.birthDate && yearSel && monthSel && daySel) {
-          const parts = user.birthDate.split('-');
-          if (parts.length === 3) {
-            yearSel.value = parseInt(parts[0], 10);
-            monthSel.value = parseInt(parts[1], 10);
-            daySel.value = parseInt(parts[2], 10);
-          }
-        }
-        if (user.birthTime && hourSel && minSel) {
-          const tParts = user.birthTime.split(':');
-          if (tParts.length >= 2) {
-            hourSel.value = parseInt(tParts[0], 10);
-            minSel.value = Math.floor(parseInt(tParts[1], 10) / 5) * 5;
-          }
-        }
-      });
-    }
-  }
-
-  function getOracleBaziContext() {
-    const check = document.getElementById('oracleEnableBaziCheck');
-    if (!check || !check.checked) return null;
-
-    const daySel = document.getElementById('oracleBaziDay');
-    const monthSel = document.getElementById('oracleBaziMonth');
-    const yearSel = document.getElementById('oracleBaziYear');
-    const hourSel = document.getElementById('oracleBaziHour');
-    const minSel = document.getElementById('oracleBaziMinute');
-    const genderSel = document.getElementById('oracleBaziGender');
-    const unknownCheck = document.getElementById('oracleBaziUnknownTimeCheck');
-    const nameInput = document.getElementById('oracleBaziName');
-
-    const y = parseInt(yearSel?.value, 10) || 1998;
-    const m = parseInt(monthSel?.value, 10) || 8;
-    const d = parseInt(daySel?.value, 10) || 18;
-    const gender = genderSel?.value || 'female';
-    const isUnknown = unknownCheck?.checked || false;
-    const timeStr = isUnknown ? '12:00' : (String(hourSel?.value || 12).padStart(2, '0') + ':' + String(minSel?.value || 0).padStart(2, '0'));
-    const dateStr = y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-    const personName = nameInput?.value?.trim() || 'ดวงชะตาของคุณ';
-
-    let chartData = null;
-    if (window.BaziEngine && typeof window.BaziEngine.calculate === 'function') {
-      try {
-        chartData = window.BaziEngine.calculate(dateStr, timeStr, gender);
-      } catch (e) {
-        console.warn('[Oracle] BaziEngine error:', e);
-      }
-    }
-
-    return {
-      enabled: true,
-      personName,
-      dateStr,
-      timeStr,
-      gender,
-      chartData
-    };
-  }
-
-  // Initialize Oracle BaZi Booster
-  initOracleBaziBooster();
-
-
-  // Responsive fan deck re-render on orientation change or window resize
-  let resizeTimer = null;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (fortuneState.step === 2) {
-        renderFanDeck();
-      }
-    }, 250);
   });
+
+  captureWrapper.appendChild(headerDiv);
+  captureWrapper.appendChild(cloneBoard);
+  document.body.appendChild(captureWrapper);
+
+  try {
+    if (typeof html2canvas === 'function') {
+      const canvas = await html2canvas(captureWrapper, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: 960
+      });
+      return await new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), 'image/png', 0.95);
+      });
+    }
+  } catch (err) {
+    console.warn('html2canvas capture error:', err);
+  } finally {
+    if (captureWrapper.parentNode) {
+      captureWrapper.parentNode.removeChild(captureWrapper);
+    }
+  }
+  return null;
+}
+
+// Unified Handler: Share with Auto Image & Text to Social (User confirms Post)
+async function handleSocialShareWithMedia(platform = 'all') {
+  const text = generateSocialShareText();
+  showSocialToast('🔮 กำลังเตรียมรูปภาพคำทำนายและข้อความ... 🐾✨');
+
+  let imageBlob = null;
+  try {
+    imageBlob = await captureFortuneCardBlob();
+  } catch (e) {
+    console.warn('Capture error:', e);
+  }
+
+  const imageFile = imageBlob ? new File([imageBlob], 'MaeMorTidTid_Fortune_' + Date.now() + '.png', { type: 'image/png' }) : null;
+
+  // 1. Mobile & Web Share API (นำทั้งรูปภาพและแคปชั่นไปใส่ในโพสต์ของแอปโซเชียลอัตโนมัติ โดย user กดปุ่มโพสต์เอง)
+  if (navigator.canShare && imageFile && navigator.canShare({ files: [imageFile] })) {
+    try {
+      closeSocialShareModal();
+      await navigator.share({
+        title: 'ผลทำนายไพ่เทพเหมียว - แม่หมอตึ๊ดตึ๊ด 🐾✨',
+        text: text,
+        files: [imageFile]
+      });
+      showSocialToast('✨ ระบบนำรูปและข้อความไปวางในโพสต์แล้ว ตรวจสอบแล้วกดโพสต์ได้เลยนะคะ 💖');
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return; // User closed share sheet
+      console.warn('Native share failed, fallback to clipboard/browser:', err);
+    }
+  }
+
+  // 2. Fallback on Desktop or unsupported browsers:
+  await copyToClipboardFallback(text);
+
+  if (imageBlob && navigator.clipboard && window.ClipboardItem) {
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': imageBlob })
+      ]);
+    } catch (clipErr) {
+      console.log('Clipboard image item skipped:', clipErr);
+    }
+  }
+
+  if (imageBlob) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(imageBlob);
+    a.download = 'MaeMorTidTid_Fortune_' + Date.now() + '.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  }
+
+  closeSocialShareModal();
+
+  if (platform === 'fb') {
+    showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! วาง (Ctrl+V) ในกล่องสร้างโพสต์ Facebook ได้เลยนะคะ 🐾');
+    setTimeout(() => window.open('https://www.facebook.com/', '_blank'), 600);
+  } else if (platform === 'tt') {
+    showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
+    setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 600);
+  } else if (platform === 'ig') {
+    showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
+    setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
+  } else if (platform === 'line') {
+    showSocialToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
+    setTimeout(() => {
+      if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
+        try {
+          if (liff.isApiAvailable('shareTargetPicker')) {
+            liff.shareTargetPicker([{ type: 'text', text }]);
+            return;
+          } else if (liff.isInClient()) {
+            liff.sendMessages([{ type: 'text', text }]);
+            return;
+          }
+        } catch (err) {
+          console.log('LINE share error:', err);
+        }
+      }
+      const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
+      window.open(lineUrl, '_blank');
+    }, 600);
+  } else {
+    showSocialToast('✨ ก๊อปปี้คำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
+  }
+}
+
+// Direct 4 Social Share Icon Buttons
+const shareFbDirectBtn = document.getElementById('shareFbDirectBtn');
+const shareTtDirectBtn = document.getElementById('shareTtDirectBtn');
+const shareIgDirectBtn = document.getElementById('shareIgDirectBtn');
+const shareLineDirectBtn = document.getElementById('shareLineDirectBtn');
+
+if (shareFbDirectBtn) {
+  shareFbDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
+}
+if (shareTtDirectBtn) {
+  shareTtDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('tt'));
+}
+if (shareIgDirectBtn) {
+  shareIgDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
+}
+if (shareLineDirectBtn) {
+  shareLineDirectBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
+}
+
+if (shareToSocialBtn) {
+  shareToSocialBtn.addEventListener('click', () => {
+    if (navigator.share && navigator.canShare && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      handleSocialShareWithMedia('all');
+    } else {
+      openSocialShareModal();
+    }
+  });
+}
+if (shareToLineBtn) {
+  shareToLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
+}
+if (closeSocialShareBtn) {
+  closeSocialShareBtn.addEventListener('click', closeSocialShareModal);
+}
+if (socialShareModal) {
+  socialShareModal.addEventListener('click', (e) => {
+    if (e.target === socialShareModal) {
+      closeSocialShareModal();
+    }
+  });
+}
+
+// Platform Button Handlers (Modal buttons if present)
+if (shareFbBtn) {
+  shareFbBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
+}
+if (shareTtBtn) {
+  shareTtBtn.addEventListener('click', () => handleSocialShareWithMedia('tt'));
+}
+if (shareIgBtn) {
+  shareIgBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
+}
+if (shareLineBtn) {
+  shareLineBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
+}
+setTimeout(initLineLiff, 500);
+
+// ==========================================================================
+// ORACLE BAZI BOOSTER & POPULAR QUESTION CHIPS CONTROLLER
+// ==========================================================================
+function initOracleBaziBooster() {
+  const enableCheck = document.getElementById('oracleEnableBaziCheck');
+  const boosterBody = document.getElementById('oracleBaziBody');
+  const autofillBtn = document.getElementById('oracleBaziAutoFillBtn');
+  const daySel = document.getElementById('oracleBaziDay');
+  const monthSel = document.getElementById('oracleBaziMonth');
+  const yearSel = document.getElementById('oracleBaziYear');
+  const hourSel = document.getElementById('oracleBaziHour');
+  const minSel = document.getElementById('oracleBaziMinute');
+  const unknownCheck = document.getElementById('oracleBaziUnknownTimeCheck');
+  const unknownWrap = document.getElementById('oracleBaziUnknownTimeWrap');
+  const timeWrap = document.getElementById('oracleBaziTimeWrap');
+  const genderSel = document.getElementById('oracleBaziGender');
+  const nameInput = document.getElementById('oracleBaziName');
+
+  // Populate days 1-31
+  if (daySel && daySel.options.length === 0) {
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = 'วันที่ ' + d;
+      if (d === 18) opt.selected = true;
+      daySel.appendChild(opt);
+    }
+  }
+
+  // Populate years
+  if (yearSel && yearSel.options.length === 0) {
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear; y >= 1930; y--) {
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = y + ' (พ.ศ. ' + (y + 543) + ')';
+      if (y === 1998) opt.selected = true;
+      yearSel.appendChild(opt);
+    }
+  }
+
+  // Populate hours
+  if (hourSel && hourSel.options.length === 0) {
+    for (let h = 0; h < 24; h++) {
+      const opt = document.createElement('option');
+      opt.value = h;
+      const padH = String(h).padStart(2, '0');
+      opt.textContent = padH + ':00 น.';
+      if (h === 12) opt.selected = true;
+      hourSel.appendChild(opt);
+    }
+  }
+
+  // Populate minutes
+  if (minSel && minSel.options.length === 0) {
+    for (let m = 0; m < 60; m += 5) {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = String(m).padStart(2, '0') + ' นาที';
+      if (m === 0) opt.selected = true;
+      minSel.appendChild(opt);
+    }
+  }
+
+  // Toggle booster body
+  if (enableCheck) {
+    enableCheck.addEventListener('change', () => {
+      const isChecked = enableCheck.checked;
+      if (boosterBody) boosterBody.classList.toggle('hidden', !isChecked);
+    });
+  }
+
+  // Unknown time checkbox
+  if (unknownCheck) {
+    unknownCheck.addEventListener('change', () => {
+      const isUnknown = unknownCheck.checked;
+      if (hourSel) hourSel.disabled = isUnknown;
+      if (minSel) minSel.disabled = isUnknown;
+      if (timeWrap) timeWrap.style.opacity = isUnknown ? '0.4' : '1';
+    });
+  }
+
+  // Popular question chips
+  document.querySelectorAll('.oracle-chip-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.getAttribute('data-q');
+      if (q && userQuestionInput) {
+        userQuestionInput.value = q;
+        userQuestionInput.focus();
+        const fan = document.getElementById('deckFanWrapper');
+        if (fan) fan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  });
+
+  // Autofill button check
+  const syncAutofillVisibility = () => {
+    const user = window.AuthManager ? window.AuthManager.currentUser : null;
+    if (autofillBtn) {
+      autofillBtn.classList.toggle('hidden', !user);
+    }
+  };
+  syncAutofillVisibility();
+
+  if (autofillBtn) {
+    autofillBtn.addEventListener('click', () => {
+      const user = window.AuthManager ? window.AuthManager.currentUser : null;
+      if (!user) return;
+      if (nameInput) nameInput.value = user.name || user.firstName || 'ดวงของฉัน';
+      if (genderSel && user.gender) genderSel.value = user.gender;
+      if (user.birthDate && yearSel && monthSel && daySel) {
+        const parts = user.birthDate.split('-');
+        if (parts.length === 3) {
+          yearSel.value = parseInt(parts[0], 10);
+          monthSel.value = parseInt(parts[1], 10);
+          daySel.value = parseInt(parts[2], 10);
+        }
+      }
+      if (user.birthTime && hourSel && minSel) {
+        const tParts = user.birthTime.split(':');
+        if (tParts.length >= 2) {
+          hourSel.value = parseInt(tParts[0], 10);
+          minSel.value = Math.floor(parseInt(tParts[1], 10) / 5) * 5;
+        }
+      }
+    });
+  }
+}
+
+function getOracleBaziContext() {
+  const check = document.getElementById('oracleEnableBaziCheck');
+  if (!check || !check.checked) return null;
+
+  const daySel = document.getElementById('oracleBaziDay');
+  const monthSel = document.getElementById('oracleBaziMonth');
+  const yearSel = document.getElementById('oracleBaziYear');
+  const hourSel = document.getElementById('oracleBaziHour');
+  const minSel = document.getElementById('oracleBaziMinute');
+  const genderSel = document.getElementById('oracleBaziGender');
+  const unknownCheck = document.getElementById('oracleBaziUnknownTimeCheck');
+  const nameInput = document.getElementById('oracleBaziName');
+
+  const y = parseInt(yearSel?.value, 10) || 1998;
+  const m = parseInt(monthSel?.value, 10) || 8;
+  const d = parseInt(daySel?.value, 10) || 18;
+  const gender = genderSel?.value || 'female';
+  const isUnknown = unknownCheck?.checked || false;
+  const timeStr = isUnknown ? '12:00' : (String(hourSel?.value || 12).padStart(2, '0') + ':' + String(minSel?.value || 0).padStart(2, '0'));
+  const dateStr = y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+  const personName = nameInput?.value?.trim() || 'ดวงชะตาของคุณ';
+
+  let chartData = null;
+  if (window.BaziEngine && typeof window.BaziEngine.calculate === 'function') {
+    try {
+      chartData = window.BaziEngine.calculate(dateStr, timeStr, gender);
+    } catch (e) {
+      console.warn('[Oracle] BaziEngine error:', e);
+    }
+  }
+
+  return {
+    enabled: true,
+    personName,
+    dateStr,
+    timeStr,
+    gender,
+    chartData
+  };
+}
+
+// Initialize Oracle BaZi Booster
+initOracleBaziBooster();
+
+
+// Responsive fan deck re-render on orientation change or window resize
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (fortuneState.step === 2) {
+      renderFanDeck();
+    }
+  }, 250);
+});

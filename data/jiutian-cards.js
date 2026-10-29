@@ -7,6 +7,7 @@ const jiutianCards = [
   {
     "card_id": "M00",
     "id": 1,
+    "keyword": "เริ่มต้นใหม่, อิสรภาพ, ผจญภัย, กล้าเสี่ยง, ไม่คิดมาก",
     "number": 0,
     "name_en": "The Fool",
     "name_th": "จีกง",
@@ -65,6 +66,7 @@ const jiutianCards = [
   {
     "card_id": "M01",
     "id": 2,
+    "keyword": "สร้างสรรค์, นวัตกรรม, นักคิด, แปรธาตุ, เสกให้เป็นจริง",
     "number": 1,
     "name_en": "The Magician",
     "name_th": "ไท่ซ่างเหล่าจวิน",
@@ -123,6 +125,7 @@ const jiutianCards = [
   {
     "card_id": "M02",
     "id": 3,
+    "keyword": "สัญชาตญาณ, ลึกลับ, จิตวิทยา, อ่านใจ, มองทะลุแก่นแท้",
     "number": 2,
     "name_en": "Card 3",
     "name_th": "จิ่วเทียนเสวียนหนี่ว์",
@@ -181,6 +184,7 @@ const jiutianCards = [
   {
     "card_id": "M03",
     "id": 4,
+    "keyword": "ความเป็นแม่, โอบอุ้ม, ทำนุบำรุง, เยียวยาใจ, อุดมสมบูรณ์",
     "number": 3,
     "name_en": "The Empress",
     "name_th": "พระแม่หนีหวา",
@@ -239,6 +243,7 @@ const jiutianCards = [
   {
     "card_id": "M04",
     "id": 5,
+    "keyword": "อำนาจปกครอง, กฎระเบียบ, เหตุผล, ความเป็นพ่อ, เด็ดขาด",
     "number": 4,
     "name_en": "The Emperor",
     "name_th": "เง็กเซียนฮ่องเต้",
@@ -297,6 +302,7 @@ const jiutianCards = [
   {
     "card_id": "M05",
     "id": 6,
+    "keyword": "ปัญญาความรู้, ศีลธรรม, สิ่งศักดิ์สิทธิ์, ครูอาจารย์, จริยธรรม",
     "number": 5,
     "name_en": "The Hierophant",
     "name_th": "ฝูซี",
@@ -355,6 +361,7 @@ const jiutianCards = [
   {
     "card_id": "M06",
     "id": 7,
+    "keyword": "คู่แท้, ความรักมั่นคง, ความผูกพัน, การรอคอย, เพียรเพื่อรัก",
     "number": 6,
     "name_en": "Card 7",
     "name_th": "หนิวหลาง & จื้อหนี่ว์",
@@ -413,6 +420,7 @@ const jiutianCards = [
   {
     "card_id": "M07",
     "id": 8,
+    "keyword": "พุ่งทะยาน, ความเร็ว, มุ่งมั่น, กล้าหาญ, ลุยถึงเป้าหมาย",
     "number": 7,
     "name_en": "The Chariot",
     "name_th": "นาจา",
@@ -471,6 +479,7 @@ const jiutianCards = [
   {
     "card_id": "M08",
     "id": 9,
+    "keyword": "เข้มแข็งภายใน, เมตตาธรรม, ขันติ, สติปัญญา, อ่อนโยนสยบแข็งกร้าว",
     "number": 8,
     "name_en": "Strength",
     "name_th": "พระถังซัมจั๋ง",
@@ -529,6 +538,7 @@ const jiutianCards = [
   {
     "card_id": "M09",
     "id": 10,
+    "keyword": "ปลีกวิเวก, สันโดษ, สงบนิ่ง, ทบทวนตัวเอง, ปรัชญาชีวิต",
     "number": 9,
     "name_en": "The Hermit",
     "name_th": "เฉินถวน",
@@ -592,6 +602,7 @@ const jiutianCards = [
   {
     "card_id": "M10",
     "id": 11,
+    "keyword": "กงล้อโชคชะตา, ดวงเปลี่ยน, จุดเปลี่ยนใหญ่, จังหวะเวลา, วัฏจักร",
     "number": 10,
     "name_en": "Card 11",
     "name_th": "ไท้ส่วยเอี๊ย",
@@ -650,6 +661,7 @@ const jiutianCards = [
   {
     "card_id": "M11",
     "id": 12,
+    "keyword": "ความยุติธรรม, เที่ยงธรรม, หลักฐาน, การตัดสิน, คดีความ",
     "number": 11,
     "name_en": "Justice",
     "name_th": "เปาบุ้นจิ้น",
@@ -708,6 +720,7 @@ const jiutianCards = [
   {
     "card_id": "M12",
     "id": 13,
+    "keyword": "มุมมองกลับด้าน, คิดต่าง, หยุดนิ่งมีสติ, อดทนรอคอย, ค้นพบสัจธรรม",
     "number": 12,
     "name_en": "The Hanged Man",
     "name_th": "โจวเหวินหวาง",
@@ -766,6 +779,7 @@ const jiutianCards = [
   {
     "card_id": "M13",
     "id": 14,
+    "keyword": "สิ้นสุดสิ่งเก่า, คัดทิ้งสิ่งไม่จำเป็น, เปลี่ยนผ่าน, ตัดจบ, เกิดใหม่",
     "number": 13,
     "name_en": "Death",
     "name_th": "เหยียนหลัวหวาง",
@@ -829,6 +843,7 @@ const jiutianCards = [
   {
     "card_id": "M14",
     "id": 15,
+    "keyword": "สมดุล, ทางสายกลาง, ประสานความต่าง, เป็นกลาง, กลมกลืน",
     "number": 14,
     "name_en": "Temperance",
     "name_th": "พระโพธิสัตว์กวนอิม",
@@ -887,6 +902,7 @@ const jiutianCards = [
   {
     "card_id": "M15",
     "id": 16,
+    "keyword": "ความลุ่มหลง, กิเลสตัณหา, เสน่ห์เย้ายวน, ความโลภ, ภาพลวงตา",
     "number": 15,
     "name_en": "Card 16",
     "name_th": "จิ้งจอกเก้าหาง",
@@ -945,6 +961,7 @@ const jiutianCards = [
   {
     "card_id": "M16",
     "id": 17,
+    "keyword": "เปลี่ยนแปลงฉับพลัน, พังทลายกะทันหัน, จุดเปลี่ยนฟ้าผ่า, วิกฤต, ตื่นรู้",
     "number": 16,
     "name_en": "The Tower",
     "name_th": "เหลยเสิน",
@@ -1008,6 +1025,7 @@ const jiutianCards = [
   {
     "card_id": "M17",
     "id": 18,
+    "keyword": "ความหวัง, โชคดี, ผู้ใหญ่อุปถัมภ์, ลาภลอย, เรื่องดีงาม",
     "number": 17,
     "name_en": "Card 18",
     "name_th": "โต้วหมู่หยวนจวิน",
@@ -1066,6 +1084,7 @@ const jiutianCards = [
   {
     "card_id": "M18",
     "id": 19,
+    "keyword": "คลุมเครือ, สับสน, วังวนอารมณ์, ความเหงา, ความลับซ่อนเร้น",
     "number": 18,
     "name_en": "The Moon",
     "name_th": "ฉางเอ๋อ",
@@ -1129,6 +1148,7 @@ const jiutianCards = [
   {
     "card_id": "M19",
     "id": 20,
+    "keyword": "รุ่งโรจน์, สว่างสดใส, ชีวิตใหม่, ราบรื่น, ความสำเร็จ",
     "number": 19,
     "name_en": "Card 20",
     "name_th": "ไท่เอี๊ยงแชกุง",
@@ -1187,6 +1207,7 @@ const jiutianCards = [
   {
     "card_id": "M20",
     "id": 21,
+    "keyword": "โอกาสครั้งใหม่, ตื่นรู้, มีผู้ชี้ทาง, ปลดปล่อย, แก้ไขตัวเอง",
     "number": 20,
     "name_en": "Card 21",
     "name_th": "พระกษิติครรภโพธิสัตว์",
@@ -1245,6 +1266,7 @@ const jiutianCards = [
   {
     "card_id": "M21",
     "id": 22,
+    "keyword": "สมบูรณ์แบบ, สมหวังทุกประการ, สำเร็จด้วยตัวเอง, ครอบครอง, รวมเป็นหนึ่ง",
     "number": 21,
     "name_en": "The World",
     "name_th": "ผานกู่",
@@ -1308,6 +1330,7 @@ const jiutianCards = [
   {
     "card_id": "W01",
     "id": 23,
+    "keyword": "เมล็ดพันธุ์โอกาส, การเริ่มต้น, เติบโตช้าๆ, ฟูมฟักดูแล, พัฒนาความรู้",
     "number": 1,
     "name_en": "Ace of Wood",
     "name_th": "โอกาสและการเริ่มต้น",
@@ -1371,6 +1394,7 @@ const jiutianCards = [
   {
     "card_id": "W02",
     "id": 24,
+    "keyword": "ทางแยก, เลือกเส้นทาง, ลังเลตัดสินใจ, วางแผนอนาคต, กำหนดทิศทาง",
     "number": 2,
     "name_en": "Two of Wood",
     "name_th": "ลิขิตเส้นทาง",
@@ -1434,6 +1458,7 @@ const jiutianCards = [
   {
     "card_id": "W03",
     "id": 25,
+    "keyword": "เพื่อนร่วมทาง, อุดมการณ์เดียวกัน, พันธมิตร, ร่วมมือกัน, เป้าหมายร่วม",
     "number": 3,
     "name_en": "Three of Wood",
     "name_th": "เพื่อนร่วมอุดมการณ์",
@@ -1497,6 +1522,7 @@ const jiutianCards = [
   {
     "card_id": "W04",
     "id": 26,
+    "keyword": "สร้างรากฐาน, เริ่มจากศูนย์, ก่อร่างสร้างตัว, เข้าที่เข้าทาง, มั่นคง",
     "number": 4,
     "name_en": "Four of Wood",
     "name_th": "ก่อร่างสร้างตัว",
@@ -1560,6 +1586,7 @@ const jiutianCards = [
   {
     "card_id": "W05",
     "id": 27,
+    "keyword": "อัตตาสูง, ยึดความคิดตน, ถกเถียง, ไม่ยอมกัน, ขัดแย้งทางความคิด",
     "number": 5,
     "name_en": "Five of Wood",
     "name_th": "อัตตา",
@@ -1623,6 +1650,7 @@ const jiutianCards = [
   {
     "card_id": "W06",
     "id": 28,
+    "keyword": "เกียรติยศ, ได้รับคำชม, เป็นที่ยอมรับ, มีชื่อเสียง, นับหน้าถือตา",
     "number": 6,
     "name_en": "Six of Wood",
     "name_th": "ยกย่องสรรเสริญ",
@@ -1686,6 +1714,7 @@ const jiutianCards = [
   {
     "card_id": "W07",
     "id": 29,
+    "keyword": "ยืนหยัดจุดยืน, มั่นคงในหลักการ, ไม่วอกแวก, กล้าคิดต่าง, เด็ดเดี่ยว",
     "number": 7,
     "name_en": "Seven of Wood",
     "name_th": "ตั้งมั่นในจุดยืน",
@@ -1749,6 +1778,7 @@ const jiutianCards = [
   {
     "card_id": "W08",
     "id": 30,
+    "keyword": "ข่าวสารรวดเร็ว, ข้อมูลฉับไว, การติดต่อสื่อสาร, ข่าวดีเร่งด่วน, ความคืบหน้า",
     "number": 8,
     "name_en": "Eight of Wood",
     "name_th": "สื่อสารฉับไว",
@@ -1812,6 +1842,7 @@ const jiutianCards = [
   {
     "card_id": "W09",
     "id": 31,
+    "keyword": "ประสบการณ์สูง, ความรู้ลึกซึ้ง, อาวุโส, เชี่ยวชาญ, ผู้รู้จริง",
     "number": 9,
     "name_en": "Nine of Wood",
     "name_th": "ปัญญาและประสบการณ์",
@@ -1875,6 +1906,7 @@ const jiutianCards = [
   {
     "card_id": "W10",
     "id": 32,
+    "keyword": "โหมงานหนัก, แบกภาระเกินตัว, บ้างาน, เหนื่อยล้าสะสม, ลืมดูแลตัวเอง",
     "number": 10,
     "name_en": "Ten of Wood",
     "name_th": "ภาระจากความสำเร็จ",
@@ -1938,6 +1970,7 @@ const jiutianCards = [
   {
     "card_id": "W11",
     "id": 33,
+    "keyword": "การเรียนการศึกษา, งานเอกสาร, ทฤษฎีความรู้, ใฝ่รู้, นักศึกษา",
     "number": 11,
     "name_en": "Page of Wood",
     "name_th": "เทพเหวินซาง",
@@ -2001,6 +2034,7 @@ const jiutianCards = [
   {
     "card_id": "W12",
     "id": 34,
+    "keyword": "ผู้นำยามวิกฤต, มุ่งมั่นเด็ดขาด, กล้าทำสิ่งยาก, แม่นยำ, กอบกู้สถานการณ์",
     "number": 12,
     "name_en": "Knight of Wood",
     "name_th": "โฮ่วอี้",
@@ -2064,6 +2098,7 @@ const jiutianCards = [
   {
     "card_id": "W13",
     "id": 35,
+    "keyword": "เยียวยารักษา, อ่อนโยนมีหลักการ, เมตตา, รักธรรมชาติ, จิตใจบริสุทธิ์",
     "number": 13,
     "name_en": "Queen of Wood",
     "name_th": "หม่ากู่",
@@ -2127,6 +2162,7 @@ const jiutianCards = [
   {
     "card_id": "W14",
     "id": 36,
+    "keyword": "วิสัยทัศน์ไกล, ปกครองด้วยหลักการ, มั่นคงระยะยาว, เป็นร่มเงาพึ่งพิง, มาตรฐานสูง",
     "number": 14,
     "name_en": "King of Wood",
     "name_th": "มหาเทพตงหัวตีจวิน",
@@ -2190,6 +2226,7 @@ const jiutianCards = [
   {
     "card_id": "F01",
     "id": 37,
+    "keyword": "แรงบันดาลใจ, ไอเดียบรรเจิด, ไฟสร้างสรรค์, ตื่นเต้นสดใส, เริ่มต้นคึกคัก",
     "number": 1,
     "name_en": "Ace of Fire",
     "name_th": "แรงบันดาลใจ",
@@ -2255,6 +2292,7 @@ const jiutianCards = [
   {
     "card_id": "F02",
     "id": 38,
+    "keyword": "วางยุทธศาสตร์, เห็นเป้าหมายชัด, กำหนดแนวทาง, วิสัยทัศน์, แผนการรุก",
     "number": 2,
     "name_en": "Card 38",
     "name_th": "วิสัยทัศน์และยุทธศาสตร์",
@@ -2309,6 +2347,7 @@ const jiutianCards = [
   {
     "card_id": "F03",
     "id": 39,
+    "keyword": "ขยายอาณาเขต, เปิดตลาดใหม่, ขยับขยาย, ก้าวหน้า, มองการณ์ไกล",
     "number": 3,
     "name_en": "Three of Fire",
     "name_th": "ขยายอาณาเขต",
@@ -2372,6 +2411,7 @@ const jiutianCards = [
   {
     "card_id": "F04",
     "id": 40,
+    "keyword": "เฉลิมฉลอง, ความสุขปัจจุบัน, สังสรรค์ยินดี, พักใจให้สุข, มิตรภาพอบอุ่น",
     "number": 4,
     "name_en": "Four of Fire",
     "name_th": "เฉลิมฉลองร่วมกัน",
@@ -2435,6 +2475,7 @@ const jiutianCards = [
   {
     "card_id": "F05",
     "id": 41,
+    "keyword": "การแข่งขัน, ประลองฝีมือ, แสดงศักยภาพ, ชิงไหวชิงพริบ, ท้าทาย",
     "number": 5,
     "name_en": "Five of Fire",
     "name_th": "ประลองยุทธ์ชิงชัย",
@@ -2498,6 +2539,7 @@ const jiutianCards = [
   {
     "card_id": "F06",
     "id": 42,
+    "keyword": "ชัยชนะ, เกียรติยศ, เป็นที่ยอมรับ, สำเร็จโดดเด่น, ความภาคภูมิใจ",
     "number": 6,
     "name_en": "Six of Fire",
     "name_th": "ชัยชนะและเกียรติยศ",
@@ -2561,6 +2603,7 @@ const jiutianCards = [
   {
     "card_id": "F07",
     "id": 43,
+    "keyword": "ยืนหยัดต่อสู้, ปกป้องพื้นที่, ไม่ยอมแพ้, คุ้มครองพวกพ้อง, กล้าต้านทาน",
     "number": 7,
     "name_en": "Seven of Fire",
     "name_th": "ยืนหยัดต่อสู้",
@@ -2624,6 +2667,7 @@ const jiutianCards = [
   {
     "card_id": "F08",
     "id": 44,
+    "keyword": "ลงมือทันที, พุ่งทะลวง, จังหวะทอง, รวดเร็วฉับไว, คว้าโอกาส",
     "number": 8,
     "name_en": "Eight of Fire",
     "name_th": "บุกทะลวงทันที",
@@ -2687,6 +2731,7 @@ const jiutianCards = [
   {
     "card_id": "F09",
     "id": 45,
+    "keyword": "ทุ่มหมดหน้าตัก, ปักหลักสู้, เดิมพันครั้งใหญ่, อึดสู้สุดใจ, ไม่ถอย",
     "number": 9,
     "name_en": "Nine of Fire",
     "name_th": "เดิมพันเฮือกสุดท้าย",
@@ -2750,6 +2795,7 @@ const jiutianCards = [
   {
     "card_id": "F10",
     "id": 46,
+    "keyword": "ทุ่มเทสุดหัวใจ, เสียสละเต็มที่, รักในภารกิจ, ยอมเหนื่อยเพื่อฝัน, ศรัทธาแรงกล้า",
     "number": 10,
     "name_en": "Ten of Fire",
     "name_th": "แลกด้วยชีวิต",
@@ -2813,6 +2859,7 @@ const jiutianCards = [
   {
     "card_id": "F11",
     "id": 47,
+    "keyword": "กล้าได้กล้าเสีย, ดื้อรั้น, ไหวพริบดี, รักอิสระ, โฟกัสปัจจุบัน",
     "number": 11,
     "name_en": "Page of Fire",
     "name_th": "หงไห่เอ๋อร์",
@@ -2876,6 +2923,7 @@ const jiutianCards = [
   {
     "card_id": "F12",
     "id": 48,
+    "keyword": "ลุยแหลก, ใจร้อนรวดเร็ว, แก้ปัญหาเฉพาะหน้าเก่ง, คึกคะนอง, พลังล้นเหลือ",
     "number": 12,
     "name_en": "Knight of Fire",
     "name_th": "ซุนหงอคง",
@@ -2939,6 +2987,7 @@ const jiutianCards = [
   {
     "card_id": "F13",
     "id": 49,
+    "keyword": "สง่างาม, คุณธรรมสูงส่ง, เมตตาเอื้อเฟื้อ, สร้างแรงบันดาลใจ, สันติภาพ",
     "number": 13,
     "name_en": "Queen of Fire",
     "name_th": "เฟิ่งหวง",
@@ -3002,6 +3051,7 @@ const jiutianCards = [
   {
     "card_id": "F14",
     "id": 50,
+    "keyword": "ผู้นำทรงพลัง, มั่นใจสูงสุด, ตัดสินใจเด็ดขาด, รับผิดชอบ, คุมเกมอยู่หมัด",
     "number": 14,
     "name_en": "King of Fire",
     "name_th": "มหาเทพจู้หรง",
@@ -3067,6 +3117,7 @@ const jiutianCards = [
   {
     "card_id": "E01",
     "id": 51,
+    "keyword": "จุดเริ่มต้นความมั่งคั่ง, พบทรัพย์สินมีค่า, โอกาสการเงิน, โชคลาภจับต้องได้, มั่นคง",
     "number": 1,
     "name_en": "Ace of Earth",
     "name_th": "ปฐมบทแห่งทรัพย์",
@@ -3131,6 +3182,7 @@ const jiutianCards = [
   {
     "card_id": "E02",
     "id": 52,
+    "keyword": "หมุนเวียนการเงิน, จัดสมดุล, บริหารสภาพคล่อง, ประสานสองสิ่ง, ยืดหยุ่น",
     "number": 2,
     "name_en": "Two of Earth",
     "name_th": "สมดุลหมุนเวียน",
@@ -3193,6 +3245,7 @@ const jiutianCards = [
   {
     "card_id": "E03",
     "id": 53,
+    "keyword": "รวมผู้เชี่ยวชาญ, ทีมเวิร์กมืออาชีพ, ร่วมมือสร้างสรรค์, ประสานความถนัด, งานคุณภาพ",
     "number": 3,
     "name_en": "Three of Earth",
     "name_th": "ภาคีผู้เชี่ยวชาญ",
@@ -3256,6 +3309,7 @@ const jiutianCards = [
   {
     "card_id": "E04",
     "id": 54,
+    "keyword": "หวงแหนทรัพย์สิน, มัธยัสถ์, ตระหนี่, ปกป้องผลประโยชน์, เก็บออม",
     "number": 4,
     "name_en": "Four of Earth",
     "name_th": "หวงแหนสมบัติ",
@@ -3319,6 +3373,7 @@ const jiutianCards = [
   {
     "card_id": "E05",
     "id": 55,
+    "keyword": "ขัดสนการเงิน, ลำบากอัตคัด, ต้องการความช่วยเหลือ, โดดเดี่ยว, ขาดที่พึ่ง",
     "number": 5,
     "name_en": "Five of Earth",
     "name_th": "ขัดสนแร้นแค้น",
@@ -3382,6 +3437,7 @@ const jiutianCards = [
   {
     "card_id": "E06",
     "id": 56,
+    "keyword": "เอื้อเฟื้อเผื่อแผ่, ใจบุญสุนทาน, แบ่งปัน, ช่วยเหลือเกื้อกูล, อุปถัมภ์",
     "number": 6,
     "name_en": "Six of Earth",
     "name_th": "เอื้อเฟื้อเผื่อแผ่",
@@ -3445,6 +3501,7 @@ const jiutianCards = [
   {
     "card_id": "E07",
     "id": 57,
+    "keyword": "หยุดคิดไตร่ตรอง, คำนวณคุ้มค่า, ประเมินผลงาน, รอบคอบ, วางแผนระยะยาว",
     "number": 7,
     "name_en": "Seven of Earth",
     "name_th": "หยุดคิดไตร่ตรอง",
@@ -3508,6 +3565,7 @@ const jiutianCards = [
   {
     "card_id": "E08",
     "id": 58,
+    "keyword": "ฝึกฝนชำนาญ, ประณีตละเอียด, มีวินัย, รักความสมบูรณ์แบบ, พัฒนาฝีมือ",
     "number": 8,
     "name_en": "Eight of Earth",
     "name_th": "ฝึกฝนเชี่ยวชาญ",
@@ -3571,6 +3629,7 @@ const jiutianCards = [
   {
     "card_id": "E09",
     "id": 59,
+    "keyword": "อิสรภาพทางการเงิน, พึ่งพาตนเอง, มีรสนิยม, โลกส่วนตัวสูง, สำเร็จด้วยตัวเอง",
     "number": 9,
     "name_en": "Nine of Earth",
     "name_th": "อิสรภาพอุดมสมบูรณ์",
@@ -3634,6 +3693,7 @@ const jiutianCards = [
   {
     "card_id": "E10",
     "id": 60,
+    "keyword": "มั่งคั่งยั่งยืน, มรดกตระกูล, ความมั่นคงครอบครัว, สืบทอดกิจการ, รับผิดชอบสูง",
     "number": 10,
     "name_en": "Ten of Earth",
     "name_th": "วงศ์ตระกูลมั่งคั่ง",
@@ -3697,6 +3757,7 @@ const jiutianCards = [
   {
     "card_id": "E11",
     "id": 61,
+    "keyword": "เก็บเล็กผสมน้อย, รักการสะสม, เห็นคุณค่าสิ่งเล็กน้อย, มองโลกแง่ดี, ขยันออม",
     "number": 11,
     "name_en": "Page of Earth",
     "name_th": "ไฉ่เสินถงจื่อ",
@@ -3760,6 +3821,7 @@ const jiutianCards = [
   {
     "card_id": "E12",
     "id": 62,
+    "keyword": "ขยันหาเงิน, ใจป้ำหน้าใหญ่, ใช้จ่ายคล่องมือ, ร่ำรวย, ใจกว้าง",
     "number": 12,
     "name_en": "Knight of Earth",
     "name_th": "หวงไฉ่เสิน",
@@ -3823,6 +3885,7 @@ const jiutianCards = [
   {
     "card_id": "E13",
     "id": 63,
+    "keyword": "หนักแน่นมั่นคง, อบอุ่นใจกว้าง, อดทนระยะยาว, บริหารงานใหญ่, เป็นที่พึ่งพิง",
     "number": 13,
     "name_en": "Queen of Earth",
     "name_th": "พระแม่ธรณีโฮ่วถู่",
@@ -3886,6 +3949,7 @@ const jiutianCards = [
   {
     "card_id": "E14",
     "id": 64,
+    "keyword": "บารมีสูงส่ง, ศูนย์กลางอำนาจ, รับผิดชอบส่วนรวม, มองภาพรวมใหญ่, มั่นคงดั่งขุนเขา",
     "number": 14,
     "name_en": "King of Earth",
     "name_th": "มหาจักรพรรดิหวงตี้",
@@ -3949,6 +4013,7 @@ const jiutianCards = [
   {
     "card_id": "ME01",
     "id": 65,
+    "keyword": "โองการฟ้ากำหนด, ตัดสินใจเด็ดขาด, เฉียบคม, ตัดจบชัดเจน, มุ่งตรงเป้าหมาย",
     "number": 1,
     "name_en": "Card 65",
     "name_th": "โองการสวรรค์",
@@ -4003,6 +4068,7 @@ const jiutianCards = [
   {
     "card_id": "ME02",
     "id": 66,
+    "keyword": "ใช้วิจารณญาณ, ชั่งน้ำหนักใจ, พิจารณาลึกซึ้ง, มองด้วยปัญญา, รอบคอบ",
     "number": 2,
     "name_en": "Card 66",
     "name_th": "ดุลยพินิจ",
@@ -4057,6 +4123,7 @@ const jiutianCards = [
   {
     "card_id": "ME03",
     "id": 67,
+    "keyword": "ถูกหักหลัง, ผิดหวังเสียใจ, คำนินทาว่าร้าย, ความไม่ซื่อสัตย์, บาดแผลในใจ",
     "number": 3,
     "name_en": "Card 67",
     "name_th": "ทรยศหักหลัง",
@@ -4111,6 +4178,7 @@ const jiutianCards = [
   {
     "card_id": "ME04",
     "id": 68,
+    "keyword": "พักรบชั่วคราว, พักผ่อนฟื้นฟู, วางเรื่องวุ่นวาย, สงบใจ, ถอยมาตั้งหลัก",
     "number": 4,
     "name_en": "Card 68",
     "name_th": "พักรบ",
@@ -4165,6 +4233,7 @@ const jiutianCards = [
   {
     "card_id": "ME05",
     "id": 69,
+    "keyword": "ถูกกดดันบังคับ, อึดอัดใจ, จำยอมทำตาม, ไร้ทางหนีทีไล่, เสียเปรียบ",
     "number": 5,
     "name_en": "Card 69",
     "name_th": "สิ้นเกียรติและศักดิ์ศรี",
@@ -4219,6 +4288,7 @@ const jiutianCards = [
   {
     "card_id": "ME06",
     "id": 70,
+    "keyword": "มุ่งสู่ทิศทางใหม่, โยกย้ายเปลี่ยนแปลง, พ้นวิกฤต, มีผู้ชี้แนะ, เดินหน้าต่อ",
     "number": 6,
     "name_en": "Card 70",
     "name_th": "ทิศทางใหม่",
@@ -4273,6 +4343,7 @@ const jiutianCards = [
   {
     "card_id": "ME07",
     "id": 71,
+    "keyword": "กุศโลบาย, วางแผนแยบยล, ใช้ชั้นเชิง, พลิกแพลง, กลยุทธ์ลับ",
     "number": 7,
     "name_en": "Card 71",
     "name_th": "กุศโลบาย",
@@ -4327,6 +4398,7 @@ const jiutianCards = [
   {
     "card_id": "ME08",
     "id": 72,
+    "keyword": "ติดกับดักความคิด, ขังตัวเอง, ไม่กล้าก้าวออก, ยึดติด Comfort Zone, ลังเล",
     "number": 8,
     "name_en": "Card 72",
     "name_th": "ติดกับดัก",
@@ -4381,6 +4453,7 @@ const jiutianCards = [
   {
     "card_id": "ME09",
     "id": 73,
+    "keyword": "วิตกกังวล, คิดมากนอนไม่หลับ, ยึดติดเรื่องอดีต, ความเครียดสะสม, หวาดระแวง",
     "number": 9,
     "name_en": "Card 73",
     "name_th": "ทรมาณ",
@@ -4435,6 +4508,7 @@ const jiutianCards = [
   {
     "card_id": "ME10",
     "id": 74,
+    "keyword": "สูงสุดคืนสู่สามัญ, สิ้นสุดฉับพลัน, พังทลายเพื่อเริ่มใหม่, จุดจบสมบูรณ์, ปล่อยวางอดีต",
     "number": 10,
     "name_en": "Card 74",
     "name_th": "พังทลาย",
@@ -4489,6 +4563,7 @@ const jiutianCards = [
   {
     "card_id": "ME11",
     "id": 75,
+    "keyword": "ปัญญาเฉียบแหลม, เรียนรู้ไว, การสอบแข่งขัน, ช่างสังเกตวิจารณ์, เก็บรายละเอียด",
     "number": 11,
     "name_en": "Page of Metal",
     "name_th": "คุยซิง",
@@ -4552,6 +4627,7 @@ const jiutianCards = [
   {
     "card_id": "ME12",
     "id": 76,
+    "keyword": "มองทะลุปัญหา, แก้ที่ต้นตอ, เซนส์เฉียบคม, เผชิญความจริง, ตัดสินใจฉับไว",
     "number": 12,
     "name_en": "Knight of Metal",
     "name_th": "เอ้อหลางเสิน",
@@ -4615,6 +4691,7 @@ const jiutianCards = [
   {
     "card_id": "ME13",
     "id": 77,
+    "keyword": "ฉลาดหลักแหลม, มาตรฐานสูง, นอกดุในอ่อนโยน, ยึดหลักตรรกะ, มีระเบียบวินัย",
     "number": 13,
     "name_en": "Queen of Metal",
     "name_th": "ซีหวังหมู่",
@@ -4678,6 +4755,7 @@ const jiutianCards = [
   {
     "card_id": "ME14",
     "id": 78,
+    "keyword": "ผู้นำเที่ยงธรรม, วิเคราะห์เฉียบขาด, เข้มงวดมาตรฐานสูง, ชี้ขาดชัดเจน, ยึดความถูกต้อง",
     "number": 14,
     "name_en": "King of Metal",
     "name_th": "มหาเทพไป๋ตี้",
@@ -4741,6 +4819,7 @@ const jiutianCards = [
   {
     "card_id": "WA01",
     "id": 79,
+    "keyword": "ความรู้สึกแรกแย้ม, สัญชาตญาณบริสุทธิ์, ต้นกำเนิดอารมณ์, จิตใจไร้เดียงสา, เปิดใจ",
     "number": 1,
     "name_en": "Ace of Water",
     "name_th": "นิมิตแรก",
@@ -4804,6 +4883,7 @@ const jiutianCards = [
   {
     "card_id": "WA02",
     "id": 80,
+    "keyword": "ร่วมมือประสานใจ, เข้าอกเข้าใจ, มองตารู้ใจ, กลมกลืน, มิตรภาพลึกซึ้ง",
     "number": 2,
     "name_en": "Card 80",
     "name_th": "ร่วมมือประสานใจ",
@@ -4858,6 +4938,7 @@ const jiutianCards = [
   {
     "card_id": "WA03",
     "id": 81,
+    "keyword": "สังสรรค์เฮฮา, ปาร์ตี้เพื่อนฝูง, มิตรภาพเครือข่าย, สนุกสนาน, พูดคุยแลกเปลี่ยน",
     "number": 3,
     "name_en": "Card 81",
     "name_th": "สังสรรค์ประสานไมตรี",
@@ -4912,6 +4993,7 @@ const jiutianCards = [
   {
     "card_id": "WA04",
     "id": 82,
+    "keyword": "เบื่อหน่ายเฉยชา, เหม่อลอย, หมดไฟชั่วคราว, ไม่สนใจสิ่งรอบตัว, ปล่อยเบลอ",
     "number": 4,
     "name_en": "Card 82",
     "name_th": "เฉยชาเบื่อหน่าย",
@@ -4966,6 +5048,7 @@ const jiutianCards = [
   {
     "card_id": "WA05",
     "id": 83,
+    "keyword": "จมกับความเศร้า, ยึดติดอดีต, ยังไม่มูฟออน, เสียดายสิ่งที่เสียไป, อาลัยอาวรณ์",
     "number": 5,
     "name_en": "Card 83",
     "name_th": "จมดิ่งในความเศร้า",
@@ -5020,6 +5103,7 @@ const jiutianCards = [
   {
     "card_id": "WA06",
     "id": 84,
+    "keyword": "ความทรงจำเก่า, คนคุ้นเคยในอดีต, มิตรภาพวัยเยาว์, เรื่องราวเก่าส่งผล, หวนรำลึก",
     "number": 6,
     "name_en": "Card 84",
     "name_th": "ความทรงจำ",
@@ -5074,6 +5158,7 @@ const jiutianCards = [
   {
     "card_id": "WA07",
     "id": 85,
+    "keyword": "วาดฝันจินตนาการ, ตัวเลือกมากมาย, คาดหวังสูง, เพ้อฝัน, คิดแต่ยังไม่ทำ",
     "number": 7,
     "name_en": "Card 85",
     "name_th": "ภาพลวงเพ้อฝัน",
@@ -5128,6 +5213,7 @@ const jiutianCards = [
   {
     "card_id": "WA08",
     "id": 86,
+    "keyword": "หลีกหนีความวุ่นวาย, แสวงหาความสงบ, ปลีกตัว, เดินทางไกล, ค้นหาความหมายชีวิต",
     "number": 8,
     "name_en": "Card 86",
     "name_th": "แสวงหาความสงบ",
@@ -5182,6 +5268,7 @@ const jiutianCards = [
   {
     "card_id": "WA09",
     "id": 87,
+    "keyword": "สมปรารถนา, ได้ดั่งใจหวัง, ความสุขท่วมท้น, พึงพอใจ, อิ่มเอมใจ",
     "number": 9,
     "name_en": "Card 87",
     "name_th": "สมปรารถนา",
@@ -5236,6 +5323,7 @@ const jiutianCards = [
   {
     "card_id": "WA10",
     "id": 88,
+    "keyword": "สุขสมบูรณ์พร้อม, ครอบครัวอบอุ่น, อิ่มเอมในรัก, พึงพอใจในสิ่งที่มี, ร่มเย็นเป็นสุข",
     "number": 10,
     "name_en": "Card 88",
     "name_th": "สุขสมบูรณ์",
@@ -5290,6 +5378,7 @@ const jiutianCards = [
   {
     "card_id": "WA11",
     "id": 89,
+    "keyword": "อ่อนโยนละเมียดละไม, ช่างสังเกตความรู้สึก, สัญชาตญาณดี, เห็นอกเห็นใจ, จิตใจงดงาม",
     "number": 11,
     "name_en": "Page of Water",
     "name_th": "หลงหนี่ว์",
@@ -5353,6 +5442,7 @@ const jiutianCards = [
   {
     "card_id": "WA12",
     "id": 90,
+    "keyword": "โรแมนติกมีเสน่ห์, อ่อนไหวตามอารมณ์, ปกป้องคนรัก, ทุ่มเทเพื่อรัก, หึงหวง",
     "number": 12,
     "name_en": "Knight of Water",
     "name_th": "อ๋าวปิ่ง",
@@ -5416,6 +5506,7 @@ const jiutianCards = [
   {
     "card_id": "WA13",
     "id": 91,
+    "keyword": "เมตตาปรานี, ใจเย็นรับฟัง, ที่พึ่งทางใจ, ชี้แนะแนวทาง, วุฒิภาวะอารมณ์สูง",
     "number": 13,
     "name_en": "Queen of Water",
     "name_th": "เจ้าแม่หมาจู่",
@@ -5479,6 +5570,7 @@ const jiutianCards = [
   {
     "card_id": "WA14",
     "id": 92,
+    "keyword": "ลึกซึ้งดั่งมหาสมุทร, สุนทรีย์อารมณ์ศิลป์, สุขนิยม, ความรู้กว้างขวาง, อารมณ์ซับซ้อน",
     "number": 14,
     "name_en": "King of Water",
     "name_th": "ราชามังกร",
@@ -5544,6 +5636,7 @@ const jiutianCards = [
   {
     "card_id": "S01",
     "id": 93,
+    "keyword": "ซื่อสัตย์, รักษาคำสัตย์, คุณธรรม, บารมี, ศักดิ์ศรี",
     "number": 1,
     "name_en": "Card 93",
     "name_th": "Martial Saint - มิได้เกิดจากชัยชนะในสนามรบ",
@@ -5602,6 +5695,7 @@ const jiutianCards = [
   {
     "card_id": "S02",
     "id": 94,
+    "keyword": "พลิกชะตา, ปัญญาสวรรค์, ยุทธศาสตร์, ชี้ทางสว่าง, เหนือลิขิต",
     "number": 2,
     "name_en": "Card 94",
     "name_th": "Lady of Nine Heavens - ย่อมเปลี่ยนโชคชะตาได้ด้วยปัญญา”",
@@ -5660,6 +5754,7 @@ const jiutianCards = [
   {
     "card_id": "S03",
     "id": 95,
+    "keyword": "ปาฏิหาริย์, พรศักดิ์สิทธิ์, มหาโชค, บุญหนุนนำ, สมหวังเหนือคาด",
     "number": 3,
     "name_en": "Miracle",
     "name_th": "ปาฏิหาริย์ศักดิ์สิทธิ์",
@@ -5716,6 +5811,7 @@ const jiutianCards = [
   {
     "card_id": "S04",
     "id": 96,
+    "keyword": "จักรวาลสมบูรณ์, สำเร็จสูงสุด, สมดุลฟ้าดิน, ปัญญาญาณ, มหามงคล",
     "number": 4,
     "name_en": "Cosmic Fulfillment",
     "name_th": "จักรวาลสมบูรณ์",

@@ -287,6 +287,7 @@ for (let id = 1; id <= 96; id++) {
     cardObj = {
       card_id: existingV2Card.card_id,
       id: id,
+      keyword: existingV2Card.keyword || master.keyword || '',
       number: existingV2Card.number !== undefined ? existingV2Card.number : number,
       name_en: existingV2Card.name_en || master.name_en || `Card ${id}`,
       name_th: existingV2Card.name_th || master.name_th || '',
@@ -294,7 +295,7 @@ for (let id = 1; id <= 96; id++) {
       arcana_type: existingV2Card.arcana_type || arcanaType,
       element: existingV2Card.element || elemNorm.en,
       element_th: elemNorm.th,
-      image: `JiuTianCardImage/${id}.png`,
+      image: existingV2Card.image || `JiuTianCardImage/${id}.webp`,
       image_alt: master.image_alt || `CardImage/Major${number}.png`,
       deity: {
         name_th: existingV2Card.deity?.name_th || master.name_th || '',
@@ -336,6 +337,7 @@ for (let id = 1; id <= 96; id++) {
     cardObj = {
       card_id: cardId,
       id: id,
+      keyword: master.keyword || '',
       number: number,
       name_en: nameEn,
       name_th: nameTh,

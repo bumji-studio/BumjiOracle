@@ -12,6 +12,18 @@ const thepMeowXlsxPath = path.join(__dirname, '..', 'ความหมายไ
 const defCardsPath = path.join(__dirname, '..', 'scratch', 'default_cards_cjs.cjs');
 const defaultCards = require(defCardsPath);
 
+// Preserve existing keyword field from JiuTianData/jiutian-cards.json if present
+const existingJsonPath = path.join(jiuTianDir, 'jiutian-cards.json');
+const existingKeywordsById = new Map();
+if (fs.existsSync(existingJsonPath)) {
+  try {
+    const existingArr = JSON.parse(fs.readFileSync(existingJsonPath, 'utf8'));
+    existingArr.forEach(c => {
+      if (c && c.id && c.keyword) existingKeywordsById.set(c.id, c.keyword);
+    });
+  } catch (e) {}
+}
+
 console.log(`Loaded ${defaultCards.length} default cards from scratch/default_cards_cjs.cjs`);
 
 // Load ความหมายไพ่เทพเหมียว.xlsx (Authoritative meaning source)
@@ -409,6 +421,7 @@ for (let id = 1; id <= 96; id++) {
 
   const cardObj = {
     id,
+    keyword: existingKeywordsById.get(id) || '',
     card_no: cardNo,
     type: cardType,
     suit_name_th: suitNameTh,
