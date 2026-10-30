@@ -1422,23 +1422,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getActivePositions() {
-    if (fortuneState.spreadType === '5cards') {
-      return SPREAD_CONFIGS['5cards'].positions;
-    }
-    const patId = fortuneState.patternId || 'pattern2';
-    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId])
-      || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
-    return pat ? pat.positions : [];
+    const count = fortuneState.spreadType === '5cards' ? 5 : 3;
+    return Array.from({ length: count }, (_, i) => ({
+      index: i,
+      title: `ใบที่ ${i + 1}`,
+      shortName: `ใบที่ ${i + 1}`,
+      desc: ''
+    }));
   }
 
   function getActiveSpreadTitle() {
-    if (fortuneState.spreadType === '5cards') {
-      return SPREAD_CONFIGS['5cards'].title;
-    }
-    const patId = fortuneState.patternId || 'pattern2';
-    const pat = (SPREAD_CONFIGS['3cards'] && SPREAD_CONFIGS['3cards'].patterns[patId])
-      || SPREAD_CONFIGS['3cards'].patterns['pattern2'];
-    return pat ? pat.title : 'ไพ่ 3 ใบ (Trinity Spread)';
+    return fortuneState.spreadType === '5cards' ? 'เปิดไพ่ 5 ใบ' : 'เปิดไพ่ 3 ใบ';
   }
 
   const fortuneState = {
@@ -2008,77 +2002,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 1. Master Prophecy Builder (Unified Overall Analysis - No Card 1,2,3 split, No separate Cat Summary)
-  function buildThepMeowMainProphecy({ question, drawn, positions, qCtx, intent }) {
-    const c1 = drawn[0] || {};
-    const c2 = drawn[1] || drawn[0] || {};
-    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
-
-    const pos1 = positions[0] || { title: 'ตัวเลือก A' };
-    const pos2 = positions[1] || { title: 'ตัวเลือก B' };
-    const pos3 = positions[2] || { title: 'คำแนะนำ' };
-
-    const c1Name = c1 ? (c1.name_th || c1.name) : 'ไพ่ใบแรก';
-    const c2Name = c2 ? (c2.name_th || c2.name) : 'ไพ่ใบที่สอง';
-    const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่ใบที่สาม';
-
-    const topic = qCtx ? qCtx.topic : (intent ? (intent.topic || intent) : 'general');
-    const r1 = typeof getThepMeowCardReading === 'function' ? getThepMeowCardReading(c1, topic) : '';
-    const r2 = typeof getThepMeowCardReading === 'function' ? getThepMeowCardReading(c2, topic) : '';
-    const r3 = typeof getThepMeowCardReading === 'function' ? getThepMeowCardReading(c3, topic) : '';
-
-    const isComparison = /หรือ|กับ|อันไหน|ทางไหน|ดีกว่า|เลือก/i.test(question) || (pos1.title && pos1.title.includes('ตัวเลือก'));
-
-    let directVerdict = '';
-    let overallText = '';
-
-    if (isComparison) {
-      directVerdict = `ภาพรวมไพ่ชี้ว่า ${pos2.title} (“${c2Name}”) มีเกณฑ์พลังงานที่เกื้อหนุนและมีโอกาสสำเร็จโดดเด่นมากกว่าในระยะยาวค่ะ`;
-      overallText = `
-        <p>เจ้ามนุษย์ที่รัก... สำหรับคำถามที่ว่า <strong>“${question}”</strong> เมื่อแม่หมอเทพเหมียวตั้งจิตเชื่อมโยงพลังจากไพ่ทั้งสามใบเข้าด้วยกัน ภาพรวมสรุปได้ชัดเจนดังนี้ค่ะ:</p>
-        <p>ในฝั่งของ <strong>${pos1.title} (“${c1Name}”)</strong> กำลังสะท้อนสภาวะที่ต้องใช้ความรอบคอบอย่างสูง <em>“${r1}”</em> ซึ่งเป็นทางเลือกที่ยังมีจุดต้องประเมินและแบกรับความเสี่ยงอยู่พอสมควร</p>
-        <p>ในขณะที่ฝั่งของ <strong>${pos2.title} (“${c2Name}”)</strong> กลับปรากฏพลังงานบวกที่ชัดเจนกว่ามาก <em>“${r2}”</em> ชี้ให้เห็นถึงความมั่นคง โอกาสที่จะได้รับผลตอบแทนที่ดี และความสำเร็จที่คุ้มค่ากว่า</p>
-        <p>โดยมี <strong>${pos3.title} (“${c3Name}”)</strong> เป็นแสงสว่างชี้นำว่า <em>“${r3}”</em> สรุปภาพรวมแล้ว ขอให้คุณมั่นใจและเลือกเดินหน้าในเส้นทางที่มีพลังเกื้อหนุนมากกว่า แล้วผลลัพธ์จะนำพาความสำเร็จและความสบายใจมาให้คุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾💖</p>
-      `;
-    } else {
-      directVerdict = `ภาพรวมพลังงานกำลังเปิดทางสู่ความสำเร็จ โดยมีแนวทางสำคัญคือการปรับตัวอย่างมีสติและมั่นใจค่ะ`;
-      overallText = `
-        <p>เจ้ามนุษย์ที่รัก... สำหรับข้อสงสัยในเรื่อง <strong>“${question}”</strong> เมื่อเชื่อมโยงกระแสพลังงานจากไพ่ทั้ง 3 ใบเข้าด้วยกัน จะเห็นภาพรวมอย่างชัดเจนว่า:</p>
-        <p>จุดเริ่มต้นและสภาวะที่คุณกำลังเผชิญได้รับอิทธิพลจากพลังของ <strong>“${c1Name}”</strong> ซึ่งบ่งบอกถึง <em>“${r1}”</em> เป็นรากฐานสำคัญที่ส่งผลมาถึงจุดนี้</p>
-        <p>เมื่อขับเคลื่อนต่อเนื่องมา จึงปรากฏพลังของ <strong>“${c2Name}”</strong> เข้ามาหนุนเสริมและเผยให้เห็นว่า <em>“${r2}”</em> นี่คือจังหวะที่ต้องมีสติและโฟกัสกับเป้าหมายตรงหน้าอย่างแน่วแน่</p>
-        <p>และปลายทางของเรื่องนี้ส่งมอบผ่านพลังของ <strong>“${c3Name}”</strong> ชี้ว่า <em>“${r3}”</em> ทุกอย่างจะคลี่คลายไปในทิศทางที่สดใสและคุ้มค่ากับความทุ่มเทของคุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾✨</p>
-      `;
+  function isExplicitUserQuestion(q) {
+    if (!q || typeof q !== 'string') return false;
+    const trimmed = q.trim();
+    if (!trimmed) return false;
+    if (trimmed === 'ภาพรวมดวงชะตา พลังงานชีวิต และคำแนะนำในปัจจุบัน' || trimmed === 'สิ่งที่อยู่ในใจ') {
+      return false;
     }
-
-    return `
-      <div class="thepmeow-verdict-box">
-        <div class="thepmeow-verdict-top">
-          <span class="thepmeow-avatar-badge">
-            <i class="fa-solid fa-cat"></i> เทพเหมียวพยากรณ์
-          </span>
-        </div>
-        <h3 class="thepmeow-verdict-question">
-          “${question}”
-        </h3>
-
-        <!-- Direct Answer Callout -->
-        <div class="thepmeow-direct-answer-callout">
-          <div class="direct-answer-header">
-            <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
-            <strong>คำตอบฟันธงสำหรับ: “${question}”</strong>
-          </div>
-          <div class="direct-answer-verdict verdict-badge-favorable">
-            ${directVerdict}
-          </div>
-        </div>
-
-        <!-- OVERALL ANALYSIS (บทวิเคราะห์ภาพรวม ไม่แยกใบ ไม่แยกบทสรุป) -->
-        <div class="thepmeow-prophecy-body">
-          <div class="thepmeow-overall-analysis-text">
-            ${overallText}
-          </div>
-        </div>
-      </div>
-    `;
+    return true;
   }
 
   // ==========================================================================
@@ -2102,12 +2033,13 @@ document.addEventListener('DOMContentLoaded', () => {
       throw new Error('No Groq API key available');
     }
 
+    const hasQuestion = isExplicitUserQuestion(question);
+
     const cardsPromptLines = drawn.map((card, idx) => {
       const c = card || {};
-      const posTitle = positions[idx]?.title || `ใบที่ ${idx + 1}`;
       const kw = getCardPrimaryKeyword(c);
       const elem = c.element_th || c.element || 'น้ำ';
-      return `${idx + 1}. ${posTitle}: ไพ่ "${c.name_th || c.name}" (${elem})\n   - keyword ประจำไพ่: ${kw}`;
+      return `- ใบที่ ${idx + 1}: ไพ่ "${c.name_th || c.name}" (${elem}) | keyword สำหรับใช้ตีความเบื้องหลัง: ${kw}`;
     }).join('\n');
 
     let baziPromptText = '';
@@ -2117,34 +2049,37 @@ document.addEventListener('DOMContentLoaded', () => {
       baziPromptText = `\nข้อมูลดวงชะตาปาจื่อของผู้ถาม (เบญจธาตุ & จังหวะชีวิต):\n- ดิถีธาตุกำเนิด (Day Master): ${dm.zh || ''} (${dm.th || ''})\n- เสาปีเกิด: ${yrPillar.stem?.zh || ''}${yrPillar.branch?.zh || ''} (${yrPillar.stem?.th || ''})\n- เปรียบเทียบกับปีจร 2026: ปีม้าไฟ (丙午 - เปี้ยโง่ว)\nคำสั่งพิเศษ: ให้นำดิถีธาตุและจังหวะปีจร 2026 นี้ มาช่วยวิเคราะห์เสริมพลังคำตอบให้เจาะจงลึกซึ้งยิ่งขึ้นในส่วน bazi_insight\n`;
     }
 
+    const questionInstruction = hasQuestion
+      ? `คำถามของผู้ใช้: "${question}"
+คำสั่งการตีความ:
+- ให้อ่านความหมายจากฟิลด์ keyword ของไพ่ทั้ง 3 ใบรวมกันอยู่เบื้องหลัง แล้วตีความออกมาเป็น **คำตอบของคำถาม "${question}" โดยตรงทันที**
+- ถ้าคำถามเป็นคำถามใช่/ไม่ใช่ หรือมีโอกาสไหม (เช่น จะมีแพ็คเกจจ้างออกไหม, จะสำเร็จไหม, จะได้งานไหม) ให้ฟันธงแนวโน้มคำตอบให้ชัดเจนจากภาพรวมที่ตีความได้จากคีย์เวิร์ดทั้ง 3 ใบ พร้อมอธิบายเหตุผลและคำแนะนำที่เป็นธรรมชาติ`
+      : `ผู้ใช้ไม่ได้ระบุคำถามเฉพาะเจาะจง (เป็นการเปิดไพ่ดูภาพรวม)
+คำสั่งการตีความ:
+- ให้อ่านความหมายจากฟิลด์ keyword ของไพ่ทั้ง 3 ใบรวมกันอยู่เบื้องหลัง แล้วตีความออกมาเป็น **คำทำนายภาพรวม (Overall Reading)** ที่ไหลลื่นเป็นเนื้อเดียวกัน`;
+
     const prompt = `
 คุณคือ "แม่หมอเทพเหมียว" เทพแมวพยากรณ์สุดศักดิ์สิทธิ์และแสนใจดีแห่งสำรับไพ่เทพเหมียว (Thep Meow Oracle)
 บุคลิก: น่ารัก อบอุ่น ฟันธงตรงไปตรงมา แม่นยำ มีเมตตา มีคำลงท้ายน่ารักเช่น "เมี๊ยววว~ 🐾", "เจ้ามนุษย์ที่รัก"
 
-คำถามของผู้ใช้: "${question}"
+${questionInstruction}
 ${baziPromptText}
-ข้อมูลไพ่ที่เปิดได้ (ให้อ่านจากฟิลด์ keyword ของไพ่แต่ละใบเท่านั้น):
+ข้อมูลไพ่ที่เปิดได้ (ใช้สำหรับให้ AI อ่านและตีความเบื้องหลังเท่านั้น):
 ${cardsPromptLines}
 
-คำสั่งสำคัญที่สุด (CRITICAL INSTRUCTIONS):
-1. **การอ่านไพ่ต้องอ่านจากฟิลด์ keyword ที่ให้ไว้ของไพ่แต่ละใบ แล้วนำมาตีความตามคำถามของผู้ใช้โดยตรง**:
-   - นำคำสำคัญใน keyword ของแต่ละใบ มาแปลความหมายให้เข้ากับบริบทของคำถาม "${question}" และตำแหน่งของไพ่ใบนั้นๆ
-   - ถ้าถามว่า "อันไหนดีกว่ากัน" หรือเป็นคำถามตัวเลือก A vs B ต้องฟันธงชัดเจนว่าทางไหนดีกว่า โดยเปรียบเทียบจาก keyword ของไพ่ทั้งสองฝั่งและไพ่คำแนะนำ
-   - ถ้าถามเรื่องการงาน/การเงิน/ความรัก/สุขภาพ ต้องนำ keyword ของไพ่มาตีความเจาะจงตอบตรงเรื่องนั้น ห้ามตอบกว้างๆ หรือเฉไฉเด็ดขาด!
-2. **นำเสนอผลคำทำนายเป็น "ภาพรวมชิ้นเดียว (Overall Analysis)"**:
-   - **ห้าม** แยกหัวข้อเป็นใบที่ 1, ใบที่ 2, ใบที่ 3
-   - **ห้าม** ทำกล่องบทสรุปภาษาเทพเหมียวแยกต่างหาก
-   - ให้ร้อยเรียงการตีความจาก keyword ของไพ่ทุกใบเข้าด้วยกัน ออกมาเป็นบทวิเคราะห์ภาพรวมเนื้อความเดียวที่ลึกซึ้ง ไหลลื่น จบในตัว และให้คำตอบฟันธงแก่ผู้ใช้ทันที
+กฎเหล็กสำคัญที่สุด (CRITICAL RULES):
+1. **ห้ามนำข้อความ keyword มาแสดงหรือลอกเรียงคำลงในคำตอบเด็ดขาด!** (เช่น ห้ามเขียนว่า "ซึ่งบ่งบอกถึง หยุดคิดไตร่ตรอง, คำนวณคุ้มค่า..." หรือนำชุดคีย์เวิร์ดมาใส่ในเครื่องหมายคำพูด) ให้ระบบอ่านคีย์เวิร์ดอยู่เบื้องหลัง แล้วให้ AI ตีความเป็นคำตอบที่สมบูรณ์และเป็นธรรมชาติเลย
+2. **ห้ามบอกว่า ใบที่ 1, 2, 3 หมายถึง อดีต ปัจจุบัน อนาคต หรือ สถานการณ์/อุปสรรค/ทางออก เด็ดขาด!** และห้ามแยกย่อหน้าอธิบายไพ่ทีละใบ ให้หลอมรวมความหมายของไพ่ทั้ง 3 ใบเข้าด้วยกันแล้วแสดงเฉพาะคำตอบที่ตีความออกมาเลย
 3. ส่งผลลัพธ์เป็น JSON เท่านั้น ตามรูปแบบนี้:
 {
-  "direct_verdict": "คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจน โดยตีความจาก keyword ของไพ่ (1-2 ประโยค)",
-  "bazi_insight": "บทวิเคราะห์จังหวะชีวิตและพลังธาตุปาจื่อที่เชื่อมโยงกับคำถาม (ถ้ามีข้อมูล)",
-  "overall_analysis": "บทวิเคราะห์ภาพรวมทั้งหมดที่นำ keyword ของไพ่ทุกใบมาตีความตามคำถามโดยตรง เปรียบเทียบทางเลือกและให้คำแนะนำอย่างเห็นภาพ ไหลลื่นเป็นเนื้อความเดียวกันอย่างอบอุ่นและมีพลัง",
+  "direct_verdict": "${hasQuestion ? 'คำตอบฟันธงตรงคำถาม สั้นกระชับ ชัดเจน (1-2 ประโยค) โดยไม่ต้องลอกคีย์เวิร์ดมาแสดง' : 'สรุปใจความสำคัญภาพรวมที่ตีความได้จากไพ่ทั้ง 3 ใบ (1-2 ประโยค) โดยไม่ต้องลอกคีย์เวิร์ดมาแสดง'}",
+  "bazi_insight": "บทวิเคราะห์จังหวะชีวิตและพลังธาตุปาจื่อ (ถ้ามีข้อมูล)",
+  "overall_analysis": "คำตอบที่ตีความจากคีย์เวิร์ดของไพ่ทั้ง 3 ใบรวมกันเป็นเนื้อเดียว ตอบคำถามของผู้ใช้โดยตรง (หรืออ่านเป็นภาพรวมหากไม่มีคำถาม) อย่างลึกซึ้ง ไหลลื่น อบอุ่น และนำไปใช้ได้จริง ห้ามลอกรายการคีย์เวิร์ดมาแสดง และห้ามแยกอธิบายทีละใบ (ความยาวประมาณ 2-3 ย่อหน้า คั่นย่อหน้าด้วย \\n\\n)",
   "blessing_quote": "ข้อคิดเสริมมงคลสั้นๆ 1 ประโยค"
 }
 `;
 
-    const modelsToTry = ['llama-3.3-70b-versatile', 'qwen/qwen3-32b', 'llama-3.1-8b-instant'];
+    const modelsToTry = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b', 'openai/gpt-oss-20b'];
     let lastErr = null;
 
     for (const modelName of modelsToTry) {
@@ -2152,11 +2087,11 @@ ${cardsPromptLines}
         const payload = {
           model: modelName,
           messages: [
-            { role: 'system', content: 'You are an oracle AI that reads card keywords and interprets them in Thai according to the user question. Output valid JSON only.' },
+            { role: 'system', content: 'You are an oracle AI that reads the keywords of 3 cards in the background, interprets them together to answer the user question directly without quoting raw keyword lists or positional labels, and outputs valid JSON only in Thai.' },
             { role: 'user', content: prompt }
           ],
-          temperature: 0.7,
-          max_tokens: 1000
+          temperature: 0.65,
+          max_tokens: 2048
         };
 
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -2210,6 +2145,10 @@ ${cardsPromptLines}
         .join('');
     }
 
+    const hasQuestion = isExplicitUserQuestion(question);
+    const displayHeader = hasQuestion ? `“${question}”` : 'คำทำนายภาพรวมจากหน้าไพ่ทั้ง 3 ใบ';
+    const calloutTitle = hasQuestion ? `คำตอบสำหรับ: “${question}”` : 'สรุปคำทำนายภาพรวม';
+
     return `
       <div class="thepmeow-dossier">
         <!-- BaZi Booster Banner if enabled -->
@@ -2239,21 +2178,21 @@ ${cardsPromptLines}
             </span>
           </div>
           <h3 class="thepmeow-verdict-question">
-            “${question}”
+            ${displayHeader}
           </h3>
 
           <!-- DIRECT ANSWER CALLOUT AT TOP -->
           <div class="thepmeow-direct-answer-callout">
             <div class="direct-answer-header">
               <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
-              <strong>คำตอบฟันธงสำหรับ: “${question}”</strong>
+              <strong>${calloutTitle}</strong>
             </div>
             <div class="direct-answer-verdict verdict-badge-favorable">
               ${aiData.direct_verdict || 'ไพ่เปิดเผยคำตอบและทิศทางที่สดใสให้แก่คุณ'}
             </div>
           </div>
 
-          <!-- OVERALL ANALYSIS (บทวิเคราะห์ภาพรวม ไม่แยกใบ ไม่แยกบทสรุป) -->
+          <!-- OVERALL ANALYSIS (เฉพาะคำตอบที่ตีความแล้ว) -->
           <div class="thepmeow-prophecy-body">
             <div class="thepmeow-overall-analysis-text">
               ${formattedAnalysis}
@@ -2275,100 +2214,6 @@ ${cardsPromptLines}
         </div>
       </div>
     `;
-  }
-
-  async function renderThepMeowSynthesis(drawn) {
-    if (!resultSynthesisContainer) return;
-    const question = (fortuneState.question || 'สิ่งที่อยู่ในใจ').trim();
-    const qCtx = analyzeQuestionContext(question);
-    const positions = getActivePositions();
-
-    // Show Animated Mystic Cat Loading Screen
-    resultSynthesisContainer.innerHTML = `
-      <div class="thepmeow-loading-card">
-        <!-- Central Animated Mystic Cat Orb -->
-        <div class="thepmeow-orb-stage">
-          <div class="thepmeow-aura-ring"></div>
-          <div class="thepmeow-aura-ring-2"></div>
-          <div class="thepmeow-orb-glow"></div>
-          <div class="thepmeow-floating-cat">
-            <i class="fa-solid fa-cat"></i>
-          </div>
-          <i class="fa-solid fa-sparkles thepmeow-sparkle-dot thepmeow-sparkle-1"></i>
-          <i class="fa-solid fa-star thepmeow-sparkle-dot thepmeow-sparkle-2"></i>
-          <i class="fa-solid fa-wand-magic-sparkles thepmeow-sparkle-dot thepmeow-sparkle-3"></i>
-        </div>
-
-        <h3 class="thepmeow-loading-title">
-          <span>✨</span>
-          <span>แม่หมอเทพเหมียวกำลังตั้งจิตเปิดเนตรวิเคราะห์ชะตา...</span>
-          <span>✨</span>
-        </h3>
-
-        <p class="thepmeow-loading-question">
-          กำลังไขคำตอบสำหรับ: “<strong>${question}</strong>”
-        </p>
-
-        <!-- Dynamic Live Status Badge with Animated Dots -->
-        <div class="thepmeow-status-badge" id="thepmeowStatusBadge">
-          <span id="thepmeowStatusText">🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...</span>
-          <div class="thepmeow-pulse-dots">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-
-        <!-- 3 Step Progress Indicators -->
-        <div class="thepmeow-steps-bar">
-          <div class="thepmeow-step-dot active" id="loadingStepDot1"></div>
-          <div class="thepmeow-step-dot" id="loadingStepDot2"></div>
-          <div class="thepmeow-step-dot" id="loadingStepDot3"></div>
-        </div>
-      </div>
-    `;
-
-    // Live Step Message Switcher
-    const liveMessages = [
-      { text: "🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...", step: 1 },
-      { text: "🔮 สเต็ป 2: แม่หมอเปิดเนตรปัญญาญาณ กำลังเชื่อมโยงคำถามของคุณ...", step: 2 },
-      { text: "✨ สเต็ป 3: กำลังร้อยเรียงคำทำนายและข้อคิดฮีลใจอย่างลึกซึ้ง เมี๊ยววว~ 💖", step: 3 }
-    ];
-
-    let currentMsgIdx = 0;
-    const msgTimer = setInterval(() => {
-      currentMsgIdx++;
-      if (currentMsgIdx < liveMessages.length) {
-        const item = liveMessages[currentMsgIdx];
-        const statusText = document.getElementById('thepmeowStatusText');
-        if (statusText) statusText.textContent = item.text;
-
-        const dot2 = document.getElementById('loadingStepDot2');
-        const dot3 = document.getElementById('loadingStepDot3');
-        if (item.step >= 2 && dot2) dot2.classList.add('active');
-        if (item.step >= 3 && dot3) dot3.classList.add('active');
-      }
-    }, 2400);
-
-    try {
-      // 1. Try Gemini AI Engine
-      const baziCtx = typeof getOracleBaziContext === 'function' ? getOracleBaziContext() : null;
-      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions, baziCtx });
-      if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
-      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx });
-    } catch (err) {
-      if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
-      console.warn('[ThepMeow] AI generation fallback to local engine:', err);
-      // 2. Safe Fallback to template engine
-      const prophecyHtml = buildThepMeowMainProphecy({ question, drawn, positions, qCtx });
-      const healingHtml = buildThepMeowHealingTips({ question, drawn, qCtx });
-      const blessingHtml = buildThepMeowBlessing({ question, drawn });
-
-      resultSynthesisContainer.innerHTML = `
-        <div class="thepmeow-dossier">
-          ${prophecyHtml}
-                    ${blessingHtml}
-        </div>
-      `;
-    }
   }
 
   function renderPickSlots() {
@@ -2523,9 +2368,7 @@ ${cardsPromptLines}
     // Update instruction text
     if (pickCurrentInstruction) {
       if (fortuneState.currentPickSlot < count) {
-        const pos = positions[fortuneState.currentPickSlot];
-        const isMobile = window.innerWidth <= 880;
-        const targetLabel = isMobile ? `ใบที่ ${fortuneState.currentPickSlot + 1}: ${pos.shortName || pos.title}` : pos.title;
+        const targetLabel = `ใบที่ ${fortuneState.currentPickSlot + 1}`;
         pickCurrentInstruction.innerHTML = `
           <i class="fa-solid fa-hand-pointer text-gold animate-bounce"></i> 
           <span>คลิกเลือกไพ่สำหรับ <strong>${targetLabel}</strong></span>
@@ -2731,7 +2574,7 @@ ${cardsPromptLines}
         return;
       }
       const q = userQuestionInput ? userQuestionInput.value.trim() : '';
-      fortuneState.question = q || 'ภาพรวมดวงชะตา พลังงานชีวิต และคำแนะนำในปัจจุบัน';
+      fortuneState.question = q;
       fortuneState.patternId = detectBestPatternForQuestion(fortuneState.question);
       renderDivinationResults();
       setStep(2);
@@ -2746,14 +2589,16 @@ ${cardsPromptLines}
 
     // Header info
     if (resultQuestionTitle) {
-      resultQuestionTitle.textContent = `“${fortuneState.question}”`;
+      resultQuestionTitle.textContent = isExplicitUserQuestion(fortuneState.question)
+        ? `“${fortuneState.question}”`
+        : 'คำทำนายภาพรวมจากหน้าไพ่ทั้ง 3 ใบ';
     }
     if (resultDeckBadge) {
       resultDeckBadge.textContent = 'ไพ่เทพเหมียว (92 ใบ)';
       resultDeckBadge.className = 'badge-deck badge-jiutian';
     }
     if (resultSpreadBadge) {
-      resultSpreadBadge.textContent = getActiveSpreadTitle();
+      resultSpreadBadge.style.display = 'none';
     }
     if (resultDateBadge) {
       const now = new Date();
@@ -2773,7 +2618,6 @@ ${cardsPromptLines}
     if (!resultCardsBoard) return;
     resultCardsBoard.innerHTML = '';
 
-    const positions = getActivePositions();
     const count = drawn.length;
 
     if (count === 5) {
@@ -2783,27 +2627,24 @@ ${cardsPromptLines}
     }
 
     drawn.forEach((card, idx) => {
-      const pos = positions[idx] || { title: `ใบที่ ${idx + 1}`, shortName: `ใบที่ ${idx + 1}`, desc: '' };
       const cardEl = document.createElement('article');
       cardEl.className = 'result-card-item';
 
       const baseElem = getBaseElement(card.element);
       const elemInfo = ELEMENT_INFO[baseElem] || { name: baseElem, cn: '', color: '#0284c7', bg: '#f0f9ff', icon: '🎴' };
-      const primaryKw = getCardPrimaryKeyword(card);
 
       cardEl.innerHTML = `
         <div class="result-pos-header">
           <span class="badge-num" style="background: #0284c7;">${idx + 1}</span>
-          <h3 class="result-pos-title">${pos.title}</h3>
+          <h3 class="result-pos-title">ใบที่ ${idx + 1}</h3>
         </div>
         <div class="result-card-media">
           <img src="${card.image || getDeckBackImage()}" alt="${card.name_th || card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
         </div>
         <div class="result-card-details" style="text-align: center; padding: 4px 6px 10px 6px;">
-          <h4 class="result-card-name" style="text-align: center; color: #0f172a; font-size: 18px; font-weight: 800; margin: 4px 0 2px 0; width: 100%;">
+          <h4 class="result-card-name" style="text-align: center; color: #0f172a; font-size: 18px; font-weight: 800; margin: 4px 0 6px 0; width: 100%;">
             ${card.name_th || card.name} ${card.name_cn ? `<small style="font-size: 13.5px; color: #64748b; font-weight: 600;">(${card.name_cn})</small>` : ''}
           </h4>
-          ${primaryKw ? `<div style="font-size: 12px; color: #b45309; font-weight: 600; margin-bottom: 6px; line-height: 1.35;">“${primaryKw}”</div>` : ''}
           <div style="display: flex; justify-content: center;">
             <span class="elem-badge-small" style="background: ${elemInfo.bg}; color: ${elemInfo.color}; border: 1px solid ${elemInfo.border || elemInfo.color}; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 700;">
               ${elemInfo.icon} ธาตุ${baseElem} ${elemInfo.cn ? `(${elemInfo.cn})` : ''}
@@ -2889,44 +2730,26 @@ ${cardsPromptLines}
     return 'general';
   }
 
-  // 1. Master Prophecy Builder (Synthesized from 3 cards, positions & meanings in Thep Meow Voice)
+  // 1. Master Prophecy Builder (Offline Fallback - Displays only the answer without showing raw keywords)
   function buildThepMeowMainProphecy({ question, drawn, positions, intent }) {
-    const c1 = drawn[0] || {};
-    const c2 = drawn[1] || drawn[0] || {};
-    const c3 = drawn[2] || drawn[drawn.length - 1] || {};
-
-    const pos1 = positions[0] || { title: 'ตัวเลือก A' };
-    const pos2 = positions[1] || { title: 'ตัวเลือก B' };
-    const pos3 = positions[2] || { title: 'คำแนะนำ' };
-
-    const c1Name = c1 ? (c1.name_th || c1.name) : 'ไพ่ใบแรก';
-    const c2Name = c2 ? (c2.name_th || c2.name) : 'ไพ่ใบที่สอง';
-    const c3Name = c3 ? (c3.name_th || c3.name) : 'ไพ่ใบที่สาม';
-
-    const r1 = getThepMeowCardReading(c1, intent);
-    const r2 = getThepMeowCardReading(c2, intent);
-    const r3 = getThepMeowCardReading(c3, intent);
-
-    const isComparison = /หรือ|กับ|อันไหน|ทางไหน|ดีกว่า|เลือก/i.test(question) || (pos1.title && pos1.title.includes('ตัวเลือก'));
+    const hasQuestion = isExplicitUserQuestion(question);
+    const displayHeader = hasQuestion ? `“${question}”` : 'คำทำนายภาพรวมจากหน้าไพ่ทั้ง 3 ใบ';
+    const calloutTitle = hasQuestion ? `คำตอบสำหรับ: “${question}”` : 'สรุปคำทำนายภาพรวม';
 
     let directVerdict = '';
     let overallText = '';
 
-    if (isComparison) {
-      directVerdict = `ภาพรวมไพ่ชี้ว่า ${pos2.title} (“${c2Name}”) มีเกณฑ์พลังงานที่เกื้อหนุนและมีโอกาสสำเร็จโดดเด่นมากกว่าในระยะยาวค่ะ`;
+    if (hasQuestion) {
+      directVerdict = `เมื่อตีความพลังงานของไพ่ทั้ง 3 ใบร่วมกัน เรื่องนี้มีแนวโน้มคลี่คลายไปในทิศทางที่ชัดเจน โดยควรพิจารณาตัดสินใจด้วยความรอบคอบและวางแผนระยะยาวค่ะ`;
       overallText = `
-        <p>เจ้ามนุษย์ที่รัก... สำหรับคำถามที่ว่า <strong>“${question}”</strong> เมื่อแม่หมอเทพเหมียวตั้งจิตเชื่อมโยงพลังจากไพ่ทั้งสามใบเข้าด้วยกัน ภาพรวมสรุปได้ชัดเจนดังนี้ค่ะ:</p>
-        <p>ในฝั่งของ <strong>${pos1.title} (“${c1Name}”)</strong> กำลังสะท้อนสภาวะที่ต้องใช้ความรอบคอบอย่างสูง <em>“${r1}”</em> ซึ่งเป็นทางเลือกที่ยังมีจุดต้องประเมินและแบกรับความเสี่ยงอยู่พอสมควร</p>
-        <p>ในขณะที่ฝั่งของ <strong>${pos2.title} (“${c2Name}”)</strong> กลับปรากฏพลังงานบวกที่ชัดเจนกว่ามาก <em>“${r2}”</em> ชี้ให้เห็นถึงความมั่นคง โอกาสที่จะได้รับผลตอบแทนที่ดี และความสำเร็จที่คุ้มค่ากว่า</p>
-        <p>โดยมี <strong>${pos3.title} (“${c3Name}”)</strong> เป็นแสงสว่างชี้นำว่า <em>“${r3}”</em> สรุปภาพรวมแล้ว ขอให้คุณมั่นใจและเลือกเดินหน้าในเส้นทางที่มีพลังเกื้อหนุนมากกว่า แล้วผลลัพธ์จะนำพาความสำเร็จและความสบายใจมาให้คุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾💖</p>
+        <p>เจ้ามนุษย์ที่รัก... สำหรับคำถามที่ว่า <strong>“${question}”</strong> เมื่อแม่หมอเทพเหมียวตีความพลังงานของไพ่ทั้ง 3 ใบรวมกัน คำตอบชี้ว่าสถานการณ์นี้กำลังอยู่ในช่วงของการประเมินความคุ้มค่าและทบทวนทิศทางในระยะยาวอย่างรอบคอบค่ะ</p>
+        <p>สิ่งสำคัญในจังหวะนี้คือการเตรียมความพร้อมล่วงหน้า ไม่แบกรับภาระหรือความกดดันไว้เพียงลำพัง และใช้สติพิจารณาทางเลือกที่ให้ความมั่นคงและสบายใจที่สุดกับตัวคุณเอง แล้วทุกอย่างจะผ่านพ้นและคลี่คลายไปในทางที่ดีอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾💖</p>
       `;
     } else {
-      directVerdict = `ภาพรวมพลังงานกำลังเปิดทางสู่ความสำเร็จ โดยมีแนวทางสำคัญคือการปรับตัวอย่างมีสติและมั่นใจค่ะ`;
+      directVerdict = `ภาพรวมดวงชะตาจากไพ่ทั้ง 3 ใบ สะท้อนจังหวะชีวิตที่กำลังก้าวหน้า มั่นคง และเหมาะแก่การวางแผนเพื่ออนาคตค่ะ`;
       overallText = `
-        <p>เจ้ามนุษย์ที่รัก... สำหรับข้อสงสัยในเรื่อง <strong>“${question}”</strong> เมื่อเชื่อมโยงกระแสพลังงานจากไพ่ทั้ง 3 ใบเข้าด้วยกัน จะเห็นภาพรวมอย่างชัดเจนว่า:</p>
-        <p>จุดเริ่มต้นและสภาวะที่คุณกำลังเผชิญได้รับอิทธิพลจากพลังของ <strong>“${c1Name}”</strong> ซึ่งบ่งบอกถึง <em>“${r1}”</em> เป็นรากฐานสำคัญที่ส่งผลมาถึงจุดนี้</p>
-        <p>เมื่อขับเคลื่อนต่อเนื่องมา จึงปรากฏพลังของ <strong>“${c2Name}”</strong> เข้ามาหนุนเสริมและเผยให้เห็นว่า <em>“${r2}”</em> นี่คือจังหวะที่ต้องมีสติและโฟกัสกับเป้าหมายตรงหน้าอย่างแน่วแน่</p>
-        <p>และปลายทางของเรื่องนี้ส่งมอบผ่านพลังของ <strong>“${c3Name}”</strong> ชี้ว่า <em>“${r3}”</em> ทุกอย่างจะคลี่คลายไปในทิศทางที่สดใสและคุ้มค่ากับความทุ่มเทของคุณอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾✨</p>
+        <p>เจ้ามนุษย์ที่รัก... เมื่อแม่หมอเทพเหมียวตีความหน้าไพ่ทั้ง 3 ใบรวมกันเป็นภาพรวม พลังงานของคุณในช่วงนี้เป็นจังหวะของการจัดระเบียบเป้าหมาย ทบทวนสิ่งที่ผ่านมา และวางรากฐานให้มั่นคงยิ่งขึ้นค่ะ</p>
+        <p>ขอเพียงคุณรักษาสมดุลระหว่างความมุ่งมั่นในการทำงานและการดูแลหัวใจของตัวเองให้ดี โอกาสดีๆ และความสำเร็จที่คุ้มค่ากำลังรออยู่ข้างหน้าอย่างแน่นอนค่ะ เมี๊ยววว~ 🐾✨</p>
       `;
     }
 
@@ -2938,21 +2761,21 @@ ${cardsPromptLines}
           </span>
         </div>
         <h3 class="thepmeow-verdict-question">
-          “${question}”
+          ${displayHeader}
         </h3>
 
         <!-- Direct Answer Callout -->
         <div class="thepmeow-direct-answer-callout">
           <div class="direct-answer-header">
             <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
-            <strong>คำตอบฟันธงสำหรับ: “${question}”</strong>
+            <strong>${calloutTitle}</strong>
           </div>
           <div class="direct-answer-verdict verdict-badge-favorable">
             ${directVerdict}
           </div>
         </div>
 
-        <!-- OVERALL ANALYSIS (บทวิเคราะห์ภาพรวม ไม่แยกใบ ไม่แยกบทสรุป) -->
+        <!-- OVERALL ANALYSIS (เฉพาะคำตอบที่ตีความแล้ว) -->
         <div class="thepmeow-prophecy-body">
           <div class="thepmeow-overall-analysis-text">
             ${overallText}
@@ -2992,11 +2815,15 @@ ${cardsPromptLines}
   }
 
   // --------------------------------------------------------------------------
-  // MAIN SYNTHESIS DISPATCHER (POWERED BY GEMINI 3.8 FLASH AI + DEEP HEALING)
+  // MAIN SYNTHESIS DISPATCHER (POWERED BY GEMINI AI + UNIFIED 3-CARD KEYWORD READING)
   // --------------------------------------------------------------------------
   async function renderThepMeowSynthesis(drawn) {
     if (!resultSynthesisContainer) return;
-    const question = (fortuneState.question || 'สิ่งที่อยู่ในใจ').trim();
+    const rawQuestion = (fortuneState.question || '').trim();
+    const hasQuestion = isExplicitUserQuestion(rawQuestion);
+    const loadingSubtitle = hasQuestion
+      ? `กำลังไขคำตอบสำหรับ: “<strong>${rawQuestion}</strong>”`
+      : `กำลังอ่านภาพรวมจากคีย์เวิร์ดไพ่ทั้ง 3 ใบ...`;
     const positions = getActivePositions();
 
     // Show Animated Mystic Cat Loading Screen
@@ -3022,12 +2849,12 @@ ${cardsPromptLines}
         </h3>
 
         <p class="thepmeow-loading-question">
-          กำลังไขคำตอบสำหรับ: “<strong>${question}</strong>”
+          ${loadingSubtitle}
         </p>
 
         <!-- Dynamic Live Status Badge with Animated Dots -->
         <div class="thepmeow-status-badge" id="thepmeowStatusBadge">
-          <span id="thepmeowStatusText">🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...</span>
+          <span id="thepmeowStatusText">🐾 สเต็ป 1: อ่านคีย์เวิร์ดจากไพ่ใบที่ 1, 2 และ 3 รวมกัน...</span>
           <div class="thepmeow-pulse-dots">
             <span></span><span></span><span></span>
           </div>
@@ -3044,8 +2871,8 @@ ${cardsPromptLines}
 
     // Live Step Message Switcher
     const liveMessages = [
-      { text: "🐾 สเต็ป 1: กางกรงเล็บสัมผัสคลื่นพลังงานจากไพ่ทั้ง 3 ใบ...", step: 1 },
-      { text: "🔮 สเต็ป 2: แม่หมอเปิดเนตรปัญญาญาณ กำลังเชื่อมโยงคำถามของคุณ...", step: 2 },
+      { text: "🐾 สเต็ป 1: อ่านคีย์เวิร์ดจากไพ่ใบที่ 1, 2 และ 3 รวมกัน...", step: 1 },
+      { text: hasQuestion ? "🔮 สเต็ป 2: แม่หมอเชื่อมโยงคีย์เวิร์ดทั้ง 3 ใบเพื่อตอบคำถามของคุณ..." : "🔮 สเต็ป 2: แม่หมอเชื่อมโยงคีย์เวิร์ดทั้ง 3 ใบเพื่ออ่านภาพรวม...", step: 2 },
       { text: "✨ สเต็ป 3: กำลังร้อยเรียงคำทำนายและข้อคิดฮีลใจอย่างลึกซึ้ง เมี๊ยววว~ 💖", step: 3 }
     ];
 
@@ -3066,20 +2893,19 @@ ${cardsPromptLines}
 
     try {
       const baziCtx = typeof getOracleBaziContext === 'function' ? getOracleBaziContext() : null;
-      const aiData = await fetchThepMeowAIFortune({ question, drawn, positions, baziCtx });
+      const aiData = await fetchThepMeowAIFortune({ question: rawQuestion, drawn, positions, baziCtx });
       if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
-      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question, drawn, positions, aiData, baziCtx });
+      resultSynthesisContainer.innerHTML = renderThepMeowAIFortuneHtml({ question: rawQuestion, drawn, positions, aiData, baziCtx });
     } catch (err) {
       if (typeof msgTimer !== "undefined") clearInterval(msgTimer);
       console.warn('[ThepMeow] AI generation fallback to local engine:', err);
-      const intent = typeof detectQuestionIntent === 'function' ? detectQuestionIntent(question) : { topic: 'general' };
-      const prophecyHtml = buildThepMeowMainProphecy({ question, drawn, positions, intent });
-      const healingHtml = buildThepMeowHealingTips({ question, drawn, intent });
-      const blessingHtml = buildThepMeowBlessing({ question, drawn });
+      const intent = typeof detectQuestionIntent === 'function' ? detectQuestionIntent(rawQuestion) : { topic: 'general' };
+      const prophecyHtml = buildThepMeowMainProphecy({ question: rawQuestion, drawn, positions, intent });
+      const blessingHtml = buildThepMeowBlessing({ question: rawQuestion, drawn });
       resultSynthesisContainer.innerHTML = `
         <div class="thepmeow-dossier">
           ${prophecyHtml}
-                    ${blessingHtml}
+          ${blessingHtml}
         </div>
       `;
     }
