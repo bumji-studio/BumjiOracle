@@ -711,7 +711,7 @@
               <span class="mode-sub">ผังดวงเจ้าของโปรไฟล์ • เข้าใจง่าย</span>
             </button>
             <button type="button" class="bazi-mode-btn" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
-              <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong>
+              <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong> <span class="qm-lock-badge" id="baziExpertLockBadge" style="margin-left: 6px;"><i class="fa-solid fa-lock"></i> สมาชิก</span>
               <span class="mode-sub">คำนวณผังชะตา &amp; หมอดูเจาะลึก</span>
             </button>
           </div>
@@ -1352,7 +1352,32 @@
     <div class="tongshu-app-container">
       
       <!-- Top Control Toolbar -->
-      <div class="ts-toolbar-card">
+      <!-- MODE SWITCHER (Basic vs Expert) - Basic shows Today's Hourly Auspicious Times -->
+      <section class="bazi-mode-switcher-bar" id="tsModeSwitcherBar" style="margin-bottom: 14px;">
+        <div class="bazi-mode-toggle-group">
+          <button type="button" class="bazi-mode-btn active" id="tsModeBasicBtn" onclick="window.TongShuApp.switchMode('basic')">
+            <i class="fa-solid fa-clock"></i> <strong>โหมด Basic</strong>
+            <span class="mode-sub">ฤกษ์ยามวันนี้ • รายชั่วโมง (12 ชั่วยาม)</span>
+          </button>
+          <button type="button" class="bazi-mode-btn" id="tsModeExpertBtn" onclick="window.TongShuApp.switchMode('expert')">
+            <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong> <span class="qm-lock-badge" id="tsExpertLockBadge" style="margin-left: 6px;"><i class="fa-solid fa-lock"></i> สมาชิก</span>
+            <span class="mode-sub">ปฏิทินฤกษ์ยามเต็มรูปแบบ &amp; ค้นหาฤกษ์มงคล</span>
+          </button>
+        </div>
+        <div class="bazi-mode-hint-box" id="tsModeHintBox">
+          <div id="tsModeBasicInfo" class="mode-banner-content">
+            <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
+            <span><strong>โหมด Basic (ฤกษ์ยามวันนี้):</strong> แสดงตารางฤกษ์ยามมงคลประจำวันนี้เท่านั้น ในระดับรายชั่วโมง (12 ชั่วยาม / ตลอด 24 ชม.) พร้อมไฮไลต์ยามปัจจุบันแบบเรียลไทม์</span>
+          </div>
+          <div id="tsModeExpertInfo" class="mode-banner-content hidden">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+            <span><strong>โหมด Expert:</strong> เปิดเครื่องมือปฏิทินฤกษ์ยามจีน TongShu เต็มรูปแบบ เลือกดูย้อนหลัง-ล่วงหน้า กิจกรรมควรทำ/ควรเว้น ทิศเทพโชคลาภ ค้นหาฤกษ์มงคล 35 วัน และปฏิทินรายเดือน</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Top Control Toolbar -->
+      <div class="ts-toolbar-card" id="tsToolbarCard">
         <div class="ts-toolbar-left">
           <div class="ts-date-nav-group">
             <button class="ts-btn ts-btn-nav" id="tsPrevDayBtn" title="วันก่อนหน้า">
@@ -1401,7 +1426,7 @@
       <div id="tsSubViewAlmanac" class="ts-subview-section">
         
         <!-- Hero Section: Daily Auspicious Overview -->
-        <div class="ts-hero-card">
+        <div class="ts-hero-card" id="tsHeroCard">
           <div class="ts-hero-inner">
             <div class="ts-hero-badge-group">
               <span class="ts-badge-pill gold" id="tsHeroScoreBadge"><i class="fa-solid fa-star"></i> ความมงคล 88%</span>
@@ -1433,7 +1458,7 @@
         </div>
 
         <!-- 2 Columns: Activities (宜 / 忌) -->
-        <div class="ts-activities-grid">
+        <div class="ts-activities-grid" id="tsActivitiesGrid">
           <!-- 宜 Suitable Activities -->
           <div class="ts-activity-card suitable-card">
             <div class="ts-activity-header">
@@ -1464,7 +1489,7 @@
         </div>
 
         <!-- Auspicious Directions & Clash Grid -->
-        <div class="ts-directions-grid">
+        <div class="ts-directions-grid" id="tsDirectionsGrid">
           <div class="ts-dir-card dir-caishen">
             <div class="ts-dir-icon"><i class="fa-solid fa-coins"></i></div>
             <div class="ts-dir-info">
@@ -1506,7 +1531,7 @@
         <div class="ts-section-card">
           <div class="ts-section-header">
             <div>
-              <h3><i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามมงคล 12 ชั่วยาม (时辰吉凶)</h3>
+              <h3 id="tsHourlySectionTitle"><i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามมงคลวันนี้ รายชั่วโมง (12 ชั่วยาม • 时辰吉凶)</h3>
               <p>คำนวณตามหลัก 6 ดาวมงคล (หวงเต้า) และ 6 ดาวร้าย (เฮยเต้า) ตลอด 24 ชั่วโมง</p>
             </div>
             <div class="ts-clock-badge-group">
@@ -1521,7 +1546,7 @@
         </div>
 
         <!-- JiuTian Arcana Deity of the Day Section -->
-        <div class="ts-deity-card-section">
+        <div class="ts-deity-card-section" id="tsDeityCardSection">
           <div class="ts-deity-container">
             <div class="ts-deity-visual">
               <img id="tsDeityCardImage" src="CardImage/Major2.png" alt="Deity Card" class="ts-deity-img">
@@ -2177,12 +2202,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261021_bazi_guest_oracle_v2"></script>
+  <script src="auth.js?v=20261030_tongshu_basic_v1"></script>
   <script src="app.js?v=20261029_kw_ai_v3"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
-  <script src="tongshu.js?v=20261010_cal_hours"></script>
+  <script src="tongshu.js?v=20261030_tongshu_basic_v1"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
-  <script src="bazi.js?v=20261022_clean_oracle_v2"></script>
+  <script src="bazi.js?v=20261030_bazi_expert_lock_v1"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

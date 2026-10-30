@@ -10,7 +10,7 @@
   'use strict';
 
   const STORAGE_KEY = 'jiutian_arcana_user_session';
-  const LOCKED_TABS = ['tongshu', 'personality']; // Menus requiring membership (Reading, QiMen Real-time, and BaZi Guest Oracle are open for guests)
+  const LOCKED_TABS = ['personality']; // Menus requiring membership (Reading, TongShu Basic Today Hourly, QiMen Real-time, and BaZi Basic are open for guests)
 
   const AuthManager = {
     currentUser: null,
@@ -509,8 +509,22 @@
         const target = this.pendingTabRedirect;
         this.pendingTabRedirect = null;
         setTimeout(() => {
-          window.setActiveAppMode(target);
-          this.showToast(`✨ ปลดล็อกเมนู ${target.toUpperCase()} เรียบร้อยแล้ว`, 'success');
+          if (target === 'bazi_expert') {
+            window.setActiveAppMode('bazi');
+            if (window.BaziApp && typeof window.BaziApp.switchMode === 'function') {
+              window.BaziApp.switchMode('expert');
+            }
+            this.showToast('✨ ปลดล็อกโหมด Expert ผังดวงปาจื่อเรียบร้อยแล้ว', 'success');
+          } else if (target === 'tongshu_expert' || target === 'tongshu') {
+            window.setActiveAppMode('tongshu');
+            if (window.TongShuApp && typeof window.TongShuApp.switchMode === 'function') {
+              window.TongShuApp.switchMode('expert');
+            }
+            this.showToast('✨ ปลดล็อกโหมด Expert ปฏิทินฤกษ์ยาม TongShu เรียบร้อยแล้ว', 'success');
+          } else {
+            window.setActiveAppMode(target);
+            this.showToast(`✨ ปลดล็อกเมนู ${target.toUpperCase()} เรียบร้อยแล้ว`, 'success');
+          }
         }, 200);
       }
     },
@@ -551,18 +565,21 @@
 
       const noticeBox = document.getElementById('authLockedNotice');
       if (noticeBox) {
-        if (intendedTab && LOCKED_TABS.includes(intendedTab)) {
+        const noticeTargets = [...LOCKED_TABS, 'qimen', 'bazi', 'bazi_expert', 'tongshu', 'tongshu_expert'];
+        if (intendedTab && noticeTargets.includes(intendedTab)) {
           const tabNames = {
-            tongshu: 'ปฏิทินฤกษ์ยาม TongShu (通書)',
+            tongshu: 'โหมด Expert ปฏิทินฤกษ์ยาม TongShu (ค้นหาฤกษ์ & ปฏิทินรายเดือน)',
+            tongshu_expert: 'โหมด Expert ปฏิทินฤกษ์ยาม TongShu (ค้นหาฤกษ์ & ปฏิทินรายเดือน)',
             qimen: 'ผังฉีเหมิน (Qi Men Dun Jia)',
             bazi: 'ดูดวงจีน (BaZi 八字)',
+            bazi_expert: 'โหมด Expert ผังดวงปาจื่อ (BaZi Pro & โต๊ะหมอดู)',
             personality: 'ถอดรหัสตัวตน 60 Jia Zi (Eastern MBTI / DISC)'
           };
           noticeBox.innerHTML = `
             <div class="auth-gate-alert">
               <i class="fa-solid fa-lock"></i>
               <div>
-                <strong>เมนู ${tabNames[intendedTab] || intendedTab} พิเศษสำหรับสมาชิก</strong>
+                <strong>${tabNames[intendedTab] || intendedTab} พิเศษสำหรับสมาชิก</strong>
                 <p>เข้าสู่ระบบหรือลงทะเบียนเพื่อปลดล็อกฟังก์ชันดูดวงเจาะลึก พร้อมผูกดวงชะตาส่วนบุคคล</p>
               </div>
             </div>
@@ -726,8 +743,22 @@
               this.pendingTabRedirect = null;
               setTimeout(() => {
                 this.closeModal();
-                window.setActiveAppMode(target);
-                this.showToast(`✨ ปลดล็อกเมนู ${target.toUpperCase()} เรียบร้อยแล้ว`, 'success');
+                if (target === 'bazi_expert') {
+                  window.setActiveAppMode('bazi');
+                  if (window.BaziApp && typeof window.BaziApp.switchMode === 'function') {
+                    window.BaziApp.switchMode('expert');
+                  }
+                  this.showToast('✨ ปลดล็อกโหมด Expert ผังดวงปาจื่อเรียบร้อยแล้ว', 'success');
+                } else if (target === 'tongshu_expert' || target === 'tongshu') {
+                  window.setActiveAppMode('tongshu');
+                  if (window.TongShuApp && typeof window.TongShuApp.switchMode === 'function') {
+                    window.TongShuApp.switchMode('expert');
+                  }
+                  this.showToast('✨ ปลดล็อกโหมด Expert ปฏิทินฤกษ์ยาม TongShu เรียบร้อยแล้ว', 'success');
+                } else {
+                  window.setActiveAppMode(target);
+                  this.showToast(`✨ ปลดล็อกเมนู ${target.toUpperCase()} เรียบร้อยแล้ว`, 'success');
+                }
               }, 400);
             }
           } catch (err) {
@@ -817,13 +848,21 @@
       }
 
       // 2. Update Nav Lock Badges
-      LOCKED_TABS.forEach(tab => {
+      const allMenuTabs = ['tongshu', 'qimen', 'bazi', 'personality'];
+      allMenuTabs.forEach(tab => {
         const btnId = tab === 'tongshu' ? 'tabTongShuBtn' : tab === 'qimen' ? 'tabQiMenBtn' : tab === 'bazi' ? 'tabBaziBtn' : tab === 'personality' ? 'tabPersonalityBtn' : null;
         if (!btnId) return;
         const btn = document.getElementById(btnId);
         if (!btn) return;
 
         let badge = btn.querySelector('.nav-lock-badge');
+        if (!LOCKED_TABS.includes(tab)) {
+          if (badge) {
+            badge.style.display = 'none';
+            badge.innerHTML = '';
+          }
+          return;
+        }
         if (!badge) {
           badge = document.createElement('span');
           badge.className = 'nav-lock-badge';
@@ -858,6 +897,12 @@
       this.updateUI();
       if (window.BaziApp && typeof window.BaziApp.onAuthStateChange === 'function') {
         window.BaziApp.onAuthStateChange(this.isLoggedIn(), this.currentUser);
+      }
+      if (window.TongShuApp && typeof window.TongShuApp.onAuthStateChange === 'function') {
+        window.TongShuApp.onAuthStateChange(this.isLoggedIn(), this.currentUser);
+      }
+      if (window.QiMenApp && typeof window.QiMenApp.updateLockBadges === 'function') {
+        window.QiMenApp.updateLockBadges();
       }
     },
 

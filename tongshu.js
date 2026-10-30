@@ -645,18 +645,93 @@
 
   const TongShuApp = {
     currentDate: new Date(),
+    currentMode: 'basic', // 'basic' (Today's hourly only) | 'expert' (Full almanac, finder, calendar)
     currentSubView: 'almanac', // 'almanac' | 'finder' | 'calendar'
     currentPurpose: 'opening',
     calendarYear: new Date().getFullYear(),
     calendarMonth: new Date().getMonth() + 1,
     clockInterval: null,
 
+    isLoggedIn: function () {
+      return !!(window.AuthManager && window.AuthManager.isLoggedIn());
+    },
+
     init: function () {
       this.bindDOMElements();
       this.bindEvents();
       this.startLiveClock();
+      this.switchMode('basic', false);
       this.render();
       console.log('[TongShu] Auspicious Almanac Engine initialized successfully.');
+    },
+
+    onAuthStateChange: function (isLoggedIn) {
+      const lockBadge = document.getElementById('tsExpertLockBadge');
+      if (lockBadge) {
+        lockBadge.style.display = isLoggedIn ? 'none' : 'inline-flex';
+      }
+      if (!isLoggedIn && this.currentMode === 'expert') {
+        this.switchMode('basic', true);
+      }
+    },
+
+    switchMode: function (mode, shouldRender = true) {
+      if (mode === 'expert' && !this.isLoggedIn()) {
+        if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+          window.AuthManager.openModal('login', 'tongshu_expert');
+        }
+        mode = 'basic';
+      }
+      this.currentMode = mode;
+      const isExpert = mode === 'expert';
+      const isAuth = this.isLoggedIn();
+
+      const lockBadge = document.getElementById('tsExpertLockBadge');
+      if (lockBadge) {
+        lockBadge.style.display = isAuth ? 'none' : 'inline-flex';
+      }
+
+      const basicBtn = document.getElementById('tsModeBasicBtn');
+      const expertBtn = document.getElementById('tsModeExpertBtn');
+      const basicInfo = document.getElementById('tsModeBasicInfo');
+      const expertInfo = document.getElementById('tsModeExpertInfo');
+
+      if (basicBtn) basicBtn.classList.toggle('active', !isExpert);
+      if (expertBtn) expertBtn.classList.toggle('active', isExpert);
+      if (basicInfo) basicInfo.classList.toggle('hidden', isExpert);
+      if (expertInfo) expertInfo.classList.toggle('hidden', !isExpert);
+
+      const toolbarCard = document.getElementById('tsToolbarCard');
+      const heroCard = document.getElementById('tsHeroCard');
+      const activitiesGrid = document.getElementById('tsActivitiesGrid');
+      const directionsGrid = document.getElementById('tsDirectionsGrid');
+      const deityCardSection = document.getElementById('tsDeityCardSection');
+
+      if (!isExpert) {
+        // Basic Mode: Force Today & Daily Almanac subview, show ONLY Hourly (12 Shichen) section
+        this.currentDate = new Date();
+        this.currentSubView = 'almanac';
+        if (this.el && this.el.subViewAlmanac) this.el.subViewAlmanac.classList.remove('hidden');
+        if (this.el && this.el.subViewFinder) this.el.subViewFinder.classList.add('hidden');
+        if (this.el && this.el.subViewCalendar) this.el.subViewCalendar.classList.add('hidden');
+
+        if (toolbarCard) toolbarCard.style.display = 'none';
+        if (heroCard) heroCard.style.display = 'none';
+        if (activitiesGrid) activitiesGrid.style.display = 'none';
+        if (directionsGrid) directionsGrid.style.display = 'none';
+        if (deityCardSection) deityCardSection.style.display = 'none';
+      } else {
+        // Expert Mode: Show full toolbar & daily sections
+        if (toolbarCard) toolbarCard.style.display = '';
+        if (heroCard) heroCard.style.display = '';
+        if (activitiesGrid) activitiesGrid.style.display = '';
+        if (directionsGrid) directionsGrid.style.display = '';
+        if (deityCardSection) deityCardSection.style.display = '';
+      }
+
+      if (shouldRender) {
+        this.render();
+      }
     },
 
     bindDOMElements: function () {
@@ -927,7 +1002,18 @@
     },
 
     renderDailyAlmanac: function () {
+      if (this.currentMode === 'basic') {
+        this.currentDate = new Date();
+      }
       const info = TongShuEngine.calculate(this.currentDate);
+      const hourlyTitle = document.getElementById('tsHourlySectionTitle');
+      if (hourlyTitle) {
+        if (this.currentMode === 'basic') {
+          hourlyTitle.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามวันนี้ รายชั่วโมง (${info.gregorianThai})`;
+        } else {
+          hourlyTitle.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามมงคล 12 ชั่วยาม (${info.gregorianThai})`;
+        }
+      }
 
       // Hero Section
       if (this.el.heroDateGregorian) this.el.heroDateGregorian.textContent = info.gregorianThai;
@@ -1258,6 +1344,11 @@ ${info.deityOracle.quote}
     },
 
     onTabShow: function () {
+      const isAuth = this.isLoggedIn();
+      this.onAuthStateChange(isAuth);
+      if (this.currentMode === 'basic') {
+        this.currentDate = new Date();
+      }
       this.updateLiveClockText();
       this.render();
     }

@@ -1358,6 +1358,8 @@
     selectedMonthIndex: 0,
     currentMode: (function () {
       try {
+        const isAuth = !!(window.AuthManager && window.AuthManager.isLoggedIn());
+        if (!isAuth) return 'basic';
         const urlParams = new URLSearchParams(window.location.search);
         const paramMode = urlParams.get('mode');
         if (paramMode === 'expert' || paramMode === 'basic') return paramMode;
@@ -1366,6 +1368,10 @@
     })(),
     activeExpertQuery: 'geju',
 
+    isLoggedIn: function () {
+      return !!(window.AuthManager && window.AuthManager.isLoggedIn());
+    },
+
     init: function () {
       this.loadSavedProfiles();
       this.setDefaultCurrentDateTimeInputs();
@@ -1373,7 +1379,10 @@
       this.renderQuickProfileSelect();
       this.bindEvents();
 
-      const isAuth = !!(window.AuthManager && window.AuthManager.isLoggedIn());
+      const isAuth = this.isLoggedIn();
+      if (!isAuth) {
+        this.currentMode = 'basic';
+      }
       const curUser = window.AuthManager ? window.AuthManager.currentUser : null;
       this.updateViewForAuthState(isAuth, curUser);
 
@@ -1421,20 +1430,30 @@
       const guestView = document.getElementById('baziGuestLandingView');
       const loggedInView = document.getElementById('baziLoggedInAppView');
       const memberHeader = document.getElementById('baziMemberHeaderCard');
+      const toolbarCard = document.getElementById('baziToolbarCard');
       const profileField = document.querySelector('.bazi-field-profile');
+      const expertLockBadge = document.getElementById('baziExpertLockBadge');
 
       if (loggedInView) {
         loggedInView.style.display = 'flex';
+      }
+      if (expertLockBadge) {
+        expertLockBadge.style.display = isLoggedIn ? 'none' : 'inline-flex';
       }
 
       if (!isLoggedIn) {
         if (guestView) guestView.style.display = 'block';
         if (memberHeader) memberHeader.style.display = 'none';
+        if (toolbarCard) toolbarCard.style.display = 'none';
         if (profileField) profileField.style.display = 'none';
+        if (this.currentMode === 'expert') {
+          this.switchMode('basic', false);
+        }
         this.initGuestInputs();
       } else {
         if (guestView) guestView.style.display = 'none';
         if (memberHeader) memberHeader.style.display = 'flex';
+        if (toolbarCard) toolbarCard.style.display = 'block';
         if (profileField) profileField.style.display = 'flex';
         this.updateMemberHeader(currentUser);
         this.renderQuickProfileSelect();
@@ -3079,6 +3098,12 @@
     currentExpertSubView: 'chart',
 
     openDeskFromToolbar: function () {
+      if (!this.isLoggedIn()) {
+        if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+          window.AuthManager.openModal('login', 'bazi_expert');
+        }
+        return;
+      }
       if (this.currentMode !== 'expert') {
         this.switchMode('expert', false);
       }
@@ -3146,12 +3171,27 @@
     },
 
     switchMode: function (mode, shouldRender = true) {
+      if (mode === 'expert' && !this.isLoggedIn()) {
+        if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+          window.AuthManager.openModal('login', 'bazi_expert');
+        }
+        mode = 'basic';
+      }
       this.currentMode = mode;
       try {
         localStorage.setItem('bazi_display_mode_v2', mode);
       } catch (e) {}
 
       const isExpert = mode === 'expert';
+      const isAuth = this.isLoggedIn();
+      const toolbarCard = document.getElementById('baziToolbarCard');
+      if (toolbarCard) {
+        toolbarCard.style.display = isAuth ? 'block' : 'none';
+      }
+      const expertLockBadge = document.getElementById('baziExpertLockBadge');
+      if (expertLockBadge) {
+        expertLockBadge.style.display = isAuth ? 'none' : 'inline-flex';
+      }
 
       document.body.classList.toggle('expert-mode', isExpert);
       const appView = document.getElementById('baziAppView');
