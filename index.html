@@ -1376,8 +1376,8 @@
         </div>
       </section>
 
-      <!-- Top Control Toolbar -->
-      <div class="ts-toolbar-card" id="tsToolbarCard">
+      <!-- Top Control Toolbar (Hidden by default in Basic Mode) -->
+      <div class="ts-toolbar-card" id="tsToolbarCard" style="display: none;">
         <div class="ts-toolbar-left">
           <div class="ts-date-nav-group">
             <button class="ts-btn ts-btn-nav" id="tsPrevDayBtn" title="วันก่อนหน้า">
@@ -1426,7 +1426,7 @@
       <div id="tsSubViewAlmanac" class="ts-subview-section">
         
         <!-- Hero Section: Daily Auspicious Overview -->
-        <div class="ts-hero-card" id="tsHeroCard">
+        <div class="ts-hero-card" id="tsHeroCard" style="display: none;">
           <div class="ts-hero-inner">
             <div class="ts-hero-badge-group">
               <span class="ts-badge-pill gold" id="tsHeroScoreBadge"><i class="fa-solid fa-star"></i> ความมงคล 88%</span>
@@ -1458,7 +1458,7 @@
         </div>
 
         <!-- 2 Columns: Activities (宜 / 忌) -->
-        <div class="ts-activities-grid" id="tsActivitiesGrid">
+        <div class="ts-activities-grid" id="tsActivitiesGrid" style="display: none;">
           <!-- 宜 Suitable Activities -->
           <div class="ts-activity-card suitable-card">
             <div class="ts-activity-header">
@@ -1489,7 +1489,7 @@
         </div>
 
         <!-- Auspicious Directions & Clash Grid -->
-        <div class="ts-directions-grid" id="tsDirectionsGrid">
+        <div class="ts-directions-grid" id="tsDirectionsGrid" style="display: none;">
           <div class="ts-dir-card dir-caishen">
             <div class="ts-dir-icon"><i class="fa-solid fa-coins"></i></div>
             <div class="ts-dir-info">
@@ -1546,7 +1546,7 @@
         </div>
 
         <!-- JiuTian Arcana Deity of the Day Section -->
-        <div class="ts-deity-card-section" id="tsDeityCardSection">
+        <div class="ts-deity-card-section" id="tsDeityCardSection" style="display: none;">
           <div class="ts-deity-container">
             <div class="ts-deity-visual">
               <img id="tsDeityCardImage" src="CardImage/Major2.png" alt="Deity Card" class="ts-deity-img">
@@ -2202,12 +2202,12 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261030_tongshu_basic_v1"></script>
-  <script src="app.js?v=20261029_kw_ai_v3"></script>
+  <script src="auth.js?v=20261030_tongshu_basic_v2"></script>
+  <script src="app.js?v=20261030_tongshu_basic_v2"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
-  <script src="tongshu.js?v=20261030_tongshu_basic_v1"></script>
+  <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
-  <script src="bazi.js?v=20261030_bazi_expert_lock_v1"></script>
+  <script src="bazi.js?v=20261030_tongshu_basic_v2"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
