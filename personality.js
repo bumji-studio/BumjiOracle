@@ -195,28 +195,18 @@
         return;
       }
 
-      const dayStem = chart.pillars.day.stem.zh;
-      const dayBranch = chart.pillars.day.branch.zh;
-
-      // 2. Resolve 60 Jia Zi Soul Profile
-      const profile = window.getJiaZiProfile(dayStem, dayBranch);
-      if (!profile) {
-        alert(`ไม่พบโปรไฟล์ 60 Jia Zi สำหรับ ${dayStem}${dayBranch}`);
-        return;
-      }
-
-      // 3. Resolve 5 Structures & 10 Profiles & Cat Archetypes
+      // 2. Resolve 5 Structures & 10 Profiles & Cat Archetypes from birth date/time
       let catData = null;
       if (window.CatProfileEngine && typeof window.CatProfileEngine.resolveCatProfile === 'function') {
         catData = window.CatProfileEngine.resolveCatProfile(chart);
       }
 
       this.currentChart = chart;
-      this.currentProfile = profile;
+      this.currentProfile = null;
       this.currentCatData = catData;
 
-      // 4. Render New Dedicated Flow
-      this.renderFullResultScreen(profile, chart, catData, {
+      // 3. Render Structure & Cat Profile Result Screen (without 60 Jia Zi)
+      this.renderFullResultScreen(null, chart, catData, {
         name,
         birthDate,
         birthHour,
@@ -425,50 +415,41 @@
     },
 
     copyProfileSummary: function () {
-      if (!this.currentProfile) {
+      if (!this.currentCatData || !this.currentCatData.primaryCat) {
         alert('กรุณาคำนวณโปรไฟล์ก่อนคัดลอก');
         return;
       }
 
-      const p = this.currentProfile;
-      const c = this.currentChart;
-      const cat = this.currentCatData?.primaryCat;
-      const guild = this.currentCatData?.primaryGuild;
+      const cat = this.currentCatData.primaryCat;
+      const guild = this.currentCatData.primaryGuild;
       const name = document.getElementById('personalityName')?.value || 'คุณ';
 
-      let text = `✨ ถอดรหัส 60 Jia Zi & แมวตัวตน • แม่หมอติ๊ดติ๊ด ✨\n`;
+      let text = `✨ ทายนิสัยฉบับน้องเหมียว (Structure & Cat Profile) • แม่หมอติ๊ดติ๊ด ✨\n`;
       text += `━━━━━━━━━━━━━━━━━━━━━\n`;
       text += `👤 เจ้าชะตา: ${name}\n`;
-      text += `🔮 เสาวัน (Day Pillar): ${p.zh} (${p.stemPy} ${p.branchPy} - ${p.thaiName})\n`;
-      text += `👑 Archetype: ${p.archetype}\n`;
-      text += `🪙 ธาตุนาอิม: ${p.nayin}\n`;
-      text += `📜 คำจำกัดความ: "${p.tagline}"\n\n`;
-
-      if (cat) {
-        text += `🐱 แมวตัวแทนตามหลักแม่หมอติ๊ดติ๊ด:\n`;
-        text += `  • สายพันธุ์หลัก: ${cat.catEmoji} ${cat.catBreed} (${cat.title})\n`;
-        if (this.currentCatData?.compositePersona?.compositeTitle) {
-          text += `  • เอกลักษณ์ย่อย: ${this.currentCatData.compositePersona.compositeTitle}\n`;
-        }
-        text += `  • กิลด์พลังชีวิต: ${guild?.nameTh || '-'}\n`;
-        text += `  • นิยามแมว: "${cat.tagline}"\n`;
-        text += `  • แมวคู่แท้: ${cat.catChemistry.bestPartner}\n\n`;
+      text += `🐱 แมวตัวแทนตามหลักแม่หมอติ๊ดติ๊ด:\n`;
+      text += `  • สายพันธุ์หลัก: ${cat.catEmoji} ${cat.catBreed} (${cat.title})\n`;
+      if (this.currentCatData?.compositePersona?.compositeTitle) {
+        text += `  • เอกลักษณ์ย่อย: ${this.currentCatData.compositePersona.compositeTitle}\n`;
       }
+      text += `  • โครงสร้างหลัก (5 Structures): ${guild?.nameEn || '-'} (${guild?.nameTh || '-'})\n`;
+      text += `  • นิยามแมว: "${cat.tagline}"\n`;
+      text += `  • แมวคู่แท้: ${cat.catChemistry.bestPartner}\n\n`;
 
       if (this.currentCatData?.rankedProfiles) {
-        text += `📊 อันดับ 10 Profiles (Joey Yap):\n`;
+        text += `📊 สัดส่วนพลัง 10 Profiles (十神):\n`;
         this.currentCatData.rankedProfiles.slice(0, 5).forEach(rp => {
           text += `  #${rp.rank} ${rp.tenGodZh} (${rp.tenGodTh}): ${rp.percentage}% [${rp.catBreed}]\n`;
         });
         text += `\n`;
       }
 
-      text += `⚡ พลังพิเศษ:\n`;
-      p.superpowers.forEach(s => text += `  • ${s}\n`);
+      text += `⚡ พลังวิเศษและสัญชาตญาณเด่น:\n`;
+      cat.superpowers.forEach(s => text += `  • ${s}\n`);
 
-      text += `\n🐱 ${p.healingAdvice}\n`;
+      text += `\n🐱 ${cat.healingAdvice}\n`;
       text += `━━━━━━━━━━━━━━━━━━━━━\n`;
-      text += `ถอดรหัสตัวตนของคุณได้ที่: แม่หมอติ๊ดติ๊ด (Destiny Arcana)`;
+      text += `ทายนิสัยฉบับน้องเหมียวของคุณได้ที่: แม่หมอติ๊ดติ๊ด (Destiny Arcana)`;
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
@@ -505,7 +486,7 @@
     },
 
     openStoryModal: function () {
-      if (!this.currentProfile) return;
+      if (!this.currentCatData || !this.currentCatData.primaryCat) return;
 
       let modal = document.getElementById('personalityStoryModal');
       if (!modal) {
@@ -515,10 +496,9 @@
         document.body.appendChild(modal);
       }
 
-      const p = this.currentProfile;
-      const cat = this.currentCatData?.primaryCat;
-      const guild = this.currentCatData?.primaryGuild;
-      const comp = this.currentCatData?.compositePersona;
+      const cat = this.currentCatData.primaryCat;
+      const guild = this.currentCatData.primaryGuild;
+      const comp = this.currentCatData.compositePersona;
 
       modal.innerHTML = `
         <div class="modal-card story-modal-card">
@@ -530,49 +510,35 @@
             <div class="story-poster-card" id="storyPosterElement">
               <div class="story-header-brand">
                 <span class="story-brand-badge">แม่หมอติ๊ดติ๊ด • DESTINY ARCANA</span>
-                <span class="story-card-type">60 JIA ZI &amp; CAT ARCHETYPE</span>
+                <span class="story-card-type">STRUCTURE &amp; CAT PROFILE</span>
               </div>
 
-              ${cat ? `
-                <div class="story-cat-avatar-box">
-                  <div class="story-cat-emoji">${cat.catEmoji}</div>
-                  <div class="story-cat-breed">${cat.catBreed}</div>
-                  ${comp?.compositeTitle ? `
-                    <div style="font-size: 12.5px; color: #fbcfe8; font-weight: 700; margin-top: 4px; text-align: center;">
-                      ${comp.compositeTitle}
-                    </div>
-                  ` : ''}
-                  <div class="story-cat-guild">${guild?.nameTh || ''}</div>
-                </div>
-              ` : ''}
-
-              <div class="story-seal-wrap">
-                <div class="story-seal">${p.zh}</div>
-                <div class="story-title-info">
-                  <div class="story-archetype-name">${p.stemPy} ${p.branchPy} (${p.thaiName})</div>
-                  <div class="story-meta-tags">
-                    <span>${p.mbtiEquiv}</span>
-                    <span>•</span>
-                    <span>${p.archetype}</span>
+              <div class="story-cat-avatar-box">
+                <div class="story-cat-emoji">${cat.catEmoji}</div>
+                <div class="story-cat-breed">${cat.catBreed}</div>
+                ${comp?.compositeTitle ? `
+                  <div style="font-size: 12.5px; color: #fbcfe8; font-weight: 700; margin-top: 4px; text-align: center;">
+                    ${comp.compositeTitle}
                   </div>
-                </div>
+                ` : ''}
+                <div class="story-cat-guild">${guild?.nameEn || ''} • ${guild?.nameTh || ''}</div>
               </div>
 
-              <div class="story-tagline">“${cat ? cat.tagline : p.tagline}”</div>
+              <div class="story-tagline">“${cat.tagline}”</div>
 
               <div class="story-powers-box">
                 <div class="story-box-title">⚡ พลังวิเศษประจำตัว:</div>
                 <ul>
-                  ${(cat ? cat.superpowers : p.superpowers).slice(0, 3).map(s => `<li>• ${s}</li>`).join('')}
+                  ${cat.superpowers.slice(0, 3).map(s => `<li>• ${s}</li>`).join('')}
                 </ul>
               </div>
 
               <div class="story-cat-quote">
-                🐱 “${p.healingAdvice.split('คำแนะนำฮีลใจจากแม่หมอติ๊ดติ๊ด:')[1]?.trim() || p.healingAdvice}”
+                🐱 “${cat.healingAdvice}”
               </div>
 
               <div class="story-footer">
-                <span>ค้นพบตัวตนและจิตวิญญาณแมวของคุณที่: แม่หมอติ๊ดติ๊ด</span>
+                <span>ทายนิสัยฉบับน้องเหมียวของคุณได้ที่: แม่หมอติ๊ดติ๊ด</span>
               </div>
             </div>
           </div>
@@ -594,47 +560,15 @@
     /**
      * RENDER DEDICATED RESULT SCREEN
      * Order:
-     * 1. 60 Jia Zi Day Pillar Hero (e.g. Xin Si)
-     * 2. 5 Structures Spider Chart (Joey Yap)
-     * 3. 10 Profiles % Rankings (Joey Yap Ten Gods)
-     * 4. Mapping กับ แมวตามหลักการของแม่หมอติ๊ดติ๊ด
-     * 5. Actions Bar
+     * 1. 5 Structures Spider Chart (Joey Yap)
+     * 2. 10 Profiles % Rankings & Mapping กับ แมวตามหลักการของแม่หมอติ๊ดติ๊ด
+     * 3. Actions Bar
      */
     renderFullResultScreen: function (p, chart, catData, inputData) {
       const resultContainer = document.getElementById('personalityResultContainer');
       if (!resultContainer) return;
 
-      // 4 Pillars mini-summary if chart exists
-      let pillarsSummaryHtml = '';
-      if (chart && chart.pillars) {
-        pillarsSummaryHtml = `
-          <div class="p-pillars-row">
-            <div class="p-pillar-chip">
-              <span class="chip-label">เสาปี (Year)</span>
-              <span class="chip-chars">${chart.pillars.year.stem.zh}${chart.pillars.year.branch.zh}</span>
-            </div>
-            <div class="p-pillar-chip">
-              <span class="chip-label">เสาเดือน (Month)</span>
-              <span class="chip-chars">${chart.pillars.month.stem.zh}${chart.pillars.month.branch.zh}</span>
-            </div>
-            <div class="p-pillar-chip active-day-chip">
-              <span class="chip-label">เสาวัน (Day Core) ⭐</span>
-              <span class="chip-chars">${chart.pillars.day.stem.zh}${chart.pillars.day.branch.zh}</span>
-              <span class="chip-pinyin">${p.stemPy} ${p.branchPy}</span>
-            </div>
-            <div class="p-pillar-chip">
-              <span class="chip-label">เสายาม (Hour)</span>
-              <span class="chip-chars">${chart.pillars.hour.stem.zh}${chart.pillars.hour.branch.zh}</span>
-            </div>
-            <div class="p-pillar-chip strength-chip">
-              <span class="chip-label">สภาพดิถี</span>
-              <span class="chip-val">${chart.strengthText}</span>
-            </div>
-          </div>
-        `;
-      }
-
-      // SECTION 2: 5 Structures Spider Chart HTML
+      // SECTION 1: 5 Structures Spider Chart HTML
       let radarSectionHtml = '';
       if (catData && catData.radarData) {
         const radarSvg = this.generateRadarChartSVG(catData.radarData);
@@ -688,11 +622,10 @@
         `;
       }
 
-      // SECTION 3: Cat Archetype Mapping (แม่หมอติ๊ดติ๊ด) with Side-by-Side 10 Profiles Mini Breakdowns
+      // SECTION 2: Cat Archetype Mapping (แม่หมอติ๊ดติ๊ด) with Side-by-Side 10 Profiles Mini Breakdowns
       let catMappingSectionHtml = '';
       if (catData && catData.primaryCat) {
         const cat = catData.primaryCat;
-        const subCat = catData.secondaryCat;
         const guild = catData.primaryGuild;
         const composite = catData.compositePersona || {
           breedShort: cat.catBreed.split(' (')[0],
@@ -700,7 +633,8 @@
           compositeNarrative: `จิตวิญญาณหลักของคุณคือ ${cat.catBreed} (${cat.archetype})`
         };
         const profiles = catData.rankedProfiles || [];
-        const isMaineCoonWarrior = (catData.dominantTenGod === '七殺' || p.zh === '辛巳');
+        const dayGZ = chart && chart.pillars && chart.pillars.day ? (chart.pillars.day.stem.zh + chart.pillars.day.branch.zh) : '';
+        const isMaineCoonWarrior = (catData.dominantTenGod === '七殺' || dayGZ === '辛巳');
 
         catMappingSectionHtml = `
           <div class="personality-section-box cat-mapping-full-box">
@@ -873,59 +807,22 @@
         `;
       }
 
-      // Assemble the Full Result Screen
+      // Assemble the Full Result Screen (Structure & Profile + Cat Persona only)
       resultContainer.innerHTML = `
         <div class="personality-card-wrapper animate-fade-in">
           
           <!-- ============================================================== -->
-          <!-- 1. 60 JIA ZI DAY PILLAR HERO SECTION (เสาวันเกิด)             -->
-          <!-- ============================================================== -->
-          <div class="jiazi-day-pillar-card">
-            <div class="jiazi-header-badge-row">
-              <span class="j-badge"><i class="fa-solid fa-yin-yang"></i> เสาวัน (DAY PILLAR) • จิตวิญญาณแก่นแท้</span>
-              <span class="j-nayin"><i class="fa-solid fa-shield-halved"></i> ${p.nayin}</span>
-            </div>
-
-            <div class="jiazi-main-content">
-              <!-- Giant Chinese Characters Seal -->
-              <div class="jiazi-big-seal">
-                <span class="seal-chars">${p.zh}</span>
-                <span class="seal-pinyin">${p.stemPy} ${p.branchPy}</span>
-                <span class="seal-thai">${p.thaiName}</span>
-              </div>
-
-              <div class="jiazi-text-info">
-                <div class="jiazi-elements-pill">
-                  <span>${p.stemEl}</span>
-                  <span class="sep">+</span>
-                  <span>${p.branchEl}</span>
-                  <span class="sep">•</span>
-                  <span>สัตว์ประจำเสา: ${p.zodiacTitle}</span>
-                  <span class="sep">•</span>
-                  <span>MBTI: ${p.mbtiEquiv}</span>
-                </div>
-
-                <h1 class="jiazi-archetype-title">${p.archetype}</h1>
-                <p class="jiazi-poetic-tagline">“${p.tagline}”</p>
-
-                <!-- 4 Pillars mini summary -->
-                ${pillarsSummaryHtml}
-              </div>
-            </div>
-          </div>
-
-          <!-- ============================================================== -->
-          <!-- 2. SPIDER CHART 5 STRUCTURES (JOEY YAP)                         -->
+          <!-- 1. SPIDER CHART 5 STRUCTURES (JOEY YAP)                         -->
           <!-- ============================================================== -->
           ${radarSectionHtml}
 
           <!-- ============================================================== -->
-          <!-- 3. CAT PERSONA & 10 PROFILES BREAKDOWN (แม่หมอติ๊ดติ๊ด)         -->
+          <!-- 2. CAT PERSONA & 10 PROFILES BREAKDOWN (แม่หมอติ๊ดติ๊ด)         -->
           <!-- ============================================================== -->
           ${catMappingSectionHtml}
 
           <!-- ============================================================== -->
-          <!-- 5. ACTION TOOLBAR                                              -->
+          <!-- 3. ACTION TOOLBAR                                              -->
           <!-- ============================================================== -->
           <div class="personality-actions-bar">
             <button type="button" class="p-btn-action primary" id="personalityCopyBtn">

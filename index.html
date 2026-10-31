@@ -488,17 +488,17 @@
       <button class="nav-tab active" id="tabReadingBtn" title="ถามแม่หมอติ๊ดติ๊ด &amp; ทำนายไพ่เทพเหมียว (Oracle Q&amp;A)">
         <i class="fa-solid fa-wand-magic-sparkles"></i> <span>ถามแม่หมอ &amp; ไพ่</span>
       </button>
-      <button class="nav-tab" id="tabTongShuBtn" title="ปฏิทินและฤกษ์ยามมงคล TongShu">
-        <i class="fa-solid fa-calendar-days"></i> <span>ฤกษ์ยาม TongShu</span>
-      </button>
-      <button class="nav-tab" id="tabQiMenBtn" title="ทำนายทิศและดวงดาว Qi Men Dun Jia (ระดับซินแส)">
-        <i class="fa-solid fa-compass"></i> <span>ฉีเหมิน (Pro)</span>
+      <button class="nav-tab" id="tabPersonalityBtn" title="ทายนิสัยฉบับน้องเหมียวตามหลักแม่หมอติ๊ดติ๊ด">
+        <i class="fa-solid fa-cat"></i> <span>ทายนิสัยฉบับน้องเหมียว</span>
       </button>
       <button class="nav-tab" id="tabBaziBtn" title="ผังดวง 4 แถวชะตา BaZi (เครื่องมือวิเคราะห์ระดับซินแส)">
         <i class="fa-solid fa-yin-yang"></i> <span>ผังดวงปาจื่อ (Pro)</span>
       </button>
-      <button class="nav-tab" id="tabPersonalityBtn" title="60 Jia Zi &amp; แมวตัวตนตามหลักแม่หมอติ๊ดติ๊ด">
-        <i class="fa-solid fa-cat"></i> <span>60 Jia Zi &amp; แมว</span>
+      <button class="nav-tab" id="tabQiMenBtn" title="ทำนายทิศและดวงดาว Qi Men Dun Jia (ระดับซินแส)">
+        <i class="fa-solid fa-compass"></i> <span>ฉีเหมิน (Pro)</span>
+      </button>
+      <button class="nav-tab" id="tabTongShuBtn" title="ปฏิทินและฤกษ์ยามมงคล TongShu">
+        <i class="fa-solid fa-calendar-days"></i> <span>ฤกษ์ยาม TongShu</span>
       </button>
     </div>
 
@@ -1274,11 +1274,11 @@
             <i class="fa-solid fa-wand-magic-sparkles banner-icon"></i>
             <div>
               <h3 id="revealBannerTitle">เลือกไพ่ครบ 3 ใบเรียบร้อยแล้ว!</h3>
-              <p>ตั้งจิตส่งพลังถึงไพ่ แล้วกดปุ่มเพื่อเริ่มประมวลผลและเปิดเผยคำทำนาย</p>
+              <p>ตั้งจิตส่งพลังถึงไพ่ แล้วกดคลิกอ่านผลทำนายเพื่อเปิดดูรูปหน้าไพ่และคำพยากรณ์</p>
             </div>
           </div>
           <button class="btn btn-primary btn-xl pulse-glow" id="revealDivinationBtn">
-            <i class="fa-solid fa-star"></i> กดทำนายผลดวงชะตา (Reveal Oracle) ✨
+            <i class="fa-solid fa-star"></i> อ่านผลทำนาย (Reveal Oracle) ✨
           </button>
         </div>
       </section>
@@ -1857,13 +1857,13 @@
       <!-- HERO HEADER -->
       <header class="personality-page-header">
         <div class="personality-header-badge">
-          <i class="fa-solid fa-fingerprint"></i> 60 JIA ZI &amp; CAT ARCHETYPE • BAZI PROFILING
+          <i class="fa-solid fa-cat"></i> ทายนิสัยฉบับน้องเหมียว • CAT ARCHETYPE PROFILING
         </div>
         <h1 class="personality-page-title">
-          ถอดรหัส 60 Jia Zi <span class="gradient-text">&amp; แมวตัวตน</span>
+          ทายนิสัย <span class="gradient-text">ฉบับน้องเหมียว</span>
         </h1>
         <p class="personality-page-subtitle">
-          ถอดรหัสเสาวันเกิด (Day Pillar) • กราฟใยแมงมุม 5 Structures • วิเคราะห์ % 10 Profiles (Joey Yap) • Mapping แมวประจำตัวตนสไตล์แม่หมอติ๊ดติ๊ด
+          คุณเป็นน้องเหมียวชนิดไหน? คำนวณจากวันเดือนปีเวลาเกิด • กราฟใยแมงมุม 5 Structures • วิเคราะห์ % 10 Profiles • Mapping แมวประจำตัวตนสไตล์แม่หมอติ๊ดติ๊ด
         </p>
       </header>
 
@@ -2005,13 +2005,13 @@
 
             <div class="p-form-actions">
               <button type="submit" class="p-btn-calc" id="personalityCalcBtn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณ 60 Jia Zi &amp; แมวตัวตน
+                <i class="fa-solid fa-wand-magic-sparkles"></i> ทายนิสัยฉบับน้องเหมียว
               </button>
             </div>
           </form>
 
           <!-- Direct Archetype Selector Dropdown -->
-          <div class="p-direct-selector">
+          <div class="p-direct-selector" style="display: none !important;">
             <div class="p-direct-divider">
               <span>หรือเลือกดู Archetype ที่สนใจโดยตรง</span>
             </div>
@@ -2029,7 +2029,7 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i>
           </div>
           <h3>พร้อมค้นพบพลังแก่นแท้ของคุณแล้วหรือยัง?</h3>
-          <p>กรอกวันเกิดด้านบน หรือกดปุ่ม <strong>"ใช้วันเกิดของฉัน"</strong> เพื่อถอดรหัสตัวตน 60 Jia Zi x DISC ได้ทันที ✨</p>
+          <p>กรอกวันเกิดด้านบน หรือกดปุ่ม <strong>"ใช้วันเกิดของฉัน"</strong> เพื่อทายนิสัยฉบับน้องเหมียวได้ทันที ✨</p>
         </div>
       </section>
 
@@ -2202,8 +2202,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261030_tongshu_basic_v2"></script>
-  <script src="app.js?v=20261030_tongshu_basic_v2"></script>
+  <script src="auth.js?v=20261030_menu_order_v1"></script>
+  <script src="app.js?v=20261031_facedown_pick_v1"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261021_qimen_tiers_v1"></script>
@@ -2211,6 +2211,6 @@
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
-  <script src="personality.js?v=20261018_jump_v6"></script>
+  <script src="personality.js?v=20261030_cat_structure_v1"></script>
 </body>
 </html>

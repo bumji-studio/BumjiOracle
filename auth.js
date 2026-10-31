@@ -10,7 +10,7 @@
   'use strict';
 
   const STORAGE_KEY = 'jiutian_arcana_user_session';
-  const LOCKED_TABS = ['personality']; // Menus requiring membership (Reading, TongShu Basic Today Hourly, QiMen Real-time, and BaZi Basic are open for guests)
+  const LOCKED_TABS = []; // All main tabs are open in Basic/Guest mode; Expert sub-modes require Member Login
 
   const AuthManager = {
     currentUser: null,
@@ -573,7 +573,7 @@
             qimen: 'ผังฉีเหมิน (Qi Men Dun Jia)',
             bazi: 'ดูดวงจีน (BaZi 八字)',
             bazi_expert: 'โหมด Expert ผังดวงปาจื่อ (BaZi Pro & โต๊ะหมอดู)',
-            personality: 'ถอดรหัสตัวตน 60 Jia Zi (Eastern MBTI / DISC)'
+            personality: 'ทายนิสัยฉบับน้องเหมียว (Cat Archetype Profiling)'
           };
           noticeBox.innerHTML = `
             <div class="auth-gate-alert">
@@ -654,7 +654,7 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i>
             <div>
               <strong>ยินดีต้อนรับคุณ ${u.firstName || u.name || 'สมาชิก'}!</strong>
-              <p>คุณยังไม่ได้ระบุวันเกิด กรุณากรอกวันเดือนปีเกิดและเวลาเกิดด้านล่างนี้ เพื่อปลดล็อกผังดวง BaZi, ฉีเหมิน และถอดรหัสตัวตน 60 Jia Zi อัตโนมัติค่ะ ✨</p>
+              <p>คุณยังไม่ได้ระบุวันเกิด กรุณากรอกวันเดือนปีเกิดและเวลาเกิดด้านล่างนี้ เพื่อปลดล็อกผังดวง BaZi, ฉีเหมิน และทายนิสัยฉบับน้องเหมียวอัตโนมัติค่ะ ✨</p>
             </div>
           </div>
         ` : ''}

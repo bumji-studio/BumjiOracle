@@ -2344,9 +2344,13 @@ ${cardsPromptLines}
         slotEl.classList.add('slot-filled');
         slotEl.classList.remove('active-pick');
 
+        const backImg = getDeckBackImage();
         holderEl.innerHTML = `
-          <div class="slot-card-wrapper" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden;">
-            <img src="${card.image || getDeckBackImage()}" class="slot-filled-card-img" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px;" alt="${card.name_th || card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
+          <div class="slot-card-wrapper slot-card-facedown" style="position: relative; width: 100%; height: 100%; border-radius: 10px; overflow: hidden;">
+            <img src="${backImg}" class="slot-filled-card-img" style="width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px;" alt="ไพ่ใบที่ ${i + 1} (รอเปิดหน้าไพ่ในหน้าผลลัพธ์)">
+            <div class="slot-facedown-badge" style="position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.82); color: #ffffff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; backdrop-filter: blur(4px); border: 1px solid rgba(255, 255, 255, 0.25);">
+              <i class="fa-solid fa-circle-check" style="color: #34d399;"></i> เลือกแล้ว
+            </div>
           </div>
         `;
       } else {
