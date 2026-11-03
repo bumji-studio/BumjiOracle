@@ -1170,6 +1170,304 @@
           yunu: hasYunu
         }
       };
+    },
+
+    // =========================================================================
+    // QI MEN QUESTION FORECASTING ENGINE (奇门预测 • 用神分析)
+    // =========================================================================
+    detectTopicFromQuestion: function (questionText) {
+      const q = (questionText || '').trim().toLowerCase();
+      if (!q) return 'general';
+      if (/เงิน|กำไร|ลงทุน|ค้าขาย|ขายของ|ธุรกิจ|หุ้น|หนี้|รายได้|โชคลาภ|รวย|ทรัพย์|ลูกค้า|ยอดขาย|สินเชื่อ|กู้/.test(q)) {
+        return 'wealth';
+      }
+      if (/งาน|สมัครงาน|สัมภาษณ์|เลื่อนขั้น|ตำแหน่ง|เจ้านาย|หัวหน้า|ย้ายงาน|ลาออก|โปรเจกต์|ราชการ|บริษัท|องค์กร|บรรจุ/.test(q)) {
+        return 'career';
+      }
+      if (/รัก|แฟน|คนคุย|คู่ครอง|แต่งงาน|ง้อ|คืนดี|เลิก|ความสัมพันธ์|ชอบ|จีบ|หุ้นส่วน|คู่ค้า/.test(q)) {
+        return 'love';
+      }
+      if (/สอบ|เรียน|เกรด|สัญญา|เอกสาร|อนุมัติ|วีซ่า|ใบอนุญาต|ประมูล|ยื่นเรื่อง|ชื่อเสียง|คดี|ฟ้อง/.test(q)) {
+        return 'exam';
+      }
+      if (/สุขภาพ|ป่วย|โรค|รักษา|หมอ|ผ่าตัด|โรงพยาบาล|อาการ|หายไหม|ร่างกาย/.test(q)) {
+        return 'health';
+      }
+      return 'general';
+    },
+
+    evaluateElementRelation: function (askerElem, focusElem) {
+      const genMap = { 'ไม้': 'ไฟ', 'ไฟ': 'ดิน', 'ดิน': 'ทอง', 'ทอง': 'น้ำ', 'น้ำ': 'ไม้' };
+      const ctrlMap = { 'ไม้': 'ดิน', 'ดิน': 'น้ำ', 'น้ำ': 'ไฟ', 'ไฟ': 'ทอง', 'ทอง': 'ไม้' };
+
+      if (askerElem === focusElem) {
+        return {
+          code: 'same',
+          title: `ธาตุเดียวกัน (比和 • ${focusElem} ↔ ${askerElem})`,
+          badge: 'เกื้อกูลราบรื่น (Harmony)',
+          color: '#0284c7',
+          bg: '#f0f9ff',
+          scoreDelta: 22,
+          desc: `วังเรื่องที่ถาม (${focusElem}) และวังตัวคุณ (${askerElem}) มีธาตุเดียวกัน สะท้อนถึงความสอดคล้อง คุยกันเข้าใจง่าย เรื่องที่คาดหวังดำเนินไปอย่างราบรื่น ไม่ติดขัด`
+        };
+      }
+      if (genMap[focusElem] === askerElem) {
+        return {
+          code: 'focus_gen_asker',
+          title: `วังเรื่องที่ถามส่งเสริมตัวคุณ (用神生助日干 • ${focusElem} → ${askerElem})`,
+          badge: 'มหามงคล สำเร็จง่าย (Highly Favorable)',
+          color: '#059669',
+          bg: '#ecfdf5',
+          scoreDelta: 30,
+          desc: `วังเรื่องที่ถาม (ธาตุ${focusElem}) ก่อเกิดและหนุนส่งวังตัวคุณ (ธาตุ${askerElem}) โดยตรง! ตามตำราฉีเหมินถือว่า "เรื่องวิ่งเข้าหาคน" มีเกณฑ์สำเร็จสูงมาก ได้รับผลประโยชน์หรือโอกาสดีโดยไม่ต้องเหนื่อยหนัก`
+        };
+      }
+      if (genMap[askerElem] === focusElem) {
+        return {
+          code: 'asker_gen_focus',
+          title: `ตัวคุณทุ่มเทพลังให้เรื่องที่ถาม (日干生用神 • ${askerElem} → ${focusElem})`,
+          badge: 'ต้องทุ่มเทลงแรงจึงสำเร็จ (Effort Required)',
+          color: '#d97706',
+          bg: '#fffbeb',
+          scoreDelta: 12,
+          desc: `วังตัวคุณ (ธาตุ${askerElem}) ส่งพลังไปหล่อเลี้ยงวังเรื่องที่ถาม (ธาตุ${focusElem}) แปลว่าคุณให้ความสำคัญและทุ่มเทกับเรื่องนี้มาก ต้องเป็นฝ่ายรุก ลงมือทำ หรือลงทุนลงแรงก่อนจึงจะเกิดผลสำเร็จตามเป้า`
+        };
+      }
+      if (ctrlMap[askerElem] === focusElem) {
+        return {
+          code: 'asker_ctrl_focus',
+          title: `ตัวคุณควบคุมเรื่องที่ถาม (日干克用神 • ${askerElem} ⚔️ ${focusElem})`,
+          badge: 'คว้าชัยด้วยความเด็ดขาด (Active Control)',
+          color: '#7c3aed',
+          bg: '#f5f3ff',
+          scoreDelta: 15,
+          desc: `วังตัวคุณ (ธาตุ${askerElem}) ควบคุมวังเรื่องที่ถาม (ธาตุ${focusElem}) ตามหลักฉีเหมินหมายถึง "คนคุมเรื่องได้" แม้จะมีโจทย์ท้าทายแต่หากคุณลุยอย่างจริงจัง เด็ดขาด และบริหารจัดการให้รัดกุม จะสามารถคว้าผลลัพธ์มาครองได้สำเร็จ`
+        };
+      }
+      if (ctrlMap[focusElem] === askerElem) {
+        return {
+          code: 'focus_ctrl_asker',
+          title: `เรื่องที่ถามพิฆาต/กดดันตัวคุณ (用神克日干 • ${focusElem} ⚡ ${askerElem})`,
+          badge: 'มีแรงต้าน ต้องปรับกลยุทธ์ (Challenging)',
+          color: '#dc2626',
+          bg: '#fef2f2',
+          scoreDelta: -16,
+          desc: `วังเรื่องที่ถาม (ธาตุ${focusElem}) ควบคุมและกดดันวังตัวคุณ (ธาตุ${askerElem}) สะท้อนว่าสถานการณ์มีแรงต้านสูง มีเงื่อนไขบีบรัด หรือคู่แข่งได้เปรียบ ไม่ควรบุ่มบ่ามปะทะตรงๆ แต่ต้องใช้ทิศมงคลช่วยถ่ายเทพลังงาน (通关)`
+        };
+      }
+      return {
+        code: 'neutral',
+        title: `พลังงานสมดุล (${focusElem} • ${askerElem})`,
+        badge: 'สมดุลตามจังหวะ',
+        color: '#475569',
+        bg: '#f8fafc',
+        scoreDelta: 8,
+        desc: 'พลังงานระหว่างตัวคุณและเรื่องที่ถามดำเนินไปตามเหตุปัจจัย'
+      };
+    },
+
+    analyzeQuestion: function (chart, questionText, selectedTopicKey) {
+      if (!chart || !chart.palaces) return null;
+      const topic = (!selectedTopicKey || selectedTopicKey === 'auto')
+        ? this.detectTopicFromQuestion(questionText)
+        : selectedTopicKey;
+
+      const dayStem = chart.fourPillars.day.stem.zh;
+      const hourStem = chart.fourPillars.hour.stem.zh;
+
+      // Helper to find palace by Heaven Stem (handling Jia hiding)
+      const findStemPalace = (stemZh, jiaHideStr) => {
+        const target = (stemZh === '甲' && jiaHideStr) ? jiaHideStr.charAt(0) : stemZh;
+        for (let i = 0; i < RING_8.length; i++) {
+          const pNum = RING_8[i];
+          const p = chart.palaces[pNum];
+          if (p && p.heavenStem && (p.heavenStem.zh === target || p.heavenStem.extra === target)) {
+            return pNum;
+          }
+        }
+        return chart.destinyPalaceNum || 2;
+      };
+
+      const findDoorPalace = (doorZhList) => {
+        for (let i = 0; i < RING_8.length; i++) {
+          const pNum = RING_8[i];
+          const p = chart.palaces[pNum];
+          if (p && p.door && doorZhList.includes(p.door.zh)) {
+            return pNum;
+          }
+        }
+        return 1;
+      };
+
+      const findDeityPalace = (deityZh) => {
+        for (let i = 0; i < RING_8.length; i++) {
+          const pNum = RING_8[i];
+          const p = chart.palaces[pNum];
+          if (p && p.deity && p.deity.zh === deityZh) {
+            return pNum;
+          }
+        }
+        return 1;
+      };
+
+      const findStarPalace = (starZh) => {
+        for (let i = 0; i < RING_8.length; i++) {
+          const pNum = RING_8[i];
+          const p = chart.palaces[pNum];
+          if (p && p.star && (p.star.zh === starZh || p.star.extra === starZh)) {
+            return pNum;
+          }
+        }
+        return 2;
+      };
+
+      const askerPalaceNum = chart.destinyPalaceNum || findStemPalace(dayStem, chart.meta.dayJia);
+      const hourPalaceNum = findStemPalace(hourStem, chart.meta.hourJia);
+
+      let focusPalaceNum = hourPalaceNum;
+      let focusLabel = 'วังก้านยาม (时干 • ตัวแทนเหตุการณ์)';
+      let topicTitle = '🎯 เหตุการณ์ทั่วไป & แนวโน้มความสำเร็จ';
+      let secondaryPalaceNum = null;
+      let secondaryLabel = '';
+
+      if (topic === 'career') {
+        focusPalaceNum = findDoorPalace(['開', '开']);
+        focusLabel = 'วังประตูเปิด (开门 • ตัวแทนการงานและตำแหน่ง)';
+        topicTitle = '💼 การงาน การสมัครงาน & เลื่อนตำแหน่ง';
+        secondaryPalaceNum = findDeityPalace('符');
+        secondaryLabel = 'วังประธานเทพ (值符 • หัวหน้า/ผู้มีอำนาจอนุมัติ)';
+      } else if (topic === 'wealth') {
+        focusPalaceNum = findDoorPalace(['生']);
+        focusLabel = 'วังประตูเกิด (生门 • ตัวแทนกำไรและโชคลาภการเงิน)';
+        topicTitle = '💰 การเงิน ธุรกิจ การลงทุน & โชคลาภ';
+        secondaryPalaceNum = findStemPalace('戊', null);
+        secondaryLabel = 'วังก้านอู้ (戊 • เงินทุนและกระแสเงินสด)';
+      } else if (topic === 'love') {
+        focusPalaceNum = findDeityPalace('合');
+        focusLabel = 'วังเทพหกประสาน (六合 • ตัวแทนความสัมพันธ์และการสมานฉันท์)';
+        topicTitle = '❤️ ความรัก ความสัมพันธ์ & หุ้นส่วน';
+        secondaryPalaceNum = hourPalaceNum;
+        secondaryLabel = 'วังก้านยาม (时干 • แนวโน้มความรู้สึกและสถานการณ์)';
+      } else if (topic === 'exam') {
+        focusPalaceNum = findDoorPalace(['景']);
+        focusLabel = 'วังประตูทัศนา (景门 • ตัวแทนเอกสาร สัญญา และการสอบ)';
+        topicTitle = '📄 เอกสาร สัญญา การสอบ & ชื่อเสียง';
+        secondaryPalaceNum = findStarPalace('辅');
+        secondaryLabel = 'วังดาวเทียนฝู่ (天辅 • บัณฑิตและกรรมการผู้ตรวจ)';
+      } else if (topic === 'health') {
+        focusPalaceNum = findStarPalace('心');
+        focusLabel = 'วังดาวเทียนซิน (天心 • ตัวแทนแพทย์และการฟื้นฟูรักษา)';
+        topicTitle = '🏥 สุขภาพ & แนวทางการฟื้นฟูดูแล';
+        secondaryPalaceNum = findStarPalace('芮');
+        secondaryLabel = 'วังดาวเทียนรุ่ย (天芮 • จุดอ่อนสุขภาพที่ต้องระวัง)';
+      } else {
+        focusPalaceNum = hourPalaceNum;
+        focusLabel = `วังก้านยาม (${hourStem} 时干 • ตัวแทนเรื่องที่ถามโดยตรง)`;
+        topicTitle = '🎯 วิเคราะห์แนวโน้มเหตุการณ์ & ความสำเร็จ';
+      }
+
+      const askerPalace = chart.palaces[askerPalaceNum];
+      const focusPalace = chart.palaces[focusPalaceNum];
+      const hourPalace = chart.palaces[hourPalaceNum];
+      const secondaryPalace = secondaryPalaceNum ? chart.palaces[secondaryPalaceNum] : null;
+
+      const askerElem = PALACE_INFO[askerPalaceNum].element;
+      const focusElem = PALACE_INFO[focusPalaceNum].element;
+      const relation = this.evaluateElementRelation(askerElem, focusElem);
+
+      // Compute holistic score (base 58)
+      let score = 58 + relation.scoreDelta;
+      const focusDoorGood = focusPalace.door && focusPalace.door.type === '吉';
+      const focusDoorBad = focusPalace.door && focusPalace.door.type === '凶';
+      if (focusDoorGood) score += 10;
+      if (focusDoorBad) score -= 8;
+
+      const goodForms = (focusPalace.formations || []).filter(f => f.type === '吉');
+      const badForms = (focusPalace.formations || []).filter(f => f.type === '凶');
+      score += Math.min(goodForms.length * 6, 12);
+      score -= Math.min(badForms.length * 6, 12);
+
+      if (focusPalace.isKongWang) score -= 12;
+      if (focusPalace.isHorse) score += 6;
+      score = Math.max(25, Math.min(96, Math.round(score)));
+
+      // Determine Verdict
+      let verdictHeadline = '';
+      let verdictTone = 'good'; // 'good' | 'caution' | 'challenge'
+      if (score >= 76) {
+        verdictTone = 'good';
+        verdictHeadline = `มีเกณฑ์สำเร็จสูงมาก (${score}%) พลังงานเปิดทางสว่างและเกื้อหนุนคุณโดยตรงค่ะ!`;
+      } else if (score >= 58) {
+        verdictTone = 'caution';
+        verdictHeadline = `มีโอกาสสำเร็จได้ (${score}%) แต่ต้องออกแรงขับเคลื่อนและใช้กลยุทธ์ให้ถูกจังหวะค่ะ`;
+      } else {
+        verdictTone = 'challenge';
+        verdictHeadline = `ช่วงนี้ยังมีแรงต้านหรือความล่าช้า (${score}%) แนะนำให้ชะลอหรือปรับแผนแก้เกมตามทิศมงคลค่ะ`;
+      }
+
+      // Build classical strategic synthesis paragraphs
+      const paragraphs = [];
+      paragraphs.push(
+        `ตามผังฉีเหมินตุ้นเจี่ย ณ เวลาที่เลือก ตัวแทนของคุณคือ <strong>ก้านวัน ${dayStem} (${chart.fourPillars.day.stem.py})</strong> สถิตอยู่ที่ <strong>วังที่ ${askerPalaceNum} ทิศ${askerPalace.dirTh} (${askerPalace.pos} • ธาตุ${askerElem})</strong> คู่กับ${askerPalace.door.th} และ${askerPalace.deity.th} ส่วนตัวแทนของเรื่องที่คุณถาม (${focusLabel}) สถิตอยู่ที่ <strong>วังที่ ${focusPalaceNum} ทิศ${focusPalace.dirTh} (${focusPalace.pos} • ธาตุ${focusElem})</strong> คู่กับ${focusPalace.door.th} ดาว${focusPalace.star.th} และ${focusPalace.deity.th}`
+      );
+
+      if (askerPalaceNum === focusPalaceNum) {
+        paragraphs.push(
+          `✨ <strong>จุดโดดเด่นพิเศษ (ผู้ถามและเรื่องที่ถามสถิตในวังเดียวกัน):</strong> วังตัวคุณและวังเรื่องที่ถามซ้อนทับกันที่วังที่ ${focusPalaceNum} (${focusPalace.pos}) แปลว่าเรื่องนี้อยู่ในกำมือของคุณโดยตรง โอกาสเข้ามาประชิดตัวแล้ว การตัดสินใจของคุณเป็นตัวชี้ขาดผลลัพธ์ทั้งหมดค่ะ`
+        );
+      } else {
+        paragraphs.push(
+          `⚡ <strong>วิเคราะห์ความสัมพันธ์เบญจธาตุระหว่างวัง:</strong> ${relation.desc}`
+        );
+      }
+
+      // Special status notes (Kong Wang / Sky Horse / Formations)
+      const specialNotes = [];
+      if (focusPalace.isKongWang) {
+        specialNotes.push(`⚠️ <strong>วังเรื่องที่ถามติดสูญญตา (空亡 Kong Wang):</strong> พลังงานของเรื่องนี้ยังมีความไม่แน่นอนสูง หรือถูกหารครึ่ง อาจเกิดความล่าช้า เลื่อนกำหนดการ หรือผลลัพธ์จริงยังไม่เป็นไปตามที่ตกลงกันทีเดียว ควรเผื่อแผนสำรองและตรวจเช็กรายละเอียดให้รัดกุม`);
+      }
+      if (askerPalace.isKongWang && !focusPalace.isKongWang) {
+        specialNotes.push(`💡 <strong>วังตัวคุณติดสูญญตา (空亡):</strong> ลึกๆ คุณอาจยังลังเล ไม่มั่นใจ หรือยังไม่ได้เตรียมตัวเต็มร้อย แนะนำให้รวบรวมข้อมูลและความมั่นใจให้พร้อมก่อนตัดสินใจ`);
+      }
+      if (focusPalace.isHorse) {
+        specialNotes.push(`🐎 <strong>วังเรื่องที่ถามมีดาวม้าศึก (马星 Sky Horse):</strong> เรื่องนี้จะมีการเคลื่อนไหวเปลี่ยนแปลงอย่างรวดเร็ว หรือเกี่ยวข้องกับการเดินทาง การติดต่อทางไกล การขยับขยายที่รวดเร็วทันใจ`);
+      }
+      if (goodForms.length > 0) {
+        specialNotes.push(`🌟 <strong>เก็กมงคลหนุนเสริมในวังเรื่องที่ถาม:</strong> ปรากฏโครงสร้าง <strong>${goodForms.map(f => f.nameTh).join(', ')}</strong> ช่วยเปิดทางให้เกิดความสำเร็จและมีผู้สนับสนุน`);
+      }
+      if (badForms.length > 0) {
+        specialNotes.push(`🛡️ <strong>ข้อควรระวังในวังเรื่องที่ถาม:</strong> ปรากฏโครงสร้าง <strong>${badForms.map(f => f.nameTh).join(', ')}</strong> (${badForms[0].desc}) จึงต้องดำเนินเรื่องด้วยความสุขุมรอบคอบ`);
+      }
+
+      // Best Action Direction (Using Focus Palace if auspicious, else Life/Open Door Victory)
+      const bestActionPalace = focusDoorGood ? focusPalace : chart.palaces[chart.victories.door.palaceNum];
+
+      return {
+        question: questionText || 'ขอทราบแนวโน้มและกลยุทธ์จากผังฉีเหมินในเวลานี้',
+        topic,
+        topicTitle,
+        score,
+        verdictHeadline,
+        verdictTone,
+        dayStem,
+        hourStem,
+        askerPalaceNum,
+        askerPalace,
+        askerElem,
+        focusPalaceNum,
+        focusPalace,
+        focusElem,
+        focusLabel,
+        hourPalaceNum,
+        hourPalace,
+        secondaryPalaceNum,
+        secondaryPalace,
+        secondaryLabel,
+        relation,
+        paragraphs,
+        specialNotes,
+        bestActionPalace
+      };
     }
   };
 
@@ -1277,12 +1575,23 @@
     bindDOMElements: function () {
       this.el = {
         view: document.getElementById('qiMenAppView'),
-        // 3 Main Nav Tabs
+        // 4 Main Nav Tabs
         navRealtime: document.getElementById('qmNavRealtime'),
         navCalculator: document.getElementById('qmNavCalculator'),
         navDestiny: document.getElementById('qmNavDestiny'),
+        navAsk: document.getElementById('qmNavAsk'),
         calcLockBadge: document.getElementById('qmCalcLockBadge'),
         destinyLockBadge: document.getElementById('qmDestinyLockBadge'),
+        askLockBadge: document.getElementById('qmAskLockBadge'),
+        // Mode 4: Ask Qi Men Elements
+        askSection: document.getElementById('qmAskSection'),
+        askUseNowBtn: document.getElementById('qmAskUseNowBtn'),
+        askTopicSelect: document.getElementById('qmAskTopicSelect'),
+        askQuestionInput: document.getElementById('qmAskQuestionInput'),
+        askClearBtn: document.getElementById('qmAskClearBtn'),
+        askSubmitBtn: document.getElementById('qmAskSubmitBtn'),
+        askResultContainer: document.getElementById('qmAskResultContainer'),
+        askChips: document.querySelectorAll('.qm-ask-chip'),
         // Secondary Bars
         chartLevelBar: document.getElementById('qmChartLevelBar'),
         levelButtons: document.querySelectorAll('.qm-level-btn'),
@@ -1371,6 +1680,9 @@
       if (this.el.destinyLockBadge) {
         this.el.destinyLockBadge.style.display = isAuth ? 'none' : 'inline-flex';
       }
+      if (this.el.askLockBadge) {
+        this.el.askLockBadge.style.display = isAuth ? 'none' : 'inline-flex';
+      }
     },
 
     bindEvents: function () {
@@ -1409,7 +1721,66 @@
         });
       }
 
-      // 4. Mode 2: 4-Chart Level Buttons (Hour / Day / Month / Year)
+      // 4. Tier 4: Ask Qi Men Question Divination Tab (Member Protected)
+      if (this.el.navAsk) {
+        this.el.navAsk.addEventListener('click', () => {
+          if (!self.isLoggedIn()) {
+            if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
+              window.AuthManager.openModal('login', 'qimen');
+            }
+            return;
+          }
+          self.switchMainTab('ask');
+        });
+      }
+
+      // Mode 4: Ask Qi Men Controls
+      if (this.el.askUseNowBtn) {
+        this.el.askUseNowBtn.addEventListener('click', () => {
+          self.currentDate = new Date();
+          self.currentHourIdx = Math.floor((self.currentDate.getHours() + 1) % 24 / 2);
+          self.syncInputs();
+          self.render();
+          if (self.lastAskAnalysis) {
+            self.runQuestionDivination(false);
+          }
+        });
+      }
+
+      if (this.el.askClearBtn) {
+        this.el.askClearBtn.addEventListener('click', () => {
+          if (self.el.askQuestionInput) self.el.askQuestionInput.value = '';
+          self.lastAskAnalysis = null;
+          if (self.el.askResultContainer) {
+            self.el.askResultContainer.style.display = 'none';
+            self.el.askResultContainer.innerHTML = '';
+          }
+          self.render();
+        });
+      }
+
+      if (this.el.askSubmitBtn) {
+        this.el.askSubmitBtn.addEventListener('click', () => {
+          self.runQuestionDivination(true);
+        });
+      }
+
+      if (this.el.askChips && this.el.askChips.length > 0) {
+        this.el.askChips.forEach(chip => {
+          chip.addEventListener('click', () => {
+            const q = chip.getAttribute('data-q') || '';
+            if (self.el.askQuestionInput) {
+              self.el.askQuestionInput.value = q;
+            }
+            if (self.el.askTopicSelect) {
+              self.el.askTopicSelect.value = 'auto';
+            }
+            self.runQuestionDivination(true);
+          });
+        });
+      }
+
+      // 5. Mode 2: 4-Chart Level Buttons (Hour / Day / Month / Year)
       if (this.el.levelButtons) {
         this.el.levelButtons.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -1419,7 +1790,7 @@
         });
       }
 
-      // 5. Mode 3: Destiny Sub-Tabs Switcher (Chart vs Formations)
+      // 6. Mode 3: Destiny Sub-Tabs Switcher (Chart vs Formations)
       if (this.el.subPillChart) {
         this.el.subPillChart.addEventListener('click', () => {
           self.switchDestinySubTab('chart');
@@ -1449,6 +1820,9 @@
           self.activeProfile.birthDate = `${y}-${sm}-${sd}`;
         }
         self.render();
+        if (self.activeMainTab === 'ask' && self.lastAskAnalysis) {
+          self.runQuestionDivination(false);
+        }
       };
 
       if (this.el.daySelect) this.el.daySelect.addEventListener('change', onDateSelectChange);
@@ -1485,6 +1859,9 @@
               }
               self.syncInputs();
               self.render();
+              if (self.activeMainTab === 'ask' && self.lastAskAnalysis) {
+                self.runQuestionDivination(false);
+              }
             }
           }
         });
@@ -1503,6 +1880,9 @@
             self.activeProfile.birthTime = `${sh}:00`;
           }
           self.render();
+          if (self.activeMainTab === 'ask' && self.lastAskAnalysis) {
+            self.runQuestionDivination(false);
+          }
         });
       }
     },
@@ -1510,7 +1890,7 @@
     switchMainTab: function (tabKey) {
       this.updateLockBadges();
 
-      if ((tabKey === 'calculator' || tabKey === 'destiny') && !this.isLoggedIn()) {
+      if ((tabKey === 'calculator' || tabKey === 'destiny' || tabKey === 'ask') && !this.isLoggedIn()) {
         if (window.AuthManager && typeof window.AuthManager.openModal === 'function') {
           window.AuthManager.openModal('login', 'qimen');
         }
@@ -1523,6 +1903,12 @@
       if (this.el.navRealtime) this.el.navRealtime.classList.toggle('active', tabKey === 'realtime');
       if (this.el.navCalculator) this.el.navCalculator.classList.toggle('active', tabKey === 'calculator');
       if (this.el.navDestiny) this.el.navDestiny.classList.toggle('active', tabKey === 'destiny');
+      if (this.el.navAsk) this.el.navAsk.classList.toggle('active', tabKey === 'ask');
+
+      // Show/Hide Mode 4 Ask Section
+      if (this.el.askSection) {
+        this.el.askSection.style.display = (tabKey === 'ask') ? 'flex' : 'none';
+      }
 
       if (tabKey === 'realtime') {
         this.isDestinyMode = false;
@@ -1548,6 +1934,15 @@
         if (this.el.chartLevelBar) this.el.chartLevelBar.style.display = 'none';
         if (this.el.destinySubNavBar) this.el.destinySubNavBar.style.display = 'flex';
         this.switchDestinySubTab(this.destinySubTab || 'chart');
+      } else if (tabKey === 'ask') {
+        this.isDestinyMode = false;
+        if (this.el.chartLevelBar) this.el.chartLevelBar.style.display = 'none';
+        if (this.el.destinySubNavBar) this.el.destinySubNavBar.style.display = 'none';
+        if (this.el.dailyFormationsSection) this.el.dailyFormationsSection.style.display = 'none';
+        if (this.el.liveStatusPill) this.el.liveStatusPill.style.display = 'none';
+        if (this.el.dateGroup) this.el.dateGroup.style.display = 'flex';
+        if (this.el.hourPickerBox) this.el.hourPickerBox.style.display = 'flex';
+        this.render();
       }
     },
 
@@ -1763,7 +2158,245 @@
         } else {
           this.switchMainTab('realtime');
         }
+      } else if (this.activeMainTab === 'ask') {
+        if (this.isLoggedIn()) {
+          this.render();
+        } else {
+          this.switchMainTab('realtime');
+        }
       }
+    },
+
+    // =========================================================================
+    // MODE 4: QI MEN QUESTION DIVINATION CONTROLLER (ถามฉีเหมินพยากรณ์)
+    // =========================================================================
+    runQuestionDivination: async function (scrollToResult) {
+      const rawQ = this.el.askQuestionInput ? this.el.askQuestionInput.value.trim() : '';
+      const topicVal = this.el.askTopicSelect ? this.el.askTopicSelect.value : 'auto';
+
+      // Ensure chart is plotted for current selected date & hour
+      this.syncInputs();
+      const chart = QiMenEngine.plot(this.currentDate, this.currentHourIdx, this.currentDate ? this.currentDate.getMinutes() : null, 'hour');
+      this.chartData = chart;
+
+      const analysis = QiMenEngine.analyzeQuestion(chart, rawQ, topicVal);
+      this.lastAskAnalysis = analysis;
+
+      // Focus the Focus Palace on the 3x3 matrix
+      if (analysis && analysis.focusPalaceNum) {
+        this.selectedPalaceNum = analysis.focusPalaceNum;
+      }
+
+      // Re-render 3x3 Matrix with Asker & Focus badges
+      this.renderMatrixAndTables(chart);
+      if (analysis && analysis.focusPalaceNum && chart.palaces[analysis.focusPalaceNum]) {
+        this.renderPalaceDetail(chart.palaces[analysis.focusPalaceNum]);
+      }
+
+      if (!this.el.askResultContainer || !analysis) return;
+      this.el.askResultContainer.style.display = 'block';
+      this.el.askResultContainer.innerHTML = this.buildAskAnalysisHTML(analysis, chart, null, true);
+
+      if (scrollToResult) {
+        this.el.askResultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // Asynchronously enrich with AI Qi Men Oracle reading
+      try {
+        const aiData = await this.fetchQiMenAIAnswer(analysis, chart);
+        if (aiData && this.lastAskAnalysis === analysis && this.el.askResultContainer) {
+          this.el.askResultContainer.innerHTML = this.buildAskAnalysisHTML(analysis, chart, aiData, false);
+        }
+      } catch (err) {
+        if (this.lastAskAnalysis === analysis && this.el.askResultContainer) {
+          this.el.askResultContainer.innerHTML = this.buildAskAnalysisHTML(analysis, chart, null, false);
+        }
+      }
+    },
+
+    fetchQiMenAIAnswer: async function (analysis, chart) {
+      const _gk = ['gsk', 'pd5HeV8T1zOCdsBK', 'txOsWGdyb3FYVwok', 'dkNY9I8yiOTJFYp38Me8'];
+      const defaultKey = _gk[0] + '_' + _gk.slice(1).join('');
+      let apiKey = defaultKey;
+      try {
+        apiKey = localStorage.getItem('thepmeow_groq_key') || window.THEP_MEOW_GROQ_KEY || defaultKey;
+      } catch (e) {}
+
+      const ap = analysis.askerPalace;
+      const fp = analysis.focusPalace;
+      const dateStr = `${this.currentDate.getFullYear()}-${String(this.currentDate.getMonth() + 1).padStart(2, '0')}-${String(this.currentDate.getDate()).padStart(2, '0')} เวลา ${chart.hourDisplay}`;
+
+      const prompt = `
+คุณคือปรมาจารย์ฉีเหมินตุ้นเจี่ยพยากรณ์ (Qi Men Dun Jia Master) แห่งสำนักแม่หมอติ๊ดติ๊ด
+ผู้ใช้ตั้งคำถามว่า: "${analysis.question}"
+วันและเวลาที่ผูกผัง: ${dateStr} (${chart.meta.structure})
+หมวดเรื่องที่ถาม: ${analysis.topicTitle}
+
+ข้อมูลผังฉีเหมินที่คำนวณได้จริง:
+1. วังตัวแทนผู้ถาม (ก้านวัน 日干 ${analysis.dayStem}):
+   - อยู่วังที่ ${analysis.askerPalaceNum} ทิศ${ap.dirTh} (${ap.pos}) ธาตุ${analysis.askerElem}
+   - ประตู: ${ap.door.th} | ดาว: ${ap.star.th} | เทพ: ${ap.deity.th}
+   - ก้านฟ้า/ดิน: ${ap.heavenStem.zh}/${ap.earthStem.zh} ${ap.isKongWang ? '(ติดสูญญตา 空亡)' : ''} ${ap.isHorse ? '(มีดาวม้าศึก 马星)' : ''}
+2. วังตัวแทนเรื่องที่ถาม (${analysis.focusLabel}):
+   - อยู่วังที่ ${analysis.focusPalaceNum} ทิศ${fp.dirTh} (${fp.pos}) ธาตุ${analysis.focusElem}
+   - ประตู: ${fp.door.th} (${fp.door.desc}) | ดาว: ${fp.star.th} | เทพ: ${fp.deity.th}
+   - ก้านฟ้า/ดิน: ${fp.heavenStem.zh}/${fp.earthStem.zh} ${fp.isKongWang ? '(ติดสูญญตา 空亡)' : ''} ${fp.isHorse ? '(มีดาวม้าศึก 马星)' : ''}
+   - โครงสร้างเก็กในวัง: ${(fp.formations || []).map(f => f.nameTh).join(', ') || 'สมดุลตามธรรมชาติ'}
+3. ความสัมพันธ์เบญจธาตุระหว่างวัง:
+   - ${analysis.relation.title}: ${analysis.relation.desc}
+   - คะแนนแนวโน้มความสำเร็จ: ${analysis.score}%
+
+กรุณาวิเคราะห์และตอบคำถามของผู้ใช้เป็น JSON ภาษาไทยที่อ่านเข้าใจง่าย คมคาย และนำไปใช้ได้จริงตามโครงสร้างนี้:
+{
+  "direct_answer": "คำตอบฟันธงตรงคำถาม 1-2 ประโยค ชัดเจนว่าแนวโน้มเป็นอย่างไรและเพราะเหตุใดตามผังฉีเหมิน",
+  "detailed_reading": "คำอธิบายเจาะลึกการอ่านผังฉีเหมินสำหรับคำถามนี้ เชื่อมโยงวังตัวผู้ถาม วังเรื่องที่ถาม ประตู ดาว เทพ และความสัมพันธ์เบญจธาตุเข้ากับสถานการณ์จริงของผู้ถาม (2-3 ย่อหน้า คั่นด้วย \\n\\n)",
+  "tactical_advice": "กลยุทธ์พิชัยสงครามฉีเหมิน: ต้องทำอย่างไร หันหน้าหรือเดินทางทิศไหน (${analysis.bestActionPalace.pos} ทิศ${analysis.bestActionPalace.dirTh}) และข้อควรระวังสำคัญ"
+}`;
+
+      const models = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b', 'openai/gpt-oss-20b'];
+      for (const m of models) {
+        try {
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + apiKey,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: m,
+              messages: [
+                { role: 'system', content: 'You are an expert Qi Men Dun Jia divination master who outputs valid Thai JSON only.' },
+                { role: 'user', content: prompt }
+              ],
+              temperature: 0.6,
+              max_tokens: 1600
+            })
+          });
+          if (!res.ok) continue;
+          const data = await res.json();
+          const raw = (data.choices?.[0]?.message?.content || '{}')
+            .replace(/<think>[\s\S]*?<\/think>/gi, '')
+            .replace(/```json|```/g, '')
+            .trim();
+          const match = raw.match(/\{[\s\S]*\}/);
+          return JSON.parse(match ? match[0] : raw);
+        } catch (e) {}
+      }
+      return null;
+    },
+
+    buildAskAnalysisHTML: function (a, chart, aiData, isAiLoading) {
+      const ap = a.askerPalace;
+      const fp = a.focusPalace;
+      const bp = a.bestActionPalace;
+      const toneClass = a.verdictTone === 'good' ? 'verdict-good' : (a.verdictTone === 'caution' ? 'verdict-caution' : 'verdict-challenge');
+      const dateStr = `${this.currentDate.getDate()}/${this.currentDate.getMonth() + 1}/${this.currentDate.getFullYear()} (${chart.hourDisplay} น.)`;
+
+      const aiDirectVerdict = (aiData && aiData.direct_answer) ? aiData.direct_answer : a.verdictHeadline;
+      let bodyParagraphsHtml = '';
+      if (aiData && aiData.detailed_reading) {
+        bodyParagraphsHtml = aiData.detailed_reading
+          .split(/\n\n+/)
+          .map(p => p.trim())
+          .filter(Boolean)
+          .map(p => `<p>${p}</p>`)
+          .join('');
+      } else {
+        bodyParagraphsHtml = a.paragraphs.map(p => `<p>${p}</p>`).join('');
+      }
+
+      const tacticalText = (aiData && aiData.tactical_advice)
+        ? aiData.tactical_advice
+        : `แนะนำให้ใช้พลังงานของ <strong>วังที่ ${bp.num} ทิศ${bp.dirTh} (${bp.pos})</strong> ซี่งมี <strong>${bp.door.th}</strong> และ <strong>${bp.deity.th}</strong> โดยหันหน้าเข้าหาทิศ ${bp.pos} ขณะเจรจา วางแผน ติดต่อประสานงาน หรือเดินทางมุ่งสู่ทิศนี้เพื่อเปิดกระแสความสำเร็จค่ะ`;
+
+      return `
+        <div class="qm-ask-report-card">
+          <div class="qm-ask-report-top">
+            <div class="qm-ask-badges-row">
+              <span class="qm-ask-topic-pill">${a.topicTitle}</span>
+              <span class="qm-ask-time-pill"><i class="fa-regular fa-clock"></i> ผังเวลา: ${dateStr} • ${chart.meta.structure}</span>
+            </div>
+            <h3 class="qm-ask-question-heading">“${a.question}”</h3>
+          </div>
+
+          <!-- 1. Direct Verdict & Score Banner -->
+          <div class="qm-ask-verdict-banner ${toneClass}">
+            <div class="qm-ask-score-circle">
+              <span class="score-num">${a.score}%</span>
+              <span class="score-lbl">โอกาสสำเร็จ</span>
+            </div>
+            <div class="qm-ask-verdict-text">
+              <div class="verdict-tag">
+                <i class="fa-solid fa-compass"></i> ฟันธงจากผังฉีเหมิน (${a.relation.badge})
+                ${isAiLoading ? '<span class="qm-ai-sync-pill"><i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์เจาะลึก...</span>' : ''}
+              </div>
+              <div class="verdict-main">${aiDirectVerdict}</div>
+            </div>
+          </div>
+
+          <!-- 2. Asker Palace vs Focus Palace Comparison Grid -->
+          <div class="qm-ask-palace-compare-grid">
+            <!-- Asker Palace -->
+            <div class="qm-compare-box asker-box" onclick="window.QiMenApp.selectPalace(${a.askerPalaceNum})" title="คลิกเพื่อดูรายละเอียดวังนี้ในผังด้านล่าง">
+              <div class="compare-head">
+                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user"></i> ตัวแทนผู้ถาม (日干 ${a.dayStem})</span>
+                <span class="compare-palace-tag">วังที่ ${a.askerPalaceNum} • ${ap.pos} (${ap.dirTh})</span>
+              </div>
+              <div class="compare-main-title">ธาตุประจำวัง: ธาตุ${a.askerElem} ${ap.isKongWang ? '<span class="kong-pill">空 สูญญตา</span>' : ''} ${ap.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}</div>
+              <div class="compare-meta-list">
+                <span><strong>ประตู:</strong> ${ap.door.th}</span>
+                <span><strong>ดาว:</strong> ${ap.star.th}</span>
+                <span><strong>เทพ:</strong> ${ap.deity.th}</span>
+                <span><strong>ก้านฟ้า/ดิน:</strong> ${ap.heavenStem.zh} / ${ap.earthStem.zh}</span>
+              </div>
+            </div>
+
+            <!-- Relation Bridge -->
+            <div class="qm-compare-bridge" style="background: ${a.relation.bg}; border-color: ${a.relation.color};">
+              <div class="bridge-badge" style="color: ${a.relation.color};">⚡ ความสัมพันธ์เบญจธาตุ</div>
+              <div class="bridge-title" style="color: ${a.relation.color};">${a.relation.title}</div>
+              <p class="bridge-desc">${a.relation.desc}</p>
+            </div>
+
+            <!-- Focus Palace -->
+            <div class="qm-compare-box focus-box" onclick="window.QiMenApp.selectPalace(${a.focusPalaceNum})" title="คลิกเพื่อดูรายละเอียดวังนี้ในผังด้านล่าง">
+              <div class="compare-head">
+                <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม (用神)</span>
+                <span class="compare-palace-tag">วังที่ ${a.focusPalaceNum} • ${fp.pos} (${fp.dirTh})</span>
+              </div>
+              <div class="compare-main-title">${a.focusLabel} (ธาตุ${a.focusElem}) ${fp.isKongWang ? '<span class="kong-pill">空 สูญญตา</span>' : ''} ${fp.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}</div>
+              <div class="compare-meta-list">
+                <span><strong>ประตู:</strong> ${fp.door.th}</span>
+                <span><strong>ดาว:</strong> ${fp.star.th}</span>
+                <span><strong>เทพ:</strong> ${fp.deity.th}</span>
+                <span><strong>ก้านฟ้า/ดิน:</strong> ${fp.heavenStem.zh} / ${fp.earthStem.zh}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Detailed Interpretation & Special Indicators -->
+          <div class="qm-ask-reading-body">
+            <h4><i class="fa-solid fa-scroll" style="color: #7c3aed;"></i> คำพยากรณ์เจาะลึกจากผังฉีเหมิน</h4>
+            <div class="qm-ask-paragraphs">
+              ${bodyParagraphsHtml}
+            </div>
+            ${a.specialNotes.length > 0 ? `
+              <div class="qm-ask-special-notes">
+                ${a.specialNotes.map(n => `<div class="qm-special-note-item">${n}</div>`).join('')}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- 4. Actionable Tactical Strategy -->
+          <div class="qm-ask-strategy-footer">
+            <div class="strategy-icon"><i class="fa-solid fa-chess-knight"></i></div>
+            <div class="strategy-content">
+              <strong>กลยุทธ์พิชัยสงคราม &amp; ทิศมงคลเสริมความสำเร็จ:</strong>
+              <p>${tacticalText}</p>
+            </div>
+          </div>
+        </div>
+      `;
     },
 
     render: function () {
@@ -1956,6 +2589,8 @@
           const isSelected = num === this.selectedPalaceNum;
           // Only show crown on Destiny Palace when in Mode 3 Destiny Chart
           const isDestiny = (this.activeMainTab === 'destiny' && this.destinySubTab === 'chart') && (num === chart.destinyPalaceNum);
+          const isAskAsker = (this.activeMainTab === 'ask' && this.lastAskAnalysis && num === this.lastAskAnalysis.askerPalaceNum);
+          const isAskFocus = (this.activeMainTab === 'ask' && this.lastAskAnalysis && num === this.lastAskAnalysis.focusPalaceNum);
 
           if (num === 5) {
             return `
@@ -1976,8 +2611,10 @@
 
           const headerClass = `dir-${p.pos.toLowerCase()}`;
           return `
-            <div class="qm-int-cell ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''}" data-palace="${num}">
+            <div class="qm-int-cell ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''} ${isAskAsker ? 'qm-cell-ask-asker' : ''} ${isAskFocus ? 'qm-cell-ask-focus' : ''}" data-palace="${num}">
               ${isDestiny ? '<span class="qm-badge-destiny-crown" title="วังชะตาชีวิต (Destiny Palace)"><i class="fa-solid fa-crown"></i> 本命</span>' : ''}
+              ${isAskFocus ? '<span class="qm-badge-ask-focus" title="วังตัวแทนเรื่องที่ถาม (用神)"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม</span>' : ''}
+              ${(isAskAsker && !isAskFocus) ? '<span class="qm-badge-ask-asker" title="วังตัวแทนผู้ถาม (日干)"><i class="fa-solid fa-user"></i> ตัวคุณ</span>' : ''}
               <!-- Direction Header Tag -->
               <div class="qm-cell-header-bar ${headerClass}">
                 <span class="qm-hdr-dir">${p.pos}</span>

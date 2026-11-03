@@ -1706,7 +1706,15 @@
           <span>3. ผังชะตาของฉัน &amp; Formations</span>
           <span class="qm-lock-badge" id="qmDestinyLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
         </button>
+
+        <!-- Tier 4: Qi Men Question Divination / Forecasting (Member Locked) -->
+        <button type="button" class="qm-nav-pill" id="qmNavAsk" title="ตั้งจิตถามคำถามฉีเหมิน (Qi Men Forecasting • 奇门预测)">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>4. ถามฉีเหมิน</span>
+          <span class="qm-lock-badge" id="qmAskLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
+        </button>
       </div>
+
 
       <!-- 0.1 Secondary Bar: 4 Chart Level Switcher (Shown in Mode 2 Calculator) -->
       <div class="qm-chart-level-bar" id="qmChartLevelBar" style="display: none;">
@@ -1804,6 +1812,66 @@
       <!-- Formations Dashboard (Shown in Mode 3 Sub-tab 2) -->
       <div id="qmDailyFormationsSection" class="qm-daily-formations-section" style="display: none;">
         <!-- Dynamically rendered in JS -->
+      </div>
+
+      <!-- Mode 4: Qi Men Question Divination / Forecasting Section (Shown in Mode 4 Ask) -->
+      <div id="qmAskSection" class="qm-ask-section" style="display: none;">
+        <div class="qm-ask-card">
+          <div class="qm-ask-header">
+            <div class="qm-ask-title-group">
+              <div class="qm-ask-icon-badge">
+                <i class="fa-solid fa-compass-drafting"></i>
+              </div>
+              <div>
+                <h3>ถามฉีเหมินพยากรณ์ (Qi Men Forecasting • 奇门预测)</h3>
+                <p>เลือกวันเดือนปีและเวลาจากแถบด้านบน พิมพ์คำถามที่ต้องการรู้ แล้วกดผูกผังเพื่อวิเคราะห์วังตัวคุณ (日干) เทียบกับวังเรื่องที่ถาม (用神)</p>
+              </div>
+            </div>
+            <button type="button" class="qm-btn-now-quick" id="qmAskUseNowBtn" title="ตั้งเป็นวันและเวลาปัจจุบันทันที">
+              <i class="fa-solid fa-bolt"></i> ใช้เวลาปัจจุบัน (ตอนนี้)
+            </button>
+          </div>
+
+          <div class="qm-ask-controls-row">
+            <div class="qm-ask-topic-box">
+              <label for="qmAskTopicSelect"><i class="fa-solid fa-crosshairs" style="color: #7c3aed;"></i> หมวดคำถาม / ตัวแทนเรื่องที่ถาม (用神 Yong Shen):</label>
+              <select id="qmAskTopicSelect" class="qm-ask-select">
+                <option value="auto" selected>✨ วิเคราะห์หมวดหมู่และเลือกตัวแทนเรื่อง (用神) อัตโนมัติจากคำถาม</option>
+                <option value="career">💼 การงาน / สมัครงาน / เลื่อนตำแหน่ง (ประตูเปิด 开门 • ประธานเทพ 值符)</option>
+                <option value="wealth">💰 การเงิน / ธุรกิจ / ค้าขาย / โชคลาภ (ประตูเกิด 生门 • ก้านทุนทรัพย์ 戊)</option>
+                <option value="love">❤️ ความรัก / คู่ครอง / หุ้นส่วน / การเจรจา (เทพหกประสาน 六合 • ก้าน 庚/乙)</option>
+                <option value="exam">📄 สัญญา / เอกสาร / การสอบ / ชื่อเสียง (ประตูทัศนา 景门 • ดาวบัณฑิต 天辅)</option>
+                <option value="health">🏥 สุขภาพ / อาการเจ็บป่วย / การรักษา (ดาวโรคภัย 天芮 • หมอหลวง 天心)</option>
+                <option value="general">🎯 เหตุการณ์ทั่วไป / เรื่องนี้จะสำเร็จไหม (ก้านยาม 时干 เทียบก้านวัน 日干)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="qm-ask-input-wrap">
+            <textarea id="qmAskQuestionInput" class="qm-ask-textarea" rows="2" placeholder="พิมพ์คำถามที่ต้องการถามฉีเหมิน เช่น สัมภาษณ์งานที่ใหม่จะผ่านไหม? ดีลธุรกิจรอบนี้จะได้กำไรไหม? เขาคิดอย่างไรกับเรา?..."></textarea>
+            <button type="button" class="qm-ask-clear-btn" id="qmAskClearBtn" title="ล้างคำถาม">
+              <i class="fa-solid fa-xmark"></i> ล้าง
+            </button>
+          </div>
+
+          <div class="qm-ask-chips-row">
+            <span class="qm-chips-lbl"><i class="fa-solid fa-fire" style="color: #f59e0b;"></i> ตัวอย่างคำถาม:</span>
+            <button type="button" class="qm-ask-chip" data-q="งานหรือโปรเจกต์ที่กำลังติดต่ออยู่จะสำเร็จราบรื่นไหม">💼 โปรเจกต์ที่ติดต่อจะสำเร็จไหม</button>
+            <button type="button" class="qm-ask-chip" data-q="การลงทุนหรือค้าขายรอบนี้จะได้กำไรคุ้มค่าไหม">💰 การลงทุนรอบนี้จะได้กำไรไหม</button>
+            <button type="button" class="qm-ask-chip" data-q="ความสัมพันธ์กับคนคุยหรือคนรักช่วงนี้มีแนวโน้มเป็นอย่างไร">❤️ แนวโน้มความรักความสัมพันธ์</button>
+            <button type="button" class="qm-ask-chip" data-q="การเซ็นสัญญาหรือยื่นเอกสารสำคัญครั้งนี้จะผ่านไหม">📄 การเซ็นสัญญา/เอกสารจะผ่านไหม</button>
+            <button type="button" class="qm-ask-chip" data-q="สิ่งที่ตั้งใจทำอยู่ในตอนนี้จะมีอุปสรรคอะไรและควรแก้เกมอย่างไร">🧭 สิ่งที่ตั้งใจทำควรแก้เกมอย่างไร</button>
+          </div>
+
+          <div class="qm-ask-actions-row">
+            <button type="button" class="qm-ask-submit-btn" id="qmAskSubmitBtn">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> ผูกผังฉีเหมิน &amp; วิเคราะห์คำตอบ (Plot &amp; Analyze)
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Answer & Strategic Analysis Result Container -->
+        <div id="qmAskResultContainer" class="qm-ask-result-container" style="display: none;"></div>
       </div>
 
       <!-- 2. Upper Section: Four Pillars Table (Left) + Chart Info Table (Right) -->
