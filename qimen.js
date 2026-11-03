@@ -2338,6 +2338,64 @@
         .join('');
     },
 
+    scrollToBigChart: function () {
+      const el = document.getElementById('qmMainSection') || document.querySelector('.qm-main-section') || document.getElementById('qmFourPillarsTable');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
+
+    buildMiniGridHTML: function (askerNum, focusNum) {
+      // Classic 9 Palaces: Row 1 = 4 (SE), 9 (S), 2 (SW); Row 2 = 3 (E), 5 (中), 7 (W); Row 3 = 8 (NE), 1 (N), 6 (NW)
+      const matrix = [
+        [4, 'SE'], [9, 'S'], [2, 'SW'],
+        [3, 'E'],  [5, '中'], [7, 'W'],
+        [8, 'NE'], [1, 'N'], [6, 'NW']
+      ];
+
+      const cells = matrix.map(([num, dir]) => {
+        const isAsker = (num === askerNum);
+        const isFocus = (num === focusNum);
+        let cls = 'mini-cell';
+        let badge = '';
+
+        if (isAsker && isFocus) {
+          cls += ' is-both';
+          badge = '<span class="mini-tag both">คุณ &amp; เรื่อง</span>';
+        } else if (isAsker) {
+          cls += ' is-asker';
+          badge = '<span class="mini-tag asker">ตัวคุณ</span>';
+        } else if (isFocus) {
+          cls += ' is-focus';
+          badge = '<span class="mini-tag focus">เรื่องที่ถาม</span>';
+        }
+
+        return `
+          <div class="${cls}">
+            <div class="mini-cell-top">
+              <span class="mini-cell-num">${num}</span>
+              <span class="mini-cell-dir">${dir}</span>
+            </div>
+            ${badge}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="qm-compare-box mini-grid-box" onclick="window.QiMenApp.scrollToBigChart()" title="คลิกเพื่อเลื่อนดูตำแหน่งบนผัง 9 ช่องใหญ่">
+          <div class="compare-head">
+            <span class="compare-role-badge role-matrix"><i class="fa-solid fa-table-cells"></i> ผัง 9 ช่อง</span>
+          </div>
+          <div class="qm-mini-luoshu-grid">
+            ${cells}
+          </div>
+          <div class="qm-mini-scroll-hint">
+            <i class="fa-solid fa-arrow-down"></i> คลิกดูตำแหน่งบนผัง 9 ช่อง
+          </div>
+        </div>
+      `;
+    },
+
     buildAskAnalysisHTML: function (a, chart, aiData, isAiLoading) {
       const ap = a.askerPalace;
       const fp = a.focusPalace;
@@ -2393,12 +2451,15 @@
             </div>
           </div>
 
-          <!-- 2. Palace Comparison & Five Elements Relation (3 Equal Columns) -->
+          <!-- 2. Palace Comparison - 3 Columns (1: Mini 9-Grid | 2: วังก้านวัน | 3: วังก้านยาม) -->
           <div class="qm-ask-palace-compare-grid">
-            <!-- Column 1: Asker Palace (Left) -->
-            <div class="qm-compare-box asker-box" onclick="window.QiMenApp.selectPalace(${a.askerPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
+            <!-- ช่อง เบอร์ 1: ตาราง 9 ช่องแบบสีพื้น Highlight วังก้านวัน และ วังก้านยาม -->
+            ${this.buildMiniGridHTML(a.askerPalaceNum, a.focusPalaceNum)}
+
+            <!-- ช่อง เบอร์ 2: รายละเอียด วัง ก้านวัน (ตัวแทนผู้ถาม) -->
+            <div class="qm-compare-box asker-box">
               <div class="compare-head">
-                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (日干 ${a.dayStem})</span>
+                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (ก้านวัน ${a.dayStem})</span>
               </div>
               <div class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.askerPalaceNum} • ทิศ${ap.dirTh} (${ap.pos})</div>
               <div class="compare-elem-row">
@@ -2407,32 +2468,17 @@
                 ${ap.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}
               </div>
               <div class="compare-items-list">
-                <div class="cmp-row"><span class="lbl">ประตู:</span> <span class="val">${ap.door.th} (${ap.door.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">ดาว:</span> <span class="val">${ap.star.th} (${ap.star.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">เทพ:</span> <span class="val">${ap.deity.th} (${ap.deity.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">ก้านฟ้า/ดิน:</span> <span class="val">${ap.heavenStem.zh} / ${ap.earthStem.zh}</span></div>
-              </div>
-              <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งในผัง</div>
-            </div>
-
-            <!-- Column 2: Five Elements Relation Bridge (Center) -->
-            <div class="qm-compare-bridge" style="background: ${a.relation.bg}; border-color: ${a.relation.color};">
-              <div class="bridge-badge" style="color: ${a.relation.color};">
-                <i class="fa-solid fa-bolt-lightning"></i> ความสัมพันธ์เบญจธาตุ
-              </div>
-              <div class="bridge-title" style="color: ${a.relation.color};">${a.relation.title}</div>
-              <div class="bridge-desc">${a.relation.desc}</div>
-              <div class="bridge-flow-pill" style="border-color: ${a.relation.color}; color: ${a.relation.color};">
-                <span>ธาตุ${a.askerElem} (คุณ)</span>
-                <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                <span>ธาตุ${a.focusElem} (เรื่องที่ถาม)</span>
+                <div class="cmp-row"><span class="lbl">ประตู (Door):</span> <span class="val">${ap.door.th} (${ap.door.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ดาว (Star):</span> <span class="val">${ap.star.th} (${ap.star.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">เทพ (Deity):</span> <span class="val">${ap.deity.th} (${ap.deity.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ก้านฟ้า / ก้านดิน:</span> <span class="val">${ap.heavenStem.zh} / ${ap.earthStem.zh}</span></div>
               </div>
             </div>
 
-            <!-- Column 3: Focus Palace (Right) -->
-            <div class="qm-compare-box focus-box" onclick="window.QiMenApp.selectPalace(${a.focusPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
+            <!-- ช่อง เบอร์ 3: รายละเอียด วัง ก้านยาม (เรื่องที่ถาม) -->
+            <div class="qm-compare-box focus-box">
               <div class="compare-head">
-                <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม (${a.focusLabel})</span>
+                <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> ตัวแทนเรื่องที่ถาม (${a.focusLabel})</span>
               </div>
               <div class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.focusPalaceNum} • ทิศ${fp.dirTh} (${fp.pos})</div>
               <div class="compare-elem-row">
@@ -2441,12 +2487,11 @@
                 ${fp.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}
               </div>
               <div class="compare-items-list">
-                <div class="cmp-row"><span class="lbl">ประตู:</span> <span class="val">${fp.door.th} (${fp.door.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">ดาว:</span> <span class="val">${fp.star.th} (${fp.star.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">เทพ:</span> <span class="val">${fp.deity.th} (${fp.deity.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">ก้านฟ้า/ดิน:</span> <span class="val">${fp.heavenStem.zh} / ${fp.earthStem.zh}</span></div>
+                <div class="cmp-row"><span class="lbl">ประตู (Door):</span> <span class="val">${fp.door.th} (${fp.door.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ดาว (Star):</span> <span class="val">${fp.star.th} (${fp.star.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">เทพ (Deity):</span> <span class="val">${fp.deity.th} (${fp.deity.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ก้านฟ้า / ก้านดิน:</span> <span class="val">${fp.heavenStem.zh} / ${fp.earthStem.zh}</span></div>
               </div>
-              <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งในผัง</div>
             </div>
           </div>
 
@@ -2687,12 +2732,21 @@
             `;
           }
 
+          const isAskBoth = isAskAsker && isAskFocus;
+          const askBadgeHtml = isAskBoth
+            ? '<span class="qm-badge-ask-both" title="ตัวคุณและเรื่องที่ถามอยู่ในวังเดียวกัน"><i class="fa-solid fa-users"></i> ตัวคุณ &amp; เรื่องที่ถาม</span>'
+            : (isAskFocus
+              ? '<span class="qm-badge-ask-focus" title="วังตัวแทนเรื่องที่ถาม (用神)"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม (用神)</span>'
+              : (isAskAsker
+                ? '<span class="qm-badge-ask-asker" title="วังตัวแทนผู้ถาม (ก้านวัน 日干)"><i class="fa-solid fa-user-check"></i> ตัวคุณ (日干)</span>'
+                : ''));
+          const askCellClass = isAskBoth ? 'qm-cell-ask-both' : (isAskAsker ? 'qm-cell-ask-asker' : (isAskFocus ? 'qm-cell-ask-focus' : ''));
+
           const headerClass = `dir-${p.pos.toLowerCase()}`;
           return `
-            <div class="qm-int-cell ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''} ${isAskAsker ? 'qm-cell-ask-asker' : ''} ${isAskFocus ? 'qm-cell-ask-focus' : ''}" data-palace="${num}">
+            <div class="qm-int-cell ${isSelected ? 'selected' : ''} ${isDestiny ? 'qm-cell-destiny' : ''} ${askCellClass}" data-palace="${num}">
               ${isDestiny ? '<span class="qm-badge-destiny-crown" title="วังชะตาชีวิต (Destiny Palace)"><i class="fa-solid fa-crown"></i> 本命</span>' : ''}
-              ${isAskFocus ? '<span class="qm-badge-ask-focus" title="วังตัวแทนเรื่องที่ถาม (用神)"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม</span>' : ''}
-              ${(isAskAsker && !isAskFocus) ? '<span class="qm-badge-ask-asker" title="วังตัวแทนผู้ถาม (日干)"><i class="fa-solid fa-user"></i> ตัวคุณ</span>' : ''}
+              ${askBadgeHtml}
               <!-- Direction Header Tag -->
               <div class="qm-cell-header-bar ${headerClass}">
                 <span class="qm-hdr-dir">${p.pos}</span>
