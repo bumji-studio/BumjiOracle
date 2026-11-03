@@ -2393,87 +2393,60 @@
             </div>
           </div>
 
-          <!-- 2. Five Elements Relation & 2-Palace Comparison -->
-          <div class="qm-ask-comparison-wrapper">
-            <!-- 2.1 Relation Banner across top -->
-            <div class="qm-relation-banner" style="background: ${a.relation.bg}; border-color: ${a.relation.color};">
-              <div class="qm-rel-left">
-                <span class="qm-rel-icon-pill" style="color: ${a.relation.color};">
-                  <i class="fa-solid fa-bolt-lightning"></i>
-                </span>
-                <div>
-                  <div class="qm-rel-badge" style="color: ${a.relation.color};">ความสัมพันธ์เบญจธาตุ</div>
-                  <div class="qm-rel-title" style="color: ${a.relation.color};">${a.relation.title}</div>
-                </div>
+          <!-- 2. Palace Comparison & Five Elements Relation (3 Equal Columns) -->
+          <div class="qm-ask-palace-compare-grid">
+            <!-- Column 1: Asker Palace (Left) -->
+            <div class="qm-compare-box asker-box" onclick="window.QiMenApp.selectPalace(${a.askerPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
+              <div class="compare-head">
+                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (日干 ${a.dayStem})</span>
               </div>
-              <div class="qm-rel-desc">${a.relation.desc}</div>
+              <div class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.askerPalaceNum} • ทิศ${ap.dirTh} (${ap.pos})</div>
+              <div class="compare-elem-row">
+                <span class="compare-elem-pill elem-${a.askerElem}">ธาตุประจำวัง: ธาตุ${a.askerElem}</span>
+                ${ap.isKongWang ? '<span class="kong-pill">空 กงหวัง</span>' : ''}
+                ${ap.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}
+              </div>
+              <div class="compare-items-list">
+                <div class="cmp-row"><span class="lbl">ประตู:</span> <span class="val">${ap.door.th} (${ap.door.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ดาว:</span> <span class="val">${ap.star.th} (${ap.star.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">เทพ:</span> <span class="val">${ap.deity.th} (${ap.deity.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ก้านฟ้า/ดิน:</span> <span class="val">${ap.heavenStem.zh} / ${ap.earthStem.zh}</span></div>
+              </div>
+              <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งในผัง</div>
             </div>
 
-            <!-- 2.2 Two Palaces Comparison Cards (Equal 50% / 50%) -->
-            <div class="qm-palaces-compare-grid">
-              <!-- Asker Palace (Left) -->
-              <div class="qm-compare-box asker-box" onclick="window.QiMenApp.selectPalace(${a.askerPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
-                <div class="compare-head">
-                  <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (ก้านวัน ${a.dayStem})</span>
-                  <span class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.askerPalaceNum} • ทิศ${ap.dirTh} (${ap.pos})</span>
-                </div>
-                <div class="compare-elem-row">
-                  <span class="compare-elem-pill elem-${a.askerElem}">ธาตุประจำวัง: ธาตุ${a.askerElem}</span>
-                  ${ap.isKongWang ? '<span class="kong-pill">空 กงหวัง</span>' : ''}
-                  ${ap.isHorse ? '<span class="horse-pill">🐎 ม้าสวรรค์</span>' : ''}
-                </div>
-                <div class="compare-meta-grid">
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">ประตู (Door)</span>
-                    <strong class="meta-value">${ap.door.th} <span class="meta-sub">(${ap.door.zh})</span></strong>
-                  </div>
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">ดาว (Star)</span>
-                    <strong class="meta-value">${ap.star.th} <span class="meta-sub">(${ap.star.zh})</span></strong>
-                  </div>
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">เทพ (Deity)</span>
-                    <strong class="meta-value">${ap.deity.th} <span class="meta-sub">(${ap.deity.zh})</span></strong>
-                  </div>
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">ก้านฟ้า / ก้านดิน</span>
-                    <strong class="meta-value">${ap.heavenStem.zh} / ${ap.earthStem.zh}</strong>
-                  </div>
-                </div>
-                <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งบนผัง 3×3</div>
+            <!-- Column 2: Five Elements Relation Bridge (Center) -->
+            <div class="qm-compare-bridge" style="background: ${a.relation.bg}; border-color: ${a.relation.color};">
+              <div class="bridge-badge" style="color: ${a.relation.color};">
+                <i class="fa-solid fa-bolt-lightning"></i> ความสัมพันธ์เบญจธาตุ
               </div>
+              <div class="bridge-title" style="color: ${a.relation.color};">${a.relation.title}</div>
+              <div class="bridge-desc">${a.relation.desc}</div>
+              <div class="bridge-flow-pill" style="border-color: ${a.relation.color}; color: ${a.relation.color};">
+                <span>ธาตุ${a.askerElem} (คุณ)</span>
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                <span>ธาตุ${a.focusElem} (เรื่องที่ถาม)</span>
+              </div>
+            </div>
 
-              <!-- Focus Palace (Right) -->
-              <div class="qm-compare-box focus-box" onclick="window.QiMenApp.selectPalace(${a.focusPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
-                <div class="compare-head">
-                  <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> ตัวแทนเรื่องที่ถาม (${a.focusLabel})</span>
-                  <span class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.focusPalaceNum} • ทิศ${fp.dirTh} (${fp.pos})</span>
-                </div>
-                <div class="compare-elem-row">
-                  <span class="compare-elem-pill elem-${a.focusElem}">ธาตุประจำวัง: ธาตุ${a.focusElem}</span>
-                  ${fp.isKongWang ? '<span class="kong-pill">空 กงหวัง</span>' : ''}
-                  ${fp.isHorse ? '<span class="horse-pill">🐎 ม้าสวรรค์</span>' : ''}
-                </div>
-                <div class="compare-meta-grid">
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">ประตู (Door)</span>
-                    <strong class="meta-value">${fp.door.th} <span class="meta-sub">(${fp.door.zh})</span></strong>
-                  </div>
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">ดาว (Star)</span>
-                    <strong class="meta-value">${fp.star.th} <span class="meta-sub">(${fp.star.zh})</span></strong>
-                  </div>
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">เทพ (Deity)</span>
-                    <strong class="meta-value">${fp.deity.th} <span class="meta-sub">(${fp.deity.zh})</span></strong>
-                  </div>
-                  <div class="compare-meta-cell">
-                    <span class="meta-label">ก้านฟ้า / ก้านดิน</span>
-                    <strong class="meta-value">${fp.heavenStem.zh} / ${fp.earthStem.zh}</strong>
-                  </div>
-                </div>
-                <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งบนผัง 3×3</div>
+            <!-- Column 3: Focus Palace (Right) -->
+            <div class="qm-compare-box focus-box" onclick="window.QiMenApp.selectPalace(${a.focusPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
+              <div class="compare-head">
+                <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม (${a.focusLabel})</span>
               </div>
+              <div class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.focusPalaceNum} • ทิศ${fp.dirTh} (${fp.pos})</div>
+              <div class="compare-elem-row">
+                <span class="compare-elem-pill elem-${a.focusElem}">ธาตุประจำวัง: ธาตุ${a.focusElem}</span>
+                ${fp.isKongWang ? '<span class="kong-pill">空 กงหวัง</span>' : ''}
+                ${fp.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}
+              </div>
+              <div class="compare-items-list">
+                <div class="cmp-row"><span class="lbl">ประตู:</span> <span class="val">${fp.door.th} (${fp.door.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ดาว:</span> <span class="val">${fp.star.th} (${fp.star.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">เทพ:</span> <span class="val">${fp.deity.th} (${fp.deity.zh})</span></div>
+                <div class="cmp-row"><span class="lbl">ก้านฟ้า/ดิน:</span> <span class="val">${fp.heavenStem.zh} / ${fp.earthStem.zh}</span></div>
+              </div>
+              <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งในผัง</div>
             </div>
           </div>
 
