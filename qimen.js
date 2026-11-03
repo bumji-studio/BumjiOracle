@@ -2285,6 +2285,59 @@
       return null;
     },
 
+    cleanNewlines: function (str) {
+      if (!str || typeof str !== 'string') return '';
+      return str
+        .replace(/\\r\\n/g, '\n')
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '\n')
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n');
+    },
+
+    formatTacticalAdvice: function (rawText, defaultText) {
+      const source = rawText ? this.cleanNewlines(rawText).trim() : defaultText;
+      if (!source) return '';
+
+      // Check if text has numbered steps like "1. ... \n2. ..." or "1) ..."
+      let lines = source.split(/\n+/).map(l => l.trim()).filter(Boolean);
+      if (lines.length === 1 && /\s+\d+[\.\)]\s+/.test(lines[0])) {
+        lines = lines[0].split(/(?=\d+[\.\)]\s+)/).map(l => l.trim()).filter(Boolean);
+      }
+
+      const hasNumbered = lines.some(l => /^\d+[\.\)]\s*/.test(l));
+      if (hasNumbered) {
+        return `
+          <div class="qm-strat-step-list">
+            ${lines.map(line => {
+              const m = line.match(/^(\d+)[\.\)]\s*(.*)$/);
+              if (m) {
+                return `
+                  <div class="qm-strat-step-item">
+                    <span class="qm-strat-step-num">${m[1]}</span>
+                    <div class="qm-strat-step-text">${m[2]}</div>
+                  </div>
+                `;
+              }
+              return `
+                <div class="qm-strat-step-item">
+                  <span class="qm-strat-step-bullet"><i class="fa-solid fa-angle-right"></i></span>
+                  <div class="qm-strat-step-text">${line}</div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      return source
+        .split(/\n\s*\n+/)
+        .map(p => p.trim())
+        .filter(Boolean)
+        .map(p => `<p class="qm-strat-p">${p.replace(/\n/g, '<br>')}</p>`)
+        .join('');
+    },
+
     buildAskAnalysisHTML: function (a, chart, aiData, isAiLoading) {
       const ap = a.askerPalace;
       const fp = a.focusPalace;
@@ -2292,28 +2345,34 @@
       const toneClass = a.verdictTone === 'good' ? 'verdict-good' : (a.verdictTone === 'caution' ? 'verdict-caution' : 'verdict-challenge');
       const dateStr = `${this.currentDate.getDate()}/${this.currentDate.getMonth() + 1}/${this.currentDate.getFullYear()} (${chart.hourDisplay} น.)`;
 
-      const aiDirectVerdict = (aiData && aiData.direct_answer) ? aiData.direct_answer : a.verdictHeadline;
+      const rawDirect = (aiData && aiData.direct_answer) ? aiData.direct_answer : a.verdictHeadline;
+      const aiDirectVerdict = this.cleanNewlines(rawDirect).replace(/\n+/g, ' ').trim();
+
       let bodyParagraphsHtml = '';
       if (aiData && aiData.detailed_reading) {
-        bodyParagraphsHtml = aiData.detailed_reading
-          .split(/\n\n+/)
+        const cleaned = this.cleanNewlines(aiData.detailed_reading);
+        const paras = cleaned
+          .split(/\n\s*\n+/)
           .map(p => p.trim())
-          .filter(Boolean)
-          .map(p => `<p>${p}</p>`)
-          .join('');
+          .filter(Boolean);
+
+        if (paras.length > 0) {
+          bodyParagraphsHtml = paras.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+        } else {
+          bodyParagraphsHtml = `<p>${cleaned.replace(/\n/g, '<br>')}</p>`;
+        }
       } else {
         bodyParagraphsHtml = a.paragraphs.map(p => `<p>${p}</p>`).join('');
       }
 
-      const tacticalText = (aiData && aiData.tactical_advice)
-        ? aiData.tactical_advice
-        : `แนะนำให้ใช้พลังงานของ <strong>วังที่ ${bp.num} ทิศ${bp.dirTh} (${bp.pos})</strong> ซี่งมี <strong>${bp.door.th}</strong> และ <strong>${bp.deity.th}</strong> โดยหันหน้าเข้าหาทิศ ${bp.pos} ขณะเจรจา วางแผน ติดต่อประสานงาน หรือเดินทางมุ่งสู่ทิศนี้เพื่อเปิดกระแสความสำเร็จค่ะ`;
+      const defaultTactical = `แนะนำให้ใช้พลังงานของ <strong>วังที่ ${bp.num} ทิศ${bp.dirTh} (${bp.pos})</strong> ซี่งมี <strong>${bp.door.th}</strong> และ <strong>${bp.deity.th}</strong> โดยหันหน้าเข้าหาทิศ ${bp.pos} ขณะเจรจา วางแผน ติดต่อประสานงาน หรือเดินทางมุ่งสู่ทิศนี้เพื่อเปิดกระแสความสำเร็จค่ะ`;
+      const tacticalHtml = this.formatTacticalAdvice(aiData && aiData.tactical_advice, defaultTactical);
 
       return `
         <div class="qm-ask-report-card">
           <div class="qm-ask-report-top">
             <div class="qm-ask-badges-row">
-              <span class="qm-ask-topic-pill">${a.topicTitle}</span>
+              <span class="qm-ask-topic-pill"><i class="fa-solid fa-crosshairs"></i> ${a.topicTitle}</span>
               <span class="qm-ask-time-pill"><i class="fa-regular fa-clock"></i> ผังเวลา: ${dateStr} • ${chart.meta.structure}</span>
             </div>
             <h3 class="qm-ask-question-heading">“${a.question}”</h3>
@@ -2322,77 +2381,123 @@
           <!-- 1. Direct Verdict & Score Banner -->
           <div class="qm-ask-verdict-banner ${toneClass}">
             <div class="qm-ask-score-circle">
-              <span class="score-num">${a.score}%</span>
-              <span class="score-lbl">โอกาสสำเร็จ</span>
+              <span class="qm-ask-score-num">${a.score}%</span>
+              <span class="qm-ask-score-label">โอกาสสำเร็จ</span>
             </div>
-            <div class="qm-ask-verdict-text">
-              <div class="verdict-tag">
+            <div class="qm-ask-verdict-text-group">
+              <div class="qm-ask-verdict-tag">
                 <i class="fa-solid fa-compass"></i> ฟันธงจากผังฉีเหมิน (${a.relation.badge})
                 ${isAiLoading ? '<span class="qm-ai-sync-pill"><i class="fa-solid fa-spinner fa-spin"></i> กำลังวิเคราะห์เจาะลึก...</span>' : ''}
               </div>
-              <div class="verdict-main">${aiDirectVerdict}</div>
+              <div class="qm-ask-verdict-main">${aiDirectVerdict}</div>
             </div>
           </div>
 
-          <!-- 2. Asker Palace vs Focus Palace Comparison Grid -->
-          <div class="qm-ask-palace-compare-grid">
-            <!-- Asker Palace -->
-            <div class="qm-compare-box asker-box" onclick="window.QiMenApp.selectPalace(${a.askerPalaceNum})" title="คลิกเพื่อดูรายละเอียดวังนี้ในผังด้านล่าง">
-              <div class="compare-head">
-                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user"></i> ตัวแทนผู้ถาม (日干 ${a.dayStem})</span>
-                <span class="compare-palace-tag">วังที่ ${a.askerPalaceNum} • ${ap.pos} (${ap.dirTh})</span>
+          <!-- 2. Five Elements Relation & 2-Palace Comparison -->
+          <div class="qm-ask-comparison-wrapper">
+            <!-- 2.1 Relation Banner across top -->
+            <div class="qm-relation-banner" style="background: ${a.relation.bg}; border-color: ${a.relation.color};">
+              <div class="qm-rel-left">
+                <span class="qm-rel-icon-pill" style="color: ${a.relation.color};">
+                  <i class="fa-solid fa-bolt-lightning"></i>
+                </span>
+                <div>
+                  <div class="qm-rel-badge" style="color: ${a.relation.color};">ความสัมพันธ์เบญจธาตุ</div>
+                  <div class="qm-rel-title" style="color: ${a.relation.color};">${a.relation.title}</div>
+                </div>
               </div>
-              <div class="compare-main-title">ธาตุประจำวัง: ธาตุ${a.askerElem} ${ap.isKongWang ? '<span class="kong-pill">空 สูญญตา</span>' : ''} ${ap.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}</div>
-              <div class="compare-meta-list">
-                <span><strong>ประตู:</strong> ${ap.door.th}</span>
-                <span><strong>ดาว:</strong> ${ap.star.th}</span>
-                <span><strong>เทพ:</strong> ${ap.deity.th}</span>
-                <span><strong>ก้านฟ้า/ดิน:</strong> ${ap.heavenStem.zh} / ${ap.earthStem.zh}</span>
-              </div>
+              <div class="qm-rel-desc">${a.relation.desc}</div>
             </div>
 
-            <!-- Relation Bridge -->
-            <div class="qm-compare-bridge" style="background: ${a.relation.bg}; border-color: ${a.relation.color};">
-              <div class="bridge-badge" style="color: ${a.relation.color};">⚡ ความสัมพันธ์เบญจธาตุ</div>
-              <div class="bridge-title" style="color: ${a.relation.color};">${a.relation.title}</div>
-              <p class="bridge-desc">${a.relation.desc}</p>
-            </div>
-
-            <!-- Focus Palace -->
-            <div class="qm-compare-box focus-box" onclick="window.QiMenApp.selectPalace(${a.focusPalaceNum})" title="คลิกเพื่อดูรายละเอียดวังนี้ในผังด้านล่าง">
-              <div class="compare-head">
-                <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> เรื่องที่ถาม (用神)</span>
-                <span class="compare-palace-tag">วังที่ ${a.focusPalaceNum} • ${fp.pos} (${fp.dirTh})</span>
+            <!-- 2.2 Two Palaces Comparison Cards (Equal 50% / 50%) -->
+            <div class="qm-palaces-compare-grid">
+              <!-- Asker Palace (Left) -->
+              <div class="qm-compare-box asker-box" onclick="window.QiMenApp.selectPalace(${a.askerPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
+                <div class="compare-head">
+                  <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (ก้านวัน ${a.dayStem})</span>
+                  <span class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.askerPalaceNum} • ทิศ${ap.dirTh} (${ap.pos})</span>
+                </div>
+                <div class="compare-elem-row">
+                  <span class="compare-elem-pill elem-${a.askerElem}">ธาตุประจำวัง: ธาตุ${a.askerElem}</span>
+                  ${ap.isKongWang ? '<span class="kong-pill">空 กงหวัง</span>' : ''}
+                  ${ap.isHorse ? '<span class="horse-pill">🐎 ม้าสวรรค์</span>' : ''}
+                </div>
+                <div class="compare-meta-grid">
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">ประตู (Door)</span>
+                    <strong class="meta-value">${ap.door.th} <span class="meta-sub">(${ap.door.zh})</span></strong>
+                  </div>
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">ดาว (Star)</span>
+                    <strong class="meta-value">${ap.star.th} <span class="meta-sub">(${ap.star.zh})</span></strong>
+                  </div>
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">เทพ (Deity)</span>
+                    <strong class="meta-value">${ap.deity.th} <span class="meta-sub">(${ap.deity.zh})</span></strong>
+                  </div>
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">ก้านฟ้า / ก้านดิน</span>
+                    <strong class="meta-value">${ap.heavenStem.zh} / ${ap.earthStem.zh}</strong>
+                  </div>
+                </div>
+                <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งบนผัง 3×3</div>
               </div>
-              <div class="compare-main-title">${a.focusLabel} (ธาตุ${a.focusElem}) ${fp.isKongWang ? '<span class="kong-pill">空 สูญญตา</span>' : ''} ${fp.isHorse ? '<span class="horse-pill">🐎 ม้าศึก</span>' : ''}</div>
-              <div class="compare-meta-list">
-                <span><strong>ประตู:</strong> ${fp.door.th}</span>
-                <span><strong>ดาว:</strong> ${fp.star.th}</span>
-                <span><strong>เทพ:</strong> ${fp.deity.th}</span>
-                <span><strong>ก้านฟ้า/ดิน:</strong> ${fp.heavenStem.zh} / ${fp.earthStem.zh}</span>
+
+              <!-- Focus Palace (Right) -->
+              <div class="qm-compare-box focus-box" onclick="window.QiMenApp.selectPalace(${a.focusPalaceNum})" title="คลิกเพื่อไฮไลต์วังนี้ในผังด้านล่าง">
+                <div class="compare-head">
+                  <span class="compare-role-badge role-focus"><i class="fa-solid fa-crosshairs"></i> ตัวแทนเรื่องที่ถาม (${a.focusLabel})</span>
+                  <span class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.focusPalaceNum} • ทิศ${fp.dirTh} (${fp.pos})</span>
+                </div>
+                <div class="compare-elem-row">
+                  <span class="compare-elem-pill elem-${a.focusElem}">ธาตุประจำวัง: ธาตุ${a.focusElem}</span>
+                  ${fp.isKongWang ? '<span class="kong-pill">空 กงหวัง</span>' : ''}
+                  ${fp.isHorse ? '<span class="horse-pill">🐎 ม้าสวรรค์</span>' : ''}
+                </div>
+                <div class="compare-meta-grid">
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">ประตู (Door)</span>
+                    <strong class="meta-value">${fp.door.th} <span class="meta-sub">(${fp.door.zh})</span></strong>
+                  </div>
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">ดาว (Star)</span>
+                    <strong class="meta-value">${fp.star.th} <span class="meta-sub">(${fp.star.zh})</span></strong>
+                  </div>
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">เทพ (Deity)</span>
+                    <strong class="meta-value">${fp.deity.th} <span class="meta-sub">(${fp.deity.zh})</span></strong>
+                  </div>
+                  <div class="compare-meta-cell">
+                    <span class="meta-label">ก้านฟ้า / ก้านดิน</span>
+                    <strong class="meta-value">${fp.heavenStem.zh} / ${fp.earthStem.zh}</strong>
+                  </div>
+                </div>
+                <div class="compare-click-hint"><i class="fa-solid fa-hand-pointer"></i> คลิกเพื่อดูตำแหน่งบนผัง 3×3</div>
               </div>
             </div>
           </div>
 
           <!-- 3. Detailed Interpretation & Special Indicators -->
           <div class="qm-ask-reading-body">
-            <h4><i class="fa-solid fa-scroll" style="color: #7c3aed;"></i> คำพยากรณ์เจาะลึกจากผังฉีเหมิน</h4>
+            <h4 class="qm-ask-section-title"><i class="fa-solid fa-scroll" style="color: #7c3aed;"></i> คำพยากรณ์เจาะลึกจากผังฉีเหมิน</h4>
             <div class="qm-ask-paragraphs">
               ${bodyParagraphsHtml}
             </div>
             ${a.specialNotes.length > 0 ? `
               <div class="qm-ask-special-notes">
-                ${a.specialNotes.map(n => `<div class="qm-special-note-item">${n}</div>`).join('')}
+                ${a.specialNotes.map(n => `<div class="qm-special-note-item"><i class="fa-solid fa-circle-info"></i> ${n}</div>`).join('')}
               </div>
             ` : ''}
           </div>
 
           <!-- 4. Actionable Tactical Strategy -->
           <div class="qm-ask-strategy-footer">
-            <div class="strategy-icon"><i class="fa-solid fa-chess-knight"></i></div>
-            <div class="strategy-content">
-              <strong>กลยุทธ์พิชัยสงคราม &amp; ทิศมงคลเสริมความสำเร็จ:</strong>
-              <p>${tacticalText}</p>
+            <div class="qm-strat-header-bar">
+              <div class="qm-strat-icon-wrap"><i class="fa-solid fa-chess-knight"></i></div>
+              <div class="qm-strat-heading">กลยุทธ์พิชัยสงคราม &amp; ทิศมงคลเสริมความสำเร็จ</div>
+            </div>
+            <div class="qm-strat-content">
+              ${tacticalHtml}
             </div>
           </div>
         </div>
