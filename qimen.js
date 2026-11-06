@@ -1271,18 +1271,27 @@
     detectTopicFromQuestion: function (questionText) {
       const q = (questionText || '').trim().toLowerCase();
       if (!q) return 'general';
-      if (/เงิน|กำไร|ลงทุน|ค้าขาย|ขายของ|ธุรกิจ|หุ้น|หนี้|รายได้|โชคลาภ|รวย|ทรัพย์|ลูกค้า|ยอดขาย|สินเชื่อ|กู้/.test(q)) {
-        return 'wealth';
+      // 1. ธุรกิจ / กิจการ / ค้าขาย / เปิดร้าน -> ประตูเกิด (Life Door 生门)
+      if (/ธุรกิจ|กิจการ|ค้าขาย|ขายของ|เปิดร้าน|ทำธุรกิจ|ลงทุนธุรกิจ|แบรนด์|ค้าส่ง|ค้าปลีก|กำไร|ยอดขาย|ลูกค้า|หุ้นส่วนธุรกิจ/.test(q)) {
+        return 'business';
       }
-      if (/งาน|สมัครงาน|สัมภาษณ์|เลื่อนขั้น|ตำแหน่ง|เจ้านาย|หัวหน้า|ย้ายงาน|ลาออก|โปรเจกต์|ราชการ|บริษัท|องค์กร|บรรจุ/.test(q)) {
+      // 2. งานประจำที่กำลังทำอยู่ / การงาน / สมัครงาน / ตำแหน่ง / บริษัท / องค์กร -> ประตูเปิด (Open Door 开门)
+      if (/งานประจำ|งานที่ทำ|ทำงาน|สมัครงาน|สัมภาษณ์|เลื่อนขั้น|ตำแหน่ง|เจ้านาย|หัวหน้า|ย้ายงาน|ลาออก|โปรเจกต์|ราชการ|บริษัท|องค์กร|บรรจุ|ที่ทำงาน|หน้าที่การงาน/.test(q)) {
         return 'career';
       }
-      if (/รัก|แฟน|คนคุย|คู่ครอง|แต่งงาน|ง้อ|คืนดี|เลิก|ความสัมพันธ์|ชอบ|จีบ|หุ้นส่วน|คู่ค้า/.test(q)) {
+      // 3. การเงิน โชคลาภ ทุนทรัพย์
+      if (/เงิน|โชคลาภ|รวย|ทรัพย์|รายได้|หนี้|สินเชื่อ|กู้เงิน/.test(q)) {
+        return 'wealth';
+      }
+      // 4. ความรัก ความสัมพันธ์
+      if (/รัก|แฟน|คนคุย|คู่ครอง|แต่งงาน|ง้อ|คืนดี|เลิก|ความสัมพันธ์|ชอบ|จีบ/.test(q)) {
         return 'love';
       }
+      // 5. สอบ เอกสาร สัญญา
       if (/สอบ|เรียน|เกรด|สัญญา|เอกสาร|อนุมัติ|วีซ่า|ใบอนุญาต|ประมูล|ยื่นเรื่อง|ชื่อเสียง|คดี|ฟ้อง/.test(q)) {
         return 'exam';
       }
+      // 6. สุขภาพ
       if (/สุขภาพ|ป่วย|โรค|รักษา|หมอ|ผ่าตัด|โรงพยาบาล|อาการ|หายไหม|ร่างกาย/.test(q)) {
         return 'health';
       }
@@ -1424,15 +1433,24 @@
       let secondaryLabel = '';
 
       if (topic === 'career') {
+        // งานประจำที่กำลังทำอยู่ / การงานในองค์กร / ตำแหน่งหน้าที่ -> ดูประตูเปิด (Open Door 开门)
         focusPalaceNum = findDoorPalace(['開', '开']);
-        focusLabel = 'วังประตูเปิด (开门 • ตัวแทนการงานและตำแหน่ง)';
-        topicTitle = '💼 การงาน การสมัครงาน & เลื่อนตำแหน่ง';
+        focusLabel = 'วังประตูเปิด (开门 • ตัวแทนงานประจำ ตำแหน่งหน้าที่ และองค์กร)';
+        topicTitle = '💼 งานประจำที่กำลังทำอยู่ & ตำแหน่งหน้าที่ (ประตูเปิด Open Door)';
         secondaryPalaceNum = findDeityPalace('符');
-        secondaryLabel = 'วังประธานเทพ (值符 • หัวหน้า/ผู้มีอำนาจอนุมัติ)';
-      } else if (topic === 'wealth') {
+        secondaryLabel = 'วังประธานเทพ (值符 • ผู้บริหาร/หัวหน้า/ผู้อนุมัติ)';
+      } else if (topic === 'business') {
+        // ธุรกิจ / กิจการส่วนตัว / การค้าขาย -> ดูประตูเกิด (Life Door 生门)
         focusPalaceNum = findDoorPalace(['生']);
-        focusLabel = 'วังประตูเกิด (生门 • ตัวแทนกำไรและโชคลาภการเงิน)';
-        topicTitle = '💰 การเงิน ธุรกิจ การลงทุน & โชคลาภ';
+        focusLabel = 'วังประตูเกิด (生门 • ตัวแทนธุรกิจ กิจการ และผลกำไร)';
+        topicTitle = '🏪 ธุรกิจ กิจการ & การค้าขาย (ประตูเกิด Life Door)';
+        secondaryPalaceNum = findStemPalace('戊', null);
+        secondaryLabel = 'วังก้านอู้ (戊 • เงินทุนและกระแสเงินสด)';
+      } else if (topic === 'wealth') {
+        // การเงิน / โชคลาภ / ผลตอบแทน -> ดูประตูเกิด (Life Door 生门)
+        focusPalaceNum = findDoorPalace(['生']);
+        focusLabel = 'วังประตูเกิด (生门 • ตัวแทนการเงิน กำไร และโชคลาภ)';
+        topicTitle = '💰 การเงิน โชคลาภ & ผลตอบแทน (ประตูเกิด Life Door)';
         secondaryPalaceNum = findStemPalace('戊', null);
         secondaryLabel = 'วังก้านอู้ (戊 • เงินทุนและกระแสเงินสด)';
       } else if (topic === 'love') {
@@ -1500,8 +1518,14 @@
 
       // Build classical strategic synthesis paragraphs
       const paragraphs = [];
+      const isDayStemJia = dayStem === '甲';
+      const dayJiaHides = (chart.meta && chart.meta.dayJia) ? chart.meta.dayJia.charAt(0) : '庚';
+      const jiaExplanation = isDayStemJia
+        ? ` (เนื่องจากก้านวันเป็น 甲 ซึ่งในวิชาฉีเหมินก้านเจี่ยจะซ่อนตัวอยู่หลังก้านเครื่องมือ <strong>${dayJiaHides}</strong> จึงอ่านตำแหน่งตัวแทนคุณที่วังที่มีก้านฟ้า ${dayJiaHides})`
+        : '';
+
       paragraphs.push(
-        `ตามผังฉีเหมินตุ้นเจี่ย ณ เวลาที่เลือก ตัวแทนของคุณคือ <strong>ก้านวัน ${dayStem} (${chart.fourPillars.day.stem.py})</strong> สถิตอยู่ที่ <strong>วังที่ ${askerPalaceNum} ทิศ${askerPalace.dirTh} (${askerPalace.pos} • ธาตุ${askerElem})</strong> คู่กับ${askerPalace.door.th} และ${askerPalace.deity.th} ส่วนตัวแทนของเรื่องที่คุณถาม (${focusLabel}) สถิตอยู่ที่ <strong>วังที่ ${focusPalaceNum} ทิศ${focusPalace.dirTh} (${focusPalace.pos} • ธาตุ${focusElem})</strong> คู่กับ${focusPalace.door.th} ดาว${focusPalace.star.th} และ${focusPalace.deity.th}`
+        `ตามผังฉีเหมินตุ้นเจี่ย ณ เวลาที่เลือก ตัวแทนของคุณคือ <strong>ก้านวัน ${dayStem} (${chart.fourPillars.day.stem.py})</strong>${jiaExplanation} สถิตอยู่ที่ <strong>วังที่ ${askerPalaceNum} ทิศ${askerPalace.dirTh} (${askerPalace.pos} • ธาตุ${askerElem})</strong> คู่กับ${askerPalace.door.th} และ${askerPalace.deity.th} ส่วนตัวแทนของเรื่องที่คุณถาม (${focusLabel}) สถิตอยู่ที่ <strong>วังที่ ${focusPalaceNum} ทิศ${focusPalace.dirTh} (${focusPalace.pos} • ธาตุ${focusElem})</strong> คู่กับ${focusPalace.door.th} ดาว${focusPalace.star.th} และ${focusPalace.deity.th}`
       );
 
       if (askerPalaceNum === focusPalaceNum) {
@@ -1544,6 +1568,8 @@
         verdictTone,
         dayStem,
         hourStem,
+        isDayStemJia,
+        dayJiaHides,
         askerPalaceNum,
         askerPalace,
         askerElem,
@@ -2553,7 +2579,7 @@
             <!-- ช่อง เบอร์ 2: รายละเอียด วัง ก้านวัน (ตัวแทนผู้ถาม) -->
             <div class="qm-compare-box asker-box">
               <div class="compare-head">
-                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (ก้านวัน ${a.dayStem})</span>
+                <span class="compare-role-badge role-asker"><i class="fa-solid fa-user-check"></i> ตัวแทนผู้ถาม (ก้านวัน ${a.dayStem}${a.isDayStemJia ? ` • 遁${a.dayJiaHides}` : ''})</span>
               </div>
               <div class="compare-palace-tag"><i class="fa-solid fa-location-dot"></i> วังที่ ${a.askerPalaceNum} • ทิศ${ap.dirTh} (${ap.pos})</div>
               <div class="compare-elem-row">
@@ -2565,7 +2591,7 @@
                 <div class="cmp-row"><span class="lbl">ประตู (Door):</span> <span class="val">${ap.door.th} (${ap.door.zh})</span></div>
                 <div class="cmp-row"><span class="lbl">ดาว (Star):</span> <span class="val">${ap.star.th} (${ap.star.zh})</span></div>
                 <div class="cmp-row"><span class="lbl">เทพ (Deity):</span> <span class="val">${ap.deity.th} (${ap.deity.zh})</span></div>
-                <div class="cmp-row"><span class="lbl">ก้านฟ้า / ก้านดิน:</span> <span class="val">${ap.heavenStem.zh} / ${ap.earthStem.zh}</span></div>
+                <div class="cmp-row"><span class="lbl">ก้านฟ้า / ก้านดิน:</span> <span class="val">${ap.heavenStem.zh} / ${ap.earthStem.zh} ${a.isDayStemJia ? `<span style="font-size: 11px; color: #0284c7; font-weight: 600;">(ก้านวัน 甲 ซ่อนใต้ ${a.dayJiaHides})</span>` : ''}</span></div>
               </div>
             </div>
 
