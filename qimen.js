@@ -415,16 +415,102 @@
     };
   }
 
-  function getSolarTerm(date) {
-    const m = date.getMonth();
-    const d = date.getDate();
-    for (let i = SOLAR_TERMS.length - 1; i >= 0; i--) {
-      const t = SOLAR_TERMS[i];
-      if (m > t.month || (m === t.month && d >= t.day)) {
-        return t;
+  // ==========================================
+  // Orthodox Zhi Run Method (置闰法 / 超接置闰法)
+  // ==========================================
+  const S_TERM_INFO = [
+    0, 21208, 42467, 63836, 85337, 107014, 128867, 150921, 173149, 195551, 218072, 240693,
+    263343, 285989, 308563, 331033, 353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758
+  ];
+
+  function getJieqiDate(year, termIdx) {
+    const ms = 31556925974.7 * (year - 1900) + S_TERM_INFO[termIdx] * 60000 + Date.UTC(1900, 0, 6, 2, 5);
+    const d = new Date(ms + 7 * 3600000); // UTC+7 Asia/Bangkok
+    return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  }
+
+  function getDayCycleFromDate(targetDate) {
+    const baseUTC = Date.UTC(2000, 0, 1);
+    const targetUTC = Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+    const diffDays = Math.round((targetUTC - baseUTC) / 86400000);
+    return ((54 + diffDays) % 60 + 60) % 60;
+  }
+
+  function getZhirunInfo(dateObj) {
+    const targetDate = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    const dayCycle = getDayCycleFromDate(targetDate);
+    const shangOffset = dayCycle % 15;
+    const yuanIdx = Math.floor(shangOffset / 5); // 0=Shang (上元), 1=Zhong (中元), 2=Xia (下元)
+    const fuTouDate = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate() - shangOffset);
+
+    // Collect 24 terms for year - 1, year, year + 1
+    const terms = [];
+    for (let y = dateObj.getFullYear() - 1; y <= dateObj.getFullYear() + 1; y++) {
+      for (let i = 0; i < 24; i++) {
+        terms.push({
+          ...SOLAR_TERMS[i],
+          year: y,
+          termIdx: i,
+          date: getJieqiDate(y, i)
+        });
       }
     }
-    return SOLAR_TERMS[SOLAR_TERMS.length - 1];
+
+    let selectedTerm = null;
+    let isRunTerm = false;
+
+    // Evaluate window for each term:
+    for (let i = 0; i < terms.length; i++) {
+      const t = terms[i];
+      const diff = Math.round((t.date - fuTouDate) / 86400000);
+      // Chao Shen (diff in 0..9) or Jie Qi (diff in -5..-1)
+      if (diff >= -5 && diff <= 9) {
+        // Classical Zhi Run trigger at Solstices:
+        // Xia Zhi (termIdx 11) or Dong Zhi (termIdx 23) with Chao Shen >= 9 days:
+        if ((t.termIdx === 11 || t.termIdx === 23) && diff >= 9) {
+          selectedTerm = terms[i - 1]; // Repeat Mang Zhong or Da Xue
+          isRunTerm = true;
+        } else {
+          selectedTerm = t;
+          isRunTerm = false;
+        }
+        break;
+      }
+    }
+
+    if (!selectedTerm) {
+      let minD = 999999;
+      for (let i = 0; i < terms.length; i++) {
+        const d = Math.abs(Math.round((terms[i].date - fuTouDate) / 86400000));
+        if (d < minD) {
+          minD = d;
+          selectedTerm = terms[i];
+        }
+      }
+    }
+
+    const juNum = selectedTerm.ju[yuanIdx];
+    const isYangDun = selectedTerm.isYang;
+    const yuanNames = ['上元 (Shang Yuan)', '中元 (Zhong Yuan)', '下元 (Xia Yuan)'];
+
+    return {
+      dayCycle,
+      yuanIdx,
+      yuanName: yuanNames[yuanIdx],
+      fuTouDate: fuTouDate,
+      term: selectedTerm,
+      termName: selectedTerm.name + (isRunTerm ? ' (闰)' : ''),
+      termPy: selectedTerm.py + (isRunTerm ? ' (Run)' : ''),
+      isYangDun,
+      juNum,
+      isRunTerm,
+      structureName: `${isYangDun ? 'Yang' : 'Yin'} ${juNum}`
+    };
+  }
+
+  function getSolarTerm(date) {
+    const z = getZhirunInfo(date);
+    return z.term;
   }
 
   function checkFormations(hStem, eStem, doorKey, pNum, isEnvoy, deityKey, isYangDun, starKey) {
@@ -706,15 +792,16 @@
       const validTypes = ['hour', 'day', 'month', 'year'];
       const activeType = validTypes.includes(chartType) ? chartType : 'hour';
 
-      const currentTerm = getSolarTerm(now);
-      const yuanIdx = Math.floor(dayCycle / 5) % 3; // 0=Shang, 1=Zhong, 2=Xia
+      const zhirun = getZhirunInfo(now);
+      const currentTerm = zhirun.term;
+      const yuanIdx = zhirun.yuanIdx; // 0=Shang, 1=Zhong, 2=Xia
 
       let focalStem = hourStem;
       let focalBranch = hourBranch;
       let focalXun = hourXun;
       let focalHorse = hourHorse;
-      let isYangDun = currentTerm.isYang;
-      let juNum = currentTerm.ju[yuanIdx];
+      let isYangDun = zhirun.isYangDun;
+      let juNum = zhirun.juNum;
       let chartTypeName = 'Hour Chart (時家奇門 - ผังยาม)';
 
       if (activeType === 'day') {
@@ -722,7 +809,7 @@
         focalBranch = dayBranch;
         focalXun = dayXun;
         focalHorse = dayHorse;
-        isYangDun = currentTerm.isYang;
+        isYangDun = zhirun.isYangDun;
         juNum = isYangDun ? [1, 7, 4][yuanIdx] : [9, 3, 6][yuanIdx];
         chartTypeName = 'Day Chart (日家奇門 - ผังวัน)';
       } else if (activeType === 'month') {
@@ -1003,6 +1090,12 @@
           chartType: activeType,
           chartTypeName: chartTypeName,
           focalPillar: activeType,
+          calculationMethod: 'Convention 2 • 置闰法 (Zhirun Method)',
+          solarTerm: zhirun.termName,
+          solarTermPy: zhirun.termPy,
+          yuan: zhirun.yuanName,
+          yuanIdx: zhirun.yuanIdx,
+          isRunTerm: zhirun.isRunTerm,
           chartId: (now.getFullYear() === 2026 && now.getMonth() === 9 && now.getDate() === 12) ? (667 + (hIdx - 6)) : ((isYangDun ? 100 : 600) + juNum * 20 + hIdx),
           structure: structureName,
           leadStem: `${leadStemChar} ${STEMS_INFO[leadStemChar].py}`,
@@ -2663,7 +2756,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr><td class="lbl">Structure</td><td class="val"><strong>${m.structure}</strong></td></tr>
+              <tr><td class="lbl">Structure</td><td class="val"><strong>${m.structure}</strong> <span style="font-size: 11px; color: #64748b; font-weight: normal;">• ${m.solarTerm || ''} (${m.yuan || ''})</span></td></tr>
+              <tr><td class="lbl">Method</td><td class="val"><span style="color: #0284c7; font-weight: 600;">Convention 2 • 置闰法 (Zhirun)</span></td></tr>
               <tr><td class="lbl">Lead Stem</td><td class="val">${m.leadStem}</td></tr>
               <tr><td class="lbl">Envoy</td><td class="val">${m.envoy}</td></tr>
               <tr><td class="lbl">Lead Star</td><td class="val">${m.leadStar}</td></tr>
