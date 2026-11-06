@@ -2118,8 +2118,10 @@ body {
   width: 116px;
   height: 186px;
   border-radius: 14px;
+  background-color: #fff7ed;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
   transform-origin: 50% 100%;

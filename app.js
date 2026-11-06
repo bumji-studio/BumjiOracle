@@ -1,6 +1,6 @@
 // Jiu Tian Arcana - App Logic
 
-document.addEventListener('DOMContentLoaded', () => {
+function initMainApp() {
   // 1. Core State
   let cards = [];
   let activeCardId = 1;
@@ -881,6 +881,81 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerNavTabs = document.getElementById('headerNavTabs') || document.querySelector('.header-nav-tabs');
   const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
 
+  // Reading Stepper & Sections Elements
+  const stepperFill = document.getElementById('stepperFill');
+  const stepIndicators = [
+    document.getElementById('stepIndicator1'),
+    document.getElementById('stepIndicator2')
+  ];
+
+  // Pinned Context Bar
+  const pinnedContextBar = document.getElementById('pinnedContextBar');
+  const pinnedQuestionText = document.getElementById('pinnedQuestionText');
+  const pinnedDeckItem = document.getElementById('pinnedDeckItem');
+  const pinnedDeckText = document.getElementById('pinnedDeckText');
+  const editQuestionQuickBtn = document.getElementById('editQuestionQuickBtn');
+
+  // Step Sections
+  const readingStep1 = document.getElementById('readingStep1');
+  const readingStep2 = document.getElementById('readingStep2'); // Legacy 2-deck screen (hidden)
+  const readingStep3 = document.getElementById('readingStep3'); // Step 2: Pick 3 Cards
+  const readingStep4 = document.getElementById('readingStep4'); // Step 3: Divination Results
+
+  // Step 1: Question Elements
+  const userQuestionInput = document.getElementById('userQuestionInput');
+  const clearQuestionBtn = document.getElementById('clearQuestionBtn');
+  const proceedToStep2Btn = document.getElementById('proceedToStep2Btn');
+  const chipButtons = document.querySelectorAll('.chip-btn');
+
+  // Step 2: Pick 3 Cards Elements
+  const backToStep2Btn = document.getElementById('backToStep2Btn');
+  const pickStepDesc = document.getElementById('pickStepDesc');
+  const pickCurrentInstruction = document.getElementById('pickCurrentInstruction');
+  const autoDraw3CardsBtn = document.getElementById('autoDraw3CardsBtn');
+  const shuffleDeckCardsBtn = document.getElementById('shuffleDeckCardsBtn');
+  const openManualPickerBtn = document.getElementById('openManualPickerBtn');
+  const deckFanWrapper = document.getElementById('deckFanWrapper');
+  const revealTriggerBanner = document.getElementById('revealTriggerBanner');
+  const revealDivinationBtn = document.getElementById('revealDivinationBtn');
+
+  // Step 3: Results Elements
+  const newReadingBtn = document.getElementById('newReadingBtn');
+  const redrawCurrentCardsBtn = document.getElementById('redrawCurrentCardsBtn');
+  const toggleFlipCardsBtn = document.getElementById('toggleFlipCardsBtn');
+  const copyResultTextBtn = document.getElementById('copyResultTextBtn');
+  const printResultReportBtn = document.getElementById('printResultReportBtn');
+  const resultQuestionTitle = document.getElementById('resultQuestionTitle');
+  const resultDeckBadge = document.getElementById('resultDeckBadge');
+  const resultSpreadBadge = document.getElementById('resultSpreadBadge');
+  const resultDateBadge = document.getElementById('resultDateBadge');
+  const resultCardsBoard = document.getElementById('resultCardsBoard');
+  const resultSynthesisContainer = document.getElementById('resultSynthesisContainer');
+
+  // Spread Selection DOM Elements
+  const spreadTab3Cards = document.getElementById('spreadTab3Cards');
+  const spreadTab5Cards = document.getElementById('spreadTab5Cards');
+  const patterns3CardsWrap = document.getElementById('patterns3CardsWrap');
+  const spread5CardsWrap = document.getElementById('spread5CardsWrap');
+  const patternChipsGroup = document.getElementById('patternChipsGroup');
+  const patternInfoBanner = document.getElementById('patternInfoBanner');
+  const step2IndicatorLabel = document.getElementById('step2IndicatorLabel');
+  const step2HeaderTitle = document.getElementById('step2HeaderTitle');
+  const pickSlotsContainer = document.getElementById('pickSlotsContainer');
+  const autoDrawCardsBtnText = document.getElementById('autoDrawCardsBtnText');
+  const revealBannerTitle = document.getElementById('revealBannerTitle');
+  const smartPatternBox = document.getElementById('smartPatternBox');
+  const smartPatternTitle = document.getElementById('smartPatternTitle');
+  const smartPatternDesc = document.getElementById('smartPatternDesc');
+
+  // Modal Picker Elements
+  const cardSelectModal = document.getElementById('cardSelectModal');
+  const closeCardModalBtn = document.getElementById('closeCardModalBtn');
+  const modalPositionName = document.getElementById('modalPositionName');
+  const modalCardSearchInput = document.getElementById('modalCardSearchInput');
+  const modalCardsGrid = document.getElementById('modalCardsGrid');
+  const modalFilterTabs = document.getElementById('modalFilterTabs');
+  let currentModalFilter = 'all';
+
   // Responsive Viewport & Device Detector (Strict Mobile < 768px, Tablet/Desktop >= 768px)
   function updateResponsiveViewMode() {
     const isMobile = window.innerWidth < 768 ||
@@ -1013,6 +1088,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mode === 'personality' && window.PersonalityApp) {
       window.PersonalityApp.onTabShow();
     }
+    // Trigger Reading live update when activated
+    if (mode === 'reading') {
+      const deckFan = document.getElementById('deckFanWrapper');
+      if (deckFan && deckFan.children.length === 0) {
+        if (typeof renderFanDeck === 'function') renderFanDeck();
+        if (typeof renderPickSlots === 'function') renderPickSlots();
+        if (typeof updateSlotVisuals === 'function') updateSlotVisuals();
+      }
+    }
   }
 
   // Expose setActiveAppMode globally for cross-tab navigation
@@ -1069,95 +1153,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Parse initial tab on page load (defaults to reading)
-  const initialTab = parseTargetTabFromUrl() || 'reading';
-  setActiveAppMode(initialTab, false);
-
-  // Listen for dynamic hash changes (external links or browser back/forward)
-  window.addEventListener('hashchange', () => {
-    const targetTab = parseTargetTabFromUrl() || 'reading';
-    setActiveAppMode(targetTab, false);
-  });
-
   // ==========================================================================
   // MY CAT & I ORACLE DIVINATION APP MODULE (3-STEP INTUITIVE FLOW)
   // Single Deck: "My Cat & I" (61 Cards from คู่มือไพ่CAT61.xlsx)
   // ==========================================================================
-
-  // Stepper Elements (2 Steps)
-  const stepperFill = document.getElementById('stepperFill');
-  const stepIndicators = [
-    document.getElementById('stepIndicator1'),
-    document.getElementById('stepIndicator2')
-  ];
-
-  // Pinned Context Bar
-  const pinnedContextBar = document.getElementById('pinnedContextBar');
-  const pinnedQuestionText = document.getElementById('pinnedQuestionText');
-  const pinnedDeckItem = document.getElementById('pinnedDeckItem');
-  const pinnedDeckText = document.getElementById('pinnedDeckText');
-  const editQuestionQuickBtn = document.getElementById('editQuestionQuickBtn');
-
-  // Step Sections
-  const readingStep1 = document.getElementById('readingStep1');
-  const readingStep2 = document.getElementById('readingStep2'); // Legacy 2-deck screen (hidden)
-  const readingStep3 = document.getElementById('readingStep3'); // Step 2: Pick 3 Cards
-  const readingStep4 = document.getElementById('readingStep4'); // Step 3: Divination Results
-
-  // Step 1: Question Elements
-  const userQuestionInput = document.getElementById('userQuestionInput');
-  const clearQuestionBtn = document.getElementById('clearQuestionBtn');
-  const proceedToStep2Btn = document.getElementById('proceedToStep2Btn');
-  const chipButtons = document.querySelectorAll('.chip-btn');
-
-  // Step 2: Pick 3 Cards Elements
-  const backToStep2Btn = document.getElementById('backToStep2Btn');
-  const pickStepDesc = document.getElementById('pickStepDesc');
-  const pickCurrentInstruction = document.getElementById('pickCurrentInstruction');
-  const autoDraw3CardsBtn = document.getElementById('autoDraw3CardsBtn');
-  const shuffleDeckCardsBtn = document.getElementById('shuffleDeckCardsBtn');
-  const openManualPickerBtn = document.getElementById('openManualPickerBtn');
-  const deckFanWrapper = document.getElementById('deckFanWrapper');
-  const revealTriggerBanner = document.getElementById('revealTriggerBanner');
-  const revealDivinationBtn = document.getElementById('revealDivinationBtn');
-
-  // Step 3: Results Elements
-  const newReadingBtn = document.getElementById('newReadingBtn');
-  const redrawCurrentCardsBtn = document.getElementById('redrawCurrentCardsBtn');
-  const toggleFlipCardsBtn = document.getElementById('toggleFlipCardsBtn');
-  const copyResultTextBtn = document.getElementById('copyResultTextBtn');
-  const printResultReportBtn = document.getElementById('printResultReportBtn');
-  const resultQuestionTitle = document.getElementById('resultQuestionTitle');
-  const resultDeckBadge = document.getElementById('resultDeckBadge');
-  const resultSpreadBadge = document.getElementById('resultSpreadBadge');
-  const resultDateBadge = document.getElementById('resultDateBadge');
-  const resultCardsBoard = document.getElementById('resultCardsBoard');
-  const resultSynthesisContainer = document.getElementById('resultSynthesisContainer');
-
-  // Spread Selection DOM Elements
-  const spreadTab3Cards = document.getElementById('spreadTab3Cards');
-  const spreadTab5Cards = document.getElementById('spreadTab5Cards');
-  const patterns3CardsWrap = document.getElementById('patterns3CardsWrap');
-  const spread5CardsWrap = document.getElementById('spread5CardsWrap');
-  const patternChipsGroup = document.getElementById('patternChipsGroup');
-  const patternInfoBanner = document.getElementById('patternInfoBanner');
-  const step2IndicatorLabel = document.getElementById('step2IndicatorLabel');
-  const step2HeaderTitle = document.getElementById('step2HeaderTitle');
-  const pickSlotsContainer = document.getElementById('pickSlotsContainer');
-  const autoDrawCardsBtnText = document.getElementById('autoDrawCardsBtnText');
-  const revealBannerTitle = document.getElementById('revealBannerTitle');
-  const smartPatternBox = document.getElementById('smartPatternBox');
-  const smartPatternTitle = document.getElementById('smartPatternTitle');
-  const smartPatternDesc = document.getElementById('smartPatternDesc');
-
-  // Modal Picker Elements
-  const cardSelectModal = document.getElementById('cardSelectModal');
-  const closeCardModalBtn = document.getElementById('closeCardModalBtn');
-  const modalPositionName = document.getElementById('modalPositionName');
-  const modalCardSearchInput = document.getElementById('modalCardSearchInput');
-  const modalCardsGrid = document.getElementById('modalCardsGrid');
-  const modalFilterTabs = document.getElementById('modalFilterTabs');
-  let currentModalFilter = 'all';
 
   // --------------------------------------------------------------------------
   // SPREAD CONFIGURATIONS (3-CARD 5 PATTERNS + 5-CARD STRATEGIC SPREAD)
@@ -2274,7 +2273,8 @@ ${cardsPromptLines}
     for (let i = 0; i < cardCount; i++) {
       const cardEl = document.createElement('div');
       cardEl.className = 'fan-card-item';
-      cardEl.style.backgroundImage = `url("${backImg}")`;
+      cardEl.style.backgroundColor = '#fed7aa';
+      cardEl.style.backgroundImage = `url("${backImg}"), url("Cat61/62.png")`;
       cardEl.setAttribute('data-fan-index', i);
 
       const xOffset = Math.round((i - (cardCount - 1) / 2) * spreadStep);
@@ -3205,7 +3205,23 @@ ${cardsPromptLines}
   renderFanDeck();
   renderPickSlots();
   updateSlotVisuals();
-});
+
+  // Parse initial tab on page load (defaults to reading)
+  const initialTab = parseTargetTabFromUrl() || 'reading';
+  setActiveAppMode(initialTab, false);
+
+  // Listen for dynamic hash changes (external links or browser back/forward)
+  window.addEventListener('hashchange', () => {
+    const targetTab = parseTargetTabFromUrl() || 'reading';
+    setActiveAppMode(targetTab, false);
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMainApp);
+} else {
+  initMainApp();
+}
 
 
 // --------------------------------------------------------------------------

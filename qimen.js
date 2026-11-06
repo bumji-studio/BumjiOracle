@@ -1766,6 +1766,7 @@
     },
 
     updateLockBadges: function () {
+      if (!this.el) return;
       const isAuth = this.isLoggedIn();
       if (this.el.calcLockBadge) {
         this.el.calcLockBadge.style.display = isAuth ? 'none' : 'inline-flex';
