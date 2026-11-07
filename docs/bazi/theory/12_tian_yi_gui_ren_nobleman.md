@@ -112,3 +112,4 @@ function evaluateTianYiGuiRen(dayMasterStem, chartBranches, isChartStrong) {
   // พร้อมวิเคราะห์นัยยะชนชั้น (丑 = สูงศักดิ์/ไฮโซ, 未 = คนธรรมดาทั่วไป/ลูกน้อง)
 }
 ```
+
