@@ -70,3 +70,4 @@ function evaluateResourceStar(godType, isFavorable, affectedElement) {
   }
 }
 ```
+
