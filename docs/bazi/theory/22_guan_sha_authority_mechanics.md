@@ -91,3 +91,4 @@ function evaluateGuanShaImpact(chartStrength, guanShaGod, isTransformedFavorable
   }
 }
 ```
+
