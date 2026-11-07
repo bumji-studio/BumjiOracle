@@ -110,3 +110,4 @@ function calculateWoodChartStrength(pillars) {
   return finalScore;
 }
 ```
+
