@@ -128,3 +128,4 @@ function detectYiMa(natalBranches, transitBranch) {
   return triggeredEvents;
 }
 ```
+
