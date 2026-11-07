@@ -92,3 +92,4 @@ function checkLiuHai(natalBranches, transitBranch, isFavorable) {
   return null;
 }
 ```
+
