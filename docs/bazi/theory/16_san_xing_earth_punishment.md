@@ -81,3 +81,4 @@ function checkSanXingEarth(natalBranches, transitBranch) {
   return null;
 }
 ```
+
