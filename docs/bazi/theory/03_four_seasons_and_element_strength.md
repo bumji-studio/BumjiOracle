@@ -142,3 +142,4 @@ const STRENGTH_LABELS = {
   si:    { th: 'เสื่อมหมด (死)', scoreModifier: 0.2, desc: 'ถูกฤดูกาลพิฆาต พลังอ่อนที่สุด' }
 };
 ```
+
