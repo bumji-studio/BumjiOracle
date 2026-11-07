@@ -88,3 +88,4 @@ function detectZiXing(natalBranches, transitBranch, isFavorable) {
   return null;
 }
 ```
+
