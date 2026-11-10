@@ -1725,14 +1725,14 @@
         dmBadgeEl.innerHTML = '<span class="daily-dm-badge"><i class="fa-solid fa-yin-yang" style="color: #9333ea;"></i> ดิถีธาตุวันนี้: <strong>' + dailyChart.dayMaster.zh + ' (' + dailyChart.dayMaster.th + ')</strong></span>';
       }
 
-      // 4 Pillars Grid
+      // 4 Pillars Grid (เรียงตามลำดับจากซ้ายไปขวา: ยาม -> วัน -> เดือน -> ปี)
       const pillarsGrid = document.getElementById('dailyPillarsGrid');
       if (pillarsGrid) {
         const pillarList = [
-          { key: 'year', label: 'เสาปี (Year)', p: dailyChart.pillars.year, role: 'พลังภาพรวมปี / สังคมภายนอก' },
-          { key: 'month', label: 'เสาเดือน (Month)', p: dailyChart.pillars.month, role: 'กระแสฤดูกาล / การงาน' },
+          { key: 'hour', label: 'เสายาม (Hour)', p: dailyChart.pillars.hour, role: 'พลังงานยามปัจจุบัน (Shichen)' },
           { key: 'day', label: 'เสาวัน (Day)', p: dailyChart.pillars.day, role: 'ดิถีธาตุประจำวัน (Day Master)', isDay: true },
-          { key: 'hour', label: 'เสายาม (Hour)', p: dailyChart.pillars.hour, role: 'พลังงานยามปัจจุบัน (Shichen)' }
+          { key: 'month', label: 'เสาเดือน (Month)', p: dailyChart.pillars.month, role: 'กระแสฤดูกาล / การงาน' },
+          { key: 'year', label: 'เสาปี (Year)', p: dailyChart.pillars.year, role: 'พลังภาพรวมปี / สังคมภายนอก' }
         ];
 
         pillarsGrid.innerHTML = pillarList.map(col => {
@@ -1744,6 +1744,10 @@
           const dmBorder = isDm ? 'border: 2px solid #7c3aed; background: #faf5ff;' : '';
           const dmBadge = isDm ? '<span style="background: #7c3aed; color: #fff; font-size: 10.5px; padding: 2px 8px; border-radius: 999px; margin-left: 6px;">ดิถีแก่นแท้</span>' : '';
 
+          // สีพื้นอ่อนๆ ตามธาตุของก้านฟ้าและกิ่งดิน
+          const sBg = sMeta.lightBg || 'rgba(100, 116, 139, 0.12)';
+          const bBg = bMeta.lightBg || 'rgba(100, 116, 139, 0.12)';
+
           return '<div class="bazi-pillar-card" style="' + dmBorder + '">' +
             '<div class="pillar-header">' +
               '<span class="pillar-label">' + col.label + ' ' + dmBadge + '</span>' +
@@ -1753,14 +1757,14 @@
               '<span class="god-badge">' + col.p.tenGod.zh + '</span>' +
               '<span class="god-th">' + col.p.tenGod.th + '</span>' +
             '</div>' +
-            '<div class="pillar-stem" style="border-left: 4px solid ' + (sMeta.color || '#64748b') + ';">' +
+            '<div class="pillar-stem" style="border-left: 4px solid ' + (sMeta.color || '#64748b') + '; background: ' + sBg + ';">' +
               '<span class="stem-zh" style="color: ' + (sMeta.color || '#64748b') + ';">' + s.zh + '</span>' +
               '<div class="stem-info">' +
                 '<strong>' + s.py + ' (' + (s.polarity === 'yang' ? 'หยาง' : 'หยิน') + ')</strong>' +
                 '<span>' + (sMeta.th || '') + '</span>' +
               '</div>' +
             '</div>' +
-            '<div class="pillar-branch" style="border-left: 4px solid ' + (bMeta.color || '#64748b') + ';">' +
+            '<div class="pillar-branch" style="border-left: 4px solid ' + (bMeta.color || '#64748b') + '; background: ' + bBg + ';">' +
               '<span class="branch-zh" style="color: ' + (bMeta.color || '#64748b') + ';">' + b.zh + '</span>' +
               '<div class="branch-info">' +
                 '<strong>' + b.py + ' • ' + b.zodiac + '</strong>' +
@@ -1768,7 +1772,7 @@
               '</div>' +
             '</div>' +
             '<div class="pillar-nayin-section" style="margin-top: 6px;">' +
-              '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center;">' +
+              '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center; font-family: var(--font-chinese, sans-serif);">' +
                 '<i class="fa-solid fa-music" style="color: #7c3aed;"></i> น้าอิม: <strong>' + col.p.naYin + '</strong>' +
               '</div>' +
             '</div>' +
@@ -1776,20 +1780,63 @@
         }).join('');
       }
 
-      // Energy summary pills
+      // Energy summary pills (จัดวางทางด้านขวามือของการ์ด)
       const pillsEl = document.getElementById('dailyEnergyPills');
       if (pillsEl) {
         const clashZodiac = (tongshuInfo && tongshuInfo.clashZodiac) ? tongshuInfo.clashZodiac : 'มะเมีย (ม้า)';
         const caiShen = (tongshuInfo && tongshuInfo.caiShenDir) ? tongshuInfo.caiShenDir : 'ทิศเหนือ';
         const xiShen = (tongshuInfo && tongshuInfo.xiShenDir) ? tongshuInfo.xiShenDir : 'ทิศตะวันออกเฉียงเหนือ';
-        const guiShen = (tongshuInfo && tongshuInfo.guiShenDir) ? tongshuInfo.guiShenDir : 'ทิศตะวันออกเฉียงเหนือ';
+        const guiShen = (tongshuInfo && tongshuInfo.guiShenDir) ? tongshuInfo.guiShenDir : 'ทิศตะวันออกเฉียงเหนือ & ตะวันตกเฉียงใต้';
+        const dayBranch = dailyChart.pillars.day.branch;
 
-        pillsEl.innerHTML = '<span class="energy-pill pill-highlight"><i class="fa-solid fa-dna" style="color: #7c3aed;"></i> <strong>ดิถีธาตุวันนี้:</strong> ' + dailyChart.dayMaster.desc + '</span>' +
-          '<span class="energy-pill"><i class="fa-solid fa-paw" style="color: #d97706;"></i> <strong>นักษัตรวัน:</strong> ' + dailyChart.pillars.day.branch.zodiac + '</span>' +
-          '<span class="energy-pill pill-clash"><i class="fa-solid fa-triangle-exclamation"></i> <strong>ชงกับ:</strong> ' + clashZodiac + '</span>' +
-          '<span class="energy-pill pill-caishen"><i class="fa-solid fa-coins"></i> <strong>ทิศโชคลาภ (财神):</strong> ' + caiShen + '</span>' +
-          '<span class="energy-pill"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> <strong>ทิศมงคล (喜神):</strong> ' + xiShen + '</span>' +
-          '<span class="energy-pill"><i class="fa-solid fa-handshake-angle" style="color: #0284c7;"></i> <strong>ผู้อุปถัมภ์ (贵神):</strong> ' + guiShen + '</span>';
+        pillsEl.innerHTML = '<div class="daily-right-card-header">' +
+            '<i class="fa-solid fa-chart-pie" style="color: #7c3aed;"></i> ข้อมูลสรุปพลังงานประจำวัน' +
+          '</div>' +
+          '<div class="daily-info-item item-dm">' +
+            '<div class="info-item-icon" style="color: #7c3aed;"><i class="fa-solid fa-dna"></i></div>' +
+            '<div class="info-item-content">' +
+              '<span class="info-item-title">ดิถีธาตุวันนี้ (Day Master)</span>' +
+              '<span class="info-item-value">' + dailyChart.dayMaster.zh + ' (' + dailyChart.dayMaster.th + ')</span>' +
+              '<span class="info-item-desc">' + dailyChart.dayMaster.desc + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="daily-info-item item-zodiac">' +
+            '<div class="info-item-icon" style="color: #d97706;"><i class="fa-solid fa-paw"></i></div>' +
+            '<div class="info-item-content">' +
+              '<span class="info-item-title">นักษัตรประจำวัน (Day Branch)</span>' +
+              '<span class="info-item-value">' + dayBranch.zodiac + '</span>' +
+              '<span class="info-item-desc">สาขา ' + dayBranch.zh + ' (' + dayBranch.py + ') • ' + (ELEMENTS_META[dayBranch.element]?.th || '') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="daily-info-item item-clash">' +
+            '<div class="info-item-icon" style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+            '<div class="info-item-content">' +
+              '<span class="info-item-title">นักษัตรปะทะ (ชงประจำวัน)</span>' +
+              '<span class="info-item-value" style="color: #be123c;">ชงกับ: ' + clashZodiac + '</span>' +
+              '<span class="info-item-desc">มีสติรอบคอบในการเจรจาและการเดินทาง</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="daily-info-item item-caishen">' +
+            '<div class="info-item-icon" style="color: #10b981;"><i class="fa-solid fa-coins"></i></div>' +
+            '<div class="info-item-content">' +
+              '<span class="info-item-title">ทิศโชคลาภ (财神)</span>' +
+              '<span class="info-item-value" style="color: #15803d;">' + caiShen + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="daily-info-item item-xishen">' +
+            '<div class="info-item-icon" style="color: #ec4899;"><i class="fa-solid fa-heart"></i></div>' +
+            '<div class="info-item-content">' +
+              '<span class="info-item-title">ทิศมงคล / สุขสมหวัง (喜神)</span>' +
+              '<span class="info-item-value" style="color: #be185d;">' + xiShen + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="daily-info-item item-guishen">' +
+            '<div class="info-item-icon" style="color: #0284c7;"><i class="fa-solid fa-handshake-angle"></i></div>' +
+            '<div class="info-item-content">' +
+              '<span class="info-item-title">ทิศผู้อุปถัมภ์ / ขุนนาง (贵神)</span>' +
+              '<span class="info-item-value" style="color: #0369a1;">' + guiShen + '</span>' +
+            '</div>' +
+          '</div>';
       }
 
       // Today Officer Spotlight Card

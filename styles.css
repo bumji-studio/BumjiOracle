@@ -7729,68 +7729,150 @@ body.is-mobile .synthesis-box-body {
   border-radius: 999px;
 }
 
+/* Two-Column Layout for Daily Pillars Card: Left 4 Pillars, Right Energy Meta */
+.daily-pillars-two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  .daily-pillars-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.daily-pillars-left-col {
+  min-width: 0;
+  width: 100%;
+}
+
 .daily-pillars-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 860px) {
   .daily-pillars-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 480px) {
   .daily-pillars-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Daily Energy Pills */
-.daily-energy-pills {
+/* Right-Side Energy Meta Panel */
+.daily-pillars-right-col {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
   background: #f8fafc;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
-.energy-pill {
-  display: inline-flex;
+.daily-right-card-header {
+  display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e1b4b;
+  border-bottom: 1px dashed #cbd5e1;
+  padding-bottom: 8px;
+  margin-bottom: 2px;
+}
+
+.daily-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 12.5px;
-  color: #334155;
-  font-family: 'Prompt', sans-serif;
+  border-radius: 10px;
+  padding: 9px 12px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.energy-pill strong {
+.daily-info-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+.daily-info-item.item-dm {
+  border-left: 4px solid #7c3aed;
+  background: #faf5ff;
+}
+
+.daily-info-item.item-zodiac {
+  border-left: 4px solid #d97706;
+  background: #fffbeb;
+}
+
+.daily-info-item.item-clash {
+  border-left: 4px solid #ef4444;
+  background: #fff5f5;
+}
+
+.daily-info-item.item-caishen {
+  border-left: 4px solid #10b981;
+  background: #f0fdf4;
+}
+
+.daily-info-item.item-xishen {
+  border-left: 4px solid #ec4899;
+  background: #fdf2f8;
+}
+
+.daily-info-item.item-guishen {
+  border-left: 4px solid #0284c7;
+  background: #f0f9ff;
+}
+
+.info-item-icon {
+  font-size: 15px;
+  margin-top: 2px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.info-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+}
+
+.info-item-title {
+  font-family: 'Prompt', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.info-item-value {
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
   color: #0f172a;
 }
 
-.energy-pill.pill-highlight {
-  border-color: #cbd5e1;
-  background: #fff;
-}
-
-.energy-pill.pill-clash {
-  background: #fff1f2;
-  border-color: #fecdd3;
-  color: #be123c;
-}
-
-.energy-pill.pill-caishen {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #15803d;
+.info-item-desc {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.4;
+  margin-top: 1px;
 }
 
 /* 2. Today's 12 Day Officer Spotlight Card */
