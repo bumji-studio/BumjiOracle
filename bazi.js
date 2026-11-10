@@ -1637,6 +1637,229 @@
       syncDate();
       syncTime();
       applyUnknownTimeState();
+      this.renderDailyBaZiShowcase();
+    },
+
+    renderDailyBaZiShowcase: function () {
+      const showcase = document.getElementById('baziGuestDailyShowcase');
+      if (!showcase) return;
+
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth();
+      const d = now.getDate();
+      const todayDateStr = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+
+      // 1. Live Clock
+      const clockText = document.getElementById('dailyLiveClockText');
+      if (clockText) {
+        clockText.textContent = now.toLocaleTimeString('th-TH', { hour12: false }) + ' น.';
+      }
+      if (!this._dailyClockInterval) {
+        this._dailyClockInterval = setInterval(() => {
+          const el = document.getElementById('dailyLiveClockText');
+          if (el) {
+            el.textContent = new Date().toLocaleTimeString('th-TH', { hour12: false }) + ' น.';
+          }
+        }, 1000);
+      }
+
+      // 2. Calculate Today's BaZi Chart
+      const dailyChart = BaziEngine.calculateChart({
+        birthDate: todayDateStr,
+        birthHour: now.getHours(),
+        birthMinute: now.getMinutes(),
+        gender: 'female',
+        name: 'ผังดวงประจำวัน'
+      });
+
+      // 3. Calculate Today's Tong Shu info (12 Day Officers, Lunar Date, etc.)
+      let tongshuInfo = null;
+      if (window.TongShuEngine && typeof window.TongShuEngine.calculate === 'function') {
+        tongshuInfo = window.TongShuEngine.calculate(now);
+      }
+
+      // 12 Day Officers data definition
+      const ALL_12_OFFICERS = (window.TongShuEngine && window.TongShuEngine.DAY_OFFICERS) ? window.TongShuEngine.DAY_OFFICERS : [
+        { zh: '建', py: 'Jiàn', en: 'Establish', th: 'เจี้ยน (สถาปนา/ริเริ่ม)', quality: 'มงคล', rating: 4, stars: '⭐⭐⭐⭐', badgeClass: 'officer-auspicious', desc: 'วันแห่งการสถาปนา ริเริ่มสิ่งใหม่ เริ่มแผนการงานใหญ่ รับตำแหน่ง', suitable: ['เปิดกิจการ', 'ลงนามเริ่มต้นโครงการ', 'ไหว้พระขอพร', 'รับตำแหน่งใหม่', 'ท่องเที่ยวเปิดหูเปิดตา'], taboo: ['ขุดสระน้ำ', 'จัดงานอวมงคล', 'เดินทางไกลข้ามน้ำข้ามทะเล'] },
+        { zh: '除', py: 'Chú', en: 'Remove', th: 'ฉู (ปัดเป่า/ชำระล้าง)', quality: 'มงคล', rating: 4, stars: '⭐⭐⭐⭐', badgeClass: 'officer-auspicious', desc: 'วันแห่งการขจัดสิ่งอัปมงคล ชำระล้างพลังงานลบ ปลดปล่อยสิ่งตกค้าง รักษาโรคภัย', suitable: ['สะเดาะเคราะห์', 'ทำความสะอาดปรับฮวงจุ้ย', 'รักษาโรค/ผ่าตัด', 'ทิ้งสิ่งของเก่า', 'ไหว้พระล้างพลังงานลบ'], taboo: ['แต่งงาน', 'เซ็นสัญญาผูกมัด', 'ลงทุนระยะยาว', 'เปิดตัวสินค้าใหม่'] },
+        { zh: '滿', py: 'Mǎn', en: 'Full', th: 'ม่าน (เต็มเปี่ยม/อุดมสมบูรณ์)', quality: 'มงคลยิ่ง', rating: 5, stars: '⭐⭐⭐⭐⭐', badgeClass: 'officer-great', desc: 'วันแห่งความอุดมสมบูรณ์ มหาสมบัติเต็มคลัง โชคลาภพูนทวี เหมาะแก่การรับทรัพย์สิน', suitable: ['เปิดบัญชีธนาคาร', 'รับเงินรับทอง', 'เปิดคลังสินค้า', 'จัดงานเลี้ยงฉลอง', 'ทำบุญเสริมบารมี', 'แต่งงาน'], taboo: ['เริ่มคดีความ', 'รับบุตรบุญธรรม', 'กู้ยืมหนี้สิน'] },
+        { zh: '平', py: 'Píng', en: 'Balance', th: 'ผิง (ราบรื่น/เสมอภาค)', quality: 'ปานกลาง', rating: 3, stars: '⭐⭐⭐', badgeClass: 'officer-neutral', desc: 'วันแห่งความสงบ ราบรื่น สมดุล ประนีประนอม ไกล่เกลี่ยข้อพิพาท', suitable: ['เจรจาปรองดอง', 'ซ่อมแซมปรับพื้นที่', 'เพาะปลูก', 'ทำความสะอาดเคหสถาน', 'ทำบุญอุทิศส่วนกุศล'], taboo: ['ขึ้นศาลฟ้องร้อง', 'เสี่ยงโชคการพนัน', 'กิจกรรมเสี่ยงภัย'] },
+        { zh: '定', py: 'Dìng', en: 'Settle', th: 'ติ้ง (มั่นคง/แน่นอน)', quality: 'มงคลยิ่ง', rating: 5, stars: '⭐⭐⭐⭐⭐', badgeClass: 'officer-great', desc: 'วันแห่งความมั่นคงถาวร วางรากฐานอันยั่งยืน ตกลงสัญญา หมั้นหมาย', suitable: ['ทำสัญญาค้าขาย', 'หมั้นหมาย/สู่ขอ', 'วางศิลาฤกษ์', 'รับพนักงานใหม่', 'ซื้อบ้าน/ที่ดิน', 'ตั้งศาลบูชา'], taboo: ['ฟ้องร้องฟ้องคดี', 'รักษาแผลสด', 'เดินทางไกลอย่างเร่งรีบ'] },
+        { zh: '執', py: 'Zhí', en: 'Initiate', th: 'จื๋อ (ยึดถือ/รักษาการ)', quality: 'ปานกลาง', rating: 3, stars: '⭐⭐⭐', badgeClass: 'officer-neutral', desc: 'วันแห่งการรักษาแบบแผน กฎระเบียบ มั่นคงในหน้าที่ ดำเนินการตามแผน เพาะปลูก', suitable: ['ทำบุญขอพร', 'จับกุมคนร้าย/ปราบอธรรม', 'ลงนามข้อตกลงระยะสั้น', 'เริ่มต้นการเรียนรู้'], taboo: ['ย้ายบ้าน', 'เปิดกิจการสาขาใหม่', 'ออกเดินทางท่องเที่ยวไกล'] },
+        { zh: '破', py: 'Pò', en: 'Destruction', th: 'พั่ว (ทะลวง/ทำลายอุปสรรค)', quality: 'ควรระวัง', rating: 1, stars: '⭐', badgeClass: 'officer-danger', desc: 'วันแห่งการปะทะ ทะลวงกำแพง รื้อถอนของเก่า ไม่เหมาะกับงานมงคลใดๆ', suitable: ['รื้อถอนอาคารเก่า', 'ตัดไม้ใหญ่ที่กีดขวาง', 'ผ่าตัดรักษาโรคเรื้อรัง', 'สะเดาะเคราะห์ตัดวิบากกรรม'], taboo: ['แต่งงาน/สู่ขอ', 'เปิดร้านใหม่', 'เซ็นสัญญาพันธมิตร', 'ขึ้นบ้านใหม่', 'ลงทุนก้อนใหญ่'] },
+        { zh: '危', py: 'Wēi', en: 'Danger', th: 'เวย (ระมัดระวัง/มีสติ)', quality: 'ปานกลาง (ระวัง)', rating: 2, stars: '⭐⭐', badgeClass: 'officer-caution', desc: 'วันแห่งความตระหนักรู้ เตือนสติ ตั้งรับ เหมาะแก่การไหว้พระ สวดมนต์ ตั้งมั่นในศีล', suitable: ['ไหว้พระขอพรเทพเจ้า', 'ตั้งเตียงนอนมงคล', 'ทำบุญโรงพยาบาล', 'วางแผนยุทธศาสตร์เงียบๆ'], taboo: ['ปีนเขากิจกรรมแอดเวนเจอร์', 'ล่องเรือออกทะเลลึก', 'ซ่อมแซมหลังคาบ้าน', 'ขับรถทางไกลตอนดึก'] },
+        { zh: '成', py: 'Chéng', en: 'Success', th: 'เฉิง (สำเร็จ/ลุล่วง)', quality: 'มงคลสูงสุด', rating: 5, stars: '⭐⭐⭐⭐⭐', badgeClass: 'officer-great', desc: 'วันมหามงคลสูงสุด สรรพสิ่งบรรลุผลสำเร็จ ดั่งมังกรผงาดเหนือเมฆา เกื้อหนุนทุกกิจการ', suitable: ['แต่งงานจดทะเบียน', 'เปิดร้าน/เปิดบริษัท', 'เซ็นสัญญาใหญ่', 'เข้าสอบ/สัมภาษณ์งาน', 'ขึ้นบ้านใหม่', 'ออกรถใหม่'], taboo: ['เริ่มคดีความฟ้องร้อง', 'ทุ่มเถียงมีปากเสียง'] },
+        { zh: '收', py: 'Shōu', en: 'Receive', th: 'โซ่ว (เก็บเกี่ยว/รับทรัพย์)', quality: 'มงคลยิ่ง', rating: 5, stars: '⭐⭐⭐⭐⭐', badgeClass: 'officer-great', desc: 'วันแห่งการเก็บเกี่ยวผลผลิต ดึงดูดทรัพย์เข้าคลัง ทวงหนี้ได้คืน รับผลกำไร', suitable: ['ทวงหนี้สิน', 'เก็บเงินเก็บทองเข้าคลัง', 'เปิดหีบสมบัติ', 'ซื้ออสังหาริมทรัพย์', 'ทำบุญสร้างโบสถ์วิหาร'], taboo: ['จัดงานฌาปนกิจ', 'ปล่อยเงินกู้', 'รักษาโรคร้ายแรง'] },
+        { zh: '開', py: 'Kāi', en: 'Open', th: 'คาย (เปิดทาง/เบิกเนตร)', quality: 'มงคลสูงสุด', rating: 5, stars: '⭐⭐⭐⭐⭐', badgeClass: 'officer-great', desc: 'วันแห่งประตูสวรรค์เปิด ทางสว่างโล่ง แจ่มใสรุ่งเรือง เหมาะแก่การเปิดตัวทุกประการ', suitable: ['เปิดร้านค้า/เปิดกิจการ', 'เปิดตัวสินค้าใหม่', 'เริ่มเข้าศึกษาใหม่', 'ออกเดินทางท่องเที่ยว', 'ย้ายเข้าบ้านใหม่', 'สู่ขอ'], taboo: ['จัดงานอวมงคล', 'ขุดสุสาน', 'กักขังสิ่งมีชีวิต'] },
+        { zh: '閉', py: 'Bì', en: 'Close', th: 'ปี้ (ปิดกั้น/สะสมพลัง)', quality: 'ควรระวัง', rating: 2, stars: '⭐⭐', badgeClass: 'officer-caution', desc: 'วันแห่งการปิดม่าน สะสมพลัง ซ่อนเร้น เก็บงำความลับ พักผ่อนฟื้นฟู', suitable: ['สร้างกำแพงกั้นน้ำ', 'ปิดงบดุลบัญชี', 'พักผ่อนเก็บตัวภาวนา', 'ฝังกลบสิ่งปฏิกูล'], taboo: ['เปิดกิจการใหม่', 'จัดงานแต่งงาน', 'เปิดตาเบิกเนตรพระ', 'เจรจาการค้าสำคัญ'] }
+      ];
+
+      // Active officer
+      let activeOfficer = (tongshuInfo && tongshuInfo.officer) ? tongshuInfo.officer : ALL_12_OFFICERS[1];
+      // Match English name if present in ALL_12_OFFICERS
+      const matchedOfficer = ALL_12_OFFICERS.find(o => o.zh === activeOfficer.zh);
+      if (matchedOfficer) {
+        activeOfficer = { ...matchedOfficer, ...activeOfficer };
+      }
+
+      // Dates bar
+      const datesBar = document.getElementById('dailyShowcaseDatesBar');
+      if (datesBar) {
+        const thaiDate = tongshuInfo ? tongshuInfo.gregorianThai : now.toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const lunarDate = tongshuInfo ? tongshuInfo.lunarDateString : '农历 (ปฏิทินจีน)';
+        const solarTerm = tongshuInfo ? tongshuInfo.currentSolarTerm : 'ฤดูกาลตามสารทจีน';
+        const curH = now.getHours();
+        const shBranch = BRANCHES[Math.floor((curH + 1) % 24 / 2)];
+        const shName = shBranch ? shBranch.py + ' (' + shBranch.zodiac + ')' : '';
+
+        datesBar.innerHTML = '<span><i class="fa-solid fa-sun" style="color: #f59e0b;"></i> ' + thaiDate + '</span> • ' +
+          '<span><i class="fa-solid fa-moon" style="color: #c084fc;"></i> ' + lunarDate + '</span> • ' +
+          '<span><i class="fa-solid fa-leaf" style="color: #34d399;"></i> สารท ' + solarTerm + '</span> • ' +
+          '<span><i class="fa-solid fa-clock" style="color: #60a5fa;"></i> ยาม ' + shName + '</span>';
+      }
+
+      // Day Master Badge
+      const dmBadgeEl = document.getElementById('dailyDayMasterBadge');
+      if (dmBadgeEl && dailyChart.dayMaster) {
+        dmBadgeEl.innerHTML = '<span class="daily-dm-badge"><i class="fa-solid fa-yin-yang" style="color: #9333ea;"></i> ดิถีธาตุวันนี้: <strong>' + dailyChart.dayMaster.zh + ' (' + dailyChart.dayMaster.th + ')</strong></span>';
+      }
+
+      // 4 Pillars Grid
+      const pillarsGrid = document.getElementById('dailyPillarsGrid');
+      if (pillarsGrid) {
+        const pillarList = [
+          { key: 'year', label: 'เสาปี (Year)', p: dailyChart.pillars.year, role: 'พลังภาพรวมปี / สังคมภายนอก' },
+          { key: 'month', label: 'เสาเดือน (Month)', p: dailyChart.pillars.month, role: 'กระแสฤดูกาล / การงาน' },
+          { key: 'day', label: 'เสาวัน (Day)', p: dailyChart.pillars.day, role: 'ดิถีธาตุประจำวัน (Day Master)', isDay: true },
+          { key: 'hour', label: 'เสายาม (Hour)', p: dailyChart.pillars.hour, role: 'พลังงานยามปัจจุบัน (Shichen)' }
+        ];
+
+        pillarsGrid.innerHTML = pillarList.map(col => {
+          const s = col.p.stem;
+          const b = col.p.branch;
+          const sMeta = ELEMENTS_META[s.element] || {};
+          const bMeta = ELEMENTS_META[b.element] || {};
+          const isDm = col.isDay;
+          const dmBorder = isDm ? 'border: 2px solid #7c3aed; background: #faf5ff;' : '';
+          const dmBadge = isDm ? '<span style="background: #7c3aed; color: #fff; font-size: 10.5px; padding: 2px 8px; border-radius: 999px; margin-left: 6px;">ดิถีแก่นแท้</span>' : '';
+
+          return '<div class="bazi-pillar-card" style="' + dmBorder + '">' +
+            '<div class="pillar-header">' +
+              '<span class="pillar-label">' + col.label + ' ' + dmBadge + '</span>' +
+              '<span class="pillar-role">' + col.role + '</span>' +
+            '</div>' +
+            '<div class="pillar-tengod">' +
+              '<span class="god-badge">' + col.p.tenGod.zh + '</span>' +
+              '<span class="god-th">' + col.p.tenGod.th + '</span>' +
+            '</div>' +
+            '<div class="pillar-stem" style="border-left: 4px solid ' + (sMeta.color || '#64748b') + ';">' +
+              '<span class="stem-zh" style="color: ' + (sMeta.color || '#64748b') + ';">' + s.zh + '</span>' +
+              '<div class="stem-info">' +
+                '<strong>' + s.py + ' (' + (s.polarity === 'yang' ? 'หยาง' : 'หยิน') + ')</strong>' +
+                '<span>' + (sMeta.th || '') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pillar-branch" style="border-left: 4px solid ' + (bMeta.color || '#64748b') + ';">' +
+              '<span class="branch-zh" style="color: ' + (bMeta.color || '#64748b') + ';">' + b.zh + '</span>' +
+              '<div class="branch-info">' +
+                '<strong>' + b.py + ' • ' + b.zodiac + '</strong>' +
+                '<span>' + (bMeta.th || '') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pillar-nayin-section" style="margin-top: 6px;">' +
+              '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center;">' +
+                '<i class="fa-solid fa-music" style="color: #7c3aed;"></i> น้าอิม: <strong>' + col.p.naYin + '</strong>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      }
+
+      // Energy summary pills
+      const pillsEl = document.getElementById('dailyEnergyPills');
+      if (pillsEl) {
+        const clashZodiac = (tongshuInfo && tongshuInfo.clashZodiac) ? tongshuInfo.clashZodiac : 'มะเมีย (ม้า)';
+        const caiShen = (tongshuInfo && tongshuInfo.caiShenDir) ? tongshuInfo.caiShenDir : 'ทิศเหนือ';
+        const xiShen = (tongshuInfo && tongshuInfo.xiShenDir) ? tongshuInfo.xiShenDir : 'ทิศตะวันออกเฉียงเหนือ';
+        const guiShen = (tongshuInfo && tongshuInfo.guiShenDir) ? tongshuInfo.guiShenDir : 'ทิศตะวันออกเฉียงเหนือ';
+
+        pillsEl.innerHTML = '<span class="energy-pill pill-highlight"><i class="fa-solid fa-dna" style="color: #7c3aed;"></i> <strong>ดิถีธาตุวันนี้:</strong> ' + dailyChart.dayMaster.desc + '</span>' +
+          '<span class="energy-pill"><i class="fa-solid fa-paw" style="color: #d97706;"></i> <strong>นักษัตรวัน:</strong> ' + dailyChart.pillars.day.branch.zodiac + '</span>' +
+          '<span class="energy-pill pill-clash"><i class="fa-solid fa-triangle-exclamation"></i> <strong>ชงกับ:</strong> ' + clashZodiac + '</span>' +
+          '<span class="energy-pill pill-caishen"><i class="fa-solid fa-coins"></i> <strong>ทิศโชคลาภ (财神):</strong> ' + caiShen + '</span>' +
+          '<span class="energy-pill"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> <strong>ทิศมงคล (喜神):</strong> ' + xiShen + '</span>' +
+          '<span class="energy-pill"><i class="fa-solid fa-handshake-angle" style="color: #0284c7;"></i> <strong>ผู้อุปถัมภ์ (贵神):</strong> ' + guiShen + '</span>';
+      }
+
+      // Today Officer Spotlight Card
+      const spotlightEl = document.getElementById('dailyOfficerSpotlightCard');
+      if (spotlightEl) {
+        const suitTags = (activeOfficer.suitable || []).map(t => '<span class="action-tag tag-suitable"><i class="fa-solid fa-circle-check"></i> ' + t + '</span>').join('');
+        const tabooTags = (activeOfficer.taboo || []).map(t => '<span class="action-tag tag-taboo"><i class="fa-solid fa-circle-xmark"></i> ' + t + '</span>').join('');
+
+        spotlightEl.innerHTML = '<div class="spotlight-top-bar">' +
+          '<div class="spotlight-officer-main">' +
+            '<div class="spotlight-char-box">' +
+              '<span class="spotlight-char-zh">' + activeOfficer.zh + '</span>' +
+              '<span class="spotlight-char-py">' + (activeOfficer.py || '') + '</span>' +
+            '</div>' +
+            '<div class="spotlight-title-group">' +
+              '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">' +
+                '<span style="font-size: 12.5px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">' +
+                  '<i class="fa-solid fa-star"></i> ฤกษ์ประจำวันตามคัมภีร์ 12 เทพพิทักษ์ (建除十二神 - 12 Day Officers)' +
+                '</span>' +
+              '</div>' +
+              '<h2>' +
+                'วันนี้เป็นวัน: <span>' + activeOfficer.zh + '</span> ' +
+                '<span class="spotlight-officer-en-badge">' + (activeOfficer.en || '') + '</span>' +
+                '<span style="font-size: 17px; color: #475569; font-weight: 500;">— ' + activeOfficer.th + '</span>' +
+              '</h2>' +
+              '<p class="spotlight-desc">' + activeOfficer.desc + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="spotlight-ratings">' +
+            '<span class="spotlight-quality-badge ' + (activeOfficer.badgeClass || 'officer-auspicious') + '">' +
+              activeOfficer.quality +
+            '</span>' +
+            '<span style="font-size: 13px;">' + (activeOfficer.stars || '⭐⭐⭐⭐') + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="spotlight-actions-grid">' +
+          '<div class="spotlight-action-box box-suitable">' +
+            '<div class="spotlight-action-label">' +
+              '<i class="fa-solid fa-thumbs-up"></i> กิจกรรมที่เกื้อหนุนและควรทำ (Suitable Activities)' +
+            '</div>' +
+            '<div class="spotlight-tags-wrap">' + suitTags + '</div>' +
+          '</div>' +
+          '<div class="spotlight-action-box box-taboo">' +
+            '<div class="spotlight-action-label">' +
+              '<i class="fa-solid fa-ban"></i> ข้อควรระวังหรือหลีกเลี่ยง (Taboos)' +
+            '</div>' +
+            '<div class="spotlight-tags-wrap">' + tabooTags + '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // 12 Officers Grid
+      const officersGrid = document.getElementById('officers12Grid');
+      if (officersGrid) {
+        officersGrid.innerHTML = ALL_12_OFFICERS.map((off, idx) => {
+          const isActive = (off.zh === activeOfficer.zh) || (off.en === activeOfficer.en);
+          const activeCls = isActive ? 'active-today' : '';
+          return '<div class="officer-mini-card ' + activeCls + '" title="' + off.desc + '">' +
+            '<div class="mini-card-head">' +
+              '<div class="mini-card-zh-en">' +
+                '<span class="mini-card-zh">' + off.zh + '</span>' +
+                '<span class="mini-card-en">' + (idx + 1) + '. ' + off.en + '</span>' +
+              '</div>' +
+              '<span class="mini-card-stars">' + off.stars + '</span>' +
+            '</div>' +
+            '<div class="mini-card-th">' + off.th + '</div>' +
+            '<div class="mini-card-desc">' + off.desc + '</div>' +
+          '</div>';
+        }).join('');
+      }
     },
 
     fillGuestQuestion: function (q) {

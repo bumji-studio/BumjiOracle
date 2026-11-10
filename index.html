@@ -530,17 +530,85 @@
       <!-- 1. GUEST / BEFORE LOGIN VIEW (กรอกข้อมูลเพื่อตั้งผังดวง - ไม่มีกล่องถามคำถาม) -->
       <!-- ================================================================= -->
       <div id="baziGuestLandingView" class="bazi-guest-landing-view">
-        <!-- Hero Header Card -->
-        <div class="bazi-guest-hero-card">
-          <div class="bazi-guest-badge">
-            <i class="fa-solid fa-yin-yang"></i> เครื่องมือผูกดวงจีน 4 เสาชะตา (BaZi Four Pillars Matrix)
+        
+        <!-- ================================================================= -->
+        <!-- DAILY BAZI & 12 DAY OFFICERS SHOWCASE (ผัง Bazi ประจำวัน & ฤกษ์ 12 เทพพิทักษ์) -->
+        <!-- ================================================================= -->
+        <div class="bazi-guest-daily-showcase" id="baziGuestDailyShowcase">
+          <!-- Daily Header -->
+          <div class="daily-showcase-header">
+            <div class="daily-badges-row">
+              <span class="daily-badge-primary">
+                <i class="fa-solid fa-calendar-day"></i> ผังดวงจีนปาจื่อประจำวัน (Daily BaZi Matrix)
+              </span>
+              <span class="daily-badge-secondary">
+                <i class="fa-solid fa-compass"></i> คัมภีร์ 12 เทพพิทักษ์วัน (建除十二神 - 12 Day Officers)
+              </span>
+              <span class="daily-badge-live" id="dailyLiveClockBadge">
+                <i class="fa-solid fa-circle-dot live-dot"></i> <span id="dailyLiveClockText">--:--:-- น.</span>
+              </span>
+            </div>
+            <h1 class="daily-showcase-title">
+              🏮 ผังดวงปาจื่อประจำวัน &amp; สารทฤกษ์ 12 วันมงคล
+            </h1>
+            <p class="daily-showcase-subtitle" id="dailyShowcaseDatesBar">
+              กำลังคำนวณข้อมูลสุริยคติ จันทรคติจีน และสารทฤดูกาล...
+            </p>
           </div>
-          <h1 class="bazi-guest-title">
-            📜 กรอกข้อมูลวันเกิด &amp; เวลาเกิด เพื่อตั้งผังดวงปาจื่อ
-          </h1>
-          <p class="bazi-guest-subtitle">
-            ระบุวันเดือนปีและเวลาเกิดของคุณ ระบบจะคำนวณ 4 เสาชะตากำเนิด (ปี เดือน วัน ยาม) ถอดรหัสดิถีธาตุ สมดุลเบญจธาตุ ธาตุปรับสมดุล และวงจรวัยจร 10 ปี (大運) ให้ครบถ้วนทันที
-          </p>
+
+          <!-- 1. Daily 4 Pillars Matrix Grid (4 เสาชะตาประจำวัน) -->
+          <div class="daily-pillars-card">
+            <div class="daily-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-layer-group" style="color: #7c3aed;"></i>
+                <strong>ผัง 4 เสาชะตาประจำวัน (Daily 4 Pillars of Destiny)</strong>
+              </div>
+              <div class="title-right" id="dailyDayMasterBadge">
+                <!-- e.g. ดิถีธาตุวันนี้: ดินหยาง 戊 -->
+              </div>
+            </div>
+
+            <div class="daily-pillars-grid" id="dailyPillarsGrid">
+              <!-- Dynamically populated from JS -->
+            </div>
+
+            <!-- Daily Energy Summary Pills -->
+            <div class="daily-energy-pills" id="dailyEnergyPills">
+              <!-- Dynamically populated from JS -->
+            </div>
+          </div>
+
+          <!-- 2. Today's 12 Day Officer Highlight Card (建除十二神 - วันนี้เป็นวันอะไร) -->
+          <div class="daily-officer-spotlight-card" id="dailyOfficerSpotlightCard">
+            <!-- Dynamically populated from JS -->
+          </div>
+
+          <!-- 3. All 12 Day Officers Complete Reference Grid (คลังข้อมูลระบบ 12 เทพพิทักษ์วัน) -->
+          <div class="daily-officers-reference-section">
+            <div class="reference-header">
+              <div class="ref-title-wrap">
+                <i class="fa-solid fa-book-bookmark" style="color: #d97706;"></i>
+                <h3>สารบบคัมภีร์ 12 เทพพิทักษ์วัน (建除十二神 - 12 Day Officers Reference)</h3>
+              </div>
+              <p class="ref-subtitle">
+                ระบบวิเคราะห์ฤกษ์สิบสองวัฏจักรโบราณ (建除十二神) ใช้พิจารณาพลังงานประจำวันและคัดสรรฤกษ์มงคล 12 รูปแบบ: 
+                <strong>1. Establish (建), 2. Remove (除), 3. Full (满), 4. Balance (平), 5. Settle (定), 6. Initiate (执), 7. Destruction (破), 8. Danger (危), 9. Success (成), 10. Receive (收), 11. Open (开), 12. Close (闭)</strong>
+              </p>
+            </div>
+            <div class="officers-12-grid" id="officers12Grid">
+              <!-- Dynamically populated from JS (12 cards with Today active) -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Section Divider to Personal Calculation Form -->
+        <div class="bazi-guest-divider">
+          <div class="divider-line"></div>
+          <div class="divider-content">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>หรือ คำนวณผังดวงชะตาส่วนบุคคลของคุณ (Personal BaZi Birth Chart)</span>
+          </div>
+          <div class="divider-line"></div>
         </div>
 
         <!-- Guest Form Card: Birth Info Only (No Question Box) -->

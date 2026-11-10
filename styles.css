@@ -7574,6 +7574,599 @@ body.is-mobile .synthesis-box-body {
   line-height: 1.6;
 }
 
+/* ==========================================================================
+   DAILY BAZI & 12 DAY OFFICERS SHOWCASE (BEFORE LOGIN)
+   ========================================================================== */
+.bazi-guest-daily-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.daily-showcase-header {
+  background: linear-gradient(135deg, #1e1b4b 0%, #31104b 50%, #581c87 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 32px rgba(88, 28, 135, 0.28);
+}
+
+.daily-showcase-header::before {
+  content: "今日八字";
+  position: absolute;
+  right: 15px;
+  bottom: -25px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 110px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.daily-badges-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.daily-badge-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fef08a;
+  font-family: 'Prompt', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.daily-badge-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(217, 119, 6, 0.25);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fde68a;
+  font-family: 'Prompt', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.daily-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #a7f3d0;
+  font-family: 'Prompt', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.daily-badge-live .live-dot {
+  color: #10b981;
+  font-size: 9px;
+  animation: pulse 1.8s infinite;
+}
+
+.daily-showcase-title {
+  font-family: 'Kanit', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.daily-showcase-subtitle {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14.5px;
+  color: #e9d5ff;
+  max-width: 820px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* 1. Daily Pillars Card */
+.daily-pillars-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.daily-card-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.daily-card-title-bar .title-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 16px;
+  color: #1e293b;
+}
+
+.daily-dm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #faf5ff;
+  border: 1px solid #d8b4fe;
+  color: #6b21a8;
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.daily-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .daily-pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .daily-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Daily Energy Pills */
+.daily-energy-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  background: #f8fafc;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #f1f5f9;
+}
+
+.energy-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 12.5px;
+  color: #334155;
+  font-family: 'Prompt', sans-serif;
+}
+
+.energy-pill strong {
+  color: #0f172a;
+}
+
+.energy-pill.pill-highlight {
+  border-color: #cbd5e1;
+  background: #fff;
+}
+
+.energy-pill.pill-clash {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.energy-pill.pill-caishen {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+/* 2. Today's 12 Day Officer Spotlight Card */
+.daily-officer-spotlight-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fdf4ff 100%);
+  border: 2px solid #e9d5ff;
+  border-radius: 18px;
+  padding: 24px 26px;
+  box-shadow: 0 8px 26px rgba(124, 58, 237, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.spotlight-officer-main {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.spotlight-char-box {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  flex-shrink: 0;
+}
+
+.spotlight-char-zh {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.spotlight-char-py {
+  font-size: 11px;
+  opacity: 0.9;
+  font-weight: 600;
+}
+
+.spotlight-title-group h2 {
+  font-family: 'Kanit', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: #1e1b4b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.spotlight-officer-en-badge {
+  background: #7c3aed;
+  color: #ffffff;
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.spotlight-desc {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.spotlight-ratings {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 8px 14px;
+}
+
+.spotlight-quality-badge {
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.spotlight-quality-badge.officer-great {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+.spotlight-quality-badge.officer-auspicious {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.spotlight-quality-badge.officer-neutral {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.spotlight-quality-badge.officer-caution {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+.spotlight-quality-badge.officer-danger {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.spotlight-actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .spotlight-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.spotlight-action-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 16px;
+  border: 1px solid #f1f5f9;
+}
+
+.spotlight-action-box.box-suitable {
+  border-left: 4px solid #10b981;
+}
+
+.spotlight-action-box.box-taboo {
+  border-left: 4px solid #ef4444;
+}
+
+.spotlight-action-label {
+  font-family: 'Prompt', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spotlight-action-box.box-suitable .spotlight-action-label {
+  color: #047857;
+}
+
+.spotlight-action-box.box-taboo .spotlight-action-label {
+  color: #b91c1c;
+}
+
+.spotlight-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.action-tag {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 12.5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.action-tag.tag-suitable {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #d1fae5;
+}
+
+.action-tag.tag-taboo {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fee2e2;
+}
+
+/* 3. All 12 Day Officers Complete Reference Grid */
+.daily-officers-reference-section {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+}
+
+.reference-header {
+  margin-bottom: 16px;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 12px;
+}
+
+.ref-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ref-title-wrap h3 {
+  font-family: 'Kanit', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.ref-subtitle {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.officers-12-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 1024px) {
+  .officers-12-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .officers-12-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .officers-12-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.officer-mini-card {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.officer-mini-card:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.officer-mini-card.active-today {
+  background: #faf5ff;
+  border: 2px solid #7c3aed;
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.22);
+}
+
+.officer-mini-card.active-today::before {
+  content: "⭐ วันนี้ (Today)";
+  position: absolute;
+  top: -9px;
+  right: 8px;
+  background: #7c3aed;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-family: 'Prompt', sans-serif;
+}
+
+.mini-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mini-card-zh-en {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.mini-card-zh {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e1b4b;
+  line-height: 1;
+}
+
+.mini-card-en {
+  font-family: 'Prompt', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.mini-card-stars {
+  font-size: 11px;
+}
+
+.mini-card-th {
+  font-family: 'Prompt', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.mini-card-desc {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 11.5px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* Section Divider */
+.bazi-guest-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 10px 0;
+}
+
+.bazi-guest-divider .divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.1) 0%, rgba(124, 58, 237, 0.4) 50%, rgba(124, 58, 237, 0.1) 100%);
+}
+
+.bazi-guest-divider .divider-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Kanit', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #6b21a8;
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  padding: 6px 18px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+}
+
 /* Guest Form Card */
 .bazi-guest-form-card {
   background: #ffffff;
