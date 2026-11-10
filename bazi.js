@@ -100,7 +100,7 @@
     '澗下水 (น้ำในลำธาร)', '澗下水 (น้ำในลำธาร)', '城頭土 (ดินบนกำแพงเมือง)', '城頭土 (ดินบนกำแพงเมือง)',
     '白蠟金 (ทองขาวบริสุทธิ์)', '白蠟金 (ทองขาวบริสุทธิ์)', '楊柳木 (ไม้ต้นหลิว)', '楊柳木 (ไม้ต้นหลิว)',
     '泉中水 (น้ำพุใต้พิภพ)', '泉中水 (น้ำพุใต้พิภพ)', '屋上土 (ดินบนหลังคา)', '屋上土 (ดินบนหลังคา)',
-    '霹靂火 (ไฟสายฟ้าฟาด)', '霹靂火 (ไฟสายฟ้าฟาด)', '松柏木 (ไม้สนยืนต้น)', '松柏木 (ไม้สนยืนต้น)',
+    '霹雳火 (ไฟสายฟ้าฟาด)', '霹雳火 (ไฟสายฟ้าฟาด)', '松柏木 (ไม้สนยืนต้น)', '松柏木 (ไม้สนยืนต้น)',
     '長流水 (น้ำไหลไม่สิ้นสุด)', '長流水 (น้ำไหลไม่สิ้นสุด)', '砂中金 (ทองในหาดทราย)', '砂中金 (ทองในหาดทราย)',
     '山下火 (ไฟเชิงเขา)', '山下火 (ไฟเชิงเขา)', '平地木 (ไม้บนที่ราบ)', '平地木 (ไม้บนที่ราบ)',
     '壁上土 (ดินฉาบฝาผนัง)', '壁上土 (ดินฉาบฝาผนัง)', '金箔金 (ทองคำเปลว)', '金箔金 (ทองคำเปลว)',
@@ -1742,29 +1742,31 @@
           const bMeta = ELEMENTS_META[b.element] || {};
           const isDm = col.isDay;
           const dmBorder = isDm ? 'border: 2px solid #7c3aed; background: #faf5ff;' : '';
-          const dmBadge = isDm ? '<span style="background: #7c3aed; color: #fff; font-size: 10.5px; padding: 2px 8px; border-radius: 999px; margin-left: 6px;">ดิถีแก่นแท้</span>' : '';
+          const dmBadge = isDm ? '<span style="background: #7c3aed; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 4px; white-space: nowrap; display: inline-block; vertical-align: middle;">ดิถีแก่นแท้</span>' : '';
 
-          // สีพื้นอ่อนๆ ตามธาตุของก้านฟ้าและกิ่งดิน
+          // สีพื้นอ่อนๆ ตามธาตุของก้านฟ้าและกิ่งดิน (ไม่เอาขอบหนาด้านข้าง)
           const sBg = sMeta.lightBg || 'rgba(100, 116, 139, 0.12)';
           const bBg = bMeta.lightBg || 'rgba(100, 116, 139, 0.12)';
 
           return '<div class="bazi-pillar-card" style="' + dmBorder + '">' +
             '<div class="pillar-header">' +
-              '<span class="pillar-label">' + col.label + ' ' + dmBadge + '</span>' +
+              '<span class="pillar-label" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap;">' +
+                '<span>' + col.label + '</span>' + dmBadge +
+              '</span>' +
               '<span class="pillar-role">' + col.role + '</span>' +
             '</div>' +
             '<div class="pillar-tengod">' +
               '<span class="god-badge">' + col.p.tenGod.zh + '</span>' +
               '<span class="god-th">' + col.p.tenGod.th + '</span>' +
             '</div>' +
-            '<div class="pillar-stem" style="border-left: 4px solid ' + (sMeta.color || '#64748b') + '; background: ' + sBg + ';">' +
+            '<div class="pillar-stem" style="background: ' + sBg + '; border: 1px solid transparent; border-radius: 10px;">' +
               '<span class="stem-zh" style="color: ' + (sMeta.color || '#64748b') + ';">' + s.zh + '</span>' +
               '<div class="stem-info">' +
                 '<strong>' + s.py + ' (' + (s.polarity === 'yang' ? 'หยาง' : 'หยิน') + ')</strong>' +
                 '<span>' + (sMeta.th || '') + '</span>' +
               '</div>' +
             '</div>' +
-            '<div class="pillar-branch" style="border-left: 4px solid ' + (bMeta.color || '#64748b') + '; background: ' + bBg + ';">' +
+            '<div class="pillar-branch" style="background: ' + bBg + '; border: 1px solid transparent; border-radius: 10px;">' +
               '<span class="branch-zh" style="color: ' + (bMeta.color || '#64748b') + ';">' + b.zh + '</span>' +
               '<div class="branch-info">' +
                 '<strong>' + b.py + ' • ' + b.zodiac + '</strong>' +
@@ -1772,7 +1774,7 @@
               '</div>' +
             '</div>' +
             '<div class="pillar-nayin-section" style="margin-top: 6px;">' +
-              '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center; font-family: var(--font-chinese, sans-serif);">' +
+              '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center; font-family: Prompt, var(--font-chinese, sans-serif);">' +
                 '<i class="fa-solid fa-music" style="color: #7c3aed;"></i> น้าอิม: <strong>' + col.p.naYin + '</strong>' +
               '</div>' +
             '</div>' +

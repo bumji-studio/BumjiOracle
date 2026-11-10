@@ -7808,33 +7808,33 @@ body.is-mobile .synthesis-box-body {
 }
 
 .daily-info-item.item-dm {
-  border-left: 4px solid #7c3aed;
   background: #faf5ff;
+  border: 1px solid #f3e8ff;
 }
 
 .daily-info-item.item-zodiac {
-  border-left: 4px solid #d97706;
   background: #fffbeb;
+  border: 1px solid #fef3c7;
 }
 
 .daily-info-item.item-clash {
-  border-left: 4px solid #ef4444;
   background: #fff5f5;
+  border: 1px solid #fee2e2;
 }
 
 .daily-info-item.item-caishen {
-  border-left: 4px solid #10b981;
   background: #f0fdf4;
+  border: 1px solid #dcfce7;
 }
 
 .daily-info-item.item-xishen {
-  border-left: 4px solid #ec4899;
   background: #fdf2f8;
+  border: 1px solid #fce7f3;
 }
 
 .daily-info-item.item-guishen {
-  border-left: 4px solid #0284c7;
   background: #f0f9ff;
+  border: 1px solid #e0f2fe;
 }
 
 .info-item-icon {
