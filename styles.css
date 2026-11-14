@@ -16395,6 +16395,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-bottom: 16px;
   border: 1.5px solid #f0abfc;
   box-shadow: 0 4px 14px rgba(217, 70, 239, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .direct-answer-header {
@@ -16404,7 +16409,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-bottom: 8px;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 6px;
+  width: 100%;
 }
 
 .direct-answer-verdict {
@@ -16413,7 +16421,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-weight: 800;
   line-height: 1.45;
   margin-bottom: 8px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 6px 16px;
   border-radius: 12px;
 }
@@ -20650,5 +20661,50 @@ body.is-mobile #resultCardsBoard.board-choice-fork .elem-badge-small {
   font-size: 10px !important;
   padding: 2px 8px !important;
 }
+
+/* ==========================================================================
+   7. DIRECT ANSWER CALLOUT CENTER ALIGNMENT (คำตอบสำหรับ...)
+   ========================================================================== */
+.thepmeow-direct-answer-callout,
+html.is-mobile .thepmeow-direct-answer-callout,
+body.is-mobile .thepmeow-direct-answer-callout {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.direct-answer-header,
+html.is-mobile .direct-answer-header,
+body.is-mobile .direct-answer-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  gap: 6px !important;
+}
+
+.direct-answer-header strong,
+html.is-mobile .direct-answer-header strong,
+body.is-mobile .direct-answer-header strong {
+  text-align: center !important;
+}
+
+.direct-answer-verdict,
+html.is-mobile .direct-answer-verdict,
+body.is-mobile .direct-answer-verdict {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 6px auto !important;
+}
+
 
 
