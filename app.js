@@ -1189,10 +1189,10 @@ if (tabTongShuBtn) {
       desc: 'เปรียบเทียบ 2 ทางเลือก: สถานการณ์ปัจจุบัน ทางเลือกที่ 1 และ 2 พร้อมผลลัพธ์',
       positions: [
         { index: 0, title: 'ใบที่ 1: สถานการณ์ปัจจุบัน', shortName: 'สถานการณ์ปัจจุบัน', desc: 'สภาพการณ์ปัจจุบัน สภาวะตั้งต้นและเหตุปัจจัย' },
-        { index: 1, title: 'ใบที่ 2: ทางเลือกที่ 1', shortName: 'ทางเลือกที่ 1', desc: 'สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทางที่ 1' },
-        { index: 2, title: 'ใบที่ 3: ผลลัพธ์ของทางเลือกที่ 1', shortName: 'ผลลัพธ์ทางเลือกที่ 1', desc: 'แนวโน้มผลลัพธ์ที่จะเกิดขึ้นตามเส้นทางที่ 1' },
-        { index: 3, title: 'ใบที่ 4: ทางเลือกที่ 2', shortName: 'ทางเลือกที่ 2', desc: 'สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทางที่ 2' },
-        { index: 4, title: 'ใบที่ 5: ผลลัพธ์ของทางเลือกที่ 2', shortName: 'ผลลัพธ์ทางเลือกที่ 2', desc: 'แนวโน้มผลลัพธ์ที่จะเกิดขึ้นตามเส้นทางที่ 2' }
+        { index: 1, title: 'ใบที่ 2: ทางเลือก 1', shortName: 'ทางเลือก 1', desc: 'สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทางที่ 1' },
+        { index: 2, title: 'ใบที่ 3: ผลลัพธ์ (ทางเลือก 1)', shortName: 'ผลลัพธ์', desc: 'แนวโน้มผลลัพธ์ที่จะเกิดขึ้นตามเส้นทางที่ 1' },
+        { index: 3, title: 'ใบที่ 4: ทางเลือก 2', shortName: 'ทางเลือก 2', desc: 'สภาวะ ผลลัพธ์ และบรรยากาศหากเลือกเส้นทางที่ 2' },
+        { index: 4, title: 'ใบที่ 5: ผลลัพธ์ (ทางเลือก 2)', shortName: 'ผลลัพธ์', desc: 'แนวโน้มผลลัพธ์ที่จะเกิดขึ้นตามเส้นทางที่ 2' }
       ]
     },
     'future': {
@@ -2356,9 +2356,11 @@ ${cardsPromptLines}
     pickSlotsContainer.innerHTML = '';
 
     const count = positions.length;
+    const mode = fortuneState.readingMode || fortuneState.spreadType || 'daily';
     pickSlotsContainer.classList.toggle('slots-count-1', count === 1);
-    pickSlotsContainer.classList.toggle('slots-count-5', count === 5);
     pickSlotsContainer.classList.toggle('slots-count-3', count === 3);
+    pickSlotsContainer.classList.toggle('slots-count-5', count === 5 && mode !== 'choice');
+    pickSlotsContainer.classList.toggle('slots-choice-fork', count === 5 && mode === 'choice');
 
     positions.forEach((pos, i) => {
       const slotEl = document.createElement('div');
@@ -2366,11 +2368,23 @@ ${cardsPromptLines}
       slotEl.id = `slotCard${i}`;
       slotEl.setAttribute('data-slot', i);
 
+      let branchBadgeHtml = '';
+      if (mode === 'choice') {
+        if (i === 0) {
+          branchBadgeHtml = '<div class="choice-branch-badge branch-current"><i class="fa-solid fa-circle-dot"></i> จุดตั้งต้น</div>';
+        } else if (i === 1 || i === 2) {
+          branchBadgeHtml = '<div class="choice-branch-badge branch-choice1"><i class="fa-solid fa-code-branch"></i> ทางเลือก 1</div>';
+        } else if (i === 3 || i === 4) {
+          branchBadgeHtml = '<div class="choice-branch-badge branch-choice2"><i class="fa-solid fa-code-branch"></i> ทางเลือก 2</div>';
+        }
+      }
+
       slotEl.innerHTML = `
         <div class="slot-pos-badge" title="${pos.title}">
           <span class="badge-num">${i + 1}</span>
           <span class="badge-pos-name" style="font-size: 10px; font-weight: 600; margin-left: 2px;">${pos.shortName}</span>
         </div>
+        ${branchBadgeHtml}
         <div class="slot-card-holder" id="slotHolder${i}">
           <div class="slot-placeholder">
             <i class="fa-solid fa-circle-plus"></i>
@@ -2612,10 +2626,12 @@ ${cardsPromptLines}
 
     const count = drawn.length;
     const positions = getActivePositions();
+    const mode = fortuneState.readingMode || fortuneState.spreadType || 'daily';
 
     resultCardsBoard.classList.toggle('board-1-card', count === 1);
-    resultCardsBoard.classList.toggle('board-5-cards', count === 5);
     resultCardsBoard.classList.toggle('board-3-cards', count === 3);
+    resultCardsBoard.classList.toggle('board-5-cards', count === 5 && mode !== 'choice');
+    resultCardsBoard.classList.toggle('board-choice-fork', count === 5 && mode === 'choice');
 
     drawn.forEach((card, idx) => {
       if (!card) return;
@@ -2626,11 +2642,23 @@ ${cardsPromptLines}
       const elemInfo = ELEMENT_INFO[baseElem] || { name: baseElem, cn: '', color: '#0284c7', bg: '#f0f9ff', icon: '🎴' };
       const pos = positions[idx] || { title: `ใบที่ ${idx + 1}` };
 
+      let branchBadgeHtml = '';
+      if (mode === 'choice') {
+        if (idx === 0) {
+          branchBadgeHtml = '<div class="choice-branch-badge branch-current"><i class="fa-solid fa-circle-dot"></i> จุดตั้งต้น</div>';
+        } else if (idx === 1 || idx === 2) {
+          branchBadgeHtml = '<div class="choice-branch-badge branch-choice1"><i class="fa-solid fa-code-branch"></i> ทางเลือก 1</div>';
+        } else if (idx === 3 || idx === 4) {
+          branchBadgeHtml = '<div class="choice-branch-badge branch-choice2"><i class="fa-solid fa-code-branch"></i> ทางเลือก 2</div>';
+        }
+      }
+
       cardEl.innerHTML = `
         <div class="result-pos-header">
           <span class="badge-num" style="background: #0284c7;">${idx + 1}</span>
           <h3 class="result-pos-title">${pos.title}</h3>
         </div>
+        ${branchBadgeHtml ? `<div style="text-align: center; margin-top: 4px;">${branchBadgeHtml}</div>` : ''}
         <div class="result-card-media">
           <img src="${card.image || getDeckBackImage()}" alt="${card.name_th || card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
         </div>
