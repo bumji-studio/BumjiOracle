@@ -3769,6 +3769,46 @@ async function handleSocialShareWithMedia(platform = 'all') {
   }
 }
 
+// Bottom Share Section Handlers (FB, IG, Line, Link)
+const shareFbBottomBtn = document.getElementById('shareFbBottomBtn');
+const shareIgBottomBtn = document.getElementById('shareIgBottomBtn');
+const shareLineBottomBtn = document.getElementById('shareLineBottomBtn');
+const shareLinkBottomBtn = document.getElementById('shareLinkBottomBtn');
+const shareLinkBtnText = document.getElementById('shareLinkBtnText');
+
+if (shareFbBottomBtn) {
+  shareFbBottomBtn.addEventListener('click', () => handleSocialShareWithMedia('fb'));
+}
+if (shareIgBottomBtn) {
+  shareIgBottomBtn.addEventListener('click', () => handleSocialShareWithMedia('ig'));
+}
+if (shareLineBottomBtn) {
+  shareLineBottomBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
+}
+if (shareLinkBottomBtn) {
+  shareLinkBottomBtn.addEventListener('click', async () => {
+    const shareUrl = window.location.href;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else {
+        await copyToClipboardFallback(shareUrl);
+      }
+      if (shareLinkBtnText) {
+        const orig = shareLinkBtnText.textContent;
+        shareLinkBtnText.textContent = 'คัดลอกแล้ว!';
+        setTimeout(() => {
+          shareLinkBtnText.textContent = orig;
+        }, 2500);
+      }
+      showSocialToast('🔗 คัดลอกลิงก์คำทำนายเรียบร้อยแล้วค่ะ! นำไปส่งต่อให้เพื่อนๆ ได้เลยนะคะ 🐾✨');
+    } catch (err) {
+      console.warn('Copy link error:', err);
+      showSocialToast('🔗 ลิงก์คำทำนาย: ' + shareUrl);
+    }
+  });
+}
+
 // Direct 4 Social Share Icon Buttons
 const shareFbDirectBtn = document.getElementById('shareFbDirectBtn');
 const shareTtDirectBtn = document.getElementById('shareTtDirectBtn');

@@ -1401,25 +1401,6 @@
               <i class="fa-solid fa-arrows-rotate"></i> สุ่มเปิดไพ่ใหม่
             </button>
           </div>
-          <div class="toolbar-right">
-            <button class="btn btn-secondary-sm" id="copyResultTextBtn" title="คัดลอกสรุปคำทำนายทั้งหมดลงคลิปบอร์ด">
-              <i class="fa-solid fa-copy"></i> คัดลอกคำทำนาย
-            </button>
-            <div class="direct-social-share-group" role="group" aria-label="แชร์ผลทำนายลงโซเชียล">
-              <span class="direct-share-label">แชร์:</span>
-              <button type="button" class="btn-direct-social btn-direct-fb" id="shareFbDirectBtn" title="แชร์ลง Facebook (คัดลอกข้อความ + โหลดรูปให้ทันที)">
-                <i class="fa-brands fa-facebook-f"></i>
-              </button>
-              <button type="button" class="btn-direct-social btn-direct-tt" id="shareTtDirectBtn" title="แชร์ลง TikTok (คัดลอกข้อความ + โหลดรูปให้ทันที)">
-                <i class="fa-brands fa-tiktok"></i>
-              </button>
-              <button type="button" class="btn-direct-social btn-direct-ig" id="shareIgDirectBtn" title="แชร์ลง Instagram (คัดลอกข้อความ + โหลดรูปให้ทันที)">
-                <i class="fa-brands fa-instagram"></i>
-              </button>
-              <button type="button" class="btn-direct-social btn-direct-line" id="shareLineDirectBtn" title="แชร์เข้า LINE ทันที">
-                <i class="fa-brands fa-line"></i>
-              </button>
-            </div>
           </div>
         </div>
 
@@ -1441,6 +1422,33 @@
         <!-- Holistic Synthesis Section -->
         <div class="result-synthesis-container" id="resultSynthesisContainer">
           <!-- Dynamically filled with deep synthesis in JS -->
+        </div>
+
+        <!-- Bottom Share Section (หลังจบคำทำนาย) -->
+        <div class="result-share-bottom-card" id="resultShareBottomCard">
+          <div class="share-bottom-inner">
+            <h3 class="share-bottom-heading">
+              แชร์คำทำนายนี้ให้เพื่อนๆกัน
+            </h3>
+            <div class="share-bottom-buttons-group" role="group" aria-label="แชร์คำทำนายนี้ให้เพื่อนๆ">
+              <button type="button" class="btn-share-bottom btn-direct-fb" id="shareFbBottomBtn" title="แชร์ลง Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+                <span class="share-btn-text">FB</span>
+              </button>
+              <button type="button" class="btn-share-bottom btn-direct-ig" id="shareIgBottomBtn" title="แชร์ลง Instagram">
+                <i class="fa-brands fa-instagram"></i>
+                <span class="share-btn-text">IG</span>
+              </button>
+              <button type="button" class="btn-share-bottom btn-direct-line" id="shareLineBottomBtn" title="แชร์เข้า LINE">
+                <i class="fa-brands fa-line"></i>
+                <span class="share-btn-text">Line</span>
+              </button>
+              <button type="button" class="btn-share-bottom btn-direct-link" id="shareLinkBottomBtn" title="คัดลอกลิงก์คำทำนายนี้">
+                <i class="fa-solid fa-link"></i>
+                <span class="share-btn-text" id="shareLinkBtnText">Link</span>
+              </button>
+            </div>
+          </div>
         </div>
 
       </section>

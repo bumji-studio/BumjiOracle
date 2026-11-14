@@ -20163,3 +20163,99 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     max-width: 160px !important;
   }
 }
+
+/* ==========================================================================
+   BOTTOM SHARE SECTION (หลังจบคำทำนาย - FB, IG, Line, Link)
+   ========================================================================== */
+.result-share-bottom-card {
+  margin-top: 32px;
+  margin-bottom: 20px;
+  padding: 24px 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #fbfcfe 50%, #f8fafc 100%);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  text-align: center;
+}
+
+.share-bottom-heading {
+  font-family: 'Prompt', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.share-bottom-buttons-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-share-bottom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  border: none;
+  outline: none;
+  font-family: 'Prompt', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff !important;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+}
+
+.btn-share-bottom:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.btn-share-bottom:active {
+  transform: translateY(0);
+}
+
+.btn-share-bottom i {
+  font-size: 17px;
+}
+
+/* Link Button: Indigo Gradient */
+.btn-direct-link {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%) !important;
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35) !important;
+}
+.btn-direct-link:hover {
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5) !important;
+}
+
+@media (max-width: 600px) {
+  .result-share-bottom-card {
+    padding: 18px 12px;
+    margin-top: 24px;
+  }
+  .share-bottom-heading {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  .share-bottom-buttons-group {
+    gap: 8px;
+  }
+  .btn-share-bottom {
+    padding: 8px 14px;
+    font-size: 14px;
+    min-width: 0;
+    flex: 1 1 calc(50% - 10px);
+    max-width: calc(50% - 4px);
+  }
+}
