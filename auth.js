@@ -203,12 +203,12 @@
 
       const emailInput = document.getElementById('authLoginEmail');
       const passInput = document.getElementById('authLoginPassword');
-      if (emailInput && !emailInput.value) {
-        emailInput.value = ADMIN_CONFIG.email;
+      if (emailInput) {
+        emailInput.value = '';
+        setTimeout(() => emailInput.focus(), 200);
       }
       if (passInput) {
         passInput.value = '';
-        setTimeout(() => passInput.focus(), 200);
       }
 
       modal.classList.add('show');
@@ -351,7 +351,7 @@
                 </div>
                 <div>
                   <h2>เข้าสู่ระบบผู้ดูแลระบบ</h2>
-                  <span class="auth-cat-subtitle">🔒 เข้าใช้งานเฉพาะ Admin (คุณ Bumji)</span>
+                  <span class="auth-cat-subtitle">🔒 เข้าใช้งานเฉพาะ Admin</span>
                 </div>
               </div>
               <button class="auth-modal-close" id="authModalCloseBtn" aria-label="ปิดหน้าต่าง">&times;</button>
@@ -365,7 +365,7 @@
               <form id="authLoginForm" class="auth-form">
                 <div class="auth-field">
                   <label><i class="fa-solid fa-envelope"></i> อีเมล Admin:</label>
-                  <input type="email" id="authLoginEmail" value="bumjaa@gmail.com" placeholder="bumjaa@gmail.com" required autocomplete="email">
+                  <input type="email" id="authLoginEmail" value="" placeholder="กรอกอีเมล Admin" required autocomplete="email">
                 </div>
                 <div class="auth-field">
                   <label><i class="fa-solid fa-lock"></i> รหัสผ่าน Admin:</label>
