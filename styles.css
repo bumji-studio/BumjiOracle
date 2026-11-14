@@ -19822,3 +19822,240 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .qm-strat-p:last-child {
   margin-bottom: 0;
 }
+
+
+/* ==========================================================================
+   PUBLIC ORACLE SUB-MENU SWITCHER (COMPACT & RESPONSIVE FOR DESKTOP & MOBILE)
+   ========================================================================== */
+.reading-sub-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 540px;
+  margin: 6px auto 14px auto;
+  padding: 5px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  box-sizing: border-box;
+}
+
+.reading-sub-btn {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #475569;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.reading-sub-btn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.reading-sub-btn.active {
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 3px 12px rgba(124, 58, 237, 0.28);
+}
+
+.reading-sub-btn.active .icon-mode {
+  color: #fbbf24;
+}
+
+.sub-btn-pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.18);
+  color: inherit;
+  line-height: 1.3;
+}
+
+.reading-sub-btn.active .sub-btn-pill {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Daily Oracle Intro Card */
+.daily-oracle-intro-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border: 1px solid #fde68a;
+  border-radius: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08);
+}
+
+.daily-oracle-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #f59e0b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
+}
+
+.daily-oracle-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #92400e;
+  margin: 0 0 4px 0;
+}
+
+.daily-oracle-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #78350f;
+  margin: 0;
+}
+
+/* Slot Layout Variations */
+.pick-slots-container.slots-count-1 {
+  display: flex !important;
+  justify-content: center !important;
+  max-width: 180px;
+  margin: 12px auto !important;
+}
+
+.pick-slots-container.slots-count-1 .pick-slot {
+  width: 140px;
+}
+
+.pick-slots-container.slots-count-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+}
+
+/* Result Cards Board Variations */
+.result-cards-board.board-1-card {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.result-cards-board.board-1-card .result-card-item {
+  max-width: 280px;
+  width: 100%;
+}
+
+.result-cards-board.board-5-cards {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+/* Admin UI in Header and Modal */
+.auth-admin-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: #f1f5f9;
+  font-size: 13px;
+}
+
+.btn-header-logout {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 4px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-header-logout:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.admin-auth-card {
+  max-width: 440px !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2) !important;
+}
+
+.auth-admin-icon-logo {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* Mobile Responsiveness for Sub-Menu Buttons & 5-card spreads */
+@media (max-width: 640px) {
+  .reading-sub-nav-bar {
+    gap: 4px;
+    padding: 3px;
+    border-radius: 13px;
+    margin-bottom: 10px;
+  }
+  .reading-sub-btn {
+    padding: 7px 5px;
+    font-size: 11px;
+    gap: 3px;
+    border-radius: 10px;
+  }
+  .sub-btn-pill {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+  .daily-oracle-intro-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .daily-oracle-icon-wrap {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+  .daily-oracle-title {
+    font-size: 14px;
+  }
+  .daily-oracle-desc {
+    font-size: 11.5px;
+  }
+  .pick-slots-container.slots-count-5 {
+    gap: 3px !important;
+  }
+  .result-cards-board.board-5-cards {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .result-cards-board.board-5-cards .result-card-item:nth-child(5) {
+    grid-column: span 2;
+    max-width: 240px;
+    margin: 0 auto;
+  }
+}

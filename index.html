@@ -486,7 +486,7 @@
     <!-- Mode Navigation Tabs -->
     <div class="header-nav-tabs" id="headerNavTabs">
       <button class="nav-tab active" id="tabReadingBtn" title="ถามแม่หมอติ๊ดติ๊ด &amp; ทำนายไพ่เทพเหมียว (Oracle Q&amp;A)">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>ถามแม่หมอ &amp; ไพ่</span>
+        <i class="fa-solid fa-wand-magic-sparkles"></i> <span>เปิดไพ่พยากรณ์</span>
       </button>
       <button class="nav-tab" id="tabPersonalityBtn" title="ทายนิสัยฉบับน้องเหมียวตามหลักแม่หมอติ๊ดติ๊ด">
         <i class="fa-solid fa-cat"></i> <span>ทายนิสัยฉบับน้องเหมียว</span>
@@ -509,9 +509,9 @@
         <span id="lineUserName" class="line-user-name">LINE User</span>
       </div>
       <!-- User Auth Button / Badge -->
-      <button class="auth-btn" id="headerAuthBtn" title="บัญชีสมาชิก / เข้าสู่ระบบ">
+      <button class="auth-btn" id="headerAuthBtn" title="เข้าสู่ระบบ Admin" style="display: none;">
         <span id="headerAuthAvatar"><i class="fa-solid fa-circle-user"></i></span>
-        <span id="authBtnLabel">เข้าสู่ระบบ / สมัคร</span>
+        <span id="authBtnLabel">เข้าสู่ระบบ Admin</span>
       </button>
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูนำทาง" aria-expanded="false" title="เมนูหลัก">
         <i class="fa-solid fa-bars"></i>
@@ -1224,6 +1224,24 @@
   <!-- VIEW 2: TAROT READING APP VIEW -->
   <div id="readingAppView" class="view-container">
     <div class="reading-app-container">
+      <!-- SUB-MENU SWITCHER BAR: 3 ORACLE MODES (COMPACT & RESPONSIVE) -->
+      <nav class="reading-sub-nav-bar" id="readingSubNavBar" aria-label="โหมดการเปิดไพ่">
+        <button type="button" class="reading-sub-btn active" id="btnSubMenuDaily" data-mode="daily">
+          <i class="fa-solid fa-sun icon-mode"></i>
+          <span class="sub-btn-title">เปิดไพ่ประจำวัน</span>
+          <span class="sub-btn-pill">1 ใบ</span>
+        </button>
+        <button type="button" class="reading-sub-btn" id="btnSubMenuChoice" data-mode="choice">
+          <i class="fa-solid fa-code-fork icon-mode"></i>
+          <span class="sub-btn-title">เลือกทางไหนดี?</span>
+          <span class="sub-btn-pill">5 ใบ</span>
+        </button>
+        <button type="button" class="reading-sub-btn" id="btnSubMenuFuture" data-mode="future">
+          <i class="fa-solid fa-crystal-ball icon-mode"></i>
+          <span class="sub-btn-title">อยากรู้อนาคต</span>
+          <span class="sub-btn-pill">3 ใบ</span>
+        </button>
+      </nav>
       
       <!-- STEPPER PROGRESS BAR (HIDDEN AS REQUESTED) -->
       <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง" style="display: none !important;">
@@ -1263,9 +1281,20 @@
       <!-- MAIN SCREEN (STEP 1): QUESTION INPUT & PICK 3 CARDS -->
       <!-- ============================================================ -->
       <section id="readingStep3" class="reading-step-card animate-fade-in">
+        <!-- Mode 1: Daily Oracle Intro Card (Visible in Daily mode) -->
+        <div id="dailyIntroCard" class="daily-oracle-intro-card">
+          <div class="daily-oracle-icon-wrap">
+            <i class="fa-solid fa-sun"></i>
+          </div>
+          <div class="daily-oracle-text">
+            <h3 class="daily-oracle-title">☀️ เปิดไพ่ประจำวัน (Daily Healing &amp; Encouragement)</h3>
+            <p class="daily-oracle-desc">ตั้งจิตอธิษฐานนิ่งๆ สูดลมหายใจลึกๆ แล้วเลือกไพ่ 1 ใบ เพื่อรับพลังบวก ข้อคิดเตือนใจ และกำลังใจดีๆ ประจำวันนี้ค่ะ</p>
+          </div>
+        </div>
+
         
         <!-- Integrated Question Input Card at the Top -->
-        <div class="question-integrated-box">
+        <div class="question-integrated-box hidden" id="questionIntegratedBox">
           <div class="question-textarea-container">
             <textarea id="userQuestionInput" class="question-textarea" rows="2" placeholder="พิมพ์คำถามที่อยากรู้ เช่น ทิศทางการงาน โปรเจกต์ หรือการสัมภาษณ์งานรอบนี้ จะปังไหม?..."></textarea>
             <div class="textarea-actions">

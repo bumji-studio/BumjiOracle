@@ -81,3 +81,4 @@ c:\BumjiJob\MaeMorTidTid\
 1. **Deterministic Accuracy 100%:** ไม่มีการเดาสุ่มของ AI ผลลัพธ์สอดคล้องกับคัมภีร์เอ็กกี่เปี้ยนฟางซูทุกประการ
 2. **0 Token Consumption:** ทำงานแบบ Standalone Client-side ไม่เสียค่า API แม้แต่สตางค์เดียว
 3. **Instant Latency (0.001s):** ผู้ใช้เปิดเว็บปุ๊บ ผังดวงและสถานะฤกษ์ประจำวันจะปรากฏขึ้นทันที
+
