@@ -3494,39 +3494,61 @@ const shareLineBtn = document.getElementById('shareLineBtn');
 
 function generateSocialShareText() {
   const state = window.fortuneState || (typeof fortuneState !== 'undefined' ? fortuneState : {});
-  const question = (state.question || document.getElementById('userQuestionInput')?.value || 'คำถามดวงชะตา').trim();
+  const question = (state.question || document.getElementById('userQuestionInput')?.value || '').trim();
   const deckName = 'ไพ่เทพเหมียว (92 ใบ)';
-  const cards = state.drawnCards || [];
+  const cards = (state.drawnCards || []).filter(Boolean);
   const positions = (typeof getActivePositions === 'function') ? getActivePositions() : [];
+  const mode = state.readingMode || state.spreadType || 'daily';
 
   let cardListText = '';
   cards.forEach((c, idx) => {
     if (!c) return;
     const pos = positions[idx] || { title: `ใบที่ ${idx + 1}` };
+    const posTitle = (mode === 'choice' && pos.shortName) ? pos.shortName : pos.title;
     const baseElem = (typeof getBaseElement === 'function') ? getBaseElement(c.element) : (c.element || '');
     const elemStr = baseElem ? ` [ธาตุ${baseElem}]` : '';
-    cardListText += `${idx + 1}️⃣ ${pos.title}: ${c.name_th || c.name}${c.name_cn ? ` (${c.name_cn})` : ''}${elemStr}\n`;
+    cardListText += `${idx + 1}️⃣ ${posTitle}: ${c.name_th || c.name}${c.name_cn ? ` (${c.name_cn})` : ''}${elemStr}\n`;
   });
 
-  let synthesisText = '';
-  const synthesisEl = document.getElementById('resultSynthesisContainer');
-  if (synthesisEl && synthesisEl.innerText && synthesisEl.innerText.trim()) {
-    synthesisText = synthesisEl.innerText.trim();
+  // Direct verdict if available
+  const directVerdictEl = document.querySelector('.direct-answer-verdict');
+  const directVerdict = directVerdictEl ? directVerdictEl.innerText.trim() : '';
+
+  // Analysis prophecy text
+  let prophecyText = '';
+  const analysisEl = document.querySelector('.thepmeow-overall-analysis-text');
+  if (analysisEl && analysisEl.innerText && analysisEl.innerText.trim()) {
+    prophecyText = analysisEl.innerText.trim();
   }
+
+  // Blessing quote if available
+  const blessingEl = document.querySelector('.thepmeow-blessing-quote');
+  const blessingQuote = blessingEl ? blessingEl.innerText.trim() : '';
 
   let text = `🔮 ผลทำนายไพ่: ${deckName} 🐾✨\n`;
-  text += `❓ คำถาม: "${question}"\n\n`;
+  if (question && !question.startsWith('ขอรับพลังบวก')) {
+    text += `❓ คำถาม: "${question}"\n\n`;
+  }
 
   if (cardListText) {
-    text += `🎴 ไพ่ 3 ใบที่เปิดได้:\n${cardListText}\n`;
+    text += `🎴 ไพ่ที่เปิดได้ (${cards.length} ใบ):\n${cardListText}\n`;
   }
 
-  if (synthesisText) {
-    text += `📜 【เนื้อหาคำทำนายทั้งหมด】\n${synthesisText}\n\n`;
+  if (directVerdict) {
+    text += `✨ คำตอบสรุป:\n${directVerdict}\n\n`;
   }
 
-  text += `🐾 เช็กดวงเปิดไพ่กับแม่หมอติ๊ดติ๊ดได้ที่นี่เลย:\n${window.location.href}\n`;
-  text += `#แม่หมอติ๊ดติ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ`;
+  if (prophecyText) {
+    text += `📜 【คำทำนาย】\n${prophecyText}\n\n`;
+  }
+
+  if (blessingQuote) {
+    text += `🌸 พรเสริมมงคล: ${blessingQuote}\n\n`;
+  }
+
+  const shareUrl = window.location.origin + window.location.pathname;
+  text += `🐾 เช็กดวงเปิดไพ่กับแม่หมอตึ๊ดตึ๊ดได้ที่นี่เลย:\n${shareUrl}\n\n`;
+  text += `#แม่หมอตึ๊ดตึ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ #OracleCards #หมอดู`;
 
   return text;
 }
@@ -3582,16 +3604,22 @@ function closeSocialShareModal() {
   socialShareModal.classList.add('hidden');
 }
 
-// Helper: Capture 3 Cards [1][2][3] Side-by-Side into a Share Image (No long synthesis)
+// Helper: Capture Cards & Divination into a Beautiful Share Image
 async function captureFortuneCardBlob() {
   const cardsBoard = document.getElementById('resultCardsBoard');
   if (!cardsBoard) return null;
+
+  const state = window.fortuneState || (typeof fortuneState !== 'undefined' ? fortuneState : {});
+  const mode = state.readingMode || state.spreadType || 'daily';
 
   const questionBanner = document.getElementById('resultQuestionBanner');
   const questionText = questionBanner ? (questionBanner.querySelector('.result-question-title')?.innerText || '') : '';
   const deckBadge = questionBanner ? (questionBanner.querySelector('.badge-deck')?.innerText || 'ไพ่เทพเหมียว (92 ใบ)') : 'ไพ่เทพเหมียว';
 
-  // Clone the cards board and force horizontal 3-card side-by-side layout [1][2][3]
+  const directVerdictEl = document.querySelector('.direct-answer-verdict');
+  const directVerdictText = directVerdictEl ? directVerdictEl.innerText.trim() : '';
+
+  // Clone the cards board
   const cloneBoard = cardsBoard.cloneNode(true);
 
   // Copy computed image sources to cloned images to guarantee instant render
@@ -3603,53 +3631,82 @@ async function captureFortuneCardBlob() {
     }
   });
 
-  // Create an elegant capture card container with fixed desktop-grade width (960px)
+  const cardItems = cloneBoard.querySelectorAll('.result-card-item');
+  const cardCount = cardItems.length || 3;
+
+  // Decide container width and layout based on card count & mode
+  let wrapperWidth = '960px';
+  if (cardCount === 1) {
+    wrapperWidth = '480px';
+  } else if (cardCount === 5 || mode === 'choice') {
+    wrapperWidth = '780px';
+  }
+
+  // Create capture wrapper
   const captureWrapper = document.createElement('div');
   captureWrapper.style.position = 'fixed';
   captureWrapper.style.left = '-99999px';
   captureWrapper.style.top = '0';
-  captureWrapper.style.width = '960px';
+  captureWrapper.style.width = wrapperWidth;
   captureWrapper.style.background = '#ffffff';
   captureWrapper.style.borderRadius = '24px';
-  captureWrapper.style.padding = '24px 28px 28px 28px';
+  captureWrapper.style.padding = '24px 28px 26px 28px';
   captureWrapper.style.boxSizing = 'border-box';
   captureWrapper.style.fontFamily = "'Prompt', -apple-system, BlinkMacSystemFont, sans-serif";
   captureWrapper.style.border = '1.5px solid #f1f5f9';
 
-  // Compact Header banner with branding & question
+  // Header banner
   const headerDiv = document.createElement('div');
-  headerDiv.style.marginBottom = '20px';
+  headerDiv.style.marginBottom = '18px';
   headerDiv.style.paddingBottom = '14px';
   headerDiv.style.borderBottom = '2px solid #f1f5f9';
   headerDiv.innerHTML = `
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;">🐾 ${deckBadge}</span>
-          <span style="font-size: 13px; color: #64748b; font-weight: 600;">แม่หมอตึ๊ดตึ๊ด Destiny Oracle</span>
-        </div>
-        <div style="font-size: 12px; color: #94a3b8; font-weight: 600;">
-          ✨ ผลเปิดไพ่ 3 ใบ
-        </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: linear-gradient(135deg, #ec4899, #db2777); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;">🐾 ${deckBadge}</span>
+        <span style="font-size: 13px; color: #64748b; font-weight: 600;">แม่หมอตึ๊ดตึ๊ด Destiny Oracle</span>
       </div>
-      ${questionText ? `<div style="text-align: center; margin-top: 10px;">
-        <span style="font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.4;">${questionText}</span>
-      </div>` : ''}
-    `;
+      <div style="font-size: 12.5px; color: #94a3b8; font-weight: 600;">
+        ✨ ${cardCount === 1 ? 'ไพ่ประจำวัน' : (cardCount === 5 ? 'เลือกทางไหนดี (5 ใบ)' : 'ทิศทางอนาคต (3 ใบ)')}
+      </div>
+    </div>
+    ${questionText ? `<div style="text-align: center; margin-top: 8px;">
+      <span style="font-size: 19px; font-weight: 800; color: #0f172a; line-height: 1.4;">${questionText}</span>
+    </div>` : ''}
+    ${directVerdictText ? `<div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 14px; padding: 10px 18px; margin: 10px auto 0 auto; text-align: center; max-width: 620px;">
+      <span style="color: #047857; font-size: 15.5px; font-weight: 800;">✨ ${directVerdictText}</span>
+    </div>` : ''}
+  `;
 
-  // Count how many cards are present
-  const cardItems = cloneBoard.querySelectorAll('.result-card-item');
-  const cardCount = cardItems.length || 3;
+  // Layout cards
+  if (cardCount === 1) {
+    cloneBoard.style.display = 'flex';
+    cloneBoard.style.justifyContent = 'center';
+    cloneBoard.style.width = '100%';
+    if (cardItems[0]) cardItems[0].style.maxWidth = '280px';
+  } else if (cardCount === 5 || mode === 'choice') {
+    cloneBoard.style.display = 'grid';
+    cloneBoard.style.gridTemplateColumns = 'repeat(2, 1fr)';
+    cloneBoard.style.gap = '14px 16px';
+    cloneBoard.style.width = '100%';
 
-  // Force cloneBoard into horizontal [1][2][3] layout
-  cloneBoard.style.display = 'grid';
-  cloneBoard.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
-  cloneBoard.style.gap = '18px';
-  cloneBoard.style.margin = '0';
-  cloneBoard.style.padding = '0';
-  cloneBoard.style.width = '100%';
-  cloneBoard.style.boxSizing = 'border-box';
+    if (cardItems[0]) {
+      cardItems[0].style.gridColumn = '1 / 3';
+      cardItems[0].style.justifySelf = 'center';
+      cardItems[0].style.maxWidth = '240px';
+    }
+    if (cardItems[1]) { cardItems[1].style.gridColumn = '1'; cardItems[1].style.gridRow = '2'; }
+    if (cardItems[2]) { cardItems[2].style.gridColumn = '1'; cardItems[2].style.gridRow = '3'; }
+    if (cardItems[3]) { cardItems[3].style.gridColumn = '2'; cardItems[3].style.gridRow = '2'; }
+    if (cardItems[4]) { cardItems[4].style.gridColumn = '2'; cardItems[4].style.gridRow = '3'; }
+  } else {
+    cloneBoard.style.display = 'grid';
+    cloneBoard.style.gridTemplateColumns = `repeat(${cardCount}, 1fr)`;
+    cloneBoard.style.gap = '18px';
+    cloneBoard.style.width = '100%';
+  }
 
-  // Normalize each card item for optimal crisp rendering
+  // Normalize each card item
   cardItems.forEach(item => {
     item.style.display = 'flex';
     item.style.flexDirection = 'column';
@@ -3680,8 +3737,25 @@ async function captureFortuneCardBlob() {
     }
   });
 
+  // Footer branding
+  const footerDiv = document.createElement('div');
+  footerDiv.style.marginTop = '20px';
+  footerDiv.style.paddingTop = '14px';
+  footerDiv.style.borderTop = '1.5px solid #f1f5f9';
+  footerDiv.style.display = 'flex';
+  footerDiv.style.alignItems = 'center';
+  footerDiv.style.justifyContent = 'space-between';
+  footerDiv.style.fontSize = '12.5px';
+  footerDiv.style.color = '#64748b';
+  footerDiv.style.fontWeight = '600';
+  footerDiv.innerHTML = `
+    <span>🌐 https://bumji-studio.github.io/BumjiOracle/</span>
+    <span style="color: #db2777;">#แม่หมอตึ๊ดตึ๊ด #ไพ่เทพเหมียว #ดูดวง #ทายใจ</span>
+  `;
+
   captureWrapper.appendChild(headerDiv);
   captureWrapper.appendChild(cloneBoard);
+  captureWrapper.appendChild(footerDiv);
   document.body.appendChild(captureWrapper);
 
   try {
@@ -3691,8 +3765,7 @@ async function captureFortuneCardBlob() {
         useCORS: true,
         allowTaint: true,
         backgroundColor: '#ffffff',
-        logging: false,
-        width: 960
+        logging: false
       });
       return await new Promise((resolve) => {
         canvas.toBlob((blob) => resolve(blob), 'image/png', 0.95);
@@ -3711,6 +3784,7 @@ async function captureFortuneCardBlob() {
 // Unified Handler: Share with Auto Image & Text to Social (User confirms Post)
 async function handleSocialShareWithMedia(platform = 'all') {
   const text = generateSocialShareText();
+  const shareUrl = window.location.origin + window.location.pathname;
   showSocialToast('🔮 กำลังเตรียมรูปภาพคำทำนายและข้อความ... 🐾✨');
 
   let imageBlob = null;
@@ -3722,16 +3796,16 @@ async function handleSocialShareWithMedia(platform = 'all') {
 
   const imageFile = imageBlob ? new File([imageBlob], 'MaeMorTidTid_Fortune_' + Date.now() + '.png', { type: 'image/png' }) : null;
 
-  // 1. Mobile & Web Share API (นำทั้งรูปภาพและแคปชั่นไปใส่ในโพสต์ของแอปโซเชียลอัตโนมัติ โดย user กดปุ่มโพสต์เอง)
+  // 1. Mobile & Web Share API: When files are supported, share natively
   if (navigator.canShare && imageFile && navigator.canShare({ files: [imageFile] })) {
     try {
-      closeSocialShareModal();
+      if (typeof closeSocialShareModal === 'function') closeSocialShareModal();
       await navigator.share({
         title: 'ผลทำนายไพ่เทพเหมียว - แม่หมอตึ๊ดตึ๊ด 🐾✨',
         text: text,
         files: [imageFile]
       });
-      showSocialToast('✨ ระบบนำรูปและข้อความไปวางในโพสต์แล้ว ตรวจสอบแล้วกดโพสต์ได้เลยนะคะ 💖');
+      showSocialToast('✨ ระบบนำรูปภาพ ข้อความคำทำนาย และลิงก์ไปแชร์เรียบร้อยแล้วค่ะ 💖');
       return;
     } catch (err) {
       if (err.name === 'AbortError') return; // User closed share sheet
@@ -3739,19 +3813,29 @@ async function handleSocialShareWithMedia(platform = 'all') {
     }
   }
 
-  // 2. Fallback on Desktop or unsupported browsers:
-  await copyToClipboardFallback(text);
+  // 2. Always copy formatted prediction text + link + hashtags to clipboard
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      await copyToClipboardFallback(text);
+    }
+  } catch (clipErr) {
+    console.warn('Text copy error:', clipErr);
+  }
 
+  // 3. Always copy image to clipboard if supported
   if (imageBlob && navigator.clipboard && window.ClipboardItem) {
     try {
       await navigator.clipboard.write([
         new ClipboardItem({ 'image/png': imageBlob })
       ]);
-    } catch (clipErr) {
-      console.log('Clipboard image item skipped:', clipErr);
+    } catch (clipImgErr) {
+      console.log('Clipboard image item skipped:', clipImgErr);
     }
   }
 
+  // 4. Always trigger download of the image file
   if (imageBlob) {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(imageBlob);
@@ -3762,19 +3846,22 @@ async function handleSocialShareWithMedia(platform = 'all') {
     setTimeout(() => URL.revokeObjectURL(a.href), 10000);
   }
 
-  closeSocialShareModal();
+  if (typeof closeSocialShareModal === 'function') closeSocialShareModal();
 
+  // 5. Platform-specific actions:
   if (platform === 'fb') {
-    showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! วาง (Ctrl+V) ในกล่องสร้างโพสต์ Facebook ได้เลยนะคะ 🐾');
-    setTimeout(() => window.open('https://www.facebook.com/', '_blank'), 600);
+    showSocialToast('✨ คัดลอกคำทำนาย ลิงก์ และดาวน์โหลดรูปภาพให้แล้วค่ะ! วาง (Ctrl+V) ในโพสต์ Facebook ได้เลยนะคะ 🐾');
+    setTimeout(() => {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank');
+    }, 600);
   } else if (platform === 'tt') {
-    showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
+    showSocialToast('✨ คัดลอกคำทำนาย ลิงก์ และดาวน์โหลดรูปภาพให้แล้วค่ะ! นำไปใส่ใน TikTok ได้เลยนะคะ 🐾');
     setTimeout(() => window.open('https://www.tiktok.com/', '_blank'), 600);
   } else if (platform === 'ig') {
-    showSocialToast('✨ ก๊อปปี้คำทำนายและโหลดรูปให้แล้วค่ะ! นำไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
+    showSocialToast('✨ คัดลอกคำทำนาย ลิงก์ และดาวน์โหลดรูปภาพให้แล้วค่ะ! นำรูปและข้อความไปโพสต์ใน Instagram ได้เลยนะคะ 🐾');
     setTimeout(() => window.open('https://www.instagram.com/', '_blank'), 600);
   } else if (platform === 'line') {
-    showSocialToast('✨ คัดลอกคำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! กำลังเปิด LINE 🐾');
+    showSocialToast('✨ คัดลอกคำทำนาย ลิงก์ และเตรียมรูปภาพให้แล้วค่ะ! กำลังเปิด LINE เพื่อส่งต่อ 🐾');
     setTimeout(() => {
       if (typeof liff !== 'undefined' && liff.isLoggedIn && liff.isLoggedIn()) {
         try {
@@ -3792,8 +3879,17 @@ async function handleSocialShareWithMedia(platform = 'all') {
       const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
       window.open(lineUrl, '_blank');
     }, 600);
+  } else if (platform === 'link') {
+    if (shareLinkBtnText) {
+      const orig = shareLinkBtnText.textContent;
+      shareLinkBtnText.textContent = 'คัดลอกแล้ว!';
+      setTimeout(() => {
+        shareLinkBtnText.textContent = orig;
+      }, 2500);
+    }
+    showSocialToast('📋 คัดลอกคำทำนาย ลิงก์ และดาวน์โหลดรูปภาพคำทำนายเรียบร้อยแล้วค่ะ! นำไปส่งต่อให้เพื่อนๆ ได้เลยนะคะ 🐾✨');
   } else {
-    showSocialToast('✨ ก๊อปปี้คำทำนายและดาวน์โหลดรูปให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
+    showSocialToast('✨ คัดลอกคำทำนาย ลิงก์ และดาวน์โหลดรูปภาพให้แล้วค่ะ! นำไปวางในโพสต์ได้เลยนะคะ 🐾');
   }
 }
 
@@ -3814,27 +3910,7 @@ if (shareLineBottomBtn) {
   shareLineBottomBtn.addEventListener('click', () => handleSocialShareWithMedia('line'));
 }
 if (shareLinkBottomBtn) {
-  shareLinkBottomBtn.addEventListener('click', async () => {
-    const shareUrl = window.location.href;
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(shareUrl);
-      } else {
-        await copyToClipboardFallback(shareUrl);
-      }
-      if (shareLinkBtnText) {
-        const orig = shareLinkBtnText.textContent;
-        shareLinkBtnText.textContent = 'คัดลอกแล้ว!';
-        setTimeout(() => {
-          shareLinkBtnText.textContent = orig;
-        }, 2500);
-      }
-      showSocialToast('🔗 คัดลอกลิงก์คำทำนายเรียบร้อยแล้วค่ะ! นำไปส่งต่อให้เพื่อนๆ ได้เลยนะคะ 🐾✨');
-    } catch (err) {
-      console.warn('Copy link error:', err);
-      showSocialToast('🔗 ลิงก์คำทำนาย: ' + shareUrl);
-    }
-  });
+  shareLinkBottomBtn.addEventListener('click', () => handleSocialShareWithMedia('link'));
 }
 
 // Direct 4 Social Share Icon Buttons
