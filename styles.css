@@ -20495,3 +20495,160 @@ body.is-mobile .reveal-trigger-banner .btn-xl {
   text-align: center !important;
 }
 
+/* ==========================================================================
+   6. CHOICE MODE (5 CARDS FORK) - RESULTS BOARD MOBILE & UNIVERSAL LAYOUT
+   ========================================================================== */
+#resultCardsBoard.board-choice-fork,
+html.is-mobile #resultCardsBoard.board-choice-fork,
+body.is-mobile #resultCardsBoard.board-choice-fork,
+.result-cards-board.board-choice-fork,
+html.is-mobile .result-cards-board.board-choice-fork,
+body.is-mobile .result-cards-board.board-choice-fork {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px 10px !important;
+  width: 100% !important;
+  max-width: 440px !important;
+  margin: 14px auto 26px auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Card 1: Centered Top (Spans Columns 1 & 2) */
+#resultCardsBoard.board-choice-fork .result-card-item:nth-child(1),
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(1),
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(1),
+.result-cards-board.board-choice-fork .result-card-item:nth-child(1) {
+  grid-column: 1 / 3 !important;
+  grid-row: 1 !important;
+  justify-self: center !important;
+  width: 100% !important;
+  max-width: 185px !important;
+  margin: 0 auto !important;
+  border-top: 3px solid #8b5cf6 !important;
+  border-radius: 14px !important;
+}
+
+/* Card 2: ทางเลือก 1 (Left Col, Row 2) */
+#resultCardsBoard.board-choice-fork .result-card-item:nth-child(2),
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(2),
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(2),
+.result-cards-board.board-choice-fork .result-card-item:nth-child(2) {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-top: 3px solid #3b82f6 !important;
+  border-radius: 14px !important;
+}
+
+/* Card 3: ผลลัพธ์ ทางเลือก 1 (Left Col, Row 3) */
+#resultCardsBoard.board-choice-fork .result-card-item:nth-child(3),
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(3),
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(3),
+.result-cards-board.board-choice-fork .result-card-item:nth-child(3) {
+  grid-column: 1 !important;
+  grid-row: 3 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-top: 3px solid #0284c7 !important;
+  border-radius: 14px !important;
+}
+
+/* Card 4: ทางเลือก 2 (Right Col, Row 2) */
+#resultCardsBoard.board-choice-fork .result-card-item:nth-child(4),
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(4),
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(4),
+.result-cards-board.board-choice-fork .result-card-item:nth-child(4) {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-top: 3px solid #f59e0b !important;
+  border-radius: 14px !important;
+}
+
+/* Card 5: ผลลัพธ์ ทางเลือก 2 (Right Col, Row 3) */
+#resultCardsBoard.board-choice-fork .result-card-item:nth-child(5),
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(5),
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-item:nth-child(5),
+.result-cards-board.board-choice-fork .result-card-item:nth-child(5) {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-top: 3px solid #d97706 !important;
+  border-radius: 14px !important;
+}
+
+/* Compact padding & typography for Choice Results Board on Mobile */
+#resultCardsBoard.board-choice-fork .result-card-item,
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-item,
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-item {
+  padding: 8px 6px !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06) !important;
+  border-left: 1px solid #e2e8f0 !important;
+  border-right: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+#resultCardsBoard.board-choice-fork .result-pos-header,
+html.is-mobile #resultCardsBoard.board-choice-fork .result-pos-header,
+body.is-mobile #resultCardsBoard.board-choice-fork .result-pos-header {
+  margin-bottom: 4px !important;
+  gap: 4px !important;
+  justify-content: center !important;
+}
+
+#resultCardsBoard.board-choice-fork .badge-num,
+html.is-mobile #resultCardsBoard.board-choice-fork .badge-num,
+body.is-mobile #resultCardsBoard.board-choice-fork .badge-num {
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 11px !important;
+}
+
+#resultCardsBoard.board-choice-fork .result-pos-title,
+html.is-mobile #resultCardsBoard.board-choice-fork .result-pos-title,
+body.is-mobile #resultCardsBoard.board-choice-fork .result-pos-title {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #db2777 !important;
+}
+
+#resultCardsBoard.board-choice-fork .choice-branch-badge,
+html.is-mobile #resultCardsBoard.board-choice-fork .choice-branch-badge,
+body.is-mobile #resultCardsBoard.board-choice-fork .choice-branch-badge {
+  font-size: 9.5px !important;
+  padding: 2px 6px !important;
+  margin-bottom: 4px !important;
+  border-radius: 10px !important;
+}
+
+#resultCardsBoard.board-choice-fork .result-card-media,
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-media,
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-media {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin-bottom: 6px !important;
+  border-radius: 10px !important;
+}
+
+#resultCardsBoard.board-choice-fork .result-card-name,
+html.is-mobile #resultCardsBoard.board-choice-fork .result-card-name,
+body.is-mobile #resultCardsBoard.board-choice-fork .result-card-name {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  margin: 2px 0 4px 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#resultCardsBoard.board-choice-fork .elem-badge-small,
+html.is-mobile #resultCardsBoard.board-choice-fork .elem-badge-small,
+body.is-mobile #resultCardsBoard.board-choice-fork .elem-badge-small {
+  font-size: 10px !important;
+  padding: 2px 8px !important;
+}
+
+

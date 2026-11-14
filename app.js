@@ -2750,12 +2750,14 @@ ${cardsPromptLines}
         }
       }
 
+      const displayPosTitle = (mode === 'choice' && pos.shortName) ? pos.shortName : pos.title;
+
       cardEl.innerHTML = `
         <div class="result-pos-header">
-          <span class="badge-num" style="background: #0284c7;">${idx + 1}</span>
-          <h3 class="result-pos-title">${pos.title}</h3>
+          <span class="badge-num">${idx + 1}</span>
+          <h3 class="result-pos-title">${displayPosTitle}</h3>
         </div>
-        ${branchBadgeHtml ? `<div style="text-align: center; margin-top: 4px;">${branchBadgeHtml}</div>` : ''}
+        ${branchBadgeHtml ? `<div style="text-align: center; margin-top: 2px; margin-bottom: 4px;">${branchBadgeHtml}</div>` : ''}
         <div class="result-card-media">
           <img src="${card.image || getDeckBackImage()}" alt="${card.name_th || card.name}" onerror="this.onerror=null; this.src='${card.image_alt || getDeckBackImage()}';">
         </div>
