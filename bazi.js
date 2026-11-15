@@ -689,12 +689,22 @@
         warningText = `ระวังการปะทะ (ชง) กับ${clashes.map(c => c.pillarLabel).join(', ')}: ${clashes.map(c => c.desc).join(' | ')}`;
       }
 
+      // Contextual deep injection for cooling water effect when chart is hot
+      const elemPct = chart.elementPercentages || {};
+      let deepOverview = reading.theme;
+      let deepCareer = reading.career;
+      if (chart.dayMaster && chart.dayMaster.zh === '辛' && (elemPct.fire || 0) >= 35 && (daYunPillar.stem.zh === '壬' || daYunPillar.branch.zh === '子')) {
+        deepOverview = 'สำหรับดิถีทองซิงที่ผังเดิมไฟร้อนแรง วัยจรน้ำหยิมจื่อ (壬子) ถือเป็น "สายน้ำแห่งปัญญาและนวัตกรรม" ที่เข้ามาช่วยดับคลายความร้อนของไฟ ทำให้เกิดการตื่นรู้ ปลดปล่อยพลังความคิดสร้างสรรค์ นวัตกรรม ศาสตร์พยากรณ์ และความกล้าคิดกล้าทำเพื่อสร้างเส้นทางของตนเอง';
+        deepCareer = 'ช่วงเวลาแห่งการปลดแอกและฉีกกรอบเดิมๆ ปัญญาไหวพริบและประสบการณ์จะถูกนำมาสร้างผลงานที่โดดเด่น มีชื่อเสียงในแวดวงเฉพาะทาง เหมาะกับการเปิดตัวธุรกิจ นวัตกรรม หรือศาสตร์พยากรณ์';
+      }
+
       return {
         pillar: daYunPillar,
         isFavorable: isFav,
         favorabilityText: isFav ? 'วัยจรธาตุให้คุณ (ช่วงเวลาทองคำ เกื้อหนุนดวงชะตา)' : 'วัยจรธาตุท้าทาย (ต้องใช้ความรอบคอบและตั้งรับอย่างมีสติ)',
-        theme: reading.theme,
-        career: reading.career,
+        theme: deepOverview,
+        overview: deepOverview,
+        career: deepCareer,
         wealth: reading.wealth,
         love: reading.love,
         warning: warningText,
@@ -869,7 +879,64 @@
         }
       };
 
+      // Deep Metaphysical Detection: 岁运天克地冲 (Tian Ke Di Chong with active Da Yun)
+      let isTianKeDiChong = false;
+      let isSanHuiFire = false;
+
+      if (curDaYun && !curDaYun.isChildhood && curDaYun.stem && curDaYun.branch) {
+        const daYunStemZh = curDaYun.stem.zh;
+        const daYunBranchZh = curDaYun.branch.zh;
+
+        const stemClash = (stem.zh === '丙' && daYunStemZh === '壬') || (stem.zh === '壬' && daYunStemZh === '丙') ||
+                          (stem.zh === '甲' && daYunStemZh === '庚') || (stem.zh === '庚' && daYunStemZh === '甲') ||
+                          (stem.zh === '乙' && daYunStemZh === '辛') || (stem.zh === '辛' && daYunStemZh === '乙') ||
+                          (stem.zh === '丁' && daYunStemZh === '癸') || (stem.zh === '癸' && daYunStemZh === '丁');
+
+        const branchClash = (branch.zh === '午' && daYunBranchZh === '子') || (branch.zh === '子' && daYunBranchZh === '午') ||
+                            (branch.zh === '未' && daYunBranchZh === '丑') || (branch.zh === '丑' && daYunBranchZh === '未') ||
+                            (branch.zh === '申' && daYunBranchZh === '寅') || (branch.zh === '寅' && daYunBranchZh === '申') ||
+                            (branch.zh === '酉' && daYunBranchZh === '卯') || (branch.zh === '卯' && daYunBranchZh === '酉') ||
+                            (branch.zh === '戌' && daYunBranchZh === '辰') || (branch.zh === '辰' && daYunBranchZh === '戌') ||
+                            (branch.zh === '亥' && daYunBranchZh === '巳') || (branch.zh === '巳' && daYunBranchZh === '亥');
+
+        if (stemClash && branchClash) {
+          isTianKeDiChong = true;
+          // Prepend high-priority clash tag
+          clashes.unshift({
+            pillarKey: 'tian_ke_di_chong',
+            label: `วัยจร 10 ปี (岁运天克地冲: ฟ้าพิฆาต ดินปะทะ)`,
+            desc: `ปีจร ${stem.zh}${branch.zh} ปะทะกับวัยจร ${daYunStemZh}${daYunBranchZh} ทั้งฟ้าและดิน! มหาจุดเปลี่ยนผันและรื้อโครงสร้างชีวิตครั้งสำคัญในรอบ 10 ปี (Breakthrough Turning Point)`
+          });
+        }
+      }
+
+      // Deep Detection: 三会南方火局 (巳-午-未)
+      const natalBranches = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].branch ? chart.pillars[k].branch.zh : '');
+      if (natalBranches.includes('巳') && natalBranches.includes('未') && branch.zh === '午') {
+        isSanHuiFire = true;
+        harmonies.unshift({
+          pillarKey: 'san_hui_fire',
+          label: 'ซาฮุ่ย 3 ประสานไฟใต้',
+          name: `巳-午-未 รวมพลังซาฮุ่ยไฟใต้ระดับมหาพลัง! แรงผลักดัน ภาระหน้าที่ และการขับเคลื่อนพุ่งสู่จุดสูงสุด`
+        });
+      }
+
       const reading = annualReadings[stemGod.zh] || annualReadings['比肩'];
+
+      // Contextual Override for deep accuracy
+      let finalOverview = daYunNote ? `${reading.overview} (${daYunNote})` : reading.overview;
+      let finalCareer = reading.career;
+      let finalWealth = reading.wealth;
+      let finalLove = reading.love;
+      let finalHealth = reading.health;
+
+      if (isTianKeDiChong && isSanHuiFire) {
+        finalOverview = `ปี ${y} (${stem.zh}${branch.zh}) ถือเป็น "มหาปีแห่งจุดเปลี่ยนผันและรื้อโครงสร้างชีวิตครั้งสำคัญในรอบ 10 ปี" (Major Breakthrough Turning Point)! เกิดปรากฏการณ์ "ปีจรปะทะวัยจรทั้งฟ้าและดิน" (岁运天克地冲 ระหว่างปีจร ${stem.zh}${branch.zh} กับวัยจร ${curDaYun.stem.zh}${curDaYun.branch.zh}) ควบคู่กับ "ซาฮุ่ยไฟใต้ระดับมหาพลัง" (巳-午-未 三会火局) แรงผลักดันจากความตึงเครียดและภาระเดิมๆ จะบีบให้เจ้าชะตาต้องลุกขึ้นมาปฏิรูปเปลี่ยนแปลงวิถีชีวิต ปลดแอกสิ่งที่กดทับ และสร้างเส้นทางใหม่ที่เป็นของตนเอง`;
+        finalCareer = `ไม่ใช่ปีที่นั่งรอการเลื่อนตำแหน่งแบบชิลๆ แต่เป็นปีแห่งการ "ปฏิวัติระบบงานและธุรกิจ" ปัญญาและวิสัยทัศน์ที่สั่งสมมา (伤官 壬น้ำ) จะถูกงัดออกมาสยบแรงกดดันและกฎเกณฑ์เก่าๆ (官杀 丙ไฟ) เหมาะอย่างยิ่งกับการเปิดตัวนวัตกรรมใหม่ ศาสตร์พยากรณ์ เทคโนโลยี หรือโปรเจกต์อิสระที่ตนเองเป็นผู้นำ ไม่ยอมทนอยู่ใต้ข้อกำหนดที่ไม่เป็นธรรมอีกต่อไป`;
+        finalWealth = `เกิดกระแสเงินหมุนเวียนก้อนใหญ่ มีทั้งรายจ่ายจรในการลงทุนปรับเปลี่ยนธุรกิจ และรายได้ที่พร้อมเติบโตก้าวกระโดดจากไอเดียใหม่ กลยุทธ์สำคัญคือ "แปลงเงินสดเป็นสินทรัพย์ถาวร" (ที่ดิน, อสังหาฯ, ทองคำ) ทันทีที่ได้กำไร ห้ามให้ใครยืมเงินหรือค้ำประกันเด็ดขาด`;
+        finalLove = `ปีแห่งการชี้ขาดและจัดระเบียบความสัมพันธ์! การปะทะกันของน้ำกับไฟ (子午冲) จะไม่ยอมให้มีความคลุมเครือหรือความอึดอัดใจสะสมอีกต่อไป หากมีคู่ครองอยู่แล้ว แนะนำให้แก้เคล็ดด้วยการชวนกันเดินทางท่องเที่ยวไกลๆ ต่างจังหวัด/ต่างประเทศ หรือจัดห้องนอนใหม่เพื่อสลายพลังการปะทะ`;
+        finalHealth = `จุดที่ต้องระมัดระวังที่สุดในปีนี้! ผลจากการที่ "น้ำปะทะไฟ" (子午相冲) รุนแรงมาก ต้องดูแล: 1. ระบบหัวใจ หลอดเลือด และความดันโลหิต 2. สายตา อาการไมเกรน และการนอนหลับ 3. ระบบฮอร์โมนสตรีและทางเดินปัสสาวะ ควรตรวจสุขภาพประจำปีแต่เนิ่นๆ บริจาคเลือด และฝึกสมาธิคลายความร้อนในใจ`;
+      }
 
       return {
         year: y,
@@ -884,11 +951,11 @@
         curDaYun,
         daYunNote,
         ageInYear,
-        overview: daYunNote ? `${reading.overview} (${daYunNote})` : reading.overview,
-        career: reading.career,
-        wealth: reading.wealth,
-        love: reading.love,
-        health: reading.health
+        overview: finalOverview,
+        career: finalCareer,
+        wealth: finalWealth,
+        love: finalLove,
+        health: finalHealth
       };
     },
 
@@ -1646,6 +1713,100 @@
       if (notice) notice.classList.toggle('hidden', !isUnknown);
     },
 
+    
+    generateDeepInsights: function (chart) {
+      if (!chart || !chart.dayMaster) {
+        return {
+          traits: '-', career: '-', wealth: '-', love: '-', health: '-'
+        };
+      }
+
+      const dm = chart.dayMaster.zh;
+      const dmTh = chart.dayMaster.th;
+      const gender = chart.gender || 'female';
+      const isFemale = (gender === 'female' || gender === 'หญิง');
+
+      const elemPct = chart.elementPercentages || {};
+      const firePct = elemPct.fire || 0;
+      const waterPct = elemPct.water || 0;
+      const metalPct = elemPct.metal || 0;
+      const woodPct = elemPct.wood || 0;
+      const earthPct = elemPct.earth || 0;
+
+      const stems = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].stem ? chart.pillars[k].stem.zh : '');
+      const branches = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].branch ? chart.pillars[k].branch.zh : '');
+
+      // Check Ten Gods presence
+      const hasZhengGuan = stems.includes('丙') || branches.includes('巳') || (chart.pillars.hour && chart.pillars.hour.tenGod && chart.pillars.hour.tenGod.zh === '正官');
+      const hasQiSha = stems.includes('丁') || branches.includes('午') || branches.includes('未') || (chart.pillars.month && chart.pillars.month.tenGod && chart.pillars.month.tenGod.zh.includes('七'));
+      const isGuanShaHunZa = hasZhengGuan && hasQiSha;
+      const hasBingXinHe = stems.includes('丙') && stems.includes('辛');
+
+      // 1. Traits
+      let traits = '';
+      if (dm === '辛' && firePct >= 35) {
+        traits = 'ดิถีทองซิง (辛金) เปรียบดั่งทองคำขาวและอัญมณีอันประณีตงดงาม มีรสนิยมสูง รักศักดิ์ศรีและความถูกต้อง แต่เนื่องจากในผังชะตามีธาตุไฟ (丁/丙/巳) แวดล้อมหนาแน่น ถือเป็นสภาพ "ทองน้อยเผชิญไฟแรงกล้า" ทำให้เป็นคนที่มีความมุ่งมั่น อดทนสูงส่ง เป็นเสาหลักที่แบกรับภาระหน้าที่และความรับผิดชอบล้นพ้นตัว';
+        if (isGuanShaHunZa) {
+          traits += ' ทั้งยังมีโครงสร้าง "กัวสัวะปะปน" (官杀混杂) จึงรวมเอาความสุขุม มีวินัย รักเกียรติยศ (เจียกัว) เข้ากับความเด็ดเดี่ยว กล้าลุย ไม่ยอมก้มหัวให้ใคร (ฉิกสัวะ) เป็นคนภายนอกดูนุ่มนวลสง่างาม แต่ภายในใจเด็ดเดี่ยว ใจสู้ และมีความเป็นผู้นำสูงมาก';
+        }
+        if (hasBingXinHe) {
+          traits += ' ก้านฟ้ายามเปี้ยไฟทำปฏิกิริยา "เปี้ย-ซิง ฮะ" (丙辛合) ดึงดูดอำนาจและเสน่ห์บารมี ทำให้เป็นที่นับถือและมีจิตวิทยาในการโน้มน้าวผู้คน';
+        }
+      } else if (chart.dayMasterProfile && chart.dayMasterProfile.traits) {
+        traits = chart.dayMasterProfile.traits;
+      } else {
+        traits = `ดิถี${dmTh} เป็นคนมีเอกลักษณ์เฉพาะตัว มีความตั้งใจจริงและยึดมั่นในอุดมการณ์ความถูกต้อง`;
+      }
+
+      // 2. Career
+      let career = '';
+      if (isGuanShaHunZa || firePct >= 35) {
+        career = 'โครงสร้างกัวสัวะหนุนนำอำนาจและบารมี เหมาะอย่างยิ่งกับบทบาท "ผู้นำ ผู้บริหาร ที่ปรึกษา ผู้เชี่ยวชาญเฉพาะทาง หรือเจ้าของธุรกิจส่วนตัว" มีความสามารถในการจัดระเบียบองค์กร บริหารคน และแก้วิกฤติต่างๆ ได้เฉียบคม เสริมด้วยธาตุย้งซิ้ง "ดินเปียกและน้ำ" ทำให้โดดเด่นเป็นพิเศษในสายงานนวัตกรรม การวางแผนกลยุทธ์ งานศาสตร์พยากรณ์/โหราศาสตร์ สื่อสารมวลชน เทคโนโลยี หรืองานที่ต้องใช้ทักษะความรู้เฉพาะตัว ไม่เหมาะกับการอยู่ใต้กฎระเบียบที่ไร้เหตุผล';
+      } else if (chart.dayMasterProfile && chart.dayMasterProfile.career) {
+        career = chart.dayMasterProfile.career;
+      } else {
+        career = 'เหมาะกับงานที่อาศัยความเชี่ยวชาญเฉพาะด้าน การบริหารจัดการอย่างเป็นระบบ และการสร้างผลงานที่มีคุณภาพสูง';
+      }
+
+      // 3. Wealth
+      let wealth = '';
+      if (firePct >= 35 && metalPct <= 25) {
+        wealth = 'มีกระแสเงินทองหมุนเวียนก้อนใหญ่ตลอดเวลา มักมีรายได้เข้ามาจากความสามารถเฉพาะตัวและตำแหน่งหน้าที่ แต่เนื่องจากภาระและความรับผิดชอบรอบตัวมีมาก ทำให้เงินทองเข้าเร็วและมีเรื่องต้องใช้จ่ายหรือหมุนเวียนเร็วเช่นกัน กลยุทธ์การเงินที่ดีที่สุดคือ "ไม่ควรเก็บเป็นเงินสดไว้เฉยๆ" แต่ควรแปลงเป็นสินทรัพย์ถาวร เช่น อสังหาริมทรัพย์ ที่ดิน หรือทองคำแท่ง (ธาตุดินและธาตุทอง) จะช่วยเก็บกักความมั่งคั่งได้อย่างยั่งยืน และหลีกเลี่ยงการค้ำประกันหรือให้ผู้อื่นยืมเงิน';
+      } else if (chart.dayMasterProfile && chart.dayMasterProfile.wealth) {
+        wealth = chart.dayMasterProfile.wealth;
+      } else {
+        wealth = 'การเงินเติบโตตามผลงาน มีสภาพคล่องที่ดีเมื่อวางแผนและบริหารจัดการอย่างรอบคอบ';
+      }
+
+      // 4. Love & Marriage
+      let love = '';
+      if (isFemale && isGuanShaHunZa) {
+        love = 'ตามตำราว่าด้วยคู่ครอง: สตรีที่มี "กัวสัวะปะปน" (官杀混杂) มักเป็นคนมีเสน่ห์ดึงดูดใจเพศตรงข้าม มีผู้ชายเข้ามาในชีวิตหลายรูปแบบ แต่เส้นทางความรักมักมาพร้อมกับภาระ ความกดดัน หรือคู่ครองมีบุคลิกเด็ดเดี่ยว/ชอบบงการ';
+        if (branches[2] === '巳') {
+          love += ' เสาวันเป็น 辛巳 (เรือนคู่ครองเป็นธาตุไฟ 巳 ซึ่งควบคุมดิถี) บ่งบอกว่าคู่ครองเป็นคนเก่ง มีตำแหน่งหรือภาวะผู้นำสูง แต่อาจมีความคิดเห็นไม่ตรงกันในบางเรื่อง การครองคู่ที่ดีจึงต้องใช้ความเข้าใจ ให้อิสระทางความคิด และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศ';
+        }
+      } else if (chart.dayMasterProfile && chart.dayMasterProfile.love) {
+        love = chart.dayMasterProfile.love;
+      } else {
+        love = 'ความสัมพันธ์เน้นความจริงใจ การให้เกียรติซึ่งกันและกัน และการสนับสนุนให้เติบโตไปด้วยกัน';
+      }
+
+      // 5. Health
+      let health = '';
+      if (firePct >= 35) {
+        health = 'เนื่องจากธาตุไฟในดวงมีพลังเข้มข้นมาก จุดที่ต้องดูแลเป็นพิเศษคือ: ระบบหัวใจ หลอดเลือด ความดันโลหิต สายตา อาการไมเกรน และภาวะตึงเครียดนอนไม่หลับจากความคิดที่แล่นตลอดเวลา';
+        if (waterPct <= 10) {
+          health += ' อีกทั้งธาตุน้ำถูกไฟต้มระเหย ควรระวังระบบทางเดินปัสสาวะ ไต และระบบฮอร์โมนสตรี แนะนำให้ดื่มน้ำสะอาดให้เพียงพอ ทำสมาธิคลายเครียด และจัดสภาพแวดล้อมให้อยู่ใกล้สายน้ำหรือธรรมชาติสีเขียว';
+        }
+      } else if (chart.dayMasterProfile && chart.dayMasterProfile.health) {
+        health = chart.dayMasterProfile.health;
+      } else {
+        health = 'รักษาสมดุลการพักผ่อน การดื่มน้ำ และการออกกำลังกายอย่างสม่ำเสมอ';
+      }
+
+      return { traits, career, wealth, love, health };
+    },
+
     renderBasicSuite: function (chart) {
       if (!chart) return;
       this.renderBasicFourPillars(chart);
@@ -1655,17 +1816,17 @@
       this.renderBasicCurrentAnnual(chart);
       this.renderBasicFengShui(chart);
 
-      // Populate 5 text insights
-      const prof = chart.dayMasterProfile;
+      // Populate 5 text insights with Deep Contextual Metaphysical Engine
+      const deep = this.generateDeepInsights(chart);
       const setEl = (id, text) => {
         const el = document.getElementById(id);
         if (el) el.textContent = text || '-';
       };
-      setEl('baziTraitsText', prof ? prof.traits : '-');
-      setEl('baziCareerText', prof ? prof.career : '-');
-      setEl('baziWealthText', prof ? prof.wealth : '-');
-      setEl('baziLoveText', prof ? prof.love : '-');
-      setEl('baziHealthText', prof ? prof.health : '-');
+      setEl('baziTraitsText', deep.traits);
+      setEl('baziCareerText', deep.career);
+      setEl('baziWealthText', deep.wealth);
+      setEl('baziLoveText', deep.love);
+      setEl('baziHealthText', deep.health);
     },
 
     renderBasicFourPillars: function (chart) {
