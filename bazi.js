@@ -3484,12 +3484,6 @@
 
       this.updateSavedCountBadge();
     },
-        }];
-        this.saveProfilesToStorage();
-      }
-
-      this.updateSavedCountBadge();
-    },
 
     saveProfilesToStorage: function () {
       try {
