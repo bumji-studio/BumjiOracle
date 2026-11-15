@@ -1815,7 +1815,39 @@
         health = 'รักษาสมดุลการพักผ่อน การดื่มน้ำ และการออกกำลังกายอย่างสม่ำเสมอ';
       }
 
-      return { traits, career, wealth, love, health };
+      // 6. Weaknesses & Life Blindspots (จุดอ่อนและข้อควรระวังในชะตาชีวิต)
+      let weakness = '';
+      if (dm === '辛' && firePct >= 35 && isGuanShaHunZa) {
+        weakness = `
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.6;">
+            <div>
+              <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. จุดอ่อนการเงิน (เก็บเงินสดไม่อยู่):</strong> 
+              ดิถีทองซิงอ่อนแต่เผชิญไฟกัวสัวะสูงถึง ${firePct}% (ไฟหลอมทอง) เงินเข้ามาเร็วก็มีเหตุจำเป็นต้องหมุนออกไปเร็วเพื่อแก้ปัญหาหรือแบกรับภาระแทนผู้อื่น ดาวโชคลาภ (ธาตุไม้) ซ่อนลึกและไม่มีกำลัง 
+              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ห้ามถือเงินสดติดบัญชีเกินจำเป็น ต้องบังคับแปลงเป็นสินทรัพย์ถาวร (ที่ดิน อสังหาริมทรัพย์ หรือทองคำแท่ง) ทันทีที่ได้กำไร
+            </div>
+            <div>
+              <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (ดวงหญิงแกร่ง ครองคู่ยาก):</strong> 
+              โครงสร้าง "กัวสัวะปะปน" (官杀混杂) ร่วมกับเรือนคู่ครองเป็นไฟข่มดิถี (辛巳) เป็นหญิงแกร่งที่มีศักดิ์ศรีสูง ไม่ยอมก้มหัวให้ใคร แต่คนรักมักมีอัตตาสูงหรือชอบบงการ เมื่อ "แกร่งชนแกร่ง" จึงเกิดความอึดอัดขัดแย้งได้ง่าย ดวงนี้พึ่งพาตนเองได้ดีกว่าพึ่งพาคู่ครอง
+              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ควรครองคู่แบบมีระยะห่างทางความคิด มีพื้นที่ส่วนตัว ไม่ก้าวก่ายงานของกันและกัน หรือแต่งงานช้าจะราบรื่นกว่า
+            </div>
+            <div>
+              <strong style="color: #b91c1c;"><i class="fa-solid fa-triangle-exclamation"></i> 3. จุดอ่อนด้านจิตใจและสุขภาพ:</strong> 
+              เป็นเสาหลักที่แบกรับความรับผิดชอบจนเหนื่อยล้า พักผ่อนน้อย ความคิดแล่นตลอดเวลา ต้องระวังระบบหัวใจ ความดัน สายตา ไมเกรน และระบบฮอร์โมนสตรี
+            </div>
+          </div>
+        `;
+      } else {
+        const avoids = (chart.avoidElements && chart.avoidElements.length > 0) ? chart.avoidElements.map(k => ELEMENTS_META[k].th).join(', ') : 'ไม่มีธาตุให้โทษเด่นชัด';
+        weakness = `
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.6;">
+            <div><strong style="color: #b91c1c;"><i class="fa-solid fa-scale-unbalanced"></i> ข้อควรระวังธาตุ:</strong> ควรระวังสิ่งแวดล้อมและพฤติกรรมที่กระตุ้นธาตุ ${avoids}</div>
+            <div><strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> ข้อควรระวังการเงิน:</strong> บริหารกระแสเงินสดอย่างรัดกุม หลีกเลี่ยงการลงทุนเกินตัวและการค้ำประกัน</div>
+            <div><strong style="color: #b91c1c;"><i class="fa-solid fa-heart"></i> ข้อควรระวังความสัมพันธ์:</strong> ใช้ความยืดหยุ่นและการสื่อสารที่นุ่มนวลเพื่อลดการกระทบกระทั่ง</div>
+          </div>
+        `;
+      }
+
+      return { traits, career, wealth, love, health, weakness };
     },
 
     renderBasicSuite: function (chart) {
@@ -1827,7 +1859,7 @@
       this.renderBasicCurrentAnnual(chart);
       this.renderBasicFengShui(chart);
 
-      // Populate 5 text insights with Deep Contextual Metaphysical Engine
+      // Populate text insights with Deep Contextual Metaphysical Engine
       const deep = this.generateDeepInsights(chart);
       const setEl = (id, text) => {
         const el = document.getElementById(id);
@@ -1838,6 +1870,11 @@
       setEl('baziWealthText', deep.wealth);
       setEl('baziLoveText', deep.love);
       setEl('baziHealthText', deep.health);
+
+      const weaknessEl = document.getElementById('baziWeaknessText');
+      if (weaknessEl && deep.weakness) {
+        weaknessEl.innerHTML = deep.weakness;
+      }
     },
 
     renderBasicFourPillars: function (chart) {
@@ -4377,6 +4414,10 @@
       setElText('baziWealthText', (deep && deep.wealth) ? deep.wealth : prof.wealth);
       setElText('baziLoveText', (deep && deep.love) ? deep.love : prof.love);
       setElText('baziHealthText', (deep && deep.health) ? deep.health : prof.health);
+      const weaknessEl = document.getElementById('baziWeaknessText');
+      if (weaknessEl && deep && deep.weakness) {
+        weaknessEl.innerHTML = deep.weakness;
+      }
 
       // Feng Shui Recommendations
       const fsContainer = document.getElementById('baziFengShuiList');

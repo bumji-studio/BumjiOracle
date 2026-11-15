@@ -9551,6 +9551,17 @@ body.is-mobile .synthesis-box-body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
 }
 
+.bazi-card-weakness {
+  border: 1.5px solid #fecaca !important;
+  background: #fffafa !important;
+  transition: all 0.2s ease;
+}
+
+.bazi-card-weakness:hover {
+  border-color: #f87171 !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.08) !important;
+}
+
 .insight-header {
   display: flex;
   align-items: center;
