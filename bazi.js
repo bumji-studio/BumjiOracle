@@ -31,18 +31,18 @@
 
   // 2. Twelve Earthly Branches (十二地支)
   const BRANCHES = [
-    { zh: '子', py: 'Zi', th: 'จื่อ (ชวด - หนู)', zodiac: 'หนู (Rat)', element: 'water', polarity: 'yang', season: 'winter', monthNum: 11, hidden: [{ stem: '癸', weight: 1.0 }] },
-    { zh: '丑', py: 'Chou', th: 'โฉ่ว (ฉลู - วัว)', zodiac: 'วัว (Ox)', element: 'earth', polarity: 'yin', season: 'winter', monthNum: 12, hidden: [{ stem: '己', weight: 0.6 }, { stem: '癸', weight: 0.3 }, { stem: '辛', weight: 0.1 }] },
-    { zh: '寅', py: 'Yin', th: 'อิ๋น (ขาล - เสือ)', zodiac: 'เสือ (Tiger)', element: 'wood', polarity: 'yang', season: 'spring', monthNum: 1, hidden: [{ stem: '甲', weight: 0.6 }, { stem: '丙', weight: 0.3 }, { stem: '戊', weight: 0.1 }] },
-    { zh: '卯', py: 'Mao', th: 'เหม่า (เถาะ - กระต่าย)', zodiac: 'กระต่าย (Rabbit)', element: 'wood', polarity: 'yin', season: 'spring', monthNum: 2, hidden: [{ stem: '乙', weight: 1.0 }] },
-    { zh: '辰', py: 'Chen', th: 'เฉิน (มะโรง - มังกร)', zodiac: 'มังกร (Dragon)', element: 'earth', polarity: 'yang', season: 'spring', monthNum: 3, hidden: [{ stem: '戊', weight: 0.6 }, { stem: '乙', weight: 0.3 }, { stem: '癸', weight: 0.1 }] },
-    { zh: '巳', py: 'Si', th: 'ซื่อ (มะเส็ง - งูเล็ก)', zodiac: 'งู (Snake)', element: 'fire', polarity: 'yin', season: 'summer', monthNum: 4, hidden: [{ stem: '丙', weight: 0.6 }, { stem: '戊', weight: 0.3 }, { stem: '庚', weight: 0.1 }] },
-    { zh: '午', py: 'Wu', th: 'อู่ (มะเมีย - ม้า)', zodiac: 'ม้า (Horse)', element: 'fire', polarity: 'yang', season: 'summer', monthNum: 5, hidden: [{ stem: '丁', weight: 0.7 }, { stem: '己', weight: 0.3 }] },
-    { zh: '未', py: 'Wei', th: 'เว่ย (มะแม - แพะ)', zodiac: 'แพะ (Goat)', element: 'earth', polarity: 'yin', season: 'summer', monthNum: 6, hidden: [{ stem: '己', weight: 0.6 }, { stem: '丁', weight: 0.3 }, { stem: '乙', weight: 0.1 }] },
-    { zh: '申', py: 'Shen', th: 'เซิน (วอก - ลิง)', zodiac: 'ลิง (Monkey)', element: 'metal', polarity: 'yang', season: 'autumn', monthNum: 7, hidden: [{ stem: '庚', weight: 0.6 }, { stem: '壬', weight: 0.3 }, { stem: '戊', weight: 0.1 }] },
-    { zh: '酉', py: 'You', th: 'โหย่ว (ระกา - ไก่)', zodiac: 'ไก่ (Rooster)', element: 'metal', polarity: 'yin', season: 'autumn', monthNum: 8, hidden: [{ stem: '辛', weight: 1.0 }] },
-    { zh: '戌', py: 'Xu', th: 'ซวี (จอ - หมา)', zodiac: 'หมา (Dog)', element: 'earth', polarity: 'yang', season: 'autumn', monthNum: 9, hidden: [{ stem: '戊', weight: 0.6 }, { stem: '辛', weight: 0.3 }, { stem: '丁', weight: 0.1 }] },
-    { zh: '亥', py: 'Hai', th: 'ฮ่าย (กุน - หมู)', zodiac: 'หมู (Pig)', element: 'water', polarity: 'yin', season: 'winter', monthNum: 10, hidden: [{ stem: '壬', weight: 0.7 }, { stem: '甲', weight: 0.3 }] }
+    { zh: '子', py: 'Zi', th: 'จื่อ (ชวด - หนู)', zodiac: 'หนู (Rat)', animal: 'หนู', element: 'water', polarity: 'yang', season: 'winter', monthNum: 11, hidden: [{ stem: '癸', weight: 1.0 }] },
+    { zh: '丑', py: 'Chou', th: 'โฉ่ว (ฉลู - วัว)', zodiac: 'วัว (Ox)', animal: 'วัว', element: 'earth', polarity: 'yin', season: 'winter', monthNum: 12, hidden: [{ stem: '己', weight: 0.6 }, { stem: '癸', weight: 0.3 }, { stem: '辛', weight: 0.1 }] },
+    { zh: '寅', py: 'Yin', th: 'อิ๋น (ขาล - เสือ)', zodiac: 'เสือ (Tiger)', animal: 'เสือ', element: 'wood', polarity: 'yang', season: 'spring', monthNum: 1, hidden: [{ stem: '甲', weight: 0.6 }, { stem: '丙', weight: 0.3 }, { stem: '戊', weight: 0.1 }] },
+    { zh: '卯', py: 'Mao', th: 'เหม่า (เถาะ - กระต่าย)', zodiac: 'กระต่าย (Rabbit)', animal: 'กระต่าย', element: 'wood', polarity: 'yin', season: 'spring', monthNum: 2, hidden: [{ stem: '乙', weight: 1.0 }] },
+    { zh: '辰', py: 'Chen', th: 'เฉิน (มะโรง - มังกร)', zodiac: 'มังกร (Dragon)', animal: 'มังกร', element: 'earth', polarity: 'yang', season: 'spring', monthNum: 3, hidden: [{ stem: '戊', weight: 0.6 }, { stem: '乙', weight: 0.3 }, { stem: '癸', weight: 0.1 }] },
+    { zh: '巳', py: 'Si', th: 'ซื่อ (มะเส็ง - งูเล็ก)', zodiac: 'งู (Snake)', animal: 'งู', element: 'fire', polarity: 'yin', season: 'summer', monthNum: 4, hidden: [{ stem: '丙', weight: 0.6 }, { stem: '戊', weight: 0.3 }, { stem: '庚', weight: 0.1 }] },
+    { zh: '午', py: 'Wu', th: 'อู่ (มะเมีย - ม้า)', zodiac: 'ม้า (Horse)', animal: 'ม้า', element: 'fire', polarity: 'yang', season: 'summer', monthNum: 5, hidden: [{ stem: '丁', weight: 0.7 }, { stem: '己', weight: 0.3 }] },
+    { zh: '未', py: 'Wei', th: 'เว่ย (มะแม - แพะ)', zodiac: 'แพะ (Goat)', animal: 'แพะ', element: 'earth', polarity: 'yin', season: 'summer', monthNum: 6, hidden: [{ stem: '己', weight: 0.6 }, { stem: '丁', weight: 0.3 }, { stem: '乙', weight: 0.1 }] },
+    { zh: '申', py: 'Shen', th: 'เซิน (วอก - ลิง)', zodiac: 'ลิง (Monkey)', animal: 'ลิง', element: 'metal', polarity: 'yang', season: 'autumn', monthNum: 7, hidden: [{ stem: '庚', weight: 0.6 }, { stem: '壬', weight: 0.3 }, { stem: '戊', weight: 0.1 }] },
+    { zh: '酉', py: 'You', th: 'โหย่ว (ระกา - ไก่)', zodiac: 'ไก่ (Rooster)', animal: 'ไก่', element: 'metal', polarity: 'yin', season: 'autumn', monthNum: 8, hidden: [{ stem: '辛', weight: 1.0 }] },
+    { zh: '戌', py: 'Xu', th: 'ซวี (จอ - หมา)', zodiac: 'หมา (Dog)', animal: 'หมา', element: 'earth', polarity: 'yang', season: 'autumn', monthNum: 9, hidden: [{ stem: '戊', weight: 0.6 }, { stem: '辛', weight: 0.3 }, { stem: '丁', weight: 0.1 }] },
+    { zh: '亥', py: 'Hai', th: 'ฮ่าย (กุน - หมู)', zodiac: 'หมู (Pig)', animal: 'หมู', element: 'water', polarity: 'yin', season: 'winter', monthNum: 10, hidden: [{ stem: '壬', weight: 0.7 }, { stem: '甲', weight: 0.3 }] }
   ];
 
   // 3. Five Elements Meta (五行)
@@ -1816,11 +1816,36 @@
       const stems = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].stem ? chart.pillars[k].stem.zh : '');
       const branches = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].branch ? chart.pillars[k].branch.zh : '');
 
-      // Check Ten Gods presence
-      const hasZhengGuan = stems.includes('丙') || branches.includes('巳') || (chart.pillars.hour && chart.pillars.hour.tenGod && chart.pillars.hour.tenGod.zh === '正官');
-      const hasQiSha = stems.includes('丁') || branches.includes('午') || branches.includes('未') || (chart.pillars.month && chart.pillars.month.tenGod && chart.pillars.month.tenGod.zh.includes('七'));
+      // Collect all Ten Gods present in the natal chart (stems + main hidden stems)
+      const allChartGods = [];
+      ['year', 'month', 'hour'].forEach(k => {
+        const p = chart.pillars[k];
+        if (p && p.tenGod && p.tenGod.zh && p.tenGod.zh !== '日主') {
+          allChartGods.push(p.tenGod.zh);
+        }
+      });
+      ['year', 'month', 'day', 'hour'].forEach(k => {
+        const p = chart.pillars[k];
+        if (p && p.hiddenStems) {
+          p.hiddenStems.forEach(h => {
+            if (h.tenGod && h.tenGod.zh && h.weight >= 0.25) {
+              allChartGods.push(h.tenGod.zh);
+            }
+          });
+        }
+      });
+
+      const hasZhengGuan = allChartGods.includes('正官');
+      const hasQiSha = allChartGods.includes('七殺');
       const isGuanShaHunZa = hasZhengGuan && hasQiSha;
       const hasBingXinHe = stems.includes('丙') && stems.includes('辛');
+
+      // Check dominant output (ดาวถ่ายเท / 食神·伤官)
+      const outputCount = allChartGods.filter(g => g === '傷官' || g === '食神').length;
+      const dmElem = chart.dayMaster.element;
+      const outputElem = ELEMENTS_META[dmElem] ? ELEMENTS_META[dmElem].generates : null;
+      const outputPct = (outputElem && elemPct[outputElem]) ? elemPct[outputElem] : 0;
+      const hasStrongOutput = outputPct >= 35 || outputCount >= 3;
 
       // Check specifically for Admin Bumji baseline chart (1977-07-23 15:45)
       const isBumjiBaseline = (chart.birthDateString === '1977-07-23' && (chart.birthTimeString === '15:45' || chart.birthHour === 15));
@@ -1891,6 +1916,8 @@
         if (isFemale) {
           if (isGuanShaHunZa) {
             love = `ตามตำราคู่ครองสตรี: ในดวงมีดาวคู่ครองปะปน (官杀混杂) มักเป็นคนมีเสน่ห์ดึงดูดใจเพศตรงข้าม มีคนเข้ามาในชีวิตหลายรูปแบบ แต่คนรักมักมีบุคลิกเด็ดเดี่ยวหรือชอบบงการ การครองคู่ที่ดีจึงต้องใช้ความเข้าใจ ให้อิสระทางความคิด มีพื้นที่ส่วนตัวให้กัน หรือแต่งงานช้าจะราบรื่นและมั่นคงกว่า`;
+          } else if (hasStrongOutput) {
+            love = prof.love ? `${prof.love} ตามโครงสร้างดาวถ่ายเทเด่น (ดาวปัญญาและความคิดสร้างสรรค์): เป็นคนเฉลียวฉลาด มีมาตรฐานสูง และเป็นตัวของตัวเอง ไม่ชอบการถูกตีกรอบหรือบงการ การครองคู่ที่ดีจึงต้องการคนที่อบอุ่น มีวุฒิภาวะ อารมณ์เย็น และเข้าใจในความลึกซึ้งของเธอ` : `ความสัมพันธ์ต้องการคนที่เข้าใจในความเฉลียวฉลาดและจิตวิญญาณ มีพื้นที่ทางความคิดให้แก่กัน`;
           } else {
             love = prof.love || `ความสัมพันธ์เน้นความจริงใจ การให้เกียรติซึ่งกันและกัน และการสนับสนุนให้เติบโตไปด้วยกันอย่างมั่นคง`;
           }
@@ -1937,6 +1964,14 @@
                 <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (ดวงหญิงแกร่ง/รักซับซ้อน):</strong> 
                 โครงสร้างดาวคู่ครองปะปน เป็นหญิงเก่งพึ่งพาตนเองได้สูง มีเสน่ห์ต่อเพศตรงข้าม แต่คนรักมักมีอัตตาสูงหรือชอบบงการ หากไม่ยอมกันอาจเกิดการปะทะทางอารมณ์ได้ง่าย
                 <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ครองคู่แบบให้เกียรติและมีพื้นที่ส่วนตัว ไม่ก้าวก่ายเรื่องงานของกันและกัน หรือแต่งงานช้าจะมั่นคงกว่า
+              </div>
+            `;
+          } else if (hasStrongOutput) {
+            loveWeak = `
+              <div>
+                <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. ข้อควรระวังความรัก (มาตรฐานและความคาดหวังสูง):</strong> 
+                ดาวถ่ายเท (ปัญญาและความคิดสร้างสรรค์) มีกำลังสูง เป็นคนมีมาตรฐานและความคาดหวังในตัวคนรักค่อนข้างสูง เมื่อคนรักทำอะไรไม่ตรงใจอาจเกิดความอึดอัดหรือเก็บไว้ในใจ
+                <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> สื่อสารความรู้สึกด้วยความนุ่มนวล ลดความคาดหวังในเรื่องเล็กๆ น้อยๆ และชื่นชมข้อดีของคนรักอย่างสม่ำเสมอ
               </div>
             `;
           } else {
@@ -2073,7 +2108,7 @@
                       <span class="basic-branch-char" style="color: ${meta.color};">${b.zh}</span>
                       <span class="basic-branch-py">${b.py} • ${b.zodiac ? b.zodiac.split(' ')[0] : b.animal}</span>
                       <span class="basic-element-badge" style="background: ${meta.lightBg}; color: ${meta.color}; border: 1px solid ${meta.border};">
-                        ${meta.th} (${b.animal})
+                        ${meta.th} (${b.polarity === 'yang' ? 'หยาง' : 'หยิน'})
                       </span>
                     </div>
                   </td>
