@@ -19930,207 +19930,261 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 
 /* ==========================================================================
-   ORACLE MENU PORTAL (3 TOPICS SELECTION HUB)
+   ORACLE MENU PORTAL (TACTILE 3-BUTTON ACTION LAUNCHER)
    ========================================================================== */
 .oracle-menu-portal {
   max-width: 980px;
-  margin: 18px auto 40px auto;
+  margin: 14px auto 32px auto;
   padding: 0 16px;
-  animation: portalFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: portalFadeIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes portalFadeIn {
-  from { opacity: 0; transform: translateY(14px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .oracle-portal-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 .oracle-portal-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 6px 18px;
+  padding: 5px 16px;
   background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(236, 72, 153, 0.1));
   color: #7c3aed;
   border: 1.5px solid #e9d5ff;
-  border-radius: 24px;
-  font-size: 13.5px;
+  border-radius: 20px;
+  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 14px;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.08);
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.08);
 }
 
 .oracle-portal-title {
   font-family: 'Prompt', 'Kanit', sans-serif;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   color: #3b0764;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   letter-spacing: -0.3px;
 }
 
 .oracle-portal-desc {
-  font-size: 15.5px;
+  font-size: 14.5px;
   color: #64748b;
   margin: 0 auto;
-  max-width: 560px;
-  line-height: 1.65;
+  max-width: 520px;
+  line-height: 1.6;
 }
 
-.oracle-portal-grid {
+/* 3D App Buttons Grid */
+.oracle-portal-buttons-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: 20px;
   margin-top: 10px;
 }
 
-.oracle-menu-card {
+/* Base Action Button Style */
+.oracle-action-btn {
   background: #ffffff;
   border-radius: 24px;
-  padding: 28px 24px 22px 24px;
-  border: 2px solid #f1f5f9;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+  padding: 24px 20px 20px 20px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 2px solid #e2e8f0;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  position: relative;
-  overflow: hidden;
-  text-align: left;
-}
-
-.oracle-menu-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: transparent;
-  transition: all 0.3s ease;
-}
-
-.oracle-menu-card.card-daily::before {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
-}
-.oracle-menu-card.card-choice::before {
-  background: linear-gradient(90deg, #8b5cf6, #c084fc);
-}
-.oracle-menu-card.card-future::before {
-  background: linear-gradient(90deg, #ec4899, #f43f5e);
-}
-
-.oracle-menu-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 42px rgba(124, 58, 237, 0.16);
-  border-color: #d8b4fe;
-}
-
-.oracle-menu-card:active {
-  transform: translateY(-2px) scale(0.99);
-}
-
-.menu-card-top {
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-.menu-card-pill {
+/* 1. Daily Theme (Gold/Sun) */
+.oracle-action-btn.btn-daily {
+  background: linear-gradient(145deg, #ffffff 0%, #fffdf0 100%);
+  border-color: #fde047;
+  box-shadow: 0 5px 0 #eab308, 0 10px 22px rgba(234, 179, 8, 0.16);
+}
+.oracle-action-btn.btn-daily:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 #eab308, 0 16px 28px rgba(234, 179, 8, 0.24);
+  border-color: #eab308;
+}
+.oracle-action-btn.btn-daily:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #eab308, 0 6px 14px rgba(234, 179, 8, 0.2);
+}
+
+/* 2. Choice Theme (Purple/Decision) */
+.oracle-action-btn.btn-choice {
+  background: linear-gradient(145deg, #ffffff 0%, #faf5ff 100%);
+  border-color: #d8b4fe;
+  box-shadow: 0 5px 0 #a855f7, 0 10px 22px rgba(168, 85, 247, 0.16);
+}
+.oracle-action-btn.btn-choice:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 #a855f7, 0 16px 28px rgba(168, 85, 247, 0.24);
+  border-color: #a855f7;
+}
+.oracle-action-btn.btn-choice:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #a855f7, 0 6px 14px rgba(168, 85, 247, 0.2);
+}
+
+/* 3. Future Theme (Pink/Sparkles) */
+.oracle-action-btn.btn-future {
+  background: linear-gradient(145deg, #ffffff 0%, #fdf2f8 100%);
+  border-color: #fbcfe8;
+  box-shadow: 0 5px 0 #ec4899, 0 10px 22px rgba(236, 72, 153, 0.16);
+}
+.oracle-action-btn.btn-future:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 #ec4899, 0 16px 28px rgba(236, 72, 153, 0.24);
+  border-color: #ec4899;
+}
+.oracle-action-btn.btn-future:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #ec4899, 0 6px 14px rgba(236, 72, 153, 0.2);
+}
+
+/* Top Row (Badges) */
+.menu-btn-top-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+/* Icon Box */
+.action-btn-icon-box {
+  width: 68px;
+  height: 68px;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-bottom: 14px;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.oracle-action-btn:hover .action-btn-icon-box {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.icon-box-daily {
+  background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
+  color: #b45309;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
+}
+.icon-box-choice {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  color: #6d28d9;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+.icon-box-future {
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+  color: #be185d;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);
+}
+
+/* Info & Typography */
+.action-btn-info {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.action-btn-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.action-btn-title {
+  font-family: 'Prompt', 'Kanit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.action-btn-tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 0.3px;
 }
-
-.pill-daily {
+.tag-daily {
   background: #fef3c7;
-  color: #b45309;
+  color: #92400e;
 }
-.pill-choice {
-  background: #f3e8ff;
-  color: #6b21a8;
+.tag-choice {
+  background: #ede9fe;
+  color: #5b21b6;
 }
-.pill-future {
+.tag-future {
   background: #fce7f3;
   color: #9d174d;
 }
 
-.menu-card-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  display: flex;
+.action-btn-desc {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* CTA Pill Button */
+.action-btn-cta {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
-  margin-bottom: 18px;
-  transition: transform 0.3s ease;
-}
-
-.oracle-menu-card:hover .menu-card-icon {
-  transform: scale(1.1) rotate(4deg);
-}
-
-.icon-daily {
-  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-  color: #d97706;
-  border: 1.5px solid #fde68a;
-}
-.icon-choice {
-  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
-  color: #7c3aed;
-  border: 1.5px solid #ddd6fe;
-}
-.icon-future {
-  background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-  color: #db2777;
-  border: 1.5px solid #fbcfe8;
-}
-
-.menu-card-title {
-  font-family: 'Prompt', 'Kanit', sans-serif;
-  font-size: 21px;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0 0 10px 0;
-  line-height: 1.3;
-}
-
-.menu-card-desc {
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.6;
-  flex-grow: 1;
-  margin: 0 0 20px 0;
-}
-
-.menu-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 14px;
-  border-top: 1px dashed #e2e8f0;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 20px;
   font-size: 14px;
   font-weight: 700;
-  color: #7c3aed;
-  transition: gap 0.2s ease;
+  color: #ffffff;
+  width: 100%;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.oracle-menu-card:hover .menu-card-footer {
-  color: #6d28d9;
+.cta-daily {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.35);
+}
+.cta-choice {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.35);
+}
+.cta-future {
+  background: linear-gradient(135deg, #ec4899, #db2777);
+  box-shadow: 0 3px 10px rgba(219, 39, 119, 0.35);
 }
 
-.oracle-menu-card:hover .menu-card-footer i {
+.oracle-action-btn:hover .action-btn-cta i {
   transform: translateX(4px);
   transition: transform 0.2s ease;
 }
@@ -20169,29 +20223,66 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   transform: translateX(-3px);
 }
 
+/* MOBILE RESPONSIVENESS: Horizontal Action Buttons */
 @media (max-width: 768px) {
-  .oracle-portal-grid {
+  .oracle-portal-buttons-grid {
     grid-template-columns: 1fr;
-    gap: 14px;
+    gap: 12px;
   }
   .oracle-portal-title {
-    font-size: 24px;
+    font-size: 23px;
   }
   .oracle-portal-desc {
-    font-size: 14px;
+    font-size: 13.5px;
   }
-  .oracle-menu-card {
-    padding: 22px 18px 18px 18px;
+  .oracle-action-btn {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 14px 16px;
     border-radius: 20px;
+    gap: 12px;
   }
-  .menu-card-icon {
-    width: 52px;
-    height: 52px;
+  .menu-btn-top-row {
+    display: none;
+  }
+  .action-btn-icon-box {
+    width: 54px;
+    height: 54px;
     font-size: 24px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
   }
-  .menu-card-title {
-    font-size: 18.5px;
+  .action-btn-info {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 0;
+  }
+  .action-btn-title-row {
+    justify-content: flex-start;
+    gap: 6px;
+  }
+  .action-btn-title {
+    font-size: 16.5px;
+  }
+  .action-btn-desc {
+    font-size: 12.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .action-btn-cta {
+    width: auto;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    flex-shrink: 0;
+    border-radius: 16px;
+  }
+  .action-btn-cta span {
+    display: none;
+  }
+  .action-btn-cta i {
+    font-size: 17px;
+    margin: 0;
   }
   .oracle-flow-top-bar {
     flex-direction: column;
