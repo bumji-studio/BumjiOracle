@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_2197">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_5979">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -1037,24 +1037,100 @@
   <!-- VIEW 2: TAROT READING APP VIEW -->
   <div id="readingAppView" class="view-container">
     <div class="reading-app-container">
-      <!-- SUB-MENU SWITCHER BAR: 3 ORACLE MODES (COMPACT & RESPONSIVE) -->
-      <nav class="reading-sub-nav-bar" id="readingSubNavBar" aria-label="โหมดการเปิดไพ่">
-        <button type="button" class="reading-sub-btn active" id="btnSubMenuDaily" data-mode="daily">
-          <i class="fa-solid fa-sun icon-mode"></i>
-          <span class="sub-btn-title">เปิดไพ่ประจำวัน</span>
-          <span class="sub-btn-pill">1 ใบ</span>
-        </button>
-        <button type="button" class="reading-sub-btn" id="btnSubMenuChoice" data-mode="choice">
-          <i class="fa-solid fa-code-fork icon-mode"></i>
-          <span class="sub-btn-title">เลือกทางไหนดี?</span>
-          <span class="sub-btn-pill">5 ใบ</span>
-        </button>
-        <button type="button" class="reading-sub-btn" id="btnSubMenuFuture" data-mode="future">
-          <i class="fa-solid fa-crystal-ball icon-mode"></i>
-          <span class="sub-btn-title">อยากรู้อนาคต</span>
-          <span class="sub-btn-pill">3 ใบ</span>
-        </button>
-      </nav>
+
+      <!-- ============================================================ -->
+      <!-- 1. ORACLE MENU PORTAL (LANDING SCREEN FOR 3 TOPICS) -->
+      <!-- ============================================================ -->
+      <div id="oracleMenuPortal" class="oracle-menu-portal">
+        <div class="oracle-portal-header">
+          <div class="oracle-portal-badge">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> ศาสตร์ไพ่เทพเหมียว (92 ใบ)
+          </div>
+          <h2 class="oracle-portal-title">เลือกรูปแบบการเปิดไพ่</h2>
+          <p class="oracle-portal-desc">ตั้งจิตอธิษฐานนิ่งๆ เลือกหัวข้อการทำนายที่ท่านต้องการเพื่อรับคำพยากรณ์และพลังบวกค่ะ</p>
+        </div>
+
+        <div class="oracle-portal-grid">
+          <!-- 1. เปิดไพ่ประจำวัน -->
+          <div class="oracle-menu-card card-daily" role="button" tabindex="0" onclick="window.enterReadingMode('daily')">
+            <div class="menu-card-top">
+              <span class="menu-card-pill pill-daily"><i class="fa-solid fa-sun"></i> 1 ใบ</span>
+            </div>
+            <div class="menu-card-icon icon-daily">
+              <i class="fa-solid fa-sun"></i>
+            </div>
+            <h3 class="menu-card-title">เปิดไพ่ประจำวัน</h3>
+            <p class="menu-card-desc">สุ่มเปิดไพ่ 1 ใบ เพื่อรับพลังบวก ข้อคิดเตือนใจ และกำลังใจดีๆ ประจำวันนี้</p>
+            <div class="menu-card-footer">
+              <span class="menu-card-btn-label">เริ่มเปิดไพ่</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- 2. เลือกทางไหนดี -->
+          <div class="oracle-menu-card card-choice" role="button" tabindex="0" onclick="window.enterReadingMode('choice')">
+            <div class="menu-card-top">
+              <span class="menu-card-pill pill-choice"><i class="fa-solid fa-code-fork"></i> 5 ใบ</span>
+            </div>
+            <div class="menu-card-icon icon-choice">
+              <i class="fa-solid fa-code-fork"></i>
+            </div>
+            <h3 class="menu-card-title">เลือกทางไหนดี</h3>
+            <p class="menu-card-desc">เปรียบเทียบ 2 เส้นทาง (ทางเลือก A vs ทางเลือก B) หาคำตอบและทางออกที่ดีที่สุดเมื่อกำลังลังเลใจ</p>
+            <div class="menu-card-footer">
+              <span class="menu-card-btn-label">เริ่มเปิดไพ่</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+          <!-- 3. อยากรู้อนาคต -->
+          <div class="oracle-menu-card card-future" role="button" tabindex="0" onclick="window.enterReadingMode('future')">
+            <div class="menu-card-top">
+              <span class="menu-card-pill pill-future"><i class="fa-solid fa-crystal-ball"></i> 3 ใบ</span>
+            </div>
+            <div class="menu-card-icon icon-future">
+              <i class="fa-solid fa-crystal-ball"></i>
+            </div>
+            <h3 class="menu-card-title">อยากรู้อนาคต</h3>
+            <p class="menu-card-desc">ส่องแนวโน้มอดีต ปัจจุบัน และอนาคต พร้อมทิศทางการงาน การเงิน และชีวิตใน 3-6 เดือน</p>
+            <div class="menu-card-footer">
+              <span class="menu-card-btn-label">เริ่มเปิดไพ่</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- 2. ORACLE READING FLOW (ACTIVE CARD SELECTION & READING) -->
+      <!-- ============================================================ -->
+      <div id="oracleReadingFlow" class="oracle-reading-flow" style="display: none;">
+
+        <!-- Top bar with Back Button & Sub-menu Switcher -->
+        <div class="oracle-flow-top-bar">
+          <button type="button" class="btn-back-to-portal" id="btnBackToPortal" onclick="window.showOracleMenuPortal()">
+            <i class="fa-solid fa-arrow-left"></i> <span>เลือกเมนูอื่น</span>
+          </button>
+
+          <!-- SUB-MENU SWITCHER BAR: 3 ORACLE MODES (COMPACT & RESPONSIVE) -->
+          <nav class="reading-sub-nav-bar" id="readingSubNavBar" aria-label="โหมดการเปิดไพ่">
+            <button type="button" class="reading-sub-btn active" id="btnSubMenuDaily" data-mode="daily">
+              <i class="fa-solid fa-sun icon-mode"></i>
+              <span class="sub-btn-title">เปิดไพ่ประจำวัน</span>
+              <span class="sub-btn-pill">1 ใบ</span>
+            </button>
+            <button type="button" class="reading-sub-btn" id="btnSubMenuChoice" data-mode="choice">
+              <i class="fa-solid fa-code-fork icon-mode"></i>
+              <span class="sub-btn-title">เลือกทางไหนดี?</span>
+              <span class="sub-btn-pill">5 ใบ</span>
+            </button>
+            <button type="button" class="reading-sub-btn" id="btnSubMenuFuture" data-mode="future">
+              <i class="fa-solid fa-crystal-ball icon-mode"></i>
+              <span class="sub-btn-title">อยากรู้อนาคต</span>
+              <span class="sub-btn-pill">3 ใบ</span>
+            </button>
+          </nav>
+        </div>
       
       <!-- STEPPER PROGRESS BAR (HIDDEN AS REQUESTED) -->
       <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง" style="display: none !important;">
@@ -1210,10 +1286,12 @@
             <button class="btn btn-secondary-sm" id="newReadingBtn" title="เริ่มตั้งคำถามใหม่เพื่อดูดวงรอบใหม่">
               <i class="fa-solid fa-rotate-left"></i> ถามคำถามใหม่
             </button>
-            <button class="btn btn-secondary-sm" id="redrawCurrentCardsBtn" title="สุ่มเปิดไพ่ 3 ใบใหม่อีกครั้งสำหรับคำถามนี้">
+            <button class="btn btn-secondary-sm" id="redrawCurrentCardsBtn" title="สุ่มเปิดไพ่ใหม่อีกครั้งสำหรับคำถามนี้">
               <i class="fa-solid fa-arrows-rotate"></i> สุ่มเปิดไพ่ใหม่
             </button>
-          </div>
+            <button class="btn btn-secondary-sm" id="portalNavReturnBtn" title="กลับไปหน้าเลือกเมนู 3 รูปแบบ" onclick="window.showOracleMenuPortal()">
+              <i class="fa-solid fa-compass"></i> เลือกเมนูอื่น
+            </button>
           </div>
         </div>
 
@@ -1264,7 +1342,15 @@
           </div>
         </div>
 
+        <div style="text-align: center; margin: 24px auto 10px auto;">
+          <button type="button" class="btn btn-secondary" onclick="window.showOracleMenuPortal()" style="border-radius: 25px; padding: 12px 32px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> เลือกรูปแบบการเปิดไพ่อื่น
+          </button>
+        </div>
+
       </section>
+
+      </div> <!-- END oracleReadingFlow -->
 
     </div>
   </div>
@@ -2186,32 +2272,32 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_2197"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_5979"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_2197"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_5979"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_2197"></script>
-  <script src="app.js?v=20261115_v5_2197"></script>
+  <script src="auth.js?v=20261115_v5_5979"></script>
+  <script src="app.js?v=20261115_v5_5979"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_2197"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_2197"></script>
-  <script src="bazi.js?v=20261115_v5_2197"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_5979"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_5979"></script>
+  <script src="bazi.js?v=20261115_v5_5979"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

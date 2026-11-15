@@ -1103,7 +1103,10 @@ function initMainApp() {
   window.setActiveAppMode = setActiveAppMode;
 
   if (tabReadingBtn) {
-    tabReadingBtn.addEventListener('click', () => setActiveAppMode('reading'));
+    tabReadingBtn.addEventListener('click', () => {
+      setActiveAppMode('reading');
+      showOracleMenuPortal();
+    });
   }
   
 
@@ -1529,6 +1532,34 @@ if (tabTongShuBtn) {
     updateSlotVisuals();
   }
   window.switchReadingSubMode = switchReadingSubMode;
+
+  function showOracleMenuPortal() {
+    const portal = document.getElementById('oracleMenuPortal');
+    const flow = document.getElementById('oracleReadingFlow');
+    if (portal) portal.style.display = 'block';
+    if (flow) flow.style.display = 'none';
+    const readingAppView = document.getElementById('readingAppView');
+    if (readingAppView) {
+      readingAppView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  window.showOracleMenuPortal = showOracleMenuPortal;
+
+  function enterReadingMode(mode) {
+    const portal = document.getElementById('oracleMenuPortal');
+    const flow = document.getElementById('oracleReadingFlow');
+    if (portal) portal.style.display = 'none';
+    if (flow) flow.style.display = 'block';
+
+    if (typeof switchReadingSubMode === 'function') {
+      switchReadingSubMode(mode);
+    }
+    const readingAppView = document.getElementById('readingAppView');
+    if (readingAppView) {
+      readingAppView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  window.enterReadingMode = enterReadingMode;
 
   const fortuneState = {
     step: 1,
@@ -3401,8 +3432,11 @@ ${cardsPromptLines}
   // Parse initial tab on page load (defaults to reading)
   const initialTab = parseTargetTabFromUrl() || 'reading';
   setActiveAppMode(initialTab, false);
+  if (initialTab === 'reading') {
+    showOracleMenuPortal();
+  }
 
-  // Default reading sub-mode to daily oracle (1 card)
+  // Pre-configure daily oracle as initial sub-mode
   if (typeof switchReadingSubMode === 'function') {
     switchReadingSubMode('daily');
   }
