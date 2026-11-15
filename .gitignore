@@ -6,3 +6,6 @@ scratch/
 pdf_previews/
 scripts/*.exe
 JiuTianCardImage_original/
+*.pdf
+docs_private/
+private_refs/
