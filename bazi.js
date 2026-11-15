@@ -1883,24 +1883,57 @@
           </div>
         `;
       } else {
-        // 100% Dynamic Engine for ALL OTHER CHARTS (personalized by Day Master & chart balance)
+        // 100% Dynamic Engine connected to Lineage Textbook Database (คลังตำราปาจื่อ)
         const prof = chart.dayMasterProfile || {};
         const isStrong = !!chart.isStrong;
 
+        const baziTG = (typeof window !== 'undefined' && window.BaziTenGodsDB) ? window.BaziTenGodsDB : ((typeof globalThis !== 'undefined' && globalThis.BaziTenGodsDB) ? globalThis.BaziTenGodsDB : null);
+        const baziMarriage = (typeof window !== 'undefined' && window.BaziMarriageDB) ? window.BaziMarriageDB : ((typeof globalThis !== 'undefined' && globalThis.BaziMarriageDB) ? globalThis.BaziMarriageDB : null);
+
+        // Count Ten Gods in natal chart (Stems + Main Hidden Stems)
+        const tenGodCounts = {};
+        ['year', 'month', 'hour'].forEach(k => {
+          const p = chart.pillars[k];
+          if (p && p.tenGod && p.tenGod.zh && p.tenGod.zh !== '日主') {
+            tenGodCounts[p.tenGod.zh] = (tenGodCounts[p.tenGod.zh] || 0) + 1;
+          }
+        });
+        ['year', 'month', 'day', 'hour'].forEach(k => {
+          const p = chart.pillars[k];
+          if (p && p.hiddenStems) {
+            p.hiddenStems.forEach(h => {
+              if (h.tenGod && h.tenGod.zh && h.weight >= 0.25) {
+                tenGodCounts[h.tenGod.zh] = (tenGodCounts[h.tenGod.zh] || 0) + 1;
+              }
+            });
+          }
+        });
+
+        const topGodPair = Object.entries(tenGodCounts).sort((a,b) => b[1] - a[1])[0];
+        const topGodInfo = (baziTG && topGodPair) ? baziTG.getGodInfo(topGodPair[0]) : null;
+
         // 1. Traits
         traits = prof.traits || `ดิถี${dmTh} มีเอกลักษณ์เฉพาะตัว เปี่ยมด้วยความมุ่งมั่นและความตั้งใจจริง`;
+        if (topGodInfo) {
+          traits += ` ผสานกับพลังสิบเทพเด่น "${topGodInfo.thai} (${topGodInfo.translation})": ${topGodInfo.coreNature}`;
+        }
         if (isStrong) {
           traits += ` • สถานะดิถีแข็งแรง (身强): มีความเชื่อมั่นในตนเองสูง เด็ดขาด ชัดเจน มีภาวะผู้นำ ไม่ชอบการถูกบงการ และพึ่งพาตนเองเป็นหลัก`;
         } else {
           traits += ` • สถานะดิถีอ่อนกำลัง (身弱): มีความยืดหยุ่น ประนีประนอมสูง ปรับตัวเก่ง มีน้ำใจโอบอ้อมอารีและเห็นอกเห็นใจผู้อื่น แต่ต้องแบกรับภาระหน้าที่รอบตัวสูง`;
         }
 
-        // 2. Career
+        // 2. Career (ดึงจาก 10 เทพกับอาชีพ.pdf และ ธาตุและอาชีพ.pdf)
+        if (topGodInfo && topGodInfo.suitableCareers && topGodInfo.suitableCareers.length > 0) {
+          const careerList = topGodInfo.suitableCareers.slice(0, 4).join(', ');
+          career = `ตามตำราสิบเทพกับอาชีพ: เด่นในสายงาน ${careerList} (${topGodInfo.careerDescription})`;
+        } else {
+          career = prof.career || 'เหมาะกับงานที่อาศัยความเชี่ยวชาญเฉพาะด้านและการบริหารจัดการอย่างเป็นระบบ';
+        }
         const favElems = (chart.favorableElements || []).map(e => {
           const map = { wood: 'ธาตุไม้', fire: 'ธาตุไฟ', earth: 'ธาตุดิน', metal: 'ธาตุทอง', water: 'ธาตุน้ำ' };
           return map[e] || e;
         }).join(' และ ');
-        career = prof.career || 'เหมาะกับงานที่อาศัยความเชี่ยวชาญเฉพาะด้านและการบริหารจัดการอย่างเป็นระบบ';
         if (favElems) {
           career += ` เสริมด้วยธาตุสำคัญให้คุณ (${favElems}) ส่งผลให้โดดเด่นเป็นพิเศษในสายงานที่ต้องใช้ความเชี่ยวชาญ การวางแผนเชิงกลยุทธ์ และการสร้างคุณค่าที่ยั่งยืน`;
         }
@@ -1912,8 +1945,30 @@
           wealth = prof.wealth || `การเงินมั่นคง มีศักยภาพในการกุมทรัพย์และต่อยอดผลกำไรได้อย่างมีประสิทธิภาพ มีความกล้าได้กล้าเสียในการลงทุน และสร้างฐานะได้ด้วยลำแข้งของตนเอง`;
         }
 
-        // 4. Love & Marriage
-        if (isFemale) {
+        // 4. Love & Marriage (ดึงจาก ว่าด้วยคู่ครอง.pdf สำนักลิ้มแชเล้ง)
+        if (baziMarriage) {
+          const mRes = baziMarriage.analyzeMarriage(gender, dm, chart.pillars.day.branch.zh, tenGodCounts, []);
+          let spouseText = '';
+          if (mRes.findings && mRes.findings.length > 0) {
+            const f = mRes.findings[0];
+            spouseText = `${f.star ? f.star + ' ' : ''}${f.role ? f.role + ': ' : ''}${f.manifestation}`;
+          }
+          const dayB = chart.pillars.day.branch ? chart.pillars.day.branch.zh : '';
+          const dayBObj = BRANCHES.find(b => b.zh === dayB);
+          let palaceText = '';
+          if (dayBObj) {
+            const bElem = dayBObj.element;
+            const dmElem = chart.dayMaster.element;
+            if (ELEMENTS_META[bElem].generates === dmElem) {
+              palaceText = ' เรือนคู่ครองให้กำเนิดดิถี: คู่ครองคอยดูแลเอาใจใส่เกื้อหนุนชีวิตเป็นอย่างดี';
+            } else if (ELEMENTS_META[dmElem].generates === bElem) {
+              palaceText = ' เรือนคู่ครองเป็นธาตุถ่ายเท: เจ้าชะตาเป็นฝ่ายทุ่มเทดูแลเอาใจใส่คู่ครอง ยอมเสียสละเพื่อครอบครัว';
+            } else if (ELEMENTS_META[bElem].controls === dmElem) {
+              palaceText = ' เรือนคู่ครองพิฆาตดิถี: คู่ครองมีความเป็นผู้นำสูง หรือมีบุคลิกเด็ดเดี่ยว';
+            }
+          }
+          love = `ตามตำราว่าด้วยคู่ครอง (${mRes.spouseStarTitle}): ${spouseText}${palaceText}`;
+        } else if (isFemale) {
           if (isGuanShaHunZa) {
             love = `ตามตำราคู่ครองสตรี: ในดวงมีดาวคู่ครองปะปน (官杀混杂) มักเป็นคนมีเสน่ห์ดึงดูดใจเพศตรงข้าม มีคนเข้ามาในชีวิตหลายรูปแบบ แต่คนรักมักมีบุคลิกเด็ดเดี่ยวหรือชอบบงการ การครองคู่ที่ดีจึงต้องใช้ความเข้าใจ ให้อิสระทางความคิด มีพื้นที่ส่วนตัวให้กัน หรือแต่งงานช้าจะราบรื่นและมั่นคงกว่า`;
           } else if (hasStrongOutput) {

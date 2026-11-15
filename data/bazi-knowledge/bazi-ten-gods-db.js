@@ -344,7 +344,16 @@ var BaziTenGodsDB = (function () {
     TEN_GODS_INFO,
     SPECIAL_COMBINATIONS,
     getGodInfo: function (godHanzi) {
-      return TEN_GODS_INFO[godHanzi] || null;
+      if (!godHanzi) return null;
+      const tradMap = {
+        '傷官': '伤官',
+        '劫財': '劫财',
+        '正財': '正财',
+        '偏財': '偏财',
+        '七殺': '七杀'
+      };
+      const key = tradMap[godHanzi] || godHanzi;
+      return TEN_GODS_INFO[key] || null;
     },
     analyzeTenGodsCounts: function (counts, isWeak) {
       const results = {

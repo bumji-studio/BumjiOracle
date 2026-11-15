@@ -111,26 +111,30 @@ var BaziMarriageDB = (function () {
       const rules = isMale ? MARRIAGE_RULES.maleChart : MARRIAGE_RULES.femaleChart;
       const findings = [];
 
+      const zc = (tenGodsCounts['正财'] || 0) + (tenGodsCounts['正財'] || 0);
+      const pc = (tenGodsCounts['偏财'] || 0) + (tenGodsCounts['偏財'] || 0);
+      const zg = (tenGodsCounts['正官'] || 0);
+      const qs = (tenGodsCounts['七杀'] || 0) + (tenGodsCounts['七殺'] || 0);
+      const sg = (tenGodsCounts['伤官'] || 0) + (tenGodsCounts['傷官'] || 0);
+      const bj = (tenGodsCounts['比肩'] || 0);
+      const jc = (tenGodsCounts['劫财'] || 0) + (tenGodsCounts['劫財'] || 0);
+
       if (isMale) {
-        const zc = tenGodsCounts['正财'] || 0;
-        const pc = tenGodsCounts['偏财'] || 0;
         if (zc >= 1 && pc >= 1) findings.push(rules.types.mixedWealth);
         else if (zc >= 1) findings.push(rules.types.zhengCai);
         else if (pc >= 1) findings.push(rules.types.pianCai);
         else findings.push(rules.types.noWealth);
 
-        if ((tenGodsCounts['比肩'] || 0) + (tenGodsCounts['劫财'] || 0) >= 3) {
+        if (bj + jc >= 3) {
           findings.push(rules.types.biJianClashWealth);
         }
       } else {
-        const zg = tenGodsCounts['正官'] || 0;
-        const qs = tenGodsCounts['七杀'] || 0;
         if (zg >= 1 && qs >= 1) findings.push(rules.types.mixedOfficerSha);
         else if (zg >= 1) findings.push(rules.types.zhengGuan);
         else if (qs >= 1) findings.push(rules.types.qiSha);
         else findings.push(rules.types.noOfficer);
 
-        if ((tenGodsCounts['伤官'] || 0) >= 1 && zg >= 1) {
+        if (sg >= 1 && zg >= 1) {
           findings.push(rules.types.shangGuanHarmOfficer);
         }
       }
