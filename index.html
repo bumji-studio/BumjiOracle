@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v1">
+  <link rel="stylesheet" href="styles.css?v=20261115_v2">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -794,86 +794,6 @@
               <!-- Dynamically populated: 1. สีมงคล, 2. ทิศมงคล, 3. ธาตุปรับดวง -->
             </div>
           </section>
-
-          <!-- Collapsible Accordion: Daily BaZi Matrix & 12 Day Officers Showcase -->
-          <div class="bazi-daily-accordion-wrap">
-            <button type="button" class="bazi-accordion-toggle-btn" onclick="window.BaziApp.toggleDailyShowcase()">
-              <span><i class="fa-solid fa-calendar-day" style="color: #d97706;"></i> 🏮 ดูผังดวงปาจื่อประจำวัน &amp; สารทฤกษ์ 12 วันมงคลวันนี้ (Daily Reference)</span>
-              <i class="fa-solid fa-chevron-down accordion-arrow" id="baziDailyAccordionArrow"></i>
-            </button>
-            <div class="bazi-guest-daily-showcase" id="baziGuestDailyShowcase">
-          <!-- Daily Header -->
-          <div class="daily-showcase-header">
-            <div class="daily-badges-row">
-              <span class="daily-badge-primary">
-                <i class="fa-solid fa-calendar-day"></i> ผังดวงจีนปาจื่อประจำวัน (Daily BaZi Matrix)
-              </span>
-              <span class="daily-badge-secondary">
-                <i class="fa-solid fa-compass"></i> คัมภีร์ 12 เทพพิทักษ์วัน (建除十二神 - 12 Day Officers)
-              </span>
-              <span class="daily-badge-live" id="dailyLiveClockBadge">
-                <i class="fa-solid fa-circle-dot live-dot"></i> <span id="dailyLiveClockText">--:--:-- น.</span>
-              </span>
-            </div>
-            <h1 class="daily-showcase-title">
-              🏮 ผังดวงปาจื่อประจำวัน &amp; สารทฤกษ์ 12 วันมงคล
-            </h1>
-            <p class="daily-showcase-subtitle" id="dailyShowcaseDatesBar">
-              กำลังคำนวณข้อมูลสุริยคติ จันทรคติจีน และสารทฤดูกาล...
-            </p>
-          </div>
-
-          <!-- 1. Daily 4 Pillars Matrix Grid (4 เสาชะตาประจำวัน) -->
-          <div class="daily-pillars-card">
-            <div class="daily-card-title-bar">
-              <div class="title-left">
-                <i class="fa-solid fa-layer-group" style="color: #7c3aed;"></i>
-                <strong>ผัง 4 เสาชะตาประจำวัน (Daily 4 Pillars of Destiny)</strong>
-              </div>
-              <div class="title-right" id="dailyDayMasterBadge">
-                <!-- e.g. ดิถีธาตุวันนี้: ดินหยาง 戊 -->
-              </div>
-            </div>
-
-            <!-- Two-column Layout: Left 4 Pillars (Hour -> Day -> Month -> Year), Right Energy Meta -->
-            <div class="daily-pillars-two-col">
-              <!-- ด้านซ้าย: เสาทั้ง 4 (เรียงจากซ้ายไปขวา: ยาม วัน เดือน ปี) -->
-              <div class="daily-pillars-left-col">
-                <div class="daily-pillars-grid" id="dailyPillarsGrid">
-                  <!-- Dynamically populated from JS -->
-                </div>
-              </div>
-
-              <!-- ด้านขวา: ข้อมูล ดิถีธาตุ, นักษัตรวัน, ชงกับ, ทิศโชคลาภ ฯลฯ -->
-              <div class="daily-pillars-right-col" id="dailyEnergyPills">
-                <!-- Dynamically populated from JS -->
-              </div>
-            </div>
-          </div>
-
-          <!-- 2. Today's 12 Day Officer Highlight Card (建除十二神 - วันนี้เป็นวันอะไร) -->
-          <div class="daily-officer-spotlight-card" id="dailyOfficerSpotlightCard">
-            <!-- Dynamically populated from JS -->
-          </div>
-
-          <!-- 3. All 12 Day Officers Complete Reference Grid (คลังข้อมูลระบบ 12 เทพพิทักษ์วัน) -->
-          <div class="daily-officers-reference-section">
-            <div class="reference-header">
-              <div class="ref-title-wrap">
-                <i class="fa-solid fa-book-bookmark" style="color: #d97706;"></i>
-                <h3>สารบบคัมภีร์ 12 เทพพิทักษ์วัน (建除十二神 - 12 Day Officers Reference)</h3>
-              </div>
-              <p class="ref-subtitle">
-                ระบบวิเคราะห์ฤกษ์สิบสองวัฏจักรโบราณ (建除十二神) ใช้พิจารณาพลังงานประจำวันและคัดสรรฤกษ์มงคล 12 รูปแบบ: 
-                <strong>1. Establish (建), 2. Remove (除), 3. Full (满), 4. Balance (平), 5. Settle (定), 6. Initiate (执), 7. Destruction (破), 8. Danger (危), 9. Success (成), 10. Receive (收), 11. Open (开), 12. Close (闭)</strong>
-              </p>
-            </div>
-            <div class="officers-12-grid" id="officers12Grid">
-              <!-- Dynamically populated from JS (12 cards with Today active) -->
-            </div>
-          </div>
-        </div>
-          </div>
 
         </div> <!-- END baziBasicResults -->
       </div> <!-- END baziSubViewBasic -->
@@ -2244,23 +2164,23 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v1"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v2"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v1"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v2"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v1"></script>
-  <script src="app.js?v=20261115_v1"></script>
+  <script src="auth.js?v=20261115_v2"></script>
+  <script src="app.js?v=20261115_v2"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
-  <script src="bazi.js?v=20261115_v1"></script>
+  <script src="bazi.js?v=20261115_v2"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
