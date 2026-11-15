@@ -14,7 +14,7 @@ if (!html.includes('http-equiv="Cache-Control"')) {
 }
 
 // 2. Update version strings for modified assets
-const nowVer = '20261115_v4';
+const nowVer = '20261115_v5_' + Date.now().toString().slice(-4);
 
 html = html.replace(/href="styles\.css\?v=[^"]*"/g, `href="styles.css?v=${nowVer}"`);
 html = html.replace(/src="auth\.js\?v=[^"]*"/g, `src="auth.js?v=${nowVer}"`);

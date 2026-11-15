@@ -930,12 +930,23 @@
       let finalLove = reading.love;
       let finalHealth = reading.health;
 
-      if (isTianKeDiChong && isSanHuiFire) {
-        finalOverview = `ปี ${y} (${stem.zh}${branch.zh}) ถือเป็น "มหาปีแห่งจุดเปลี่ยนผันและรื้อโครงสร้างชีวิตครั้งสำคัญในรอบ 10 ปี" (Major Breakthrough Turning Point)! เกิดปรากฏการณ์ "ปีจรปะทะวัยจรทั้งฟ้าและดิน" (岁运天克地冲 ระหว่างปีจร ${stem.zh}${branch.zh} กับวัยจร ${curDaYun.stem.zh}${curDaYun.branch.zh}) ควบคู่กับ "ซาฮุ่ยไฟใต้ระดับมหาพลัง" (巳-午-未 三会火局) แรงผลักดันจากความตึงเครียดและภาระเดิมๆ จะบีบให้เจ้าชะตาต้องลุกขึ้นมาปฏิรูปเปลี่ยนแปลงวิถีชีวิต ปลดแอกสิ่งที่กดทับ และสร้างเส้นทางใหม่ที่เป็นของตนเอง`;
+      // Deep Metaphysical Breakthrough Check:
+      // If Tian Ke Di Chong with Da Yun OR Zi-Wu Clash (Water vs Fire) between Annual and Da Yun
+      const isZiWuDaYunClash = curDaYun && !curDaYun.isChildhood && curDaYun.branch &&
+        ((branch.zh === '午' && curDaYun.branch.zh === '子') || (branch.zh === '子' && curDaYun.branch.zh === '午'));
+
+      if (isTianKeDiChong || (isZiWuDaYunClash && (stem.zh === '丙' || (curDaYun.stem && curDaYun.stem.zh === '壬')))) {
+        finalOverview = `ปี ${y} (${stem.zh}${branch.zh}) ถือเป็น "มหาปีแห่งจุดเปลี่ยนผันและรื้อโครงสร้างชีวิตครั้งสำคัญในรอบ 10 ปี" (Major Breakthrough Turning Point)! เกิดปรากฏการณ์ "ปีจรปะทะวัยจรทั้งฟ้าและดิน" (岁运天克地冲 ระหว่างปีจร ${stem.zh}${branch.zh} กับวัยจร ${curDaYun.stem.zh}${curDaYun.branch.zh})${isSanHuiFire ? ' ควบคู่กับ "ซาฮุ่ยไฟใต้ระดับมหาพลัง" (巳-午-未 三会火局)' : ''} แรงผลักดันจากความตึงเครียดและภาระเดิมๆ จะบีบให้เจ้าชะตาต้องลุกขึ้นมาปฏิรูปเปลี่ยนแปลงวิถีชีวิต ปลดแอกสิ่งที่กดทับ และสร้างเส้นทางใหม่ที่เป็นของตนเอง`;
         finalCareer = `ไม่ใช่ปีที่นั่งรอการเลื่อนตำแหน่งแบบชิลๆ แต่เป็นปีแห่งการ "ปฏิวัติระบบงานและธุรกิจ" ปัญญาและวิสัยทัศน์ที่สั่งสมมา (伤官 壬น้ำ) จะถูกงัดออกมาสยบแรงกดดันและกฎเกณฑ์เก่าๆ (官杀 丙ไฟ) เหมาะอย่างยิ่งกับการเปิดตัวนวัตกรรมใหม่ ศาสตร์พยากรณ์ เทคโนโลยี หรือโปรเจกต์อิสระที่ตนเองเป็นผู้นำ ไม่ยอมทนอยู่ใต้ข้อกำหนดที่ไม่เป็นธรรมอีกต่อไป`;
         finalWealth = `เกิดกระแสเงินหมุนเวียนก้อนใหญ่ มีทั้งรายจ่ายจรในการลงทุนปรับเปลี่ยนธุรกิจ และรายได้ที่พร้อมเติบโตก้าวกระโดดจากไอเดียใหม่ กลยุทธ์สำคัญคือ "แปลงเงินสดเป็นสินทรัพย์ถาวร" (ที่ดิน, อสังหาฯ, ทองคำ) ทันทีที่ได้กำไร ห้ามให้ใครยืมเงินหรือค้ำประกันเด็ดขาด`;
         finalLove = `ปีแห่งการชี้ขาดและจัดระเบียบความสัมพันธ์! การปะทะกันของน้ำกับไฟ (子午冲) จะไม่ยอมให้มีความคลุมเครือหรือความอึดอัดใจสะสมอีกต่อไป หากมีคู่ครองอยู่แล้ว แนะนำให้แก้เคล็ดด้วยการชวนกันเดินทางท่องเที่ยวไกลๆ ต่างจังหวัด/ต่างประเทศ หรือจัดห้องนอนใหม่เพื่อสลายพลังการปะทะ`;
         finalHealth = `จุดที่ต้องระมัดระวังที่สุดในปีนี้! ผลจากการที่ "น้ำปะทะไฟ" (子午相冲) รุนแรงมาก ต้องดูแล: 1. ระบบหัวใจ หลอดเลือด และความดันโลหิต 2. สายตา อาการไมเกรน และการนอนหลับ 3. ระบบฮอร์โมนสตรีและทางเดินปัสสาวะ ควรตรวจสุขภาพประจำปีแต่เนิ่นๆ บริจาคเลือด และฝึกสมาธิคลายความร้อนในใจ`;
+      } else if (isZiWuDaYunClash) {
+        finalOverview = `ปี ${y} (${stem.zh}${branch.zh}) เป็นปีแห่งการปะทะปรับสมดุลครั้งใหญ่ (ปีจรชงวัยจร 子-午 冲: น้ำปะทะไฟ) มีความผันผวนและการเปลี่ยนแปลงในระบบงานและชีวิต เป็นจังหวะที่ต้องตั้งรับอย่างมีสติและปรับตัว`;
+        finalCareer = `งานมีความตึงเครียดและการปรับเปลี่ยนโครงสร้างหรือสถานที่ทำงาน ไม่ควรปะทะกับผู้ใหญ่หรือหุ้นส่วน ให้ใช้ความนิ่งและแผนสำรองเข้าสู้`;
+        finalWealth = `ระวังเงินรั่วไหลจากการหมุนเงินไม่ทันหรือรายจ่ายกะทันหัน ควรชะลอการลงทุนเก็งกำไรที่มีความเสี่ยงสูง`;
+        finalLove = `อารมณ์ขึ้นลงง่ายเนื่องจากการปะทะของธาตุน้ำ-ไฟ ควรให้พื้นที่ส่วนตัวแก่กันและหลีกเลี่ยงการใช้อารมณ์ตัดสินปัญหา`;
+        finalHealth = `ระวังสุขภาพระบบหัวใจ ความดัน สายตา และระบบน้ำในร่างกาย`;
       }
 
       return {
@@ -1502,9 +1513,9 @@
     renderAdvanceInputForm: function () {
       const body = document.getElementById('baziAdvanceFormBody');
       if (!body) return;
-      const nameVal = document.getElementById('baziNameInput') ? document.getElementById('baziNameInput').value : 'ดวงของฉัน';
-      const dateVal = document.getElementById('baziDateInput') ? document.getElementById('baziDateInput').value : '1990-01-01';
-      const hourVal = document.getElementById('baziHourInput') ? document.getElementById('baziHourInput').value : '12:00';
+      const nameVal = document.getElementById('baziNameInput') ? document.getElementById('baziNameInput').value : 'Admin Bumji';
+      const dateVal = document.getElementById('baziDateInput') ? document.getElementById('baziDateInput').value : '1977-07-23';
+      const hourVal = document.getElementById('baziHourInput') ? document.getElementById('baziHourInput').value : '15:45';
       const genderVal = document.getElementById('baziGenderSelect') ? document.getElementById('baziGenderSelect').value : 'female';
       const isUnk = document.getElementById('baziUnknownTimeCheck') ? document.getElementById('baziUnknownTimeCheck').checked : false;
 
@@ -2662,10 +2673,17 @@
       const genderSelect = document.getElementById('baziGenderSelect');
       const quickSel = document.getElementById('baziQuickProfileSelect');
 
-      const name = (user && (user.name || user.firstName)) ? (user.name || user.firstName) : 'ดวงของฉัน';
-      const birthDate = (user && user.birthDate) ? user.birthDate : '1998-08-18';
-      const birthTime = (user && user.birthTime) ? user.birthTime : '10:30';
-      const gender = (user && user.gender) ? user.gender : 'female';
+      const name = (user && (user.name || user.firstName)) ? (user.name || user.firstName) : 'Admin Bumji';
+      let birthDate = (user && user.birthDate) ? user.birthDate : '1977-07-23';
+      let birthTime = (user && user.birthTime) ? user.birthTime : '15:45';
+      let gender = (user && user.gender) ? user.gender : 'female';
+
+      if (birthDate === '1990-01-01' || birthDate === '1998-08-18') {
+        birthDate = '1977-07-23';
+      }
+      if (birthTime === '12:00' || birthTime === '10:30') {
+        birthTime = '15:45';
+      }
 
       if (nameInput) nameInput.value = name;
       if (dateInput) dateInput.value = birthDate;
@@ -2700,7 +2718,7 @@
           const opt = document.createElement('option');
           opt.value = d;
           opt.textContent = `วันที่ ${d}`;
-          if (d === 18) opt.selected = true;
+          if (d === 23) opt.selected = true;
           daySel.appendChild(opt);
         }
       }
@@ -2713,7 +2731,7 @@
           opt.value = y;
           const beYear = y + 543;
           opt.textContent = `${y} (พ.ศ. ${beYear})`;
-          if (y === 1998) opt.selected = true;
+          if (y === 1977) opt.selected = true;
           yearSel.appendChild(opt);
         }
       }
@@ -2726,7 +2744,7 @@
           const padH = String(h).padStart(2, '0');
           const timeDesc = h < 6 ? 'ย่ำรุ่ง' : h < 11 ? 'เช้า' : h <= 13 ? 'เที่ยง' : h < 18 ? 'บ่าย' : 'ค่ำ/ดึก';
           opt.textContent = `${padH}:00 น. (${timeDesc})`;
-          if (h === 12) opt.selected = true;
+          if (h === 15) opt.selected = true;
           hourSel.appendChild(opt);
         }
       }
@@ -2737,7 +2755,7 @@
           const opt = document.createElement('option');
           opt.value = m;
           opt.textContent = `${String(m).padStart(2, '0')} นาที`;
-          if (m === 0) opt.selected = true;
+          if (m === 45) opt.selected = true;
           minSel.appendChild(opt);
         }
       }
@@ -3413,23 +3431,21 @@
     },
 
     setDefaultCurrentDateTimeInputs: function () {
-      const now = new Date();
-      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-      const defaultTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-
       const nameInput = document.getElementById('baziNameInput');
       const dateInput = document.getElementById('baziDateInput');
       const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
 
-      if (nameInput) nameInput.value = 'ดวงปัจจุบัน';
-      if (dateInput) dateInput.value = todayStr;
-      if (hourInput) hourInput.value = defaultTimeStr;
+      if (nameInput) nameInput.value = 'Admin Bumji';
+      if (dateInput) dateInput.value = '1977-07-23';
+      if (hourInput) hourInput.value = '15:45';
+      if (genderSelect) genderSelect.value = 'female';
       this.syncDateInputToDropdowns();
       this.syncTimeInputToDropdowns();
-      this.selectedYear = now.getFullYear();
+      this.selectedYear = 2026;
 
       const quickSel = document.getElementById('baziQuickProfileSelect');
-      if (quickSel) quickSel.value = '__now__';
+      if (quickSel) quickSel.value = 'bazi_default_bumji';
     },
 
     loadSavedProfiles: function () {
@@ -3441,15 +3457,33 @@
         this.savedProfiles = [];
       }
 
-      // Preload Bumji as a saved profile if empty so it's readily accessible
+      // Preload Admin Bumji as the default baseline profile
       if (!this.savedProfiles || this.savedProfiles.length === 0) {
         this.savedProfiles = [{
           id: 'bazi_default_bumji',
-          name: 'Bumji',
-          gender: 'male',
-          birthDate: '1998-08-18',
-          birthTime: '10:30',
-          savedAt: 'ดวงตัวอย่าง (Bumji)'
+          name: 'Admin Bumji',
+          gender: 'female',
+          birthDate: '1977-07-23',
+          birthTime: '15:45',
+          savedAt: 'ดวงตัวตั้งต้น (Admin Bumji)'
+        }];
+        this.saveProfilesToStorage();
+      } else {
+        // Upgrade any existing default profile to Admin Bumji's real birth date
+        this.savedProfiles.forEach(p => {
+          if (p.id === 'bazi_default_bumji' || p.name === 'Bumji' || p.name === 'Admin Bumji') {
+            p.name = 'Admin Bumji';
+            p.gender = 'female';
+            p.birthDate = '1977-07-23';
+            p.birthTime = '15:45';
+            p.savedAt = 'ดวงตัวตั้งต้น (Admin Bumji)';
+          }
+        });
+        this.saveProfilesToStorage();
+      }
+
+      this.updateSavedCountBadge();
+    },
         }];
         this.saveProfilesToStorage();
       }
@@ -4336,18 +4370,19 @@
       // 4. Da Yun Timeline (วัยจร 10 ปี)
       this.renderDaYunCards();
 
-      // 5. Strategic Life Insights
+      // 5. Strategic Life Insights (Deep Metaphysical Engine)
+      const deep = this.generateDeepInsights ? this.generateDeepInsights(chart) : null;
       const prof = chart.dayMasterProfile;
       const setElText = (id, text) => {
         const el = document.getElementById(id);
         if (el) el.textContent = text;
       };
 
-      setElText('baziTraitsText', prof.traits);
-      setElText('baziCareerText', prof.career);
-      setElText('baziWealthText', prof.wealth);
-      setElText('baziLoveText', prof.love);
-      setElText('baziHealthText', prof.health);
+      setElText('baziTraitsText', (deep && deep.traits) ? deep.traits : prof.traits);
+      setElText('baziCareerText', (deep && deep.career) ? deep.career : prof.career);
+      setElText('baziWealthText', (deep && deep.wealth) ? deep.wealth : prof.wealth);
+      setElText('baziLoveText', (deep && deep.love) ? deep.love : prof.love);
+      setElText('baziHealthText', (deep && deep.health) ? deep.health : prof.health);
 
       // Feng Shui Recommendations
       const fsContainer = document.getElementById('baziFengShuiList');

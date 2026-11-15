@@ -43,6 +43,17 @@
         if (saved) {
           const u = JSON.parse(saved);
           if (u && (u.email === ADMIN_CONFIG.email || u.isAdmin)) {
+            // Auto-migrate Admin Bumji to 1977-07-23 15:45 female
+            if (u.id === 'admin_bumji' || u.email === ADMIN_CONFIG.email) {
+              if (u.birthDate !== '1977-07-23' || u.birthTime !== '15:45' || u.gender !== 'female') {
+                u.birthDate = '1977-07-23';
+                u.birthTime = '15:45';
+                u.gender = 'female';
+                try {
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+                } catch (e) {}
+              }
+            }
             this.currentUser = u;
           } else {
             // Discard any non-admin demo user session
@@ -104,8 +115,8 @@
           isAdmin: true,
           isMember: true,
           provider: 'admin-local',
-          birthDate: '1990-01-01',
-          birthTime: '12:00',
+          birthDate: '1977-07-23',
+          birthTime: '15:45',
           gender: 'female',
           updatedAt: new Date().toISOString()
         };
