@@ -231,7 +231,8 @@
         birthHour = 12, // 0-23
         birthMinute = 0,
         gender = 'male', // 'male' or 'female'
-        name = 'Bumji'
+        name = 'Bumji',
+        isUnknownTime = false
       } = params;
 
       const date = new Date(birthDate + 'T' + String(birthHour).padStart(2, '0') + ':' + String(birthMinute).padStart(2, '0') + ':00');
@@ -579,8 +580,9 @@
       return {
         name,
         gender,
+        isUnknownTime: !!isUnknownTime,
         birthDateString: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
-        birthTimeString: `${String(birthHour).padStart(2, '0')}:${String(birthMinute).padStart(2, '0')}`,
+        birthTimeString: isUnknownTime ? 'ไม่ระบุเวลา' : `${String(birthHour).padStart(2, '0')}:${String(birthMinute).padStart(2, '0')}`,
         birthHour,
         birthMinute,
         dayMaster: dayStem,
@@ -1372,9 +1374,1018 @@
       return !!(window.AuthManager && window.AuthManager.isLoggedIn());
     },
 
+    currentSubMenu: 'basic',
+
+    switchSubMenu: function (mode) {
+      this.currentSubMenu = mode;
+      const isBasic = mode === 'basic';
+      const tabBasic = document.getElementById('baziSubTabBasic');
+      const tabAdvance = document.getElementById('baziSubTabAdvance');
+      const viewBasic = document.getElementById('baziSubViewBasic');
+      const viewAdvance = document.getElementById('baziSubViewAdvance');
+
+      if (tabBasic) tabBasic.classList.toggle('active', isBasic);
+      if (tabAdvance) tabAdvance.classList.toggle('active', !isBasic);
+      if (viewBasic) viewBasic.classList.toggle('hidden', !isBasic);
+      if (viewAdvance) viewAdvance.classList.toggle('hidden', isBasic);
+
+      if (!isBasic) {
+        if (this.currentChart) {
+          this.renderAdvanceSuite(this.currentChart);
+          const advResults = document.getElementById('baziAdvanceResults');
+          if (advResults) advResults.classList.remove('hidden');
+          const advInputCard = document.getElementById('baziAdvanceInputCard');
+          if (advInputCard) advInputCard.classList.add('hidden');
+          const toggleBtn = document.getElementById('baziAdvanceToggleFormBtn');
+          if (toggleBtn) toggleBtn.classList.remove('hidden');
+        } else {
+          this.renderAdvanceInputForm();
+          const advResults = document.getElementById('baziAdvanceResults');
+          if (advResults) advResults.classList.add('hidden');
+          const advInputCard = document.getElementById('baziAdvanceInputCard');
+          if (advInputCard) advInputCard.classList.remove('hidden');
+        }
+      } else {
+        if (this.currentChart) {
+          this.renderBasicSuite(this.currentChart);
+        }
+      }
+    },
+
+    goToAdvance: function () {
+      this.switchSubMenu('advance');
+      setTimeout(() => {
+        const target = document.getElementById('baziAdvanceMasterTableWrap');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 120);
+    },
+
+    toggleAdvanceInputForm: function () {
+      const advInputCard = document.getElementById('baziAdvanceInputCard');
+      if (advInputCard) {
+        advInputCard.classList.toggle('hidden');
+        if (!advInputCard.classList.contains('hidden')) {
+          this.renderAdvanceInputForm();
+        }
+      }
+    },
+
+    renderAdvanceInputForm: function () {
+      const body = document.getElementById('baziAdvanceFormBody');
+      if (!body) return;
+      const nameVal = document.getElementById('baziNameInput') ? document.getElementById('baziNameInput').value : 'ดวงของฉัน';
+      const dateVal = document.getElementById('baziDateInput') ? document.getElementById('baziDateInput').value : '1990-01-01';
+      const hourVal = document.getElementById('baziHourInput') ? document.getElementById('baziHourInput').value : '12:00';
+      const genderVal = document.getElementById('baziGenderSelect') ? document.getElementById('baziGenderSelect').value : 'female';
+      const isUnk = document.getElementById('baziUnknownTimeCheck') ? document.getElementById('baziUnknownTimeCheck').checked : false;
+
+      body.innerHTML = `
+        <div class="bazi-form-grid" style="margin-top: 10px;">
+          <div class="bazi-form-field">
+            <label><i class="fa-solid fa-user"></i> ชื่อลูกดวง:</label>
+            <input type="text" id="baziAdvNameInput" class="bazi-control" value="${nameVal}">
+          </div>
+          <div class="bazi-form-field">
+            <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
+            <select id="baziAdvGenderSelect" class="bazi-control">
+              <option value="female" ${genderVal === 'female' ? 'selected' : ''}>♀️ หญิง (Female)</option>
+              <option value="male" ${genderVal === 'male' ? 'selected' : ''}>♂️ ชาย (Male)</option>
+            </select>
+          </div>
+          <div class="bazi-form-field">
+            <label><i class="fa-solid fa-calendar-day"></i> วันเดือนปีเกิด:</label>
+            <input type="date" id="baziAdvDateInput" class="bazi-control" value="${dateVal}">
+          </div>
+          <div class="bazi-form-field">
+            <div class="bazi-time-label-row">
+              <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
+              <label class="bazi-unknown-toggle">
+                <input type="checkbox" id="baziAdvUnknownCheck" ${isUnk ? 'checked' : ''}>
+                <span>ไม่รู้เวลาเกิด</span>
+              </label>
+            </div>
+            <input type="time" id="baziAdvHourInput" class="bazi-control" value="${hourVal}" ${isUnk ? 'disabled' : ''}>
+          </div>
+        </div>
+        <div class="bazi-action-row" style="margin-top: 10px;">
+          <button type="button" class="bazi-btn-primary" onclick="window.BaziApp.syncAndCalcFromAdvance()">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา Advance
+          </button>
+        </div>
+      `;
+
+      const advCheck = document.getElementById('baziAdvUnknownCheck');
+      const advHour = document.getElementById('baziAdvHourInput');
+      if (advCheck && advHour) {
+        advCheck.onchange = () => {
+          advHour.disabled = advCheck.checked;
+        };
+      }
+    },
+
+    syncAndCalcFromAdvance: function () {
+      const advName = document.getElementById('baziAdvNameInput');
+      const advGender = document.getElementById('baziAdvGenderSelect');
+      const advDate = document.getElementById('baziAdvDateInput');
+      const advHour = document.getElementById('baziAdvHourInput');
+      const advUnk = document.getElementById('baziAdvUnknownCheck');
+
+      const nameInput = document.getElementById('baziNameInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const unknownCheck = document.getElementById('baziUnknownTimeCheck');
+
+      if (advName && nameInput) nameInput.value = advName.value;
+      if (advGender && genderSelect) genderSelect.value = advGender.value;
+      if (advDate && dateInput) {
+        dateInput.value = advDate.value;
+        this.syncDateInputToDropdowns();
+      }
+      if (advHour && hourInput) {
+        hourInput.value = advHour.value;
+        this.syncTimeInputToDropdowns();
+      }
+      if (advUnk && unknownCheck) {
+        unknownCheck.checked = advUnk.checked;
+        this.onUnknownTimeChange();
+      }
+
+      this.calculateFromInputs(true);
+      const advInputCard = document.getElementById('baziAdvanceInputCard');
+      if (advInputCard) advInputCard.classList.add('hidden');
+    },
+
+    populateDateTimeDropdowns: function () {
+      const daySel = document.getElementById('baziBirthDay');
+      const monthSel = document.getElementById('baziBirthMonth');
+      const yearSel = document.getElementById('baziBirthYear');
+      const hourSel = document.getElementById('baziBirthHour');
+      const minSel = document.getElementById('baziBirthMinute');
+
+      if (daySel && daySel.options.length === 0) {
+        for (let d = 1; d <= 31; d++) {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = String(d);
+          daySel.appendChild(opt);
+        }
+      }
+
+      const thMonths = [
+        'ม.ค. (มกราคม)', 'ก.พ. (กุมภาพันธ์)', 'มี.ค. (มีนาคม)', 'เม.ย. (เมษายน)',
+        'พ.ค. (พฤษภาคม)', 'มิ.ย. (มิถุนายน)', 'ก.ค. (กรกฎาคม)', 'ส.ค. (สิงหาคม)',
+        'ก.ย. (กันยายน)', 'ต.ค. (ตุลาคม)', 'พ.ย. (พฤศจิกายน)', 'ธ.ค. (ธันวาคม)'
+      ];
+      if (monthSel && monthSel.options.length === 0) {
+        for (let m = 1; m <= 12; m++) {
+          const opt = document.createElement('option');
+          opt.value = m;
+          opt.textContent = `${m} - ${thMonths[m - 1]}`;
+          monthSel.appendChild(opt);
+        }
+      }
+
+      if (yearSel && yearSel.options.length === 0) {
+        const curY = new Date().getFullYear();
+        for (let y = curY + 5; y >= 1920; y--) {
+          const opt = document.createElement('option');
+          opt.value = y;
+          opt.textContent = `พ.ศ. ${y + 543} (ค.ศ. ${y})`;
+          yearSel.appendChild(opt);
+        }
+      }
+
+      if (hourSel && hourSel.options.length === 0) {
+        for (let h = 0; h <= 23; h++) {
+          const opt = document.createElement('option');
+          opt.value = h;
+          opt.textContent = `${String(h).padStart(2, '0')} น.`;
+          hourSel.appendChild(opt);
+        }
+      }
+
+      if (minSel && minSel.options.length === 0) {
+        for (let mi = 0; mi <= 59; mi++) {
+          const opt = document.createElement('option');
+          opt.value = mi;
+          opt.textContent = `${String(mi).padStart(2, '0')} นาที`;
+          minSel.appendChild(opt);
+        }
+      }
+    },
+
+    syncDateInputToDropdowns: function () {
+      const dateInput = document.getElementById('baziDateInput');
+      const daySel = document.getElementById('baziBirthDay');
+      const monthSel = document.getElementById('baziBirthMonth');
+      const yearSel = document.getElementById('baziBirthYear');
+      if (!dateInput || !dateInput.value) return;
+      const parts = dateInput.value.split('-');
+      if (parts.length === 3) {
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        const d = parseInt(parts[2], 10);
+        if (yearSel) yearSel.value = y;
+        if (monthSel) monthSel.value = m;
+        if (daySel) daySel.value = d;
+      }
+    },
+
+    syncDropdownsToDateInput: function () {
+      const dateInput = document.getElementById('baziDateInput');
+      const daySel = document.getElementById('baziBirthDay');
+      const monthSel = document.getElementById('baziBirthMonth');
+      const yearSel = document.getElementById('baziBirthYear');
+      if (!dateInput || !daySel || !monthSel || !yearSel) return;
+      const y = yearSel.value || '1990';
+      const m = String(monthSel.value || '1').padStart(2, '0');
+      const d = String(daySel.value || '1').padStart(2, '0');
+      dateInput.value = `${y}-${m}-${d}`;
+    },
+
+    syncTimeInputToDropdowns: function () {
+      const hourInput = document.getElementById('baziHourInput');
+      const hourSel = document.getElementById('baziBirthHour');
+      const minSel = document.getElementById('baziBirthMinute');
+      if (!hourInput || !hourInput.value) return;
+      const parts = hourInput.value.split(':');
+      if (parts.length >= 2) {
+        const h = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10);
+        if (hourSel) hourSel.value = isNaN(h) ? 12 : h;
+        if (minSel) minSel.value = isNaN(m) ? 0 : m;
+      }
+    },
+
+    syncDropdownsToTimeInput: function () {
+      const hourInput = document.getElementById('baziHourInput');
+      const hourSel = document.getElementById('baziBirthHour');
+      const minSel = document.getElementById('baziBirthMinute');
+      if (!hourInput || !hourSel || !minSel) return;
+      const h = String(hourSel.value || '12').padStart(2, '0');
+      const m = String(minSel.value || '0').padStart(2, '0');
+      hourInput.value = `${h}:${m}`;
+    },
+
+    onUnknownTimeChange: function () {
+      const check = document.getElementById('baziUnknownTimeCheck');
+      const isUnknown = !!(check && check.checked);
+      const timeWrap = document.getElementById('baziTimeControlsWrap');
+      const hourInput = document.getElementById('baziHourInput');
+      const hourSel = document.getElementById('baziBirthHour');
+      const minSel = document.getElementById('baziBirthMinute');
+      const notice = document.getElementById('baziUnknownTimeNotice');
+
+      if (timeWrap) timeWrap.classList.toggle('disabled-inputs', isUnknown);
+      if (hourInput) hourInput.disabled = isUnknown;
+      if (hourSel) hourSel.disabled = isUnknown;
+      if (minSel) minSel.disabled = isUnknown;
+      if (notice) notice.classList.toggle('hidden', !isUnknown);
+    },
+
+    renderBasicSuite: function (chart) {
+      if (!chart) return;
+      this.renderBasicFourPillars(chart);
+      this.renderBasicAgeCallout(chart);
+      this.renderBasicSpiderChart(chart);
+      this.renderBasicCurrentDaYun(chart);
+      this.renderBasicCurrentAnnual(chart);
+      this.renderBasicFengShui(chart);
+
+      // Populate 5 text insights
+      const prof = chart.dayMasterProfile;
+      const setEl = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text || '-';
+      };
+      setEl('baziTraitsText', prof ? prof.traits : '-');
+      setEl('baziCareerText', prof ? prof.career : '-');
+      setEl('baziWealthText', prof ? prof.wealth : '-');
+      setEl('baziLoveText', prof ? prof.love : '-');
+      setEl('baziHealthText', prof ? prof.health : '-');
+    },
+
+    renderBasicFourPillars: function (chart) {
+      const container = document.getElementById('baziBasicPillarsTable');
+      if (!container || !chart) return;
+      const isUnknown = !!chart.isUnknownTime;
+      const p = chart.pillars;
+      const cols = [
+        { key: 'hour', title: 'ยาม (Hour)', pillar: p.hour, isUnknown },
+        { key: 'day', title: 'วัน (Day)', pillar: p.day, isDM: true },
+        { key: 'month', title: 'เดือน (Month)', pillar: p.month },
+        { key: 'year', title: 'ปี (Year)', pillar: p.year }
+      ];
+
+      container.innerHTML = `
+        <table class="bazi-basic-table">
+          <thead>
+            <tr>
+              <th class="bazi-basic-row-label">เสาชะตา</th>
+              ${cols.map(c => `
+                <th class="${c.isDM ? 'th-day-master' : ''}">
+                  <div style="font-size: 14px; font-weight: 700;">${c.title}</div>
+                  ${c.isDM ? '<span class="basic-dm-crown"><i class="fa-solid fa-crown"></i> ดิถีธาตุ (ตัวตน)</span>' : ''}
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Row: Hour Stem (ราศีบน) -->
+            <tr>
+              <td class="bazi-basic-row-label">
+                <strong>Hour stem</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีบน / กิ่งฟ้า</small>
+              </td>
+              ${cols.map(c => {
+                if (c.isUnknown) {
+                  return `<td><div class="basic-unknown-hour"><i class="fa-solid fa-circle-question"></i> ไม่ระบุเวลา</div></td>`;
+                }
+                const s = c.pillar.stem;
+                const meta = ELEMENTS_META[s.element];
+                return `
+                  <td>
+                    <div class="basic-pillar-cell">
+                      <span class="basic-stem-char" style="color: ${meta.color};">${s.zh}</span>
+                      <span class="basic-stem-py">${s.py}</span>
+                      <span class="basic-element-badge" style="background: ${meta.lightBg}; color: ${meta.color}; border: 1px solid ${meta.border};">
+                        ${meta.th} (${s.polarity === 'yang' ? 'หยาง' : 'หยิน'})
+                      </span>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row: Earth Branch (ราศีล่าง) -->
+            <tr>
+              <td class="bazi-basic-row-label">
+                <strong>Earth Branch</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีล่าง / กิ่งดิน</small>
+              </td>
+              ${cols.map(c => {
+                if (c.isUnknown) {
+                  return `<td><div class="basic-unknown-hour"><i class="fa-solid fa-circle-question"></i> ไม่ระบุเวลา</div></td>`;
+                }
+                const b = c.pillar.branch;
+                const meta = ELEMENTS_META[b.element];
+                return `
+                  <td>
+                    <div class="basic-pillar-cell">
+                      <span class="basic-branch-char" style="color: ${meta.color};">${b.zh}</span>
+                      <span class="basic-branch-py">${b.py} • ${b.zodiac ? b.zodiac.split(' ')[0] : b.animal}</span>
+                      <span class="basic-element-badge" style="background: ${meta.lightBg}; color: ${meta.color}; border: 1px solid ${meta.border};">
+                        ${meta.th} (${b.animal})
+                      </span>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+          </tbody>
+        </table>
+      `;
+    },
+
+    renderBasicAgeCallout: function (chart) {
+      const card = document.getElementById('baziAgeDisplayCard');
+      if (!card || !chart) return;
+      const now = new Date();
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : now.getFullYear();
+      const age = Math.max(0, now.getFullYear() - birthYear);
+      const dmMeta = ELEMENTS_META[chart.dayMaster.element];
+
+      card.innerHTML = `
+        <div class="bazi-age-icon"><i class="fa-solid fa-cake-candles"></i></div>
+        <div class="bazi-age-content">
+          <strong>🎂 อายุปัจจุบัน: ${age} ปี (เกิดปี พ.ศ. ${birthYear + 543} / ค.ศ. ${birthYear})</strong>
+          <p>
+            เจ้าชะตา: <strong>${chart.name}</strong> • ดิถีธาตุประจำตัว: <strong style="color: ${dmMeta.color};">${chart.dayMaster.zh} (${chart.dayMaster.th})</strong> 
+            • พลังดิถี: <strong>${chart.strengthText}</strong> (${chart.dayMasterProfile ? chart.dayMasterProfile.title : ''})
+          </p>
+        </div>
+      `;
+    },
+
+    renderBasicSpiderChart: function (chart) {
+      const svgWrap = document.getElementById('baziSpiderChartSvgWrap');
+      const legendWrap = document.getElementById('baziSpiderLegendWrap');
+      if (!svgWrap || !chart) return;
+
+      // 1. Calculate scores for 5 life dimensions
+      let lifeScore = 70;
+      if (chart.isStrong) lifeScore += 12;
+      if (chart.favorableElements && chart.favorableElements.length >= 2) lifeScore += 8;
+      lifeScore = Math.min(95, Math.max(65, lifeScore));
+
+      let wealthScore = 68;
+      const pArray = [chart.pillars.year, chart.pillars.month, chart.pillars.day, chart.pillars.hour];
+      pArray.forEach(p => {
+        if (!p || p.isUnknown) return;
+        if (p.tenGod && (p.tenGod.zh === '正財' || p.tenGod.zh === '偏財')) wealthScore += 7;
+        if (p.hiddenStems) {
+          p.hiddenStems.forEach(h => {
+            if (h.tenGod && (h.tenGod.zh === '正財' || h.tenGod.zh === '偏財')) wealthScore += 3;
+          });
+        }
+      });
+      wealthScore = Math.min(95, Math.max(62, wealthScore));
+
+      let careerScore = 70;
+      pArray.forEach(p => {
+        if (!p || p.isUnknown) return;
+        if (p.tenGod && (p.tenGod.zh === '正官' || p.tenGod.zh === '七殺')) careerScore += 6;
+        if (p.tenGod && (p.tenGod.zh === '正印' || p.tenGod.zh === '偏印')) careerScore += 5;
+      });
+      careerScore = Math.min(95, Math.max(65, careerScore));
+
+      let loveScore = 70;
+      const dayBranch = chart.pillars.day.branch;
+      if (chart.pillars.month && chart.pillars.month.branch) {
+        const mb = chart.pillars.month.branch;
+        if (this.areBranchesHarmony && this.areBranchesHarmony(dayBranch.zh, mb.zh)) loveScore += 10;
+        if (this.areBranchesClash && this.areBranchesClash(dayBranch.zh, mb.zh)) loveScore -= 8;
+      }
+      loveScore = Math.min(95, Math.max(62, loveScore));
+
+      let healthScore = 74;
+      const scores = Object.values(chart.elementPercentages || {});
+      if (scores.length > 0) {
+        const avg = 20;
+        const dev = scores.reduce((acc, v) => acc + Math.abs(v - avg), 0) / scores.length;
+        healthScore = Math.round(92 - dev * 0.85);
+      }
+      healthScore = Math.min(95, Math.max(65, healthScore));
+
+      const radarData = [
+        { label: 'ภาพรวมชีวิต', value: lifeScore, color: '#8b5cf6', icon: 'fa-solid fa-heart-pulse', desc: 'พลังชีวิต ธาตุส่งเสริม และความหนักแน่นของตัวตน' },
+        { label: 'การเงิน', value: wealthScore, color: '#10b981', icon: 'fa-solid fa-coins', desc: 'โอกาสสร้างทรัพย์ โชคลาภ และกระแสเงินหมุนเวียน' },
+        { label: 'การงาน', value: careerScore, color: '#0284c7', icon: 'fa-solid fa-briefcase', desc: 'ความก้าวหน้า ตำแหน่ง หน้าที่ และการยอมรับทางวิชาชีพ' },
+        { label: 'ความสัมพันธ์', value: loveScore, color: '#ec4899', icon: 'fa-solid fa-heart', desc: 'ความรัก คู่ครอง วังคู่ครอง และคนรอบข้างเกื้อหนุน' },
+        { label: 'สุขภาพ', value: healthScore, color: '#f59e0b', icon: 'fa-solid fa-shield-heart', desc: 'สมดุลเบญจธาตุ อวัยวะ และการปรับพลังหยินหยาง' }
+      ];
+
+      // SVG Generation
+      const cx = 175;
+      const cy = 145;
+      const r = 85;
+      const numAxes = 5;
+      const angles = [];
+      for (let i = 0; i < numAxes; i++) {
+        angles.push(-Math.PI / 2 + (i * 2 * Math.PI) / numAxes);
+      }
+
+      const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
+      let gridLinesSvg = '';
+      levels.forEach(lvl => {
+        const polyPoints = angles.map(a => `${(cx + r * lvl * Math.cos(a)).toFixed(1)},${(cy + r * lvl * Math.sin(a)).toFixed(1)}`).join(' ');
+        gridLinesSvg += `<polygon points="${polyPoints}" fill="${lvl === 1.0 ? 'rgba(124, 58, 237, 0.03)' : 'none'}" stroke="rgba(148, 163, 184, 0.3)" stroke-width="1" />`;
+      });
+
+      let spokesSvg = '';
+      angles.forEach(a => {
+        spokesSvg += `<line x1="${cx}" y1="${cy}" x2="${(cx + r * Math.cos(a)).toFixed(1)}" y2="${(cy + r * Math.sin(a)).toFixed(1)}" stroke="rgba(148, 163, 184, 0.35)" stroke-width="1" stroke-dasharray="3,3" />`;
+      });
+
+      const maxVal = 100;
+      const dataPoints = radarData.map((d, i) => {
+        const a = angles[i];
+        const ratio = Math.max(0.15, Math.min(1.0, d.value / maxVal));
+        const x = cx + r * ratio * Math.cos(a);
+        const y = cy + r * ratio * Math.sin(a);
+        return { x, y, data: d };
+      });
+
+      const polyString = dataPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+      let verticesSvg = '';
+      dataPoints.forEach(p => {
+        verticesSvg += `
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5" fill="${p.data.color}" stroke="#ffffff" stroke-width="2" />
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8.5" fill="none" stroke="${p.data.color}" stroke-opacity="0.4" stroke-width="1.5" />
+        `;
+      });
+
+      let labelsSvg = '';
+      radarData.forEach((d, i) => {
+        const a = angles[i];
+        const dist = (i === 0) ? (r + 22) : (r + 18);
+        const lx = cx + dist * Math.cos(a);
+        const ly = cy + dist * Math.sin(a);
+        let textAnchor = 'middle';
+        if (Math.cos(a) > 0.25) textAnchor = 'start';
+        else if (Math.cos(a) < -0.25) textAnchor = 'end';
+
+        labelsSvg += `
+          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${textAnchor}" fill="#1e293b" font-family="'Prompt', sans-serif" font-size="12" font-weight="700">
+            ${d.label}
+          </text>
+          <text x="${lx.toFixed(1)}" y="${(ly + 14).toFixed(1)}" text-anchor="${textAnchor}" fill="${d.color}" font-family="'Outfit', sans-serif" font-size="12" font-weight="800">
+            ${d.value}%
+          </text>
+        `;
+      });
+
+      svgWrap.innerHTML = `
+        <svg viewBox="0 0 350 300" style="width: 100%; max-width: 350px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="baziRadarGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ec4899" stop-opacity="0.5" />
+              <stop offset="60%" stop-color="#8b5cf6" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.1" />
+            </radialGradient>
+          </defs>
+          ${gridLinesSvg}
+          ${spokesSvg}
+          <polygon points="${polyString}" fill="url(#baziRadarGrad)" stroke="#7c3aed" stroke-width="2.5" />
+          ${verticesSvg}
+          ${labelsSvg}
+        </svg>
+      `;
+
+      if (legendWrap) {
+        legendWrap.innerHTML = radarData.map(d => `
+          <div class="radar-score-row">
+            <div class="radar-score-left">
+              <i class="${d.icon}" style="color: ${d.color}; font-size: 16px;"></i>
+              <div>
+                <div style="color: #1e293b; font-size: 13.5px; font-weight: 700;">${d.label}</div>
+                <div style="color: #64748b; font-size: 11px; font-weight: 400;">${d.desc}</div>
+              </div>
+            </div>
+            <div class="radar-score-bar-wrap">
+              <div class="radar-score-bar-fill" style="width: ${d.value}%; background: ${d.color};"></div>
+            </div>
+            <span class="radar-score-num" style="color: ${d.color};">${d.value}%</span>
+          </div>
+        `).join('');
+      }
+    },
+
+    renderBasicFengShui: function (chart) {
+      const container = document.getElementById('baziFengShuiThreeCol');
+      if (!container || !chart) return;
+
+      const favNames = chart.favorableElements.map(k => ELEMENTS_META[k].th).join(', ');
+      const favColors = chart.favorableElements.map(k => {
+        if (k === 'wood') return { name: 'เขียว / ไม้ธรรมชาติ', color: '#16a34a', bg: '#dcfce7' };
+        if (k === 'fire') return { name: 'แดง / ส้ม / ชมพู / ม่วง', color: '#dc2626', bg: '#fee2e2' };
+        if (k === 'earth') return { name: 'เหลือง / ครีม / น้ำตาล', color: '#d97706', bg: '#fef3c7' };
+        if (k === 'metal') return { name: 'ขาว / เงิน / ทอง / เทา', color: '#475569', bg: '#f1f5f9' };
+        return { name: 'ฟ้า / น้ำเงิน / ดำ', color: '#0284c7', bg: '#e0f2fe' };
+      });
+
+      const tiaoHou = chart.tiaoHou ? chart.tiaoHou : { th: favNames, reason: 'ปรับสมดุลตามธาตุที่ให้คุณ' };
+
+      container.innerHTML = `
+        <!-- 1. สีมงคล -->
+        <div class="fengshui-col-card">
+          <div class="fengshui-col-header">
+            <i class="fa-solid fa-palette" style="color: #ec4899;"></i>
+            <span>1. สีมงคลเสริมชะตา</span>
+          </div>
+          <div class="fengshui-col-body">
+            <p>สีเสื้อผ้า ของใช้ ยานพาหนะ และของตกแต่งที่ช่วยเสริมพลังบารมี:</p>
+            <div class="fengshui-pill-tags">
+              ${favColors.map(c => `
+                <span class="fengshui-color-pill" style="background: ${c.bg}; color: ${c.color}; border-color: ${c.color}40;">
+                  <i class="fa-solid fa-circle-check"></i> ${c.name}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ทิศมงคล -->
+        <div class="fengshui-col-card">
+          <div class="fengshui-col-header">
+            <i class="fa-solid fa-compass" style="color: #0284c7;"></i>
+            <span>2. ทิศมงคลประจำดวง</span>
+          </div>
+          <div class="fengshui-col-body">
+            <p>ทิศเปิดรับโชคลาภ หันหน้าโต๊ะทำงาน หัวเตียงนอน หรือตำแหน่งสำคัญ:</p>
+            <div class="fengshui-pill-tags">
+              ${chart.favorableElements.map(k => `
+                <span class="fengshui-color-pill" style="background: #e0f2fe; color: #0369a1;">
+                  <i class="fa-solid fa-location-arrow"></i> ${ELEMENTS_META[k].direction} (${ELEMENTS_META[k].th})
+                </span>
+              `).join('')}
+            </div>
+            <p style="font-size: 11.5px; color: #64748b; margin-top: 6px;">
+              ★ นั่งทำงานหันหน้าสู่ทิศดังกล่าวเพื่อดึงดูดพลังงานบวกและโอกาสทางการงาน
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. ธาตุปรับดวง -->
+        <div class="fengshui-col-card">
+          <div class="fengshui-col-header">
+            <i class="fa-solid fa-scale-balanced" style="color: #10b981;"></i>
+            <span>3. ธาตุปรับดวง (喜用神)</span>
+          </div>
+          <div class="fengshui-col-body">
+            <p>ธาตุให้คุณหลัก: <strong>${favNames}</strong></p>
+            <p style="font-size: 12px; color: #475569; margin-top: 4px;">
+              ${tiaoHou.reason || 'ช่วยให้ดวงชะตามีความกลมกลืน ลดอุปสรรคและส่งเสริมความสำเร็จอย่างยั่งยืน'}
+            </p>
+          </div>
+        </div>
+      `;
+    },
+
+    renderBasicCurrentDaYun: function (chart) {
+      const box = document.getElementById('baziCurrentDayunAnalysisBox');
+      const badge = document.getElementById('baziCurrentDayunBadge');
+      if (!box || !chart || !chart.daYunPillars) return;
+
+      const now = new Date();
+      const curYear = this.selectedYear || now.getFullYear();
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : now.getFullYear();
+      const curAge = curYear - birthYear;
+
+      const curDaYun = chart.daYunPillars.find(d => curAge >= d.ageFrom && curAge <= d.ageTo) || chart.daYunPillars[0];
+      if (!curDaYun) return;
+
+      if (badge) {
+        badge.textContent = `ช่วงอายุ ${curDaYun.ageRange} (${curDaYun.stem.zh}${curDaYun.branch.zh} • ${curDaYun.tenGod.zh})`;
+      }
+
+      const sMeta = ELEMENTS_META[curDaYun.stem.element];
+      const bMeta = ELEMENTS_META[curDaYun.branch.element];
+
+      box.innerHTML = `
+        <div style="background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 14px 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <span style="font-size: 13px; color: #7c3aed; font-weight: 700;">วัยจรใหญ่ประจำ 10 ปีนี้ (大運):</span>
+            <h3 style="margin: 4px 0 0 0; color: #581c87; font-size: 18px;">
+              <span style="color: ${sMeta.color}; font-weight: 800;">${curDaYun.stem.zh}</span>
+              <span style="color: ${bMeta.color}; font-weight: 800;">${curDaYun.branch.zh}</span>
+              (${curDaYun.stem.py} ${curDaYun.branch.py}) • วัยจรช่วงอายุ ${curDaYun.ageRange}
+            </h3>
+          </div>
+          <div style="background: #ffffff; padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd6fe; font-size: 13px; font-weight: 700; color: #7c3aed;">
+            สิบเทพประจำวัยจร: ${curDaYun.tenGod.zh} (${curDaYun.tenGod.th})
+          </div>
+        </div>
+        <div class="bazi-fortune-grid">
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header"><i class="fa-solid fa-compass" style="color: #7c3aed;"></i> ภาพรวมวัยจร 10 ปีนี้</div>
+            <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.overview : 'เป็นช่วงเวลาแห่งการพัฒนาศักยภาพและการเติบโตอย่างมั่นคง'}</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header"><i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน & ธุรกิจในวัยจรนี้</div>
+            <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.career : 'โอกาสขยับขยายหน้าที่การงานและสร้างความสำเร็จ'}</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header"><i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน & โชคลาภในวัยจรนี้</div>
+            <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.wealth : 'บริหารจัดการทรัพย์สินอย่างรอบคอบ มีโอกาสต่อยอดการลงทุน'}</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก & ครอบครัวในวัยจรนี้</div>
+            <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.love : 'รักษาความสัมพันธ์ที่อบอุ่นและสนับสนุนซึ่งกันและกัน'}</p>
+          </div>
+        </div>
+      `;
+    },
+
+    renderBasicCurrentAnnual: function (chart) {
+      const bannerEl = document.getElementById('baziBasicAnnualBanner');
+      const gridEl = document.getElementById('baziBasicAnnualFortuneGrid');
+      const titleEl = document.getElementById('baziBasicAnnualYearTitle');
+      if (!bannerEl || !gridEl || !chart) return;
+
+      const y = 2026;
+      if (titleEl) titleEl.textContent = y;
+      const annual = BaziEngine.calculateAnnualFortune(chart, y);
+      if (!annual) return;
+
+      const sMeta = ELEMENTS_META[annual.stem.element];
+      const bMeta = ELEMENTS_META[annual.branch.element];
+      const starsHtml = '⭐'.repeat(annual.scoreStars);
+
+      let interactionTags = '';
+      if (annual.clashes.length > 0) {
+        interactionTags += annual.clashes.map(c => `<span class="annual-clash-tag"><i class="fa-solid fa-triangle-exclamation"></i> ชงกับ${c.label} (${c.desc})</span>`).join('');
+      }
+      if (annual.harmonies.length > 0) {
+        interactionTags += annual.harmonies.map(h => `<span class="annual-harmony-tag"><i class="fa-solid fa-handshake"></i> ${h.name} (${h.label})</span>`).join('');
+      }
+      if (!interactionTags) {
+        interactionTags = `<span class="annual-normal-tag"><i class="fa-solid fa-circle-check"></i> ราบรื่น ไม่มีการปะทะรุนแรงกับพื้นดวงกำเนิด</span>`;
+      }
+
+      bannerEl.innerHTML = `
+        <div class="annual-banner-left">
+          <div class="annual-year-chars">
+            <span style="color: ${sMeta.color};">${annual.stem.zh}</span>
+            <span style="color: ${bMeta.color};">${annual.branch.zh}</span>
+          </div>
+          <div class="annual-year-meta">
+            <h3>ปี ${annual.year} (${annual.stem.py} ${annual.branch.py} - ${annual.branch.zodiac})</h3>
+            <div class="annual-god-pill">ก้านฟ้า: ${annual.stemGod.zh} (${annual.stemGod.th}) • กิ่งดิน: ${annual.branchGod.zh}</div>
+            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${annual.naYin}</div>
+          </div>
+        </div>
+        <div class="annual-banner-right">
+          <div class="annual-rating-box">
+            <span class="rating-label">ดัชนีสิริมงคลปีนี้:</span>
+            <span class="rating-stars">${starsHtml} (${annual.scoreStars}/5)</span>
+          </div>
+          <div class="annual-interaction-wrap">
+            ${interactionTags}
+          </div>
+        </div>
+      `;
+
+      gridEl.innerHTML = `
+        <div class="fortune-grid-item">
+          <div class="fortune-item-header"><i class="fa-solid fa-sparkles" style="color: #d97706;"></i> ภาพรวมปี ${y}</div>
+          <p class="fortune-item-text">${annual.overview}</p>
+        </div>
+        <div class="fortune-grid-item">
+          <div class="fortune-item-header"><i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงานปี ${y}</div>
+          <p class="fortune-item-text">${annual.career}</p>
+        </div>
+        <div class="fortune-grid-item">
+          <div class="fortune-item-header"><i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงินปี ${y}</div>
+          <p class="fortune-item-text">${annual.wealth}</p>
+        </div>
+        <div class="fortune-grid-item">
+          <div class="fortune-item-header"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรักปี ${y}</div>
+          <p class="fortune-item-text">${annual.love}</p>
+        </div>
+      `;
+    },
+
+    renderAdvanceSuite: function (chart) {
+      if (!chart) return;
+      this.renderAdvanceMasterPillars(chart);
+      this.renderDaYunCards();
+      this.renderDaYunInterpretation();
+      this.renderAnnualAndMonthlyFortune();
+    },
+
+    renderAdvanceMasterPillars: function (chart) {
+      const container = document.getElementById('baziAdvanceMasterTableWrap');
+      if (!container || !chart) return;
+      const c = chart;
+      const isUnknown = !!c.isUnknownTime;
+
+      const natalCols = [c.pillars.hour, c.pillars.day, c.pillars.month, c.pillars.year];
+      const dayStem = c.dayMaster;
+      const dayBranch = c.pillars.day.branch;
+      const yearBranch = c.pillars.year.branch;
+      const monthBranch = c.pillars.month.branch;
+
+      const columns = [
+        { key: 'hour', title: 'เสายาม', subTitle: isUnknown ? 'ไม่ระบุเวลา' : (c.birthTimeString || '12:00'), pillar: c.pillars.hour, isUnknown },
+        { key: 'day', title: 'เสาวัน', subTitle: String(new Date(c.birthDateString).getDate() || 1), pillar: c.pillars.day, isDM: true },
+        { key: 'month', title: 'เสาเดือน', subTitle: String(new Date(c.birthDateString).getMonth() + 1 || 1), pillar: c.pillars.month },
+        { key: 'year', title: 'เสาปี', subTitle: String(new Date(c.birthDateString).getFullYear() || 2026), pillar: c.pillars.year }
+      ];
+
+      const tgAbbrMap = {
+        '比肩': 'Fr', '劫財': 'RW', '食神': 'EG', '傷官': 'HO',
+        '偏財': 'IW', '正財': 'DW', '七殺': 'QS', '正官': 'DO',
+        '偏印': 'IR', '正印': 'DR'
+      };
+
+      container.innerHTML = `
+        <table class="bazi-master-grid-table">
+          <thead>
+            <tr>
+              <th class="row-header-col">เสาชะตา</th>
+              ${columns.map(col => `
+                <th class="col-header ${col.isDM ? 'th-day-master' : ''}">
+                  <div style="font-size: 13.5px; font-weight: 700; color: #0f172a;">${col.title}</div>
+                  <div style="font-size: 11px; color: #64748b; font-weight: 500;">${col.subTitle}</div>
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 1. Hour stem (ราศีบน) -->
+            <tr>
+              <td class="row-header-col">Hour stem<br><small style="font-size:10px; color:#94a3b8;">ราศีบน / กิ่งฟ้า</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">- ไม่ระบุเวลา -</div></td>`;
+                const s = col.pillar.stem;
+                const tg = col.isDM ? { zh: '日主', py: 'Day master', en: 'Self' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', en: 'Friend' });
+                return `
+                  <td>
+                    <div class="bazi-stem-card stem-bg-${s.element}">
+                      <div class="bazi-card-pinyin">${s.py}</div>
+                      <div class="bazi-card-char">${s.zh}</div>
+                      <div class="bazi-card-polarity">${s.element.charAt(0).toUpperCase() + s.element.slice(1)} ${s.polarity === 'yang' ? '+' : '-'}</div>
+                      <div class="bazi-card-tengod">${col.isDM ? 'Day master (ดิถี)' : `${tg.py} / ${tg.zh}`}</div>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 2. Earth Branch (ราศีล่าง) -->
+            <tr>
+              <td class="row-header-col">Earth Branch<br><small style="font-size:10px; color:#94a3b8;">ราศีล่าง / กิ่งดิน</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">- ไม่ระบุเวลา -</div></td>`;
+                const b = col.pillar.branch;
+                const dh = this.getDominantHiddenStem(b.zh);
+                const bTg = getTenGod(c.dayMaster, dh);
+                return `
+                  <td>
+                    <div class="bazi-branch-card branch-bg-${b.element}">
+                      <div class="bazi-card-pinyin">${b.py}</div>
+                      <div class="bazi-card-char">${b.zh}</div>
+                      <div class="bazi-card-polarity">${b.zodiac ? b.zodiac.split(' ')[0] : b.animal}</div>
+                      <div class="bazi-card-tengod">${bTg.py} / ${bTg.zh}</div>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 3. Hidden Stem (ราศีแฝง) -->
+            <tr>
+              <td class="row-header-col">Hidden Stem<br><small style="font-size:10px; color:#94a3b8;">ราศีแฝง / กิ่งซ่อน</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const b = col.pillar.branch;
+                return `
+                  <td>
+                    <div class="bazi-hhs-row">
+                      ${b.hidden.map(h => {
+                        const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+                        const tg = getTenGod(c.dayMaster, sObj);
+                        const abbr = tgAbbrMap[tg.zh] || 'Fr';
+                        return `
+                          <div class="bazi-hhs-badge stem-bg-${sObj.element}">
+                            <span style="font-size: 10px;">${sObj.py}</span>
+                            <span style="font-size: 13px; font-weight: 700;">${sObj.zh}</span>
+                            <span style="font-size: 9.5px; opacity: 0.85;">${abbr}</span>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 4. Nayin (ธาตุอิมเอี้ยง / นัปอิม) -->
+            <tr>
+              <td class="row-header-col">Nayin<br><small style="font-size:10px; color:#94a3b8;">นัปอิม</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
+                const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
+                const ny = this.getNaYinDetail(sIdx, bIdx);
+                return `
+                  <td>
+                    <div class="bazi-nayin-ribbon nayin-bg-${ny.element}" title="${ny.th}">
+                      ${ny.en} (${ny.th})
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 5. DM Qi (สภาวะ 12 ขั้นชีพเทียบกับดิถี) -->
+            <tr>
+              <td class="row-header-col">DM Qi<br><small style="font-size:10px; color:#94a3b8;">ชีพเทียบดิถี</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const p = this.get12LifeStage(c.dayMaster.zh, col.pillar.branch.zh);
+                return `
+                  <td class="bazi-phase-cell">
+                    <div><strong>${p.order}. ${p.en}</strong></div>
+                    <div style="color: #64748b;">${p.py} / ${p.zh} ${p.symbol}</div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 6. Pillar Qi (สภาวะประจำเสา) -->
+            <tr>
+              <td class="row-header-col">Pillar Qi<br><small style="font-size:10px; color:#94a3b8;">ชีพประจำเสา</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const p = this.get12LifeStage(col.pillar.stem.zh, col.pillar.branch.zh);
+                return `
+                  <td class="bazi-phase-cell">
+                    <div><strong>${p.order}. ${p.en}</strong></div>
+                    <div style="color: #64748b;">${p.py} / ${p.zh} ${p.symbol}</div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 7. Deity (สิบเทพ) -->
+            <tr>
+              <td class="row-header-col">Deity<br><small style="font-size:10px; color:#94a3b8;">สิบเทพ (Ten Gods)</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const tg = col.isDM ? { zh: '日主', py: 'Day Master', th: 'ดิถีธาตุ (ตนเอง)' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', th: 'สหาย' });
+                return `
+                  <td style="text-align: center; font-size: 12px; font-weight: 700; color: #475569;">
+                    <div>${tg.zh} (${tg.py})</div>
+                    <div style="font-size: 11px; color: #7c3aed; font-weight: 600;">${tg.th}</div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 8. Star (เทพและดาวชะตา 神煞) -->
+            <tr>
+              <td class="row-header-col">Star<br><small style="font-size:10px; color:#94a3b8;">เทพและดาวชะตา</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const stars = this.computeDetailedStars(
+                  col.pillar.branch.zh,
+                  col.pillar.stem.zh,
+                  dayStem,
+                  dayBranch,
+                  yearBranch,
+                  monthBranch
+                );
+                return `
+                  <td class="bazi-stars-cell">
+                    ${stars.dmStars.length > 0 ? `
+                      <div style="margin-bottom: 4px;">
+                        <span style="color: #7c3aed; font-weight: 700;">★ DM:</span> ${stars.dmStars.join(', ')}
+                      </div>
+                    ` : ''}
+                    ${stars.otherStars.length > 0 ? `
+                      <div>
+                        <span style="color: #0284c7; font-weight: 700;">★ Branch:</span> ${stars.otherStars.join(', ')}
+                      </div>
+                    ` : ''}
+                    ${stars.dmStars.length === 0 && stars.otherStars.length === 0 ? '<span style="color: #94a3b8;">-</span>' : ''}
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- 9. Interactions (ปฏิสัมพันธ์ 刑沖合害) -->
+            <tr>
+              <td class="row-header-col">Interactions<br><small style="font-size:10px; color:#94a3b8;">ภาคี/ชง/เฮ้ง/ไห่</small></td>
+              ${columns.map(col => {
+                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const inter = this.computeDetailedInteractions(col.pillar, natalCols, null, null, 'natal');
+                return `
+                  <td class="bazi-interactions-cell">
+                    ${inter.primary.length > 0 ? inter.primary.map(it => {
+                      const cls = this.getInteractionClass(it);
+                      const st = this.getInteractionStyle(it);
+                      return `<div class="interaction-item ${cls}" style="${st}">${it}</div>`;
+                    }).join('') : '<div style="color: #94a3b8; font-size: 11px;">- ไม่มีจุดปะทะในพื้นดวง -</div>'}
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+          </tbody>
+        </table>
+      `;
+    },
+
+    prevDaYun: function () {
+      if (!this.currentChart || !this.currentChart.daYunPillars) return;
+      const count = this.currentChart.daYunPillars.length;
+      let idx = (this.selectedDaYunIndex !== null && this.selectedDaYunIndex !== undefined) ? this.selectedDaYunIndex : 0;
+      if (idx > 0) {
+        this.selectDaYun(idx - 1);
+      } else {
+        this.showToast('อยู่วัยจรเริ่มต้นแล้วค่ะ');
+      }
+    },
+
+    nextDaYun: function () {
+      if (!this.currentChart || !this.currentChart.daYunPillars) return;
+      const count = this.currentChart.daYunPillars.length;
+      let idx = (this.selectedDaYunIndex !== null && this.selectedDaYunIndex !== undefined) ? this.selectedDaYunIndex : 0;
+      if (idx < count - 1) {
+        this.selectDaYun(idx + 1);
+      } else {
+        this.showToast('อยู่วัยจรสุดท้ายแล้วค่ะ');
+      }
+    },
+
+    toggleDailyShowcase: function () {
+      const showcase = document.getElementById('baziGuestDailyShowcase');
+      const arrow = document.getElementById('baziDailyAccordionArrow');
+      if (showcase) {
+        showcase.classList.toggle('hidden');
+        if (arrow) arrow.classList.toggle('rotated', !showcase.classList.contains('hidden'));
+      }
+    },
+
     init: function () {
       this.loadSavedProfiles();
+      this.populateDateTimeDropdowns();
       this.setDefaultCurrentDateTimeInputs();
+      this.syncDateInputToDropdowns();
+      this.syncTimeInputToDropdowns();
       this.initGuestInputs();
       this.renderQuickProfileSelect();
       this.bindEvents();
@@ -1391,6 +2402,7 @@
       } else {
         this.calculateFromInputs(false);
       }
+      this.switchSubMenu(this.currentSubMenu || 'basic');
       this.switchMode(this.currentMode, true);
 
       // If arriving with explicit parameters from another view or URL query
@@ -1441,23 +2453,12 @@
         expertLockBadge.style.display = isLoggedIn ? 'none' : 'inline-flex';
       }
 
-      if (!isLoggedIn) {
-        if (guestView) guestView.style.display = 'block';
-        if (memberHeader) memberHeader.style.display = 'none';
-        if (toolbarCard) toolbarCard.style.display = 'none';
-        if (profileField) profileField.style.display = 'none';
-        if (this.currentMode === 'expert') {
-          this.switchMode('basic', false);
-        }
-        this.initGuestInputs();
-      } else {
-        if (guestView) guestView.style.display = 'none';
-        if (memberHeader) memberHeader.style.display = 'flex';
-        if (toolbarCard) toolbarCard.style.display = 'block';
-        if (profileField) profileField.style.display = 'flex';
-        this.updateMemberHeader(currentUser);
-        this.renderQuickProfileSelect();
+      // Consistently show the unified Bazi app views
+      if (this.currentChart) {
+        this.renderBasicSuite(this.currentChart);
+        this.renderAdvanceSuite(this.currentChart);
       }
+      this.renderQuickProfileSelect();
     },
 
     updateMemberHeader: function (user) {
@@ -1510,6 +2511,8 @@
       if (hourInput) hourInput.value = birthTime;
       if (genderSelect) genderSelect.value = gender;
       if (quickSel) quickSel.value = '__my_profile__';
+      this.syncDateInputToDropdowns();
+      this.syncTimeInputToDropdowns();
 
       // Default mode after login is Basic!
       this.switchMode('basic');
@@ -2029,7 +3032,8 @@
         birthHour,
         birthMinute,
         gender,
-        name
+        name,
+        isUnknownTime
       });
 
       // Compute Oracle Verdict
@@ -2259,6 +3263,8 @@
       if (nameInput) nameInput.value = 'ดวงปัจจุบัน';
       if (dateInput) dateInput.value = todayStr;
       if (hourInput) hourInput.value = defaultTimeStr;
+      this.syncDateInputToDropdowns();
+      this.syncTimeInputToDropdowns();
       this.selectedYear = now.getFullYear();
 
       const quickSel = document.getElementById('baziQuickProfileSelect');
@@ -2381,11 +3387,49 @@
       };
 
       if (dateInput) {
-        dateInput.addEventListener('change', onManualInputChange);
-        dateInput.addEventListener('input', onManualInputChange);
+        dateInput.addEventListener('change', () => {
+          this.syncDateInputToDropdowns();
+          onManualInputChange();
+        });
+        dateInput.addEventListener('input', () => {
+          this.syncDateInputToDropdowns();
+          onManualInputChange();
+        });
       }
+
+      const daySel = document.getElementById('baziBirthDay');
+      const monthSel = document.getElementById('baziBirthMonth');
+      const yearSel = document.getElementById('baziBirthYear');
+      const onDateDropdownChange = () => {
+        this.syncDropdownsToDateInput();
+        onManualInputChange();
+      };
+      if (daySel) daySel.addEventListener('change', onDateDropdownChange);
+      if (monthSel) monthSel.addEventListener('change', onDateDropdownChange);
+      if (yearSel) yearSel.addEventListener('change', onDateDropdownChange);
+
       if (hourInput) {
-        hourInput.addEventListener('change', onManualInputChange);
+        hourInput.addEventListener('change', () => {
+          this.syncTimeInputToDropdowns();
+          onManualInputChange();
+        });
+      }
+
+      const hourSel = document.getElementById('baziBirthHour');
+      const minSel = document.getElementById('baziBirthMinute');
+      const onTimeDropdownChange = () => {
+        this.syncDropdownsToTimeInput();
+        onManualInputChange();
+      };
+      if (hourSel) hourSel.addEventListener('change', onTimeDropdownChange);
+      if (minSel) minSel.addEventListener('change', onTimeDropdownChange);
+
+      const unknownCheck = document.getElementById('baziUnknownTimeCheck');
+      if (unknownCheck) {
+        unknownCheck.addEventListener('change', () => {
+          this.onUnknownTimeChange();
+          onManualInputChange();
+        });
       }
       if (genderSelect) {
         genderSelect.addEventListener('change', onManualInputChange);
@@ -2557,13 +3601,16 @@
       }
 
       const gender = genderSelect ? genderSelect.value : 'male';
+      const unknownCheck = document.getElementById('baziUnknownTimeCheck');
+      const isUnknownTime = !!(unknownCheck && unknownCheck.checked);
 
       const chart = BaziEngine.calculateChart({
         birthDate,
         birthHour,
         birthMinute,
         gender,
-        name
+        name,
+        isUnknownTime
       });
 
       this.currentChart = chart;
@@ -2576,11 +3623,8 @@
       this.selectedDaYunIndex = matchingIdx !== -1 ? matchingIdx : 0;
 
       this.renderChart(chart);
-      this.renderDaYunInterpretation();
-      this.renderAnnualAndMonthlyFortune();
-      if (this.currentMode === 'expert') {
-        this.renderExpertSuite();
-      }
+      this.renderBasicSuite(chart);
+      this.renderAdvanceSuite(chart);
 
       const triSection = document.getElementById('baziTriSection');
       const fourPillarsSec = document.getElementById('baziFourPillarsSection');
@@ -2716,6 +3760,8 @@
       if (dateInput) dateInput.value = p.birthDate;
       if (hourInput) hourInput.value = p.birthTime;
       if (genderSelect) genderSelect.value = p.gender;
+      this.syncDateInputToDropdowns();
+      this.syncTimeInputToDropdowns();
 
       const quickSel = document.getElementById('baziQuickProfileSelect');
       if (quickSel) quickSel.value = p.id;

@@ -20708,3 +20708,841 @@ body.is-mobile .direct-answer-verdict {
 
 
 
+
+
+/* ==========================================================================
+   BAZI REDESIGN: SUBMENU (1. Basic | 2. Advance), DUAL INPUTS, 4-PILLAR TABLES
+   ========================================================================== */
+
+/* Submenu Navigation Bar */
+.bazi-sub-nav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.04);
+}
+
+.bazi-sub-nav-btn {
+  flex: 1;
+  max-width: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-radius: 14px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Prompt', -apple-system, sans-serif;
+  text-align: left;
+}
+
+.bazi-sub-nav-btn i {
+  font-size: 20px;
+  transition: transform 0.25s ease;
+}
+
+.bazi-sub-nav-btn .sub-nav-label-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bazi-sub-nav-btn .sub-nav-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: inherit;
+  line-height: 1.2;
+}
+
+.bazi-sub-nav-btn .sub-nav-desc {
+  font-size: 11.5px;
+  color: #94a3b8;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.bazi-sub-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+  color: #7c3aed;
+}
+
+.bazi-sub-nav-btn:hover i {
+  transform: scale(1.1);
+}
+
+.bazi-sub-nav-btn.active {
+  background: #ffffff;
+  color: #7c3aed;
+  border-color: rgba(124, 58, 237, 0.25);
+  box-shadow: 0 6px 20px rgba(124, 58, 237, 0.12);
+}
+
+.bazi-sub-nav-btn.active .sub-nav-title {
+  color: #7c3aed;
+}
+
+.bazi-sub-nav-btn.active .sub-nav-desc {
+  color: #8b5cf6;
+}
+
+/* Sub-views */
+.bazi-sub-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.bazi-sub-view.hidden {
+  display: none !important;
+}
+
+/* Input Form Card */
+.bazi-input-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.bazi-card-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.bazi-card-title-bar .title-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.bazi-quick-profile-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.bazi-quick-profile-select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: #334155;
+  cursor: pointer;
+  outline: none;
+}
+
+.bazi-quick-profile-select:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+}
+
+/* Form Grid */
+.bazi-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.bazi-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bazi-form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bazi-control {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  font-family: inherit;
+  font-size: 13.5px;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.bazi-control:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+/* Dual Date & Time Inputs */
+.bazi-dual-date-row,
+.bazi-dual-time-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bazi-date-picker {
+  flex: 0 0 140px;
+  min-width: 130px;
+}
+
+.bazi-time-picker {
+  flex: 0 0 110px;
+  min-width: 100px;
+}
+
+.bazi-dropdowns-row,
+.bazi-time-dropdowns-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex: 1;
+}
+
+.bazi-dropdowns-row select,
+.bazi-time-dropdowns-row select {
+  flex: 1;
+  min-width: 60px;
+  padding: 9px 8px;
+  font-size: 13px;
+}
+
+.bazi-dropdowns-row .select-year {
+  flex: 1.4;
+}
+
+.time-sep {
+  font-weight: 700;
+  color: #94a3b8;
+  padding: 0 2px;
+}
+
+/* Unknown Time Toggle */
+.bazi-time-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bazi-unknown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #7c3aed !important;
+  cursor: pointer;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.bazi-unknown-toggle:hover {
+  background: #ede9fe;
+}
+
+.bazi-unknown-toggle input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #7c3aed;
+}
+
+.bazi-unknown-notice {
+  margin-top: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bazi-unknown-notice.hidden {
+  display: none !important;
+}
+
+.bazi-dual-time-row.disabled-inputs {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Action Row Buttons */
+.bazi-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid #f8fafc;
+}
+
+.bazi-btn-primary {
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  color: #ffffff;
+  border: none;
+  padding: 11px 24px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.28);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bazi-btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #7e22ce 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+}
+
+.bazi-btn-save {
+  background: #ffffff;
+  color: #059669;
+  border: 1.5px solid #10b981;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.bazi-btn-save:hover {
+  background: #ecfdf5;
+  border-color: #059669;
+  transform: translateY(-1px);
+}
+
+.bazi-btn-saved-list {
+  background: #ffffff;
+  color: #475569;
+  border: 1.5px solid #cbd5e1;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.bazi-btn-saved-list:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #1e293b;
+  transform: translateY(-1px);
+}
+
+/* Basic 4 Pillars Table */
+.bazi-basic-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 16px;
+}
+
+.bazi-basic-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.bazi-basic-table th {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  color: #6b21a8;
+  padding: 12px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid #e9d5ff;
+}
+
+.bazi-basic-table th.th-day-master {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.bazi-basic-table td {
+  padding: 14px 10px;
+  border: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.bazi-basic-row-label {
+  width: 110px;
+  background: #f8fafc !important;
+  font-weight: 700;
+  color: #475569;
+  font-size: 13px;
+  border-right: 2px solid #e2e8f0 !important;
+}
+
+.basic-pillar-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.basic-stem-char,
+.basic-branch-char {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-family: 'Outfit', 'Prompt', sans-serif;
+}
+
+.basic-stem-py,
+.basic-branch-py {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.basic-element-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 2px;
+  display: inline-block;
+}
+
+.basic-dm-crown {
+  font-size: 10px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.basic-unknown-hour {
+  color: #94a3b8;
+  font-size: 13px;
+  font-style: italic;
+  padding: 12px 6px;
+}
+
+/* Link Banner to Advance */
+.bazi-advance-link-banner {
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border: 1.5px solid #d8b4fe;
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.bazi-advance-link-banner .link-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.bazi-advance-link-banner .link-icon {
+  font-size: 24px;
+  color: #7c3aed;
+}
+
+.bazi-advance-link-banner strong {
+  font-size: 14.5px;
+  color: #581c87;
+  display: block;
+}
+
+.bazi-advance-link-banner p {
+  font-size: 12px;
+  color: #6b21a8;
+  margin: 2px 0 0 0;
+}
+
+.bazi-advance-link-btn {
+  background: #7c3aed;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  transition: all 0.2s ease;
+}
+
+.bazi-advance-link-btn:hover {
+  background: #6d28d9;
+  transform: translateY(-1px);
+}
+
+/* Age Display Card */
+.bazi-age-card {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid #bfdbfe;
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.05);
+}
+
+.bazi-age-icon {
+  font-size: 26px;
+  color: #0284c7;
+}
+
+.bazi-age-content strong {
+  font-size: 16px;
+  color: #0369a1;
+}
+
+.bazi-age-content p {
+  font-size: 13px;
+  color: #0c4a6e;
+  margin: 3px 0 0 0;
+}
+
+/* Spider / Radar Chart Section */
+.bazi-radar-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+.bazi-spider-svg-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+
+.bazi-spider-svg-wrap svg {
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 4px 12px rgba(124, 58, 237, 0.08));
+}
+
+.bazi-spider-legend-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radar-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.radar-score-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.radar-score-bar-wrap {
+  flex: 1;
+  max-width: 120px;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 12px;
+}
+
+.radar-score-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #7c3aed, #ec4899);
+}
+
+.radar-score-num {
+  font-size: 14px;
+  font-weight: 800;
+  color: #7c3aed;
+  min-width: 42px;
+  text-align: right;
+}
+
+/* Feng Shui Three Column Grid */
+.bazi-fengshui-three-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.fengshui-col-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fengshui-col-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.fengshui-col-body {
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.fengshui-pill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.fengshui-color-pill {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Daily Showcase Accordion */
+.bazi-daily-accordion-wrap {
+  margin-top: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.bazi-accordion-toggle-btn {
+  width: 100%;
+  background: #f8fafc;
+  border: none;
+  padding: 14px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.2s ease;
+}
+
+.bazi-accordion-toggle-btn:hover {
+  background: #f1f5f9;
+}
+
+.accordion-arrow {
+  transition: transform 0.25s ease;
+}
+
+.accordion-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+/* 10-Year Luck Pillars Navigation Controls */
+.bazi-dayun-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bazi-nav-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.bazi-nav-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+  color: #1e293b;
+}
+
+.bazi-dayun-current-pill {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7c3aed;
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* Advance Section Descriptions */
+.bazi-section-desc {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: -6px;
+  margin-bottom: 14px;
+}
+
+/* Mode Tags */
+.bazi-mode-tag {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #d8b4fe;
+}
+
+.bazi-mode-tag.advance-tag {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.bazi-btn-toggle-inputs {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bazi-btn-toggle-inputs:hover {
+  background: #ffffff;
+  color: #7c3aed;
+  border-color: #7c3aed;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .bazi-sub-nav-bar {
+    flex-direction: row;
+    padding: 6px;
+  }
+  .bazi-sub-nav-btn {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+  .bazi-sub-nav-btn i {
+    font-size: 16px;
+  }
+  .bazi-sub-nav-btn .sub-nav-title {
+    font-size: 13.5px;
+  }
+  .bazi-sub-nav-btn .sub-nav-desc {
+    font-size: 10px;
+  }
+  .bazi-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .bazi-radar-layout {
+    grid-template-columns: 1fr;
+  }
+  .bazi-fengshui-three-col {
+    grid-template-columns: 1fr;
+  }
+  .bazi-advance-link-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .bazi-advance-link-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

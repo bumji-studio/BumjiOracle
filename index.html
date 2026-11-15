@@ -21,7 +21,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261114_v9">
+  <link rel="stylesheet" href="styles.css?v=20261115_v1">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -525,16 +525,283 @@
     <!-- VIEW: BAZI APP VIEW (Four Pillars of Destiny / 八字命理) -->
   <div id="baziAppView" class="view-container hidden">
     <div class="bazi-app-container">
-      
-      <!-- ================================================================= -->
-      <!-- 1. GUEST / BEFORE LOGIN VIEW (กรอกข้อมูลเพื่อตั้งผังดวง - ไม่มีกล่องถามคำถาม) -->
-      <!-- ================================================================= -->
-      <div id="baziGuestLandingView" class="bazi-guest-landing-view">
-        
-        <!-- ================================================================= -->
-        <!-- DAILY BAZI & 12 DAY OFFICERS SHOWCASE (ผัง Bazi ประจำวัน & ฤกษ์ 12 เทพพิทักษ์) -->
-        <!-- ================================================================= -->
-        <div class="bazi-guest-daily-showcase" id="baziGuestDailyShowcase">
+
+      <!-- ======================================================= -->
+      <!-- TOP SUB-MENU BAR: 1. Basic | 2. Advance -->
+      <!-- ======================================================= -->
+      <nav class="bazi-sub-nav-bar" id="baziSubNavBar" aria-label="เมนูย่อยผังดวงปาจื่อ">
+        <button type="button" class="bazi-sub-nav-btn active" id="baziSubTabBasic" onclick="window.BaziApp.switchSubMenu('basic')">
+          <i class="fa-solid fa-user-check"></i>
+          <span class="sub-nav-label-wrap">
+            <span class="sub-nav-title">1. Basic</span>
+            <span class="sub-nav-desc">ผังดวง 4 เสา &amp; สรุปภาพรวมชีวิต</span>
+          </span>
+        </button>
+        <button type="button" class="bazi-sub-nav-btn" id="baziSubTabAdvance" onclick="window.BaziApp.switchSubMenu('advance')">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span class="sub-nav-label-wrap">
+            <span class="sub-nav-title">2. Advance</span>
+            <span class="sub-nav-desc">วิเคราะห์ 4 เสาเจาะลึก • วัยจร • รายเดือน</span>
+          </span>
+        </button>
+      </nav>
+
+      <!-- ======================================================= -->
+      <!-- 1. SUB-VIEW: BASIC -->
+      <!-- ======================================================= -->
+      <div id="baziSubViewBasic" class="bazi-sub-view">
+
+        <!-- Input Form Card (Basic) -->
+        <section class="bazi-input-card" id="baziBasicInputCard">
+          <div class="bazi-card-title-bar">
+            <div class="title-left">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+              <strong>กรอกวันเดือนปีเกิดและเวลาเกิด (Basic)</strong>
+            </div>
+            <div class="bazi-quick-profile-wrap">
+              <label for="baziQuickProfileSelect"><i class="fa-solid fa-address-book"></i> เลือกลูกดวง:</label>
+              <select id="baziQuickProfileSelect" class="bazi-quick-profile-select">
+                <option value="__my_profile__">👤 ดวงของฉัน</option>
+                <option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="bazi-form-grid">
+            <!-- 1. ชื่อ -->
+            <div class="bazi-form-field field-name">
+              <label for="baziNameInput"><i class="fa-solid fa-user"></i> 1. ชื่อ / คำเรียกแทน:</label>
+              <input type="text" id="baziNameInput" class="bazi-control" value="ดวงของฉัน" placeholder="ชื่อเล่น หรือ ฉายา">
+            </div>
+
+            <!-- 2. เพศ -->
+            <div class="bazi-form-field field-gender">
+              <label for="baziGenderSelect"><i class="fa-solid fa-venus-mars"></i> 2. เพศกำเนิด:</label>
+              <select id="baziGenderSelect" class="bazi-control">
+                <option value="female" selected>♀️ หญิง (Female)</option>
+                <option value="male">♂️ ชาย (Male)</option>
+              </select>
+            </div>
+
+            <!-- 3. วันเดือนปีเกิด (พิมพ์ + Dropdown วัน เดือน ปี) -->
+            <div class="bazi-form-field field-birthdate">
+              <label><i class="fa-solid fa-calendar-day"></i> 3. วันเดือนปีเกิด (พิมพ์ หรือ เลือกจากรายการ):</label>
+              <div class="bazi-dual-date-row">
+                <input type="date" id="baziDateInput" class="bazi-control bazi-date-picker" title="พิมพ์หรือเลือกจากปฏิทิน">
+                <div class="bazi-dropdowns-row">
+                  <select id="baziBirthDay" class="bazi-control select-day" aria-label="เลือกวันเกิด (1-31)"></select>
+                  <select id="baziBirthMonth" class="bazi-control select-month" aria-label="เลือกเดือนเกิด"></select>
+                  <select id="baziBirthYear" class="bazi-control select-year" aria-label="เลือกปีเกิด (พ.ศ. / ค.ศ.)"></select>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. เวลาเกิด (พิมพ์ + Dropdown ชั่วโมง นาที + ติ๊กไม่รู้เวลา) -->
+            <div class="bazi-form-field field-birthtime" id="baziTimeFieldGroup">
+              <div class="bazi-time-label-row">
+                <label for="baziHourInput"><i class="fa-solid fa-clock"></i> 4. เวลาเกิด (พิมพ์ หรือ เลือกจากรายการ):</label>
+                <label class="bazi-unknown-toggle" id="baziUnknownTimeWrap" title="ติ๊กเมื่อไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
+                  <input type="checkbox" id="baziUnknownTimeCheck">
+                  <span>ไม่รู้เวลาเกิด</span>
+                </label>
+              </div>
+              <div class="bazi-dual-time-row" id="baziTimeControlsWrap">
+                <input type="time" id="baziHourInput" class="bazi-control bazi-time-picker" value="12:00" title="พิมพ์เวลาเกิด">
+                <div class="bazi-time-dropdowns-row">
+                  <select id="baziBirthHour" class="bazi-control select-hour" aria-label="เลือกชั่วโมงเกิด"></select>
+                  <span class="time-sep">:</span>
+                  <select id="baziBirthMinute" class="bazi-control select-minute" aria-label="เลือกนาทีเกิด"></select>
+                </div>
+              </div>
+              <div id="baziUnknownTimeNotice" class="bazi-unknown-notice hidden">
+                <i class="fa-solid fa-circle-info"></i> ไม่ระบุเวลาเกิด: ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน) และดิถีธาตุ
+              </div>
+            </div>
+          </div>
+
+          <!-- Buttons Row: คำนวณ, บันทึก, หน้ารวมดวง -->
+          <div class="bazi-action-row">
+            <button type="button" class="bazi-btn-primary" id="baziCalcBtn" onclick="window.BaziApp.calculateFromInputs(true)">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา
+            </button>
+            <button type="button" class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()" title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
+              <i class="fa-solid fa-bookmark"></i> บันทึกดวงนี้
+            </button>
+            <button type="button" class="bazi-btn-saved-list" id="baziOpenSavedModalBtn" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
+              <i class="fa-solid fa-folder-open"></i> หน้ารวมดวงที่บันทึก (<span id="baziSavedCount">0</span>)
+            </button>
+          </div>
+        </section>
+
+        <!-- Basic Calculated Results View -->
+        <div id="baziBasicResults" class="bazi-results-wrap">
+
+          <!-- 1. ตาราง 4 เสา (Basic: ยาม วัน เดือน ปี / Hour stem, Earth Branch) + Link ไป Advance -->
+          <section class="bazi-section-card bazi-basic-pillars-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-table-cells" style="color: #7c3aed;"></i>
+                <strong>ตาราง 4 เสาชะตาฟ้าดิน (Four Pillars Matrix)</strong>
+              </div>
+              <span class="bazi-mode-tag">Basic Edition</span>
+            </div>
+
+            <div id="baziBasicPillarsTable" class="bazi-basic-table-wrap">
+              <!-- Dynamically populated 4 columns (ยาม วัน เดือน ปี) with Hour stem & Earth Branch -->
+            </div>
+
+            <!-- Prominent Link to Advance with Data Carry-Over -->
+            <div class="bazi-advance-link-banner">
+              <div class="link-banner-text">
+                <i class="fa-solid fa-wand-magic-sparkles link-icon"></i>
+                <div>
+                  <strong>ดูตาราง 4 เสาฉบับเจาะลึกระดับซินแส (Advance)</strong>
+                  <p>เจาะลึกราศีแฝง, นัปอิม, 12 ขั้นชีพ, สิบเทพ, เทพดาวชะตา, และจุดปะทะ/ฮะ พร้อมดึงข้อมูลจากหน้านี้ไปแสดงทันที</p>
+                </div>
+              </div>
+              <button type="button" class="bazi-advance-link-btn" onclick="window.BaziApp.goToAdvance()">
+                <span>ดูตาราง 4 เสาฉบับเจาะลึก (หน้า Advance) ➔</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 2. อายุปัจจุบัน -->
+          <section class="bazi-age-card" id="baziAgeDisplayCard">
+            <!-- Dynamically populated: 🎂 อายุปัจจุบัน: xx ปี (เกิด พ.ศ. xxxx / ค.ศ. xxxx) • ดิถีธาตุ: xx -->
+          </section>
+
+          <!-- 3. กราฟแมงมุม (Spider / Radar Chart 5 มิติ: ชีวิต, การเงิน, การงาน, ความสัมพันธ์, สุขภาพ) -->
+          <section class="bazi-section-card bazi-spider-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-chart-pie" style="color: #ec4899;"></i>
+                <strong>กราฟแมงมุมประเมินภาพรวมชีวิต 5 ด้าน (Life Balance Radar)</strong>
+              </div>
+              <span class="bazi-mode-tag">5 มิติชีวิต</span>
+            </div>
+
+            <div class="bazi-radar-layout">
+              <div id="baziSpiderChartSvgWrap" class="bazi-spider-svg-wrap">
+                <!-- Pure SVG Radar Chart -->
+              </div>
+              <div id="baziSpiderLegendWrap" class="bazi-spider-legend-wrap">
+                <!-- Score Breakdown & Explanations -->
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. ภาพรวมบุคลิกภาพ อุปนิสัย การงานอาชีพ โชคลาภการเงินทรัพย์ ความรักคู่ครอง ชีวิตคู่ สุขภาพ -->
+          <section class="bazi-section-card bazi-overview-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-compass" style="color: #0284c7;"></i>
+                <strong>ภาพรวมคำทำนายและกลยุทธ์ชีวิต (Strategic Life Guidance)</strong>
+              </div>
+            </div>
+            <div class="bazi-insights-grid">
+              <!-- Personality & Traits -->
+              <div class="bazi-insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  </div>
+                  <span class="insight-title">ภาพรวมบุคลิกภาพ &amp; อุปนิสัย</span>
+                </div>
+                <p class="insight-content" id="baziTraitsText">-</p>
+              </div>
+
+              <!-- Career -->
+              <div class="bazi-insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">
+                    <i class="fa-solid fa-briefcase"></i>
+                  </div>
+                  <span class="insight-title">การงานอาชีพ &amp; ธุรกิจ</span>
+                </div>
+                <p class="insight-content" id="baziCareerText">-</p>
+              </div>
+
+              <!-- Wealth -->
+              <div class="bazi-insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                    <i class="fa-solid fa-coins"></i>
+                  </div>
+                  <span class="insight-title">โชคลาภการเงินทรัพย์ &amp; การลงทุน</span>
+                </div>
+                <p class="insight-content" id="baziWealthText">-</p>
+              </div>
+
+              <!-- Love -->
+              <div class="bazi-insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
+                    <i class="fa-solid fa-heart"></i>
+                  </div>
+                  <span class="insight-title">ความรักคู่ครอง &amp; ชีวิตคู่</span>
+                </div>
+                <p class="insight-content" id="baziLoveText">-</p>
+              </div>
+
+              <!-- Health -->
+              <div class="bazi-insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
+                    <i class="fa-solid fa-notes-medical"></i>
+                  </div>
+                  <span class="insight-title">สุขภาพ &amp; การดูแลสมดุลร่างกาย</span>
+                </div>
+                <p class="insight-content" id="baziHealthText">-</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 5. วิเคราะห์ช่วงวัยจร ช่วงปีปัจจุบัน -->
+          <section class="bazi-section-card bazi-current-dayun-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-timeline" style="color: #7c3aed;"></i>
+                <strong>วิเคราะห์ช่วงวัยจร ช่วงปีปัจจุบัน (Current Luck Pillar)</strong>
+              </div>
+              <span id="baziCurrentDayunBadge" class="bazi-badge-purple">-</span>
+            </div>
+            <div id="baziCurrentDayunAnalysisBox" class="bazi-current-dayun-box">
+              <!-- Dynamically populated current Da Yun interpretation -->
+            </div>
+          </section>
+
+          <!-- 6. วิเคราะห์ปีจร ปัจจุบัน -->
+          <section class="bazi-section-card bazi-current-annual-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-calendar-star" style="color: #d97706;"></i>
+                <strong>วิเคราะห์ปีจร ปัจจุบัน (Current Annual Pillar: <span id="baziBasicAnnualYearTitle">2026</span>)</strong>
+              </div>
+            </div>
+            <div id="baziBasicAnnualBanner" class="bazi-annual-banner"></div>
+            <div id="baziBasicAnnualFortuneGrid" class="bazi-fortune-grid" style="margin-top: 14px;"></div>
+          </section>
+
+          <!-- 7. การปรับฮวงจุ้ย: สีมงคล, ทิศมงคล, ธาตุปรับดวง -->
+          <section class="bazi-section-card bazi-fengshui-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-yin-yang" style="color: #10b981;"></i>
+                <strong>การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา (Feng Shui &amp; Remedies)</strong>
+              </div>
+            </div>
+            <div class="bazi-fengshui-three-col" id="baziFengShuiThreeCol">
+              <!-- Dynamically populated: 1. สีมงคล, 2. ทิศมงคล, 3. ธาตุปรับดวง -->
+            </div>
+          </section>
+
+          <!-- Collapsible Accordion: Daily BaZi Matrix & 12 Day Officers Showcase -->
+          <div class="bazi-daily-accordion-wrap">
+            <button type="button" class="bazi-accordion-toggle-btn" onclick="window.BaziApp.toggleDailyShowcase()">
+              <span><i class="fa-solid fa-calendar-day" style="color: #d97706;"></i> 🏮 ดูผังดวงปาจื่อประจำวัน &amp; สารทฤกษ์ 12 วันมงคลวันนี้ (Daily Reference)</span>
+              <i class="fa-solid fa-chevron-down accordion-arrow" id="baziDailyAccordionArrow"></i>
+            </button>
+            <div class="bazi-guest-daily-showcase" id="baziGuestDailyShowcase">
           <!-- Daily Header -->
           <div class="daily-showcase-header">
             <div class="daily-badges-row">
@@ -606,216 +873,136 @@
             </div>
           </div>
         </div>
-
-        <!-- Section Divider to Personal Calculation Form -->
-        <div class="bazi-guest-divider">
-          <div class="divider-line"></div>
-          <div class="divider-content">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>หรือ คำนวณผังดวงชะตาส่วนบุคคลของคุณ (Personal BaZi Birth Chart)</span>
-          </div>
-          <div class="divider-line"></div>
-        </div>
-
-        <!-- Guest Form Card: Birth Info Only (No Question Box) -->
-        <div class="bazi-guest-form-card">
-          <div class="guest-card-header">
-            <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-            <span>กรอกข้อมูลเพื่อคำนวณตั้งผังดวงชะตา</span>
           </div>
 
-          <div class="bazi-guest-inputs-grid-v2">
-            <!-- 1. กรอก ชื่อ -->
-            <div class="bazi-guest-field-group field-name">
-              <label for="baziGuestNameInput"><i class="fa-solid fa-user"></i> 1. กรอกชื่อ / คำเรียกแทน:</label>
-              <input type="text" id="baziGuestNameInput" class="bazi-guest-control" value="ดวงชะตาของคุณ" placeholder="พิมพ์ชื่อเล่น หรือ ฉายา">
-            </div>
+        </div> <!-- END baziBasicResults -->
+      </div> <!-- END baziSubViewBasic -->
 
-            <!-- 2. เลือก เพศ -->
-            <div class="bazi-guest-field-group field-gender">
-              <label for="baziGuestGenderSelect"><i class="fa-solid fa-venus-mars"></i> 2. เลือกเพศกำเนิด:</label>
-              <select id="baziGuestGenderSelect" class="bazi-guest-control">
-                <option value="female" selected>♀️ หญิง (Female)</option>
-                <option value="male">♂️ ชาย (Male)</option>
-              </select>
-            </div>
+      <!-- ======================================================= -->
+      <!-- 2. SUB-VIEW: ADVANCE -->
+      <!-- ======================================================= -->
+      <div id="baziSubViewAdvance" class="bazi-sub-view hidden">
 
-            <!-- 3. เลือก วัน เดือน ปีเกิด -->
-            <div class="bazi-guest-field-group field-birthdate">
-              <label><i class="fa-solid fa-calendar-day"></i> 3. เลือกวันเดือนปีเกิด (วัน / เดือน / ปี):</label>
-              <div class="bazi-guest-dmy-wrap">
-                <select id="baziGuestBirthDay" class="bazi-guest-control select-day" aria-label="เลือกวันเกิด (1-31)"></select>
-                <select id="baziGuestBirthMonth" class="bazi-guest-control select-month" aria-label="เลือกเดือนเกิด">
-                  <option value="1">1 - ม.ค.</option>
-                  <option value="2">2 - ก.พ.</option>
-                  <option value="3">3 - มี.ค.</option>
-                  <option value="4">4 - เม.ย.</option>
-                  <option value="5">5 - พ.ค.</option>
-                  <option value="6">6 - มิ.ย.</option>
-                  <option value="7">7 - ก.ค.</option>
-                  <option value="8" selected>8 - ส.ค.</option>
-                  <option value="9">9 - ก.ย.</option>
-                  <option value="10">10 - ต.ค.</option>
-                  <option value="11">11 - พ.ย.</option>
-                  <option value="12">12 - ธ.ค.</option>
-                </select>
-                <select id="baziGuestBirthYear" class="bazi-guest-control select-year" aria-label="เลือกปีเกิด (พ.ศ. / ค.ศ.)"></select>
-              </div>
-              <input type="hidden" id="baziGuestDateInput" value="1998-08-18">
+        <!-- Input Form in Advance (Shown if no chart yet, or toggleable) -->
+        <section class="bazi-input-card" id="baziAdvanceInputCard">
+          <div class="bazi-card-title-bar">
+            <div class="title-left">
+              <i class="fa-solid fa-graduation-cap" style="color: #7c3aed;"></i>
+              <strong>ตั้งผังดวงชะตา (Advance Calculator)</strong>
             </div>
-
-            <!-- 4. เลือก เวลาเกิด & ติ๊กไม่ทราบเวลาได้ -->
-            <div class="bazi-guest-field-group field-birthtime" id="baziGuestTimeGroup">
-              <div class="time-label-row">
-                <label for="baziGuestBirthHour"><i class="fa-solid fa-clock"></i> 4. เลือกเวลาเกิด:</label>
-                <label class="bazi-unknown-time-toggle" id="baziGuestUnknownTimeWrap" title="ติ๊กเมื่อไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
-                  <input type="checkbox" id="baziGuestUnknownTimeCheck">
-                  <span>ไม่ทราบเวลา</span>
-                </label>
-              </div>
-              <div class="bazi-guest-time-wrap" id="baziGuestTimeSelectsWrap">
-                <select id="baziGuestBirthHour" class="bazi-guest-control select-hour" aria-label="เลือกชั่วโมงเกิด"></select>
-                <span class="time-sep">:</span>
-                <select id="baziGuestBirthMinute" class="bazi-guest-control select-minute" aria-label="เลือกนาทีเกิด"></select>
-              </div>
-              <div class="bazi-unknown-time-notice hidden" id="baziGuestUnknownTimeNotice">
-                <i class="fa-solid fa-circle-info"></i> ไม่ระบุเวลาเกิด: ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน) และดิถีธาตุ
-              </div>
-              <input type="hidden" id="baziGuestHourInput" value="12:00">
-            </div>
-          </div>
-
-          <!-- Action Row: Calculate Chart Button (No Question Box!) -->
-          <div class="bazi-guest-action-row" style="margin-top: 16px; display: flex; justify-content: center;">
-            <button type="button" class="bazi-btn-primary" id="baziGuestCalcBtn" style="padding: 12px 32px; font-size: 15px; border-radius: 24px; font-weight: 700; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณตั้งผังดวง (Calculate BaZi Chart)
+            <button type="button" class="bazi-btn-toggle-inputs hidden" id="baziAdvanceToggleFormBtn" onclick="window.BaziApp.toggleAdvanceInputForm()">
+              <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลวันเกิด
             </button>
           </div>
-        </div>
-      </div>
-      
-      <div id="baziLoggedInAppView" class="bazi-logged-in-app-view">
-        
-        <!-- Profile Owner Header Card -->
-        <div class="bazi-member-header-card" id="baziMemberHeaderCard">
-          <div class="member-header-left">
-            <div class="member-avatar" id="baziMemberAvatar">
-              <i class="fa-solid fa-user-circle"></i>
-            </div>
-            <div class="member-info">
-              <div class="member-badge"><i class="fa-solid fa-shield-cat"></i> สมาชิกแม่หมอติ๊ดติ๊ด</div>
-              <h2 class="member-name" id="baziMemberName">ผังชะตาของ: คุณผู้ใช้</h2>
-              <p class="member-meta" id="baziMemberMeta">วันเกิด: - • เวลา: - • เพศ: -</p>
-            </div>
-          </div>
-          <div class="member-header-right">
-            <button type="button" class="bazi-btn-my-chart active" id="baziBtnMyChart" onclick="window.BaziApp.loadMyProfileChart()" title="ดูผังดวงของเจ้าของ Profile">
-              <i class="fa-solid fa-user"></i> ผังดวงของฉัน
-            </button>
-            <button type="button" class="bazi-btn-saved-list" id="baziOpenSavedModalBtnTop" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
-              <i class="fa-solid fa-folder-open"></i> ดวงที่บันทึก (<span id="baziSavedCountTop">0</span>)
-            </button>
-          </div>
-        </div>
-
-        <!-- 1. Toolbar & Birth Input Card (คำนวณผังชะตา & เลือกลูกดวง / Save เก็บไว้) -->
-        <section class="bazi-toolbar-card" id="baziToolbarCard">
-          <div class="bazi-toolbar-desc-bar">
-            <span><i class="fa-solid fa-sliders" style="color: #7c3aed;"></i> <strong>เครื่องมือคำนวณผังชะตา:</strong> สามารถกรอกวันเดือนปีเวลาเกิดเพื่อคำนวณ หรือดึงรายชื่อดวงที่บันทึกไว้</span>
-          </div>
-          <div class="bazi-input-group">
-            <div class="bazi-field bazi-field-profile">
-              <label><i class="fa-solid fa-address-book"></i> เลือกลูกดวง:</label>
-              <select id="baziQuickProfileSelect" class="bazi-quick-profile-select">
-                <option value="__my_profile__">👤 ดวงของฉัน (Profile Owner)</option>
-                <option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>
-              </select>
-            </div>
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-user"></i> ชื่อลูกดวง:</label>
-              <input type="text" id="baziNameInput" value="ดวงของฉัน" placeholder="ชื่อ / นามสกุล">
-            </div>
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-venus-mars"></i> เพศ:</label>
-              <select id="baziGenderSelect">
-                <option value="male">ชาย (Male)</option>
-                <option value="female">หญิง (Female)</option>
-              </select>
-            </div>
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-calendar-day"></i> วันเกิด:</label>
-              <input type="date" id="baziDateInput">
-            </div>
-            <div class="bazi-field">
-              <label><i class="fa-solid fa-clock"></i> เวลาเกิด:</label>
-              <input type="time" id="baziHourInput">
-            </div>
-          </div>
-
-          <div class="bazi-toolbar-actions">
-            <button class="bazi-btn-primary" id="baziCalcBtn" onclick="window.BaziApp.calculateFromInputs(true)">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา (Calculate)
-            </button>
-            <button class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()" title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
-              <i class="fa-solid fa-bookmark"></i> บันทึกดวงนี้
-            </button>
-            <button class="bazi-btn-saved-list" id="baziOpenSavedModalBtn" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
-              <i class="fa-solid fa-folder-open"></i> หน้ารวมดวงที่บันทึก (<span id="baziSavedCount">0</span>)
-            </button>
-            <button class="bazi-btn-secondary" id="baziPresetNowBtn" onclick="window.BaziApp.resetToNow()" title="กลับไปที่วันและเวลาปัจจุบัน">
-              <i class="fa-solid fa-rotate-right"></i> ขณะนี้
-            </button>
-            <button class="bazi-btn-secondary" id="baziForceReloadBtn" onclick="window.BaziApp.forceHardReload()" title="ล้างแคชเบราว์เซอร์และรีโหลดโค้ดเวอร์ชันล่าสุด">
-              <i class="fa-solid fa-arrows-rotate" style="color: #0284c7;"></i> รีเฟรชล้างแคช
-            </button>
-            <button class="bazi-btn-secondary" id="baziCopySummaryBtn" onclick="window.BaziApp.copySummary()" title="คัดลอกสรุปคำทำนาย">
-              <i class="fa-solid fa-share-nodes"></i> คัดลอกสรุป
-            </button>
-            <button class="bazi-btn-secondary" id="baziOpenDeskToolbarBtn" onclick="window.BaziApp.openDeskFromToolbar()" title="เปิดหน้าโต๊ะหมอดูเพื่อดู 4 หัวข้อวิชาการ" style="border-color: #c084fc; color: #7c3aed; background: #faf5ff;">
-              <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 🪑 โต๊ะหมอดู
-            </button>
+          <div id="baziAdvanceFormBody" class="bazi-advance-form-body">
+            <!-- Dynamic synced form if opened directly in Advance -->
           </div>
         </section>
 
-        <!-- MODE SWITCHER (Basic vs Expert) - Basic is DEFAULT for Profile Owner -->
-        <section class="bazi-mode-switcher-bar">
-          <div class="bazi-mode-toggle-group">
-            <button type="button" class="bazi-mode-btn active" id="baziModeBasicBtn" onclick="window.BaziApp.switchMode('basic')">
-              <i class="fa-solid fa-user-check"></i> <strong>โหมด Basic</strong>
-              <span class="mode-sub">ผังดวงเจ้าของโปรไฟล์ • เข้าใจง่าย</span>
-            </button>
-            <button type="button" class="bazi-mode-btn" id="baziModeExpertBtn" onclick="window.BaziApp.switchMode('expert')">
-              <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong> <span class="qm-lock-badge" id="baziExpertLockBadge" style="margin-left: 6px;"><i class="fa-solid fa-lock"></i> สมาชิก</span>
-              <span class="mode-sub">คำนวณผังชะตา &amp; หมอดูเจาะลึก</span>
-            </button>
-          </div>
-          <div class="bazi-mode-hint-box" id="baziModeHintBox">
-            <div id="baziModeBasicInfo" class="mode-banner-content">
-              <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
-              <span><strong>โหมด Basic (ค่าเริ่มต้น):</strong> แสดงผังดวงชะตาของเจ้าของโปรไฟล์ สรุปดิถีธาตุ สมดุลเบญจธาตุ ธาตุส่งเสริม วัยจร 10 ปี ดวงรายปี และคำแนะนำกลยุทธ์ชีวิต 6 ด้าน</span>
-            </div>
-            <div id="baziModeExpertInfo" class="mode-banner-content hidden">
-              <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-              <span><strong>โหมด Expert:</strong> เปิดชุดเครื่องมือคำนวณผังชะตา 6 เสาเต็มรูปแบบ: ตารางเทพและดาวชะตา (神煞), ตารางปะทะ-ฮะ (刑沖合害), โต๊ะหมอดู 4 หัวข้อวิชาการ, และบันทึก/ดึงรายชื่อดวงได้ไม่จำกัด</span>
-            </div>
-          </div>
-        </section>
+        <!-- Advance Results View -->
+        <div id="baziAdvanceResults" class="bazi-results-wrap">
 
-      <!-- SUB-NAVIGATION BAR (เฉพาะเมื่อเปิดโหมด Expert: สลับระหว่าง ผังดวง 6 เสา กับ โต๊ะหมอดู) -->
-      <div id="baziExpertSubBar" class="bazi-expert-subbar">
-        <div class="bazi-expert-subnav-group">
-          <button type="button" class="bazi-sub-btn active" id="baziSubViewChartBtn" onclick="window.BaziApp.setExpertSubView('chart')">
-            <i class="fa-solid fa-table-cells"></i> <strong>ผังดวงปาจื่อ 6 เสา</strong>
-            <span class="sub-btn-desc">Four Pillars Matrix</span>
-          </button>
-          <button type="button" class="bazi-sub-btn" id="baziSubViewDeskBtn" onclick="window.BaziApp.setExpertSubView('desk')">
-            <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> <strong>🪑 โต๊ะหมอดู</strong>
-            <span class="desk-pill-tag">4 หัวข้อวิชาการ</span>
-          </button>
-        </div>
-      </div>
+          <!-- 1. ตาราง 4 เสา (Advance: 4 Columns ยาม วัน เดือน ปี, 9 Rows) -->
+          <section class="bazi-section-card bazi-advance-pillars-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-table" style="color: #7c3aed;"></i>
+                <strong>ตาราง 4 เสาชะตาฉบับเจาะลึก (Four Pillars Master Matrix)</strong>
+              </div>
+              <span class="bazi-mode-tag advance-tag">Advance SinSaeng</span>
+            </div>
+            <p class="bazi-section-desc">
+              แจกแจง 9 มิติวิชาการ: Hour stem, Earth Branch, Hidden Stem, Nayin, DM Qi, Pillar Qi, Deity, Star, และ Interactions
+            </p>
+            <div id="baziAdvanceMasterTableWrap" class="bazi-master-table-responsive">
+              <!-- Dynamically populated 4 columns (ยาม วัน เดือน ปี) with 9 rows -->
+            </div>
+          </section>
 
-      <!-- DESK VIEW (หน้าโต๊ะหมอดู: 4 หัวข้อวิชาการเจาะลึก) -->
+          <!-- 2. ตารางวัยจร 10 ปี (10-Year Luck Pillars Table + Next/Prev Controls) -->
+          <section class="bazi-section-card bazi-dayun-advance-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-timeline" style="color: #7c3aed;"></i>
+                <strong>ตารางวัยจร 10 ปี (大運 - 10-Year Luck Pillars)</strong>
+              </div>
+              <div class="bazi-dayun-nav-controls">
+                <button type="button" class="bazi-nav-btn" id="baziPrevDayunBtn" onclick="window.BaziApp.prevDaYun()">
+                  <i class="fa-solid fa-chevron-left"></i> วัยจรก่อนหน้า
+                </button>
+                <span id="baziCurrentDayunLabel" class="bazi-dayun-current-pill">วัยจรที่เลือก</span>
+                <button type="button" class="bazi-nav-btn" id="baziNextDayunBtn" onclick="window.BaziApp.nextDaYun()">
+                  วัยจรถัดไป <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="baziDayunList" class="bazi-dayun-scroll"></div>
+
+            <div id="baziDayunDetailCard" class="bazi-fortune-detail-card" style="margin-top: 16px;">
+              <div class="fortune-detail-header">
+                <div class="fortune-detail-title">
+                  <i class="fa-solid fa-clock-rotate-left" style="color: #7c3aed;"></i>
+                  <strong id="baziDayunDetailTitle">คำทำนายวัยจร 10 ปี</strong>
+                </div>
+                <span class="fortune-detail-badge"><i class="fa-solid fa-circle-check"></i> วิเคราะห์เจาะลึก 10 ปี</span>
+              </div>
+
+              <div class="bazi-fortune-grid">
+                <div class="fortune-grid-item">
+                  <div class="fortune-item-header">
+                    <i class="fa-solid fa-compass" style="color: #7c3aed;"></i> ภาพรวมวัยจร &amp; ทิศทางชีวิต
+                  </div>
+                  <p id="baziDayunOverviewText" class="fortune-item-text">-</p>
+                </div>
+                <div class="fortune-grid-item">
+                  <div class="fortune-item-header">
+                    <i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน &amp; ธุรกิจ
+                  </div>
+                  <p id="baziDayunCareerText" class="fortune-item-text">-</p>
+                </div>
+                <div class="fortune-grid-item">
+                  <div class="fortune-item-header">
+                    <i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน &amp; โชคลาภ
+                  </div>
+                  <p id="baziDayunWealthText" class="fortune-item-text">-</p>
+                </div>
+                <div class="fortune-grid-item">
+                  <div class="fortune-item-header">
+                    <i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก &amp; ครอบครัว
+                  </div>
+                  <p id="baziDayunLoveText" class="fortune-item-text">-</p>
+                </div>
+              </div>
+
+              <div id="baziDayunWarningText" class="fortune-warning-bar">
+                <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <strong>ข้อควรระวัง &amp; สุขภาพ:</strong> -
+              </div>
+            </div>
+          </section>
+
+          <!-- 3. ตารางเดือน (ภายใต้ปีจร ที่เลือก) -->
+          <section class="bazi-section-card bazi-monthly-advance-section" id="baziAdvanceMonthlySection">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-calendar-days" style="color: #0284c7;"></i>
+                <strong>ตารางเดือน 12 สารท (流月 - Solar Monthly Fortune ปี <span id="baziMonthYearLabel">2026</span>)</strong>
+              </div>
+              <div class="bazi-annual-controls-right">
+                <div class="bazi-year-chips" id="baziYearChips">
+                  <button class="bazi-year-chip" data-year="2025" onclick="window.BaziApp.selectAnnualYear(2025)">2025 (มะเส็ง)</button>
+                  <button class="bazi-year-chip active" data-year="2026" onclick="window.BaziApp.selectAnnualYear(2026)">2026 (มะเมีย)</button>
+                  <button class="bazi-year-chip" data-year="2027" onclick="window.BaziApp.selectAnnualYear(2027)">2027 (มะแม)</button>
+                </div>
+                <select id="baziAnnualYearSelect" class="bazi-year-select" onchange="window.BaziApp.selectAnnualYear(parseInt(this.value, 10))"></select>
+              </div>
+            </div>
+
+            <div id="baziMonthsGrid" class="bazi-months-grid"></div>
+            <div id="baziSelectedMonthCard" class="bazi-selected-month-card"></div>
+          </section>
+
+          <!-- DESK VIEW (หน้าโต๊ะหมอดู: 4 หัวข้อวิชาการเจาะลึก) -->
       <div id="baziDeskPageView" class="bazi-desk-page-view hidden">
         <!-- Desk Header Card -->
         <div class="bazi-desk-header-card">
@@ -899,324 +1086,8 @@
         </div>
       </div>
 
-      <!-- MAIN CHART SECTIONS (ผังดวง 6 เสา, ดิถี, เบญจธาตุ, วัยจร, ปีจร) -->
-      <div id="baziMainChartSections">
-
-      <!-- 2. Tri-Section: Day Master, Five Elements Balance, and Favorable Elements (3 กล่องวางแนวเดียวกัน) -->
-      <section class="bazi-tri-section hidden-in-expert" id="baziTriSection" style="display: none !important;" hidden>
-        <!-- Card 1: Day Master Profile -->
-        <div class="bazi-section-card bazi-dm-col-card">
-          <div class="bazi-card-title">
-            <i class="fa-solid fa-yin-yang" style="color: #7c3aed;"></i> ดิถีธาตุและตัวตน (Day Master)
-          </div>
-          <div class="bazi-dm-card-body">
-            <div class="bazi-dm-avatar" id="baziDmBadge">
-              <span class="dm-char" style="color: #ef4444;">丁</span>
-              <span class="dm-sub">Ding (ไฟหยิน)</span>
-            </div>
-            <div class="bazi-dm-card-info">
-              <h3 id="baziDmTitle">Bumji • ดิถีธาตุ 丁 (เต็ง - ไฟหยิน)</h3>
-              <p id="baziDmDesc">ดวงประทีป เปลวเทียน อ่อนโยนแต่ทรงพลัง รอบรู้ มีสติปัญญา</p>
-              <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-                <span id="baziDmStrengthBadge" class="bazi-badge badge-strong">ดิถีแข็งแรง (身強 - Strong Day Master)</span>
-                <button type="button" class="bazi-btn-personality-link" id="baziOpenPersonalityCardBtn" onclick="window.PersonalityApp && window.PersonalityApp.openFromBazi()" title="ดูโปรไฟล์ Eastern MBTI &amp; DISC ของดวงนี้">
-                  <i class="fa-solid fa-sparkles"></i> ถอดรหัสตัวตน (Eastern MBTI)
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card 2: Five Elements Balance -->
-        <div class="bazi-section-card">
-          <div class="bazi-card-title">
-            <i class="fa-solid fa-chart-simple" style="color: #0284c7;"></i> สมดุลพลังเบญจธาตุ (Five Elements Balance)
-          </div>
-          <div id="baziElementsBars"></div>
-        </div>
-
-        <!-- Card 3: Favorable & Balancing Elements -->
-        <div class="bazi-section-card">
-          <div class="bazi-card-title">
-            <i class="fa-solid fa-scale-balanced" style="color: #10b981;"></i> ธาตุให้คุณและธาตุปรับสมดุล (喜用神)
-          </div>
-          <div style="margin-bottom: 10px;">
-            <span class="sub-label"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> ธาตุส่งเสริมกำลัง (喜用神 - Useful Elements):</span>
-            <div id="baziFavElements" class="bazi-tags-wrap"></div>
-          </div>
-          <div style="margin-bottom: 10px;">
-            <span class="sub-label"><i class="fa-solid fa-compass-drafting" style="color: #0284c7;"></i> ธาตุปรับดวง / ปรับอุณหภูมิ (調候用神 - Regulating Element):</span>
-            <div id="baziTiaoHouElement" class="bazi-tags-wrap"></div>
-          </div>
-          <div style="margin-bottom: 10px;">
-            <span class="sub-label"><i class="fa-solid fa-circle-xmark" style="color: #ef4444;"></i> ธาตุให้โทษ / ควรระวัง (忌神 - Avoid Elements):</span>
-            <div id="baziAvoidElements" class="bazi-tags-wrap"></div>
-          </div>
-          <div id="baziRegulatingAdvice" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: #475569; line-height: 1.5;">
-            <i class="fa-solid fa-lightbulb" style="color: #f59e0b;"></i> <strong>หลักการปรับสมดุล:</strong> เสริมพลังธาตุให้คุณผ่านสีเสื้อผ้า สิ่งแวดล้อม และอาชีพ
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. Four Pillars Matrix (เสายาม, เสาวัน, เสาเดือน, เสาปี) -->
-      <section id="baziFourPillarsSection" class="bazi-section-card" style="margin-bottom: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-          <div>
-            <div class="bazi-card-title" style="margin-bottom: 2px;">
-              <i class="fa-solid fa-table-cells" style="color: #7c3aed;"></i> ผังดวงจีนปาจื่อ 4 เสาชะตาฟ้าดิน (Four Pillars Matrix)
-            </div>
-            <p style="color: #64748b; font-size: 12.5px; margin: 0;">
-              แสดง Na Yin สีตามธาตุ, 12 วงจรชีวิต (12 Qi Phases), เทพและดาวชะตา (神煞) และการปฏิสัมพันธ์ของธาตุ (刑沖合害)
-            </p>
-          </div>
-          
-          <div class="bazi-view-toggle-pills" id="baziMatrixViewToggle">
-            <button type="button" class="bazi-view-pill-btn active" id="baziViewMatrixBtn" onclick="window.BaziApp.setMatrixView('matrix')">
-              <i class="fa-solid fa-table"></i> ตารางเจาะลึก 6 คอลัมน์ (Master Matrix)
-            </button>
-            <button type="button" class="bazi-view-pill-btn" id="baziViewCardsBtn" onclick="window.BaziApp.setMatrixView('cards')">
-              <i class="fa-solid fa-id-card"></i> การ์ด 4 เสาชะตา
-            </button>
-            <button type="button" class="bazi-view-pill-btn" id="baziViewBothBtn" onclick="window.BaziApp.setMatrixView('both')">
-              <i class="fa-solid fa-layer-group"></i> แสดงทั้งสองแบบ
-            </button>
-            <button type="button" class="bazi-view-pill-btn bazi-btn-open-desk" id="baziOpenDeskFromMatrixBtn" onclick="window.BaziApp.setExpertSubView('desk')" title="เปิดหน้าโต๊ะหมอดูเพื่อดู 4 หัวข้อวิชาการ">
-              <i class="fa-solid fa-compass-drafting"></i> 🪑 โต๊ะหมอดู (4 หัวข้อ)
-            </button>
-          </div>
-        </div>
-
-        <!-- Master 6-Column Matrix Table (Hour, Day, Month, Year, Annual, Luck) -->
-        <div id="baziExpertMasterTableWrap" class="bazi-master-table-responsive" style="margin-bottom: 16px;">
-          <!-- Dynamically populated from renderMasterFourPillarsMatrix -->
-        </div>
-
-        <!-- Four Pillars Cards Grid -->
-        <div id="baziFourPillarsGrid" class="bazi-pillars-grid">
-          <!-- Hour Pillar -->
-          <div id="baziHourCol"></div>
-          <!-- Day Pillar (Self) -->
-          <div id="baziDayCol"></div>
-          <!-- Month Pillar -->
-          <div id="baziMonthCol"></div>
-          <!-- Year Pillar -->
-          <div id="baziYearCol"></div>
-        </div>
-      </section>
-
-      <!-- 5. Da Yun Timeline (วัยจร 10 ปี / 大運) -->
-      <section class="bazi-section-card">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-          <div class="bazi-card-title" style="margin-bottom: 0;">
-            <i class="fa-solid fa-timeline" style="color: #7c3aed;"></i> วัยจร 10 ปี (大運 - Da Yun Luck Pillars)
-          </div>
-          <span style="font-size: 12.5px; color: #64748b;"><i class="fa-solid fa-hand-pointer"></i> คลิกที่การ์ดช่วงอายุเพื่อดูคำทำนายวัยจรแบบเจาะลึก</span>
-        </div>
-        <div id="baziDayunList" class="bazi-dayun-scroll"></div>
-
-        <!-- 5.1 Da Yun Detailed Interpretation Card -->
-        <div id="baziDayunDetailCard" class="bazi-fortune-detail-card" style="margin-top: 16px;">
-          <div class="fortune-detail-header">
-            <div class="fortune-detail-title">
-              <i class="fa-solid fa-clock-rotate-left" style="color: #7c3aed;"></i>
-              <strong id="baziDayunDetailTitle">คำทำนายวัยจร 10 ปี</strong>
-            </div>
-            <span class="fortune-detail-badge"><i class="fa-solid fa-circle-check"></i> วิเคราะห์เจาะลึก 10 ปี</span>
-          </div>
-
-          <div class="bazi-fortune-grid">
-            <div class="fortune-grid-item">
-              <div class="fortune-item-header">
-                <i class="fa-solid fa-compass" style="color: #7c3aed;"></i> ภาพรวมวัยจร & ทิศทางชีวิต
-              </div>
-              <p id="baziDayunOverviewText" class="fortune-item-text">-</p>
-            </div>
-            <div class="fortune-grid-item">
-              <div class="fortune-item-header">
-                <i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน & ธุรกิจ
-              </div>
-              <p id="baziDayunCareerText" class="fortune-item-text">-</p>
-            </div>
-            <div class="fortune-grid-item">
-              <div class="fortune-item-header">
-                <i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน & โชคลาภ
-              </div>
-              <p id="baziDayunWealthText" class="fortune-item-text">-</p>
-            </div>
-            <div class="fortune-grid-item">
-              <div class="fortune-item-header">
-                <i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก & ครอบครัว
-              </div>
-              <p id="baziDayunLoveText" class="fortune-item-text">-</p>
-            </div>
-          </div>
-
-          <div id="baziDayunWarningText" class="fortune-warning-bar">
-            <i class="fa-solid fa-shield-halved" style="color: #ef4444;"></i> <strong>ข้อควรระวัง & สุขภาพ:</strong> -
-          </div>
-        </div>
-      </section>
-
-      <!-- 6. Comprehensive Strategic Life Insights -->
-      <section>
-        <div class="bazi-card-title" style="margin-bottom: 12px;">
-          <i class="fa-solid fa-compass" style="color: #db2777;"></i> คำทำนายและแนวทางกลยุทธ์ชีวิต (Strategic Life Guidance)
-        </div>
-        <div class="bazi-insights-grid">
-          <!-- Personality -->
-          <div class="bazi-insight-card">
-            <div class="insight-header">
-              <div class="insight-icon" style="background: rgba(124, 58, 237, 0.1); color: #7c3aed;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-              </div>
-              <span class="insight-title">อุปนิสัยและแก่นแท้จิตวิญญาณ</span>
-            </div>
-            <p class="insight-content" id="baziTraitsText">-</p>
-          </div>
-
-          <!-- Career -->
-          <div class="bazi-insight-card">
-            <div class="insight-header">
-              <div class="insight-icon" style="background: rgba(2, 132, 199, 0.1); color: #0284c7;">
-                <i class="fa-solid fa-briefcase"></i>
-              </div>
-              <span class="insight-title">การงาน อาชีพ & ธุรกิจที่ถูกโฉลก</span>
-            </div>
-            <p class="insight-content" id="baziCareerText">-</p>
-          </div>
-
-          <!-- Wealth -->
-          <div class="bazi-insight-card">
-            <div class="insight-header">
-              <div class="insight-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-                <i class="fa-solid fa-coins"></i>
-              </div>
-              <span class="insight-title">โชคลาภ การเงิน & การสะสมทรัพย์</span>
-            </div>
-            <p class="insight-content" id="baziWealthText">-</p>
-          </div>
-
-          <!-- Love -->
-          <div class="bazi-insight-card">
-            <div class="insight-header">
-              <div class="insight-icon" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">
-                <i class="fa-solid fa-heart"></i>
-              </div>
-              <span class="insight-title">ความรัก คู่ครอง & ชีวิตคู่</span>
-            </div>
-            <p class="insight-content" id="baziLoveText">-</p>
-          </div>
-
-          <!-- Health -->
-          <div class="bazi-insight-card">
-            <div class="insight-header">
-              <div class="insight-icon" style="background: rgba(245, 158, 11, 0.1); color: #d97706;">
-                <i class="fa-solid fa-notes-medical"></i>
-              </div>
-              <span class="insight-title">สุขภาพ & อวัยวะที่ต้องดูแลตามแพทย์จีน</span>
-            </div>
-            <p class="insight-content" id="baziHealthText">-</p>
-          </div>
-
-          <!-- Feng Shui -->
-          <div class="bazi-insight-card">
-            <div class="insight-header">
-              <div class="insight-icon" style="background: rgba(100, 116, 139, 0.1); color: #475569;">
-                <i class="fa-solid fa-yin-yang"></i>
-              </div>
-              <span class="insight-title">การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา</span>
-            </div>
-            <div id="baziFengShuiList"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 7. Annual Fortune (ทำนายรายปี / 流年 Liu Nian) - ย้ายมาไว้ด้านล่างสุดของหน้า -->
-      <section class="bazi-section-card" id="baziAnnualSection">
-        <div class="bazi-annual-header">
-          <div class="bazi-card-title" style="margin-bottom: 0;">
-            <i class="fa-solid fa-calendar-star" style="color: #d97706;"></i> ทำนายดวงรายปี (流年 - Annual Fortune)
-          </div>
-          
-          <div class="bazi-annual-controls-right">
-            <div class="bazi-year-chips" id="baziYearChips">
-              <button class="bazi-year-chip" data-year="2025">2025 (มะเส็ง 乙巳)</button>
-              <button class="bazi-year-chip active" data-year="2026">2026 (มะเมีย 丙午)</button>
-              <button class="bazi-year-chip" data-year="2027">2027 (มะแม 丁未)</button>
-            </div>
-            
-            <div class="bazi-year-dropdown-wrap">
-              <i class="fa-solid fa-calendar-days" style="color: #d97706; font-size: 13px;"></i>
-              <select id="baziAnnualYearSelect" class="bazi-year-select" title="เลือกปีที่ต้องการดูดวง">
-                <!-- Dynamically populated from 1950 to 2045 -->
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Annual Pillar & Clash/Harmony Banner -->
-        <div id="baziAnnualBanner" class="bazi-annual-banner">
-          <!-- Dynamically populated -->
-        </div>
-
-        <!-- 4-Dimension Life Forecast Grid for Year -->
-        <div class="bazi-fortune-grid" style="margin-top: 14px;">
-          <div class="fortune-grid-item">
-            <div class="fortune-item-header">
-              <i class="fa-solid fa-sparkles" style="color: #d97706;"></i> ภาพรวมดวงชะตาประจำปี
-            </div>
-            <p id="baziAnnualOverviewText" class="fortune-item-text">-</p>
-          </div>
-          <div class="fortune-grid-item">
-            <div class="fortune-item-header">
-              <i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน ธุรกิจ & ตำแหน่งหน้าที่
-            </div>
-            <p id="baziAnnualCareerText" class="fortune-item-text">-</p>
-          </div>
-          <div class="fortune-grid-item">
-            <div class="fortune-item-header">
-              <i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน โชคลาภ & โอกาสลงทุน
-            </div>
-            <p id="baziAnnualWealthText" class="fortune-item-text">-</p>
-          </div>
-          <div class="fortune-grid-item">
-            <div class="fortune-item-header">
-              <i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก เสน่ห์ & ความสัมพันธ์
-            </div>
-            <p id="baziAnnualLoveText" class="fortune-item-text">-</p>
-          </div>
-        </div>
-
-        <div id="baziAnnualHealthText" class="fortune-warning-bar">
-          <i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i> <strong>สุขภาพ & สิ่งที่ต้องระวัง:</strong> -
-        </div>
-      </section>
-
-      <!-- 8. Monthly Fortune (ทำนายรายเดือน 12 สารท / 流月 Liu Yue) - ย้ายมาไว้ด้านล่างสุดของหน้า -->
-      <section class="bazi-section-card" id="baziMonthlySection">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
-          <div class="bazi-card-title" style="margin-bottom: 0;">
-            <i class="fa-solid fa-calendar-days" style="color: #0284c7;"></i> ทำนายดวงรายเดือน 12 สารท (流月 - Solar Monthly Fortune ปี <span id="baziMonthYearLabel">2026</span>)
-          </div>
-          <span style="font-size: 12.5px; color: #64748b;"><i class="fa-solid fa-hand-pointer"></i> คลิกเลือกเดือนที่ต้องการดูเจาะลึก</span>
-        </div>
-
-        <!-- 12 Solar Months Matrix Grid (ทั้ง 12 เดือนอยู่ในแถวเดียวกัน) -->
-        <div id="baziMonthsGrid" class="bazi-months-grid">
-          <!-- Dynamically populated 12 months -->
-        </div>
-
-        <!-- Selected Month Detailed Card -->
-        <div id="baziSelectedMonthCard" class="bazi-selected-month-card">
-          <!-- Dynamically populated -->
-        </div>
-      </section>
-
-      
-
-      </div> <!-- END baziMainChartSections -->
-
-      </div> <!-- END baziLoggedInAppView -->
+        </div> <!-- END baziAdvanceResults -->
+      </div> <!-- END baziSubViewAdvance -->
 
     </div>
   </div>
@@ -2373,23 +2244,23 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261114_v9"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v1"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261114_v9"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v1"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261114_v9"></script>
-  <script src="app.js?v=20261114_v9"></script>
+  <script src="auth.js?v=20261115_v1"></script>
+  <script src="app.js?v=20261115_v1"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
-  <script src="bazi.js?v=20261030_tongshu_basic_v2"></script>
+  <script src="bazi.js?v=20261115_v1"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
