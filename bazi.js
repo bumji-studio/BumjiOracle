@@ -2202,19 +2202,19 @@
         </div>
         <div class="bazi-fortune-grid">
           <div class="fortune-grid-item">
-            <div class="fortune-item-header"><i class="fa-solid fa-compass" style="color: #7c3aed;"></i> ภาพรวมวัยจร 10 ปีนี้</div>
+            <div class="fortune-item-header"><i class="fa-solid fa-compass" style="color: #7c3aed;"></i> <strong>ภาพรวมวัยจร 10 ปีนี้</strong></div>
             <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.overview : 'เป็นช่วงเวลาแห่งการพัฒนาศักยภาพและการเติบโตอย่างมั่นคง'}</p>
           </div>
           <div class="fortune-grid-item">
-            <div class="fortune-item-header"><i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงาน & ธุรกิจในวัยจรนี้</div>
+            <div class="fortune-item-header"><i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> <strong>การงาน &amp; ธุรกิจในวัยจรนี้</strong></div>
             <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.career : 'โอกาสขยับขยายหน้าที่การงานและสร้างความสำเร็จ'}</p>
           </div>
           <div class="fortune-grid-item">
-            <div class="fortune-item-header"><i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงิน & โชคลาภในวัยจรนี้</div>
+            <div class="fortune-item-header"><i class="fa-solid fa-coins" style="color: #10b981;"></i> <strong>การเงิน &amp; โชคลาภในวัยจรนี้</strong></div>
             <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.wealth : 'บริหารจัดการทรัพย์สินอย่างรอบคอบ มีโอกาสต่อยอดการลงทุน'}</p>
           </div>
           <div class="fortune-grid-item">
-            <div class="fortune-item-header"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรัก & ครอบครัวในวัยจรนี้</div>
+            <div class="fortune-item-header"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> <strong>ความรัก &amp; ครอบครัวในวัยจรนี้</strong></div>
             <p class="fortune-item-text">${curDaYun.interpretation ? curDaYun.interpretation.love : 'รักษาความสัมพันธ์ที่อบอุ่นและสนับสนุนซึ่งกันและกัน'}</p>
           </div>
         </div>
@@ -2272,19 +2272,19 @@
 
       gridEl.innerHTML = `
         <div class="fortune-grid-item">
-          <div class="fortune-item-header"><i class="fa-solid fa-sparkles" style="color: #d97706;"></i> ภาพรวมปี ${y}</div>
+          <div class="fortune-item-header"><i class="fa-solid fa-sparkles" style="color: #d97706;"></i> <strong>ภาพรวมปี ${y}</strong></div>
           <p class="fortune-item-text">${annual.overview}</p>
         </div>
         <div class="fortune-grid-item">
-          <div class="fortune-item-header"><i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> การงานปี ${y}</div>
+          <div class="fortune-item-header"><i class="fa-solid fa-briefcase" style="color: #0284c7;"></i> <strong>การงานปี ${y}</strong></div>
           <p class="fortune-item-text">${annual.career}</p>
         </div>
         <div class="fortune-grid-item">
-          <div class="fortune-item-header"><i class="fa-solid fa-coins" style="color: #10b981;"></i> การเงินปี ${y}</div>
+          <div class="fortune-item-header"><i class="fa-solid fa-coins" style="color: #10b981;"></i> <strong>การเงินปี ${y}</strong></div>
           <p class="fortune-item-text">${annual.wealth}</p>
         </div>
         <div class="fortune-grid-item">
-          <div class="fortune-item-header"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> ความรักปี ${y}</div>
+          <div class="fortune-item-header"><i class="fa-solid fa-heart" style="color: #ec4899;"></i> <strong>ความรักปี ${y}</strong></div>
           <p class="fortune-item-text">${annual.love}</p>
         </div>
       `;
