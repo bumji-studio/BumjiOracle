@@ -9536,6 +9536,65 @@ body.is-mobile .synthesis-box-body {
 .dayun-god { color: #334155; font-weight: 600; }
 .dayun-nayin { font-size: 10.5px; color: #94a3b8; }
 
+/* Initial Welcoming Empty State Prompt */
+.bazi-empty-prompt {
+  margin: 24px 0;
+  display: block;
+}
+
+.empty-prompt-card {
+  background: linear-gradient(135deg, #faf5ff 0%, #fdf4ff 100%);
+  border: 1.5px dashed #c084fc;
+  border-radius: 16px;
+  padding: 44px 24px;
+  text-align: center;
+  color: #581c87;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.05);
+}
+
+.empty-prompt-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px auto;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #e9d5ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #7c3aed;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+}
+
+.empty-prompt-card h3 {
+  font-family: 'Prompt', sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #4c1d95;
+}
+
+.empty-prompt-card p {
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: #6b21a8;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.calc-btn-badge {
+  display: inline-block;
+  background: #7c3aed;
+  color: #ffffff;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 13px;
+  margin: 2px 4px;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+}
+
 /* 6. Strategic Life Insights Grid */
 .bazi-insights-grid {
   display: grid;

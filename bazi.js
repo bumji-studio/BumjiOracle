@@ -1467,19 +1467,17 @@
       if (viewBasic) viewBasic.classList.toggle('hidden', !isBasic);
       if (viewAdvance) viewAdvance.classList.toggle('hidden', isBasic);
 
+      this.updateResultVisibility(!!this.currentChart);
+
       if (!isBasic) {
         if (this.currentChart) {
           this.renderAdvanceSuite(this.currentChart);
-          const advResults = document.getElementById('baziAdvanceResults');
-          if (advResults) advResults.classList.remove('hidden');
           const advInputCard = document.getElementById('baziAdvanceInputCard');
           if (advInputCard) advInputCard.classList.add('hidden');
           const toggleBtn = document.getElementById('baziAdvanceToggleFormBtn');
           if (toggleBtn) toggleBtn.classList.remove('hidden');
         } else {
           this.renderAdvanceInputForm();
-          const advResults = document.getElementById('baziAdvanceResults');
-          if (advResults) advResults.classList.add('hidden');
           const advInputCard = document.getElementById('baziAdvanceInputCard');
           if (advInputCard) advInputCard.classList.remove('hidden');
         }
@@ -1487,6 +1485,36 @@
         if (this.currentChart) {
           this.renderBasicSuite(this.currentChart);
         }
+      }
+    },
+
+    updateResultVisibility: function (hasChart) {
+      const basicResults = document.getElementById('baziBasicResults');
+      const advanceResults = document.getElementById('baziAdvanceResults');
+      const emptyPrompt = document.getElementById('baziEmptyStatePrompt');
+
+      if (hasChart) {
+        if (emptyPrompt) emptyPrompt.style.display = 'none';
+        if (this.currentSubMenu === 'advance') {
+          if (basicResults) basicResults.style.display = 'none';
+          if (advanceResults) {
+            advanceResults.style.display = 'block';
+            advanceResults.classList.remove('hidden');
+          }
+        } else {
+          if (basicResults) basicResults.style.display = 'block';
+          if (advanceResults) {
+            advanceResults.style.display = 'none';
+            advanceResults.classList.add('hidden');
+          }
+        }
+      } else {
+        if (basicResults) basicResults.style.display = 'none';
+        if (advanceResults) {
+          advanceResults.style.display = 'none';
+          advanceResults.classList.add('hidden');
+        }
+        if (emptyPrompt) emptyPrompt.style.display = 'block';
       }
     },
 
@@ -1604,6 +1632,11 @@
       const minSel = document.getElementById('baziBirthMinute');
 
       if (daySel && daySel.options.length === 0) {
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = 'วัน';
+        defaultOpt.selected = true;
+        daySel.appendChild(defaultOpt);
         for (let d = 1; d <= 31; d++) {
           const opt = document.createElement('option');
           opt.value = d;
@@ -1618,6 +1651,11 @@
         'ก.ย. (กันยายน)', 'ต.ค. (ตุลาคม)', 'พ.ย. (พฤศจิกายน)', 'ธ.ค. (ธันวาคม)'
       ];
       if (monthSel && monthSel.options.length === 0) {
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = 'เดือน';
+        defaultOpt.selected = true;
+        monthSel.appendChild(defaultOpt);
         for (let m = 1; m <= 12; m++) {
           const opt = document.createElement('option');
           opt.value = m;
@@ -1627,6 +1665,11 @@
       }
 
       if (yearSel && yearSel.options.length === 0) {
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = 'ปีเกิด (พ.ศ.)';
+        defaultOpt.selected = true;
+        yearSel.appendChild(defaultOpt);
         const curY = new Date().getFullYear();
         for (let y = curY + 5; y >= 1920; y--) {
           const opt = document.createElement('option');
@@ -1637,6 +1680,11 @@
       }
 
       if (hourSel && hourSel.options.length === 0) {
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = 'ชั่วโมง';
+        defaultOpt.selected = true;
+        hourSel.appendChild(defaultOpt);
         for (let h = 0; h <= 23; h++) {
           const opt = document.createElement('option');
           opt.value = h;
@@ -1646,6 +1694,11 @@
       }
 
       if (minSel && minSel.options.length === 0) {
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = '';
+        defaultOpt.textContent = 'นาที';
+        defaultOpt.selected = true;
+        minSel.appendChild(defaultOpt);
         for (let mi = 0; mi <= 59; mi++) {
           const opt = document.createElement('option');
           opt.value = mi;
@@ -1660,7 +1713,12 @@
       const daySel = document.getElementById('baziBirthDay');
       const monthSel = document.getElementById('baziBirthMonth');
       const yearSel = document.getElementById('baziBirthYear');
-      if (!dateInput || !dateInput.value) return;
+      if (!dateInput || !dateInput.value) {
+        if (daySel) daySel.value = '';
+        if (monthSel) monthSel.value = '';
+        if (yearSel) yearSel.value = '';
+        return;
+      }
       const parts = dateInput.value.split('-');
       if (parts.length === 3) {
         const y = parseInt(parts[0], 10);
@@ -1678,9 +1736,13 @@
       const monthSel = document.getElementById('baziBirthMonth');
       const yearSel = document.getElementById('baziBirthYear');
       if (!dateInput || !daySel || !monthSel || !yearSel) return;
-      const y = yearSel.value || '1990';
-      const m = String(monthSel.value || '1').padStart(2, '0');
-      const d = String(daySel.value || '1').padStart(2, '0');
+      if (!yearSel.value || !monthSel.value || !daySel.value) {
+        dateInput.value = '';
+        return;
+      }
+      const y = yearSel.value;
+      const m = String(monthSel.value).padStart(2, '0');
+      const d = String(daySel.value).padStart(2, '0');
       dateInput.value = `${y}-${m}-${d}`;
     },
 
@@ -1688,13 +1750,17 @@
       const hourInput = document.getElementById('baziHourInput');
       const hourSel = document.getElementById('baziBirthHour');
       const minSel = document.getElementById('baziBirthMinute');
-      if (!hourInput || !hourInput.value) return;
+      if (!hourInput || !hourInput.value) {
+        if (hourSel) hourSel.value = '';
+        if (minSel) minSel.value = '';
+        return;
+      }
       const parts = hourInput.value.split(':');
       if (parts.length >= 2) {
         const h = parseInt(parts[0], 10);
         const m = parseInt(parts[1], 10);
-        if (hourSel) hourSel.value = isNaN(h) ? 12 : h;
-        if (minSel) minSel.value = isNaN(m) ? 0 : m;
+        if (hourSel) hourSel.value = isNaN(h) ? '' : h;
+        if (minSel) minSel.value = isNaN(m) ? '' : m;
       }
     },
 
@@ -1703,8 +1769,11 @@
       const hourSel = document.getElementById('baziBirthHour');
       const minSel = document.getElementById('baziBirthMinute');
       if (!hourInput || !hourSel || !minSel) return;
-      const h = String(hourSel.value || '12').padStart(2, '0');
-      const m = String(minSel.value || '0').padStart(2, '0');
+      if (hourSel.value === '' || minSel.value === '') {
+        return;
+      }
+      const h = String(hourSel.value).padStart(2, '0');
+      const m = String(minSel.value).padStart(2, '0');
       hourInput.value = `${h}:${m}`;
     },
 
@@ -1837,12 +1906,76 @@
           </div>
         `;
       } else {
-        const avoids = (chart.avoidElements && chart.avoidElements.length > 0) ? chart.avoidElements.map(k => ELEMENTS_META[k].th).join(', ') : 'ไม่มีธาตุให้โทษเด่นชัด';
+        const isStrong = !!chart.isStrong;
+        let wealthPoint = '';
+        if (!isStrong) {
+          wealthPoint = `
+            <div>
+              <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. จุดอ่อนการเงิน (กระแสหมุนเวียน/เก็บเงินสดไม่อยู่):</strong> 
+              โครงสร้างดิถีอ่อนกำลังเผชิญภาระรอบตัวมาก เงินทองหมุนเวียนก้อนใหญ่ มีรายได้เข้ามาต่อเนื่องแต่มีเหตุให้ต้องใช้จ่ายหรือช่วยเหลือคนรอบข้าง ทำให้เก็บเงินสดติดบัญชียาก
+              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> หลีกเลี่ยงการถือเงินสดก้อนใหญ่ ควรกระจายไปออมในสินทรัพย์ถาวร เช่น อสังหาริมทรัพย์ ที่ดิน สลากออมทรัพย์ หรือทองคำแท่งทันทีที่ได้รับเงินมา
+            </div>
+          `;
+        } else {
+          wealthPoint = `
+            <div>
+              <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. ข้อควรระวังการเงิน (ความเสี่ยงในการลงทุน):</strong> 
+              มีความเชื่อมั่นในตนเองสูงและกล้าได้กล้าเสียในการลงทุน แต่ต้องระวังการตัดสินใจที่ด่วนสรุปหรือมั่นใจเกินไป รวมถึงระวังการถูกเอาเปรียบจากคนใกล้ชิดหรือหุ้นส่วน
+              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ห้ามค้ำประกันหรือให้กู้ยืมโดยไม่มีหลักประกันที่รัดกุม กำหนดแผนบริหารความเสี่ยง (Stop-loss) ก่อนลงเงินก้อนใหญ่เสมอ
+            </div>
+          `;
+        }
+
+        let lovePoint = '';
+        if (isFemale) {
+          if (isGuanShaHunZa) {
+            lovePoint = `
+              <div>
+                <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (ดวงหญิงแกร่ง/รักซับซ้อน):</strong> 
+                โครงสร้างดาวคู่ครองปะปน เป็นหญิงเก่งพึ่งพาตนเองได้สูง มีเสน่ห์ต่อเพศตรงข้าม แต่คนรักมักมีอัตตาสูงหรือชอบบงการ หากไม่ยอมกันอาจเกิดการปะทะทางอารมณ์ได้ง่าย
+                <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ครองคู่แบบให้เกียรติและมีพื้นที่ส่วนตัว ไม่ก้าวก่ายเรื่องงานของกันและกัน หรือแต่งงานช้าจะมั่นคงกว่า
+              </div>
+            `;
+          } else {
+            lovePoint = `
+              <div>
+                <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. ข้อควรระวังความรัก (ทัศนคติและการสื่อสาร):</strong> 
+                การทุ่มเทเวลากับภาระหน้าที่และความรับผิดชอบอาจทำให้บรรยากาศความสัมพันธ์ตึงเครียดหรือขาดความโรแมนติก
+                <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ใช้การสื่อสารที่นุ่มนวล ชื่นชมคู่ครอง และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศเพื่อกระชับความผูกพัน
+              </div>
+            `;
+          }
+        } else {
+          lovePoint = `
+            <div>
+              <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. ข้อควรระวังความรัก (เวลาและความเข้าใจ):</strong> 
+              มุ่งมั่นกับงานสร้างฐานะจนอาจมีเวลาให้ครอบครัวน้อย หรือมีความคิดเห็นไม่ตรงกันในเรื่องการบริหารจัดการชีวิต
+              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ให้ความสำคัญกับความรู้สึกของคู่ชีวิต ให้เกียรติภรรยาเป็นอันดับหนึ่ง และจัดสรรเวลาคุณภาพร่วมกันอย่างสม่ำเสมอ
+            </div>
+          `;
+        }
+
+        const maxElem = Object.entries(elemPct).sort((a,b) => b[1] - a[1])[0] || ['earth', 20];
+        const elemNameMap = {
+          fire: 'ธาตุไฟ (หัวใจ ความดัน หลอดเลือด สายตา ไมเกรน และการนอนหลับ)',
+          water: 'ธาตุน้ำ (ระบบทางเดินปัสสาวะ ไต ฮอร์โมน และความวิตกกังวล)',
+          wood: 'ธาตุไม้ (ตับ ถุงน้ำดี กล้ามเนื้อ เส้นเอ็น และความเครียด)',
+          earth: 'ธาตุดิน (กระเพาะ ม้าม ระบบย่อยอาหาร และกล้ามเนื้อ)',
+          metal: 'ธาตุทอง (ปอด ทางเดินหายใจ ภูมิแพ้ และผิวหนัง)'
+        };
+        const healthPoint = `
+          <div>
+            <strong style="color: #b91c1c;"><i class="fa-solid fa-triangle-exclamation"></i> 3. จุดอ่อนด้านจิตใจและสุขภาพ:</strong> 
+            แบกรับภาระหน้าที่จนอาจเกิดความเหนื่อยล้าสะสม พักผ่อนไม่เพียงพอ จุดที่ต้องระวังเป็นพิเศษคือพลังของ ${elemNameMap[maxElem[0]] || 'ธาตุที่เสียสมดุล'}
+            <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> รักษาสมดุลการนอนหลับ ดื่มน้ำสะอาดให้เพียงพอ และฝึกการปล่อยวางความกังวล
+          </div>
+        `;
+
         weakness = `
-          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.6;">
-            <div><strong style="color: #b91c1c;"><i class="fa-solid fa-scale-unbalanced"></i> ข้อควรระวังธาตุ:</strong> ควรระวังสิ่งแวดล้อมและพฤติกรรมที่กระตุ้นธาตุ ${avoids}</div>
-            <div><strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> ข้อควรระวังการเงิน:</strong> บริหารกระแสเงินสดอย่างรัดกุม หลีกเลี่ยงการลงทุนเกินตัวและการค้ำประกัน</div>
-            <div><strong style="color: #b91c1c;"><i class="fa-solid fa-heart"></i> ข้อควรระวังความสัมพันธ์:</strong> ใช้ความยืดหยุ่นและการสื่อสารที่นุ่มนวลเพื่อลดการกระทบกระทั่ง</div>
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.6;">
+            ${wealthPoint}
+            ${lovePoint}
+            ${healthPoint}
           </div>
         `;
       }
@@ -2606,11 +2739,8 @@
       const curUser = window.AuthManager ? window.AuthManager.currentUser : null;
       this.updateViewForAuthState(isAuth, curUser);
 
-      if (isAuth) {
-        this.loadMyProfileChart();
-      } else {
-        this.calculateFromInputs(false);
-      }
+      // Do not auto-calculate on initial load: wait for user to select or use query param
+      this.updateResultVisibility(false);
       this.switchSubMenu(this.currentSubMenu || 'basic');
       this.switchMode(this.currentMode, true);
 
@@ -2704,23 +2834,20 @@
 
     loadMyProfileChart: function () {
       const user = window.AuthManager ? window.AuthManager.currentUser : null;
+      if (!user || !user.birthDate) {
+        this.showToast('ยังไม่มีข้อมูลวันเกิดในโปรไฟล์ กรุณาระบุวันเดือนปีเกิดด้านบนค่ะ', 'info');
+        return;
+      }
       const nameInput = document.getElementById('baziNameInput');
       const dateInput = document.getElementById('baziDateInput');
       const hourInput = document.getElementById('baziHourInput');
       const genderSelect = document.getElementById('baziGenderSelect');
       const quickSel = document.getElementById('baziQuickProfileSelect');
 
-      const name = (user && (user.name || user.firstName)) ? (user.name || user.firstName) : 'Admin Bumji';
-      let birthDate = (user && user.birthDate) ? user.birthDate : '1977-07-23';
-      let birthTime = (user && user.birthTime) ? user.birthTime : '15:45';
-      let gender = (user && user.gender) ? user.gender : 'female';
-
-      if (birthDate === '1990-01-01' || birthDate === '1998-08-18') {
-        birthDate = '1977-07-23';
-      }
-      if (birthTime === '12:00' || birthTime === '10:30') {
-        birthTime = '15:45';
-      }
+      const name = (user.name || user.firstName) ? (user.name || user.firstName) : 'ดวงของฉัน';
+      const birthDate = user.birthDate;
+      const birthTime = user.birthTime || '12:00';
+      const gender = user.gender || 'female';
 
       if (nameInput) nameInput.value = name;
       if (dateInput) dateInput.value = birthDate;
@@ -2730,10 +2857,8 @@
       this.syncDateInputToDropdowns();
       this.syncTimeInputToDropdowns();
 
-      // Default mode after login is Basic!
       this.switchMode('basic');
-      this.calculateFromInputs(false);
-      this.showToast(`แสดงผังดวงของ "${name}" (โหมด Basic) เรียบร้อยแล้วค่ะ`);
+      this.calculateFromInputs(true);
     },
 
     initGuestInputs: function () {
@@ -2755,7 +2880,6 @@
           const opt = document.createElement('option');
           opt.value = d;
           opt.textContent = `วันที่ ${d}`;
-          if (d === 23) opt.selected = true;
           daySel.appendChild(opt);
         }
       }
@@ -2768,7 +2892,6 @@
           opt.value = y;
           const beYear = y + 543;
           opt.textContent = `${y} (พ.ศ. ${beYear})`;
-          if (y === 1977) opt.selected = true;
           yearSel.appendChild(opt);
         }
       }
@@ -3473,16 +3596,26 @@
       const hourInput = document.getElementById('baziHourInput');
       const genderSelect = document.getElementById('baziGenderSelect');
 
-      if (nameInput) nameInput.value = 'Admin Bumji';
-      if (dateInput) dateInput.value = '1977-07-23';
-      if (hourInput) hourInput.value = '15:45';
+      if (nameInput) nameInput.value = '';
+      if (dateInput) dateInput.value = '';
+      if (hourInput) hourInput.value = '';
       if (genderSelect) genderSelect.value = 'female';
-      this.syncDateInputToDropdowns();
-      this.syncTimeInputToDropdowns();
-      this.selectedYear = 2026;
+
+      const daySel = document.getElementById('baziBirthDay');
+      const monthSel = document.getElementById('baziBirthMonth');
+      const yearSel = document.getElementById('baziBirthYear');
+      const hourSel = document.getElementById('baziBirthHour');
+      const minSel = document.getElementById('baziBirthMinute');
+      if (daySel) daySel.value = '';
+      if (monthSel) monthSel.value = '';
+      if (yearSel) yearSel.value = '';
+      if (hourSel) hourSel.value = '';
+      if (minSel) minSel.value = '';
 
       const quickSel = document.getElementById('baziQuickProfileSelect');
-      if (quickSel) quickSel.value = 'bazi_default_bumji';
+      if (quickSel) quickSel.value = '';
+      this.selectedYear = new Date().getFullYear();
+      this.currentChart = null;
     },
 
     loadSavedProfiles: function () {
@@ -3493,32 +3626,6 @@
         console.warn('Failed to parse saved bazi profiles:', e);
         this.savedProfiles = [];
       }
-
-      // Preload Admin Bumji as the default baseline profile
-      if (!this.savedProfiles || this.savedProfiles.length === 0) {
-        this.savedProfiles = [{
-          id: 'bazi_default_bumji',
-          name: 'Admin Bumji',
-          gender: 'female',
-          birthDate: '1977-07-23',
-          birthTime: '15:45',
-          savedAt: 'ดวงตัวตั้งต้น (Admin Bumji)'
-        }];
-        this.saveProfilesToStorage();
-      } else {
-        // Upgrade any existing default profile to Admin Bumji's real birth date
-        this.savedProfiles.forEach(p => {
-          if (p.id === 'bazi_default_bumji' || p.name === 'Bumji' || p.name === 'Admin Bumji') {
-            p.name = 'Admin Bumji';
-            p.gender = 'female';
-            p.birthDate = '1977-07-23';
-            p.birthTime = '15:45';
-            p.savedAt = 'ดวงตัวตั้งต้น (Admin Bumji)';
-          }
-        });
-        this.saveProfilesToStorage();
-      }
-
       this.updateSavedCountBadge();
     },
 
@@ -3795,12 +3902,8 @@
     onTabShow: function () {
       const isAuth = !!(window.AuthManager && window.AuthManager.isLoggedIn());
       this.updateViewForAuthState(isAuth, window.AuthManager ? window.AuthManager.currentUser : null);
-      if (isAuth) {
-        if (!this.currentChart) {
-          this.loadMyProfileChart();
-        }
-      } else {
-        this.initGuestInputs();
+      if (!this.currentChart) {
+        this.updateResultVisibility(false);
       }
     },
 
@@ -3810,23 +3913,36 @@
       const hourInput = document.getElementById('baziHourInput');
       const genderSelect = document.getElementById('baziGenderSelect');
 
-      const now = new Date();
-      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      if (!dateInput || !dateInput.value) {
+        this.syncDropdownsToDateInput();
+      }
+      if (!hourInput || !hourInput.value) {
+        this.syncDropdownsToTimeInput();
+      }
 
-      const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'ดวงปัจจุบัน';
-      const birthDate = dateInput && dateInput.value ? dateInput.value : todayStr;
-      let birthHour = now.getHours();
-      let birthMinute = now.getMinutes();
+      const birthDate = dateInput ? dateInput.value : '';
+      if (!birthDate) {
+        if (showToast) {
+          this.showToast('กรุณาเลือกวัน เดือน ปีเกิด ให้ครบถ้วนก่อนคำนวณค่ะ', 'warning');
+        }
+        this.updateResultVisibility(false);
+        return;
+      }
+
+      const now = new Date();
+      const name = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'ดวงชะตา';
+      let birthHour = 12;
+      let birthMinute = 0;
 
       if (hourInput && hourInput.value) {
         const parts = hourInput.value.split(':');
         birthHour = parseInt(parts[0], 10);
         birthMinute = parseInt(parts[1], 10);
-        if (isNaN(birthHour)) birthHour = now.getHours();
-        if (isNaN(birthMinute)) birthMinute = now.getMinutes();
+        if (isNaN(birthHour)) birthHour = 12;
+        if (isNaN(birthMinute)) birthMinute = 0;
       }
 
-      const gender = genderSelect ? genderSelect.value : 'male';
+      const gender = genderSelect ? genderSelect.value : 'female';
       const unknownCheck = document.getElementById('baziUnknownTimeCheck');
       const isUnknownTime = !!(unknownCheck && unknownCheck.checked);
 
@@ -3851,6 +3967,8 @@
       this.renderChart(chart);
       this.renderBasicSuite(chart);
       this.renderAdvanceSuite(chart);
+
+      this.updateResultVisibility(true);
 
       const triSection = document.getElementById('baziTriSection');
       const fourPillarsSec = document.getElementById('baziFourPillarsSection');
