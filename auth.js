@@ -188,39 +188,13 @@
       const modal = document.getElementById('authModalOverlay');
       if (!modal) return;
 
-      const noticeBox = document.getElementById('authLockedNotice');
-      if (noticeBox) {
-        if (intendedTab && LOCKED_TABS.includes(intendedTab)) {
-          const tabNames = {
-            tongshu: 'ปฏิทินและฤกษ์ยาม TongShu',
-            qimen: 'ผังฉีเหมิน (Qi Men Dun Jia)',
-            bazi: 'ผังดวงจีนปาจื่อ (BaZi 八字)',
-            personality: 'ทายนิสัยฉบับน้องเหมียว (Cat Archetype)'
-          };
-          noticeBox.innerHTML = `
-            <div class="auth-gate-alert">
-              <i class="fa-solid fa-shield-halved"></i>
-              <div>
-                <strong>เมนู ${tabNames[intendedTab] || intendedTab} สงวนสิทธิ์เฉพาะผู้ดูแลระบบ (Admin)</strong>
-                <p>กรุณาลงชื่อเข้าใช้ด้วยบัญชี Admin เพื่อเข้าใช้งานฟังก์ชันนี้ค่ะ</p>
-              </div>
-            </div>
-          `;
-          noticeBox.classList.remove('hidden');
-        } else {
-          noticeBox.classList.add('hidden');
-        }
-      }
+      const adminWrap = document.getElementById('authAdminFormWrap');
+      if (adminWrap) adminWrap.classList.add('hidden');
 
       const emailInput = document.getElementById('authLoginEmail');
       const passInput = document.getElementById('authLoginPassword');
-      if (emailInput) {
-        emailInput.value = '';
-        setTimeout(() => emailInput.focus(), 200);
-      }
-      if (passInput) {
-        passInput.value = '';
-      }
+      if (emailInput) emailInput.value = '';
+      if (passInput) passInput.value = '';
 
       modal.classList.add('show');
       document.body.classList.add('modal-open');
@@ -327,11 +301,23 @@
 
       // Close modal button & backdrop click
       const closeBtn = document.getElementById('authModalCloseBtn');
+      const notReadyBtn = document.getElementById('authNotReadyCloseBtn');
       const overlay = document.getElementById('authModalOverlay');
       if (closeBtn) closeBtn.addEventListener('click', () => self.closeModal());
+      if (notReadyBtn) notReadyBtn.addEventListener('click', () => self.closeModal());
       if (overlay) {
         overlay.addEventListener('click', (e) => {
           if (e.target === overlay) self.closeModal();
+        });
+      }
+
+      // Admin Login Toggle
+      const adminToggle = document.getElementById('authAdminToggleLink');
+      const adminWrap = document.getElementById('authAdminFormWrap');
+      if (adminToggle && adminWrap) {
+        adminToggle.addEventListener('click', (e) => {
+          e.preventDefault();
+          adminWrap.classList.toggle('hidden');
         });
       }
 
@@ -352,40 +338,56 @@
 
       const modalHtml = `
         <div id="authModalOverlay" class="auth-modal-overlay">
-          <div class="auth-modal-card admin-auth-card">
+          <div class="auth-modal-card auth-not-ready-card" style="max-width: 440px; border-radius: 24px; padding: 0; overflow: hidden; text-align: center; border: 1.5px solid #e9d5ff; box-shadow: 0 20px 50px rgba(124, 58, 237, 0.2); background: #ffffff;">
             
-            <!-- Header -->
-            <div class="auth-modal-header">
-              <div class="auth-modal-title">
-                <div class="auth-admin-icon-logo">
-                  <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div>
-                  <h2>เข้าสู่ระบบผู้ดูแลระบบ</h2>
-                  <span class="auth-cat-subtitle">🔒 เข้าใช้งานเฉพาะ Admin</span>
-                </div>
-              </div>
-              <button class="auth-modal-close" id="authModalCloseBtn" aria-label="ปิดหน้าต่าง">&times;</button>
+            <!-- Top bar with close button -->
+            <div style="display: flex; justify-content: flex-end; padding: 14px 18px 0 18px;">
+              <button class="auth-modal-close" id="authModalCloseBtn" aria-label="ปิดหน้าต่าง" style="font-size: 28px; line-height: 1; color: #94a3b8; background: transparent; border: none; cursor: pointer; padding: 4px 8px;">&times;</button>
             </div>
 
-            <!-- Notice Banner (when admin clicks locked menu) -->
-            <div id="authLockedNotice" class="auth-locked-notice hidden" style="margin: 14px 20px 0 20px;"></div>
+            <div style="padding: 4px 28px 32px 28px;">
+              <!-- Big Icon -->
+              <div style="width: 76px; height: 76px; margin: 0 auto 18px auto; border-radius: 50%; background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%); display: flex; align-items: center; justify-content: center; font-size: 34px; color: #7c3aed; box-shadow: 0 8px 20px rgba(124, 58, 237, 0.15); border: 2px solid #e9d5ff;">
+                <i class="fa-solid fa-bullhorn"></i>
+              </div>
 
-            <!-- Body Contents: Admin Login Form ONLY -->
-            <div class="auth-modal-body" style="padding: 18px 20px 24px 20px;">
-              <form id="authLoginForm" class="auth-form">
-                <div class="auth-field">
-                  <label><i class="fa-solid fa-envelope"></i> อีเมล Admin:</label>
-                  <input type="email" id="authLoginEmail" value="" placeholder="กรอกอีเมล Admin" required autocomplete="email">
-                </div>
-                <div class="auth-field">
-                  <label><i class="fa-solid fa-lock"></i> รหัสผ่าน Admin:</label>
-                  <input type="password" id="authLoginPassword" placeholder="••••••••" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="auth-submit-btn" style="background: linear-gradient(135deg, #7c3aed, #4f46e5); margin-top: 10px; font-weight: 700;">
-                  <i class="fa-solid fa-arrow-right-to-bracket"></i> เข้าสู่ระบบ Admin
-                </button>
-              </form>
+              <!-- BIG NOTICE TEXT -->
+              <h2 style="font-family: 'Prompt', 'Kanit', sans-serif; font-size: 28px; font-weight: 800; color: #4c1d95; line-height: 1.35; margin: 0 0 12px 0;">
+                ส่วนนี้ยังไม่เปิดใช้งาน<br>
+                <span style="color: #7c3aed; font-size: 26px;">ไว้เปิดแล้วจะบอกนะ!</span>
+              </h2>
+
+              <p style="font-size: 15px; line-height: 1.65; color: #64748b; margin: 0 auto 24px auto; max-width: 320px;">
+                ระบบสมาชิกและการเข้าสู่ระบบกำลังอยู่ในระหว่างการพัฒนา เตรียมพบกับฟังก์ชันพิเศษเร็วๆ นี้นะคะ ✨
+              </p>
+
+              <button type="button" id="authNotReadyCloseBtn" style="background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #ffffff; border: none; padding: 12px 38px; border-radius: 25px; font-size: 15.5px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35); transition: transform 0.2s;">
+                <i class="fa-solid fa-heart"></i> รับทราบจ้า
+              </button>
+
+              <!-- Discreet admin toggle -->
+              <div style="margin-top: 24px; padding-top: 14px; border-top: 1px dashed #e2e8f0;">
+                <a href="javascript:void(0)" id="authAdminToggleLink" style="font-size: 11.5px; color: #cbd5e1; text-decoration: none;">
+                  <i class="fa-solid fa-lock" style="font-size: 10px;"></i> Admin Access
+                </a>
+              </div>
+
+              <div id="authAdminFormWrap" class="hidden" style="margin-top: 14px; text-align: left;">
+                <form id="authLoginForm" class="auth-form">
+                  <div class="auth-field" style="margin-bottom: 10px;">
+                    <label style="font-size: 12px; color: #475569;"><i class="fa-solid fa-envelope"></i> อีเมล Admin:</label>
+                    <input type="email" id="authLoginEmail" value="" placeholder="กรอกอีเมล Admin" required autocomplete="email" style="width: 100%; padding: 8px 12px; font-size: 13px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                  </div>
+                  <div class="auth-field" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; color: #475569;"><i class="fa-solid fa-lock"></i> รหัสผ่าน Admin:</label>
+                    <input type="password" id="authLoginPassword" placeholder="••••••••" required autocomplete="current-password" style="width: 100%; padding: 8px 12px; font-size: 13px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                  </div>
+                  <button type="submit" class="auth-submit-btn" style="background: #7c3aed; color: #fff; width: 100%; padding: 9px; font-size: 13px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer;">
+                    เข้าสู่ระบบ Admin
+                  </button>
+                </form>
+              </div>
+
             </div>
 
           </div>

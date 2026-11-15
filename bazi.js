@@ -2772,9 +2772,6 @@
 
     onAuthStateChange: function (isLoggedIn, currentUser) {
       this.updateViewForAuthState(isLoggedIn, currentUser);
-      if (isLoggedIn) {
-        this.loadMyProfileChart();
-      }
     },
 
     updateViewForAuthState: function (isLoggedIn, currentUser) {
@@ -2844,7 +2841,7 @@
       const genderSelect = document.getElementById('baziGenderSelect');
       const quickSel = document.getElementById('baziQuickProfileSelect');
 
-      const name = (user.name || user.firstName) ? (user.name || user.firstName) : 'ดวงของฉัน';
+      const name = (user.name || user.firstName) ? (user.name || user.firstName) : 'โปรไฟล์ของฉัน';
       const birthDate = user.birthDate;
       const birthTime = user.birthTime || '12:00';
       const gender = user.gender || 'female';
@@ -3649,9 +3646,12 @@
       const select = document.getElementById('baziQuickProfileSelect');
       if (!select) return;
 
-      let html = '';
+      let html = '<option value="" selected>-- เลือกลูกดวง --</option>';
       if (window.AuthManager && window.AuthManager.isLoggedIn()) {
-        html += `<option value="__my_profile__">👤 ดวงของฉัน (Profile Owner)</option>`;
+        const u = window.AuthManager.currentUser;
+        if (u && u.birthDate) {
+          html += `<option value="__my_profile__">👤 ${u.name || 'โปรไฟล์ของฉัน'}</option>`;
+        }
       }
       html += `<option value="__now__">⚡ ดวงปัจจุบัน (วันนี้/ตอนนี้)</option>`;
       if (this.savedProfiles && this.savedProfiles.length > 0) {
@@ -3662,9 +3662,11 @@
         html += `</optgroup>`;
       }
       select.innerHTML = html;
+      select.value = '';
     },
 
     onQuickProfileChange: function (val) {
+      if (!val) return;
       if (val === '__my_profile__') {
         this.loadMyProfileChart();
       } else if (val === '__now__') {
