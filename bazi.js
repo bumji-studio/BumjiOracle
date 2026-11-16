@@ -2695,8 +2695,11 @@
     },
 
     renderBasicAgeCallout: function (chart) {
-      const card = document.getElementById('baziAgeDisplayCard');
-      if (!card || !chart) return;
+      if (!chart) return;
+      const targets = [
+        document.getElementById('baziAgeDisplayCard'),
+        document.getElementById('baziAdvanceAgeDisplayCard')
+      ];
       const now = new Date();
       const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : now.getFullYear();
       const age = Math.max(0, now.getFullYear() - birthYear);
@@ -2704,7 +2707,7 @@
 
       const safeName = (window.SecurityGuard && window.SecurityGuard.escapeHtml) ? window.SecurityGuard.escapeHtml(chart.name) : (chart.name || 'ไม่ระบุชื่อ');
 
-      card.innerHTML = `
+      const html = `
         <div class="bazi-age-icon"><i class="fa-solid fa-cake-candles"></i></div>
         <div class="bazi-age-content">
           <strong>🎂 อายุปัจจุบัน: ${age} ปี (เกิดปี พ.ศ. ${birthYear + 543} / ค.ศ. ${birthYear})</strong>
@@ -2714,6 +2717,10 @@
           </p>
         </div>
       `;
+
+      targets.forEach(card => {
+        if (card) card.innerHTML = html;
+      });
     },
 
     calculateRealisticLifeScores: function (chart) {
@@ -2901,9 +2908,19 @@
     },
 
     renderBasicSpiderChart: function (chart) {
-      const svgWrap = document.getElementById('baziSpiderChartSvgWrap');
-      const legendWrap = document.getElementById('baziSpiderLegendWrap');
-      if (!svgWrap || !chart) return;
+      if (!chart) return;
+      const targets = [
+        {
+          svgWrap: document.getElementById('baziSpiderChartSvgWrap'),
+          legendWrap: document.getElementById('baziSpiderLegendWrap')
+        },
+        {
+          svgWrap: document.getElementById('baziAdvanceSpiderChartSvgWrap'),
+          legendWrap: document.getElementById('baziAdvanceSpiderLegendWrap')
+        }
+      ];
+      const validTargets = targets.filter(t => t.svgWrap);
+      if (validTargets.length === 0) return;
 
       const scores = this.calculateRealisticLifeScores(chart);
       const radarData = [
@@ -2975,7 +2992,7 @@
         `;
       });
 
-      svgWrap.innerHTML = `
+      const svgHtml = `
         <svg viewBox="0 0 350 300" style="width: 100%; max-width: 350px; height: auto;" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="baziRadarGrad" cx="50%" cy="50%" r="50%">
@@ -2992,28 +3009,36 @@
         </svg>
       `;
 
-      if (legendWrap) {
-        legendWrap.innerHTML = radarData.map(d => `
-          <div class="radar-score-row">
-            <div class="radar-score-left">
-              <i class="${d.icon}" style="color: ${d.color}; font-size: 16px;"></i>
-              <div>
-                <div style="color: #1e293b; font-size: 13.5px; font-weight: 700;">${d.label}</div>
-                <div style="color: #64748b; font-size: 11px; font-weight: 400;">${d.desc}</div>
-              </div>
+      const legendHtml = radarData.map(d => `
+        <div class="radar-score-row">
+          <div class="radar-score-left">
+            <i class="${d.icon}" style="color: ${d.color}; font-size: 16px;"></i>
+            <div>
+              <div style="color: #1e293b; font-size: 13.5px; font-weight: 700;">${d.label}</div>
+              <div style="color: #64748b; font-size: 11px; font-weight: 400;">${d.desc}</div>
             </div>
-            <div class="radar-score-bar-wrap">
-              <div class="radar-score-bar-fill" style="width: ${d.value}%; background: ${d.color};"></div>
-            </div>
-            <span class="radar-score-num" style="color: ${d.color};">${d.value}%</span>
           </div>
-        `).join('');
-      }
+          <div class="radar-score-bar-wrap">
+            <div class="radar-score-bar-fill" style="width: ${d.value}%; background: ${d.color};"></div>
+          </div>
+          <span class="radar-score-num" style="color: ${d.color};">${d.value}%</span>
+        </div>
+      `).join('');
+
+      validTargets.forEach(t => {
+        t.svgWrap.innerHTML = svgHtml;
+        if (t.legendWrap) t.legendWrap.innerHTML = legendHtml;
+      });
     },
 
     renderBasicFengShui: function (chart) {
-      const container = document.getElementById('baziFengShuiThreeCol');
-      if (!container || !chart) return;
+      if (!chart) return;
+      const targets = [
+        document.getElementById('baziFengShuiThreeCol'),
+        document.getElementById('baziAdvanceFengShuiThreeCol')
+      ];
+      const validTargets = targets.filter(Boolean);
+      if (validTargets.length === 0) return;
 
       const favNames = chart.favorableElements.map(k => ELEMENTS_META[k].th).join(', ');
       const favColors = chart.favorableElements.map(k => {
@@ -3026,7 +3051,7 @@
 
       const tiaoHou = chart.tiaoHou ? chart.tiaoHou : { th: favNames, reason: 'ปรับสมดุลตามธาตุที่ให้คุณ' };
 
-      container.innerHTML = `
+      const html = `
         <!-- 1. สีมงคล -->
         <div class="fengshui-col-card">
           <div class="fengshui-col-header">
@@ -3080,6 +3105,10 @@
           </div>
         </div>
       `;
+
+      validTargets.forEach(container => {
+        container.innerHTML = html;
+      });
     },
 
     renderBasicCurrentDaYun: function (chart) {
@@ -3209,26 +3238,38 @@
     },
 
     renderBasicAnnualSpiderChart: function (chart, annual, year) {
-      const svgWrap = document.getElementById('baziAnnualSpiderChartSvgWrap');
-      const legendWrap = document.getElementById('baziAnnualSpiderLegendWrap');
-      const yearLabel = document.getElementById('baziAnnualRadarYearLabel');
-      const daYunLabel = document.getElementById('baziAnnualRadarDaYunLabel');
-      if (!svgWrap || !chart || !annual) return;
-
-      if (yearLabel) yearLabel.textContent = year || annual.year || 2026;
+      const targets = [
+        {
+          svgWrap: document.getElementById('baziAnnualSpiderChartSvgWrap'),
+          legendWrap: document.getElementById('baziAnnualSpiderLegendWrap'),
+          yearLabel: document.getElementById('baziAnnualRadarYearLabel'),
+          daYunLabel: document.getElementById('baziAnnualRadarDaYunLabel')
+        },
+        {
+          svgWrap: document.getElementById('baziAdvanceAnnualSpiderChartSvgWrap'),
+          legendWrap: document.getElementById('baziAdvanceAnnualSpiderLegendWrap'),
+          yearLabel: document.getElementById('baziAdvanceAnnualRadarYearLabel'),
+          daYunLabel: document.getElementById('baziAdvanceAnnualRadarDaYunLabel')
+        }
+      ];
+      const validTargets = targets.filter(t => t.svgWrap);
+      if (validTargets.length === 0 || !chart || !annual) return;
 
       const curDaYun = annual.curDaYun;
-      if (daYunLabel) {
-        if (curDaYun && !curDaYun.isChildhood) {
-          const dyName = (curDaYun.stem ? curDaYun.stem.zh : '') + (curDaYun.branch ? curDaYun.branch.zh : '');
-          const dyAge = curDaYun.ageRange || `${curDaYun.ageFrom}-${curDaYun.ageTo} ปี`;
-          daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> วัยจร 10 ปี: <strong>${dyName}</strong> (อายุ ${dyAge})`;
-        } else if (curDaYun && curDaYun.isChildhood) {
-          daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> วัยจร: <strong>${curDaYun.ageRange}</strong>`;
-        } else {
-          daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> คำนวณตามวัยจร 10 ปี`;
+      validTargets.forEach(t => {
+        if (t.yearLabel) t.yearLabel.textContent = year || annual.year || 2026;
+        if (t.daYunLabel) {
+          if (curDaYun && !curDaYun.isChildhood) {
+            const dyName = (curDaYun.stem ? curDaYun.stem.zh : '') + (curDaYun.branch ? curDaYun.branch.zh : '');
+            const dyAge = curDaYun.ageRange || `${curDaYun.ageFrom}-${curDaYun.ageTo} ปี`;
+            t.daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> วัยจร 10 ปี: <strong>${dyName}</strong> (อายุ ${dyAge})`;
+          } else if (curDaYun && curDaYun.isChildhood) {
+            t.daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> วัยจร: <strong>${curDaYun.ageRange}</strong>`;
+          } else {
+            t.daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> คำนวณตามวัยจร 10 ปี`;
+          }
         }
-      }
+      });
 
       // Base realistic scores from natal chart
       const base = this.calculateRealisticLifeScores(chart);
@@ -3474,7 +3515,7 @@
         `;
       });
 
-      svgWrap.innerHTML = `
+      const svgHtml = `
         <svg viewBox="0 0 350 300" style="width: 100%; max-width: 350px; height: auto;" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="baziAnnualRadarGrad" cx="50%" cy="50%" r="50%">
@@ -3491,48 +3532,54 @@
         </svg>
       `;
 
-      if (legendWrap) {
-        legendWrap.innerHTML = radarData.map(d => {
-          const diff = d.value - d.baseVal;
-          let diffBadge = '';
-          if (diff > 0) {
-            diffBadge = `<span style="font-size: 11px; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 2px 7px; border-radius: 6px; margin-left: 6px;"><i class="fa-solid fa-arrow-trend-up"></i> +${diff}% เทียบพื้นดวง</span>`;
-          } else if (diff < 0) {
-            diffBadge = `<span style="font-size: 11px; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 2px 7px; border-radius: 6px; margin-left: 6px;"><i class="fa-solid fa-arrow-trend-down"></i> ${diff}% เทียบพื้นดวง</span>`;
-          } else {
-            diffBadge = `<span style="font-size: 11px; font-weight: 600; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 6px; margin-left: 6px;">คงที่ตามพื้นดวง</span>`;
-          }
+      const legendHtml = radarData.map(d => {
+        const diff = d.value - d.baseVal;
+        let diffBadge = '';
+        if (diff > 0) {
+          diffBadge = `<span style="font-size: 11px; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 2px 7px; border-radius: 6px; margin-left: 6px;"><i class="fa-solid fa-arrow-trend-up"></i> +${diff}% เทียบพื้นดวง</span>`;
+        } else if (diff < 0) {
+          diffBadge = `<span style="font-size: 11px; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 2px 7px; border-radius: 6px; margin-left: 6px;"><i class="fa-solid fa-arrow-trend-down"></i> ${diff}% เทียบพื้นดวง</span>`;
+        } else {
+          diffBadge = `<span style="font-size: 11px; font-weight: 600; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 6px; margin-left: 6px;">คงที่ตามพื้นดวง</span>`;
+        }
 
-          return `
-            <div class="radar-score-row" style="background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(253, 230, 138, 0.6); margin-bottom: 8px; border-radius: 10px; padding: 8px 12px;">
-              <div class="radar-score-left">
-                <i class="${d.icon}" style="color: ${d.color}; font-size: 16px;"></i>
-                <div>
-                  <div style="color: #1e293b; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; flex-wrap: wrap;">
-                    <span>${d.label}</span>
-                    ${diffBadge}
-                  </div>
-                  <div style="color: #64748b; font-size: 11px; font-weight: 400; margin-top: 2px;">${d.desc}</div>
+        return `
+          <div class="radar-score-row" style="background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(253, 230, 138, 0.6); margin-bottom: 8px; border-radius: 10px; padding: 8px 12px;">
+            <div class="radar-score-left">
+              <i class="${d.icon}" style="color: ${d.color}; font-size: 16px;"></i>
+              <div>
+                <div style="color: #1e293b; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; flex-wrap: wrap;">
+                  <span>${d.label}</span>
+                  ${diffBadge}
                 </div>
+                <div style="color: #64748b; font-size: 11px; font-weight: 400; margin-top: 2px;">${d.desc}</div>
               </div>
-              <div class="radar-score-bar-wrap" style="background: rgba(226, 232, 240, 0.7);">
-                <div class="radar-score-bar-fill" style="width: ${d.value}%; background: ${d.color};"></div>
-              </div>
-              <span class="radar-score-num" style="color: ${d.color}; font-size: 14px; font-weight: 800;">${d.value}%</span>
             </div>
-          `;
-        }).join('');
-      }
+            <div class="radar-score-bar-wrap" style="background: rgba(226, 232, 240, 0.7);">
+              <div class="radar-score-bar-fill" style="width: ${d.value}%; background: ${d.color};"></div>
+            </div>
+            <span class="radar-score-num" style="color: ${d.color}; font-size: 14px; font-weight: 800;">${d.value}%</span>
+          </div>
+        `;
+      }).join('');
+
+      validTargets.forEach(t => {
+        t.svgWrap.innerHTML = svgHtml;
+        if (t.legendWrap) t.legendWrap.innerHTML = legendHtml;
+      });
     },
 
     renderAdvanceSuite: function (chart) {
       if (!chart) return;
       this.renderAdvanceMasterPillars(chart);
       this.renderBasicElementsPieChart(chart, 'baziAdvanceElementsPieCard');
+      this.renderBasicAgeCallout(chart);
+      this.renderBasicSpiderChart(chart);
       this.renderAdvanceDimensions(chart);
       this.renderDaYunCards();
       this.renderDaYunInterpretation();
       this.renderAnnualAndMonthlyFortune();
+      this.renderBasicFengShui(chart);
     },
 
     renderAdvanceDimensions: function (chart) {
@@ -5790,6 +5837,9 @@
         if (advHealthEl) {
           advHealthEl.textContent = annual.health;
         }
+
+        // Render Annual Radar Chart for selected year
+        this.renderBasicAnnualSpiderChart(this.currentChart, annual, y);
       }
 
       // 2. Monthly Fortune

@@ -31,7 +31,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_5000">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_3184">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -896,12 +896,37 @@
             </div>
           </section>
 
-          <!-- 1.5 วิเคราะห์เจาะลึกมิติชีวิต 6 ด้าน (Advance Life Dimensions Breakdown) -->
+          <!-- 2. อายุปัจจุบัน & ดิถีธาตุ (Advance Age Display Card) -->
+          <section class="bazi-age-card" id="baziAdvanceAgeDisplayCard">
+            <!-- Dynamically populated: 🎂 อายุปัจจุบัน: xx ปี (เกิด พ.ศ. xxxx / ค.ศ. xxxx) • ดิถีธาตุ: xx -->
+          </section>
+
+          <!-- 3. กราฟแมงมุม (Spider / Radar Chart 5 มิติ: ชีวิต, การเงิน, การงาน, ความสัมพันธ์, สุขภาพ) -->
+          <section class="bazi-section-card bazi-spider-section">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-chart-pie" style="color: #ec4899;"></i>
+                <strong>ประเมินภาพรวมชีวิต (5 มิติชีวิตพื้นดวง)</strong>
+              </div>
+              <span class="bazi-mode-tag advance-tag"><i class="fa-solid fa-gem"></i> Advance Life Radar</span>
+            </div>
+
+            <div class="bazi-radar-layout">
+              <div id="baziAdvanceSpiderChartSvgWrap" class="bazi-spider-svg-wrap">
+                <!-- Pure SVG Radar Chart -->
+              </div>
+              <div id="baziAdvanceSpiderLegendWrap" class="bazi-spider-legend-wrap">
+                <!-- Score Breakdown & Explanations -->
+              </div>
+            </div>
+          </section>
+
+          <!-- 4. ภาพรวมคำทำนายและกลยุทธ์ชีวิต (Strategic Life Guidance - 6 มิติเชิงลึก) -->
           <section class="bazi-section-card bazi-advance-dimensions-section" id="baziAdvanceDimensionsSection">
             <div class="bazi-card-title-bar">
               <div class="title-left">
-                <i class="fa-solid fa-layer-group" style="color: #7c3aed;"></i>
-                <strong>วิเคราะห์เจาะลึกมิติชีวิต 6 ด้าน (Deep Life Dimensions Analysis)</strong>
+                <i class="fa-solid fa-compass" style="color: #0284c7;"></i>
+                <strong>ภาพรวมคำทำนายและกลยุทธ์ชีวิต (Strategic Life Guidance)</strong>
               </div>
               <span class="bazi-mode-tag advance-tag"><i class="fa-solid fa-gem"></i> Advance Insights</span>
             </div>
@@ -978,7 +1003,7 @@
             </div>
           </section>
 
-          <!-- 2. ตารางวัยจร 10 ปี (10-Year Luck Pillars Table + Next/Prev Controls) -->
+          <!-- 5. ตารางวัยจร 10 ปี (10-Year Luck Pillars Table + Next/Prev Controls) -->
           <section class="bazi-section-card bazi-dayun-advance-section">
             <div class="bazi-card-title-bar">
               <div class="title-left">
@@ -1040,12 +1065,12 @@
             </div>
           </section>
 
-          <!-- 2.5 วิเคราะห์เจาะลึกดวงชะตารายปีจร (Advance Annual Fortune & Interactions) -->
+          <!-- 6. วิเคราะห์เจาะลึกดวงชะตารายปีจร (Advance Annual Fortune & Interactions - เจาะแต่ละปีได้) -->
           <section class="bazi-section-card bazi-annual-advance-section" id="baziAdvanceAnnualSection">
             <div class="bazi-card-title-bar">
               <div class="title-left">
                 <i class="fa-solid fa-calendar-check" style="color: #ea580c;"></i>
-                <strong>วิเคราะห์เจาะลึกดวงชะตารายปี (流年 - Annual Fortune & Interactions ปี <span id="baziAdvanceAnnualYearDisplay">2026</span>)</strong>
+                <strong>วิเคราะห์เจาะลึกดวงชะตารายปี (流年 - Annual Fortune &amp; Interactions ปี <span id="baziAdvanceAnnualYearDisplay">2026</span>)</strong>
               </div>
               <div class="bazi-annual-controls-right">
                 <div class="bazi-year-chips" id="baziAdvanceYearChips">
@@ -1060,6 +1085,27 @@
             </div>
 
             <div id="baziAdvanceAnnualBanner" class="bazi-annual-banner" style="margin-top: 14px; margin-bottom: 16px;"></div>
+
+            <!-- กราฟแมงมุม ภาพรวมปีนี้ (คำนวณตามวัยจรและปีจรที่เลือก) -->
+            <div class="bazi-annual-radar-card" style="margin-bottom: 16px; background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%); border: 1.5px solid #fde68a; border-radius: 14px; padding: 16px;">
+              <div class="annual-radar-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px dashed #fcd34d; flex-wrap: wrap; gap: 8px;">
+                <div style="font-weight: 700; color: #78350f; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-chart-pie" style="color: #d97706;"></i>
+                  <span>ประเมินภาพรวมปีนี้ (5 มิติชะตาประจำปี <span id="baziAdvanceAnnualRadarYearLabel">2026</span>)</span>
+                </div>
+                <span id="baziAdvanceAnnualRadarDaYunLabel" style="color: #6d28d9; font-weight: 700; background: #faf5ff; border: 1px solid #d8b4fe; padding: 3px 10px; border-radius: 8px; font-size: 11.5px;">
+                  คำนวณตามวัยจร 10 ปี
+                </span>
+              </div>
+              <div class="bazi-radar-layout bazi-annual-radar-layout">
+                <div id="baziAdvanceAnnualSpiderChartSvgWrap" class="bazi-spider-svg-wrap">
+                  <!-- Pure SVG Radar Chart for Annual in Advance -->
+                </div>
+                <div id="baziAdvanceAnnualSpiderLegendWrap" class="bazi-spider-legend-wrap">
+                  <!-- Score Breakdown & Explanations for Annual in Advance -->
+                </div>
+              </div>
+            </div>
 
             <!-- Annual Interactions Breakdown Card -->
             <div class="bazi-annual-interactions-card" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
@@ -1105,7 +1151,7 @@
             </div>
           </section>
 
-          <!-- 3. ตารางเดือน (ภายใต้ปีจร ที่เลือก) -->
+          <!-- 7. ตารางเดือน 12 สารท (流月 - Solar Monthly Fortune ปีจรที่เลือก) -->
           <section class="bazi-section-card bazi-monthly-advance-section" id="baziAdvanceMonthlySection">
             <div class="bazi-card-title-bar">
               <div class="title-left">
@@ -1124,6 +1170,20 @@
 
             <div id="baziMonthsGrid" class="bazi-months-grid"></div>
             <div id="baziSelectedMonthCard" class="bazi-selected-month-card"></div>
+          </section>
+
+          <!-- 8. การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา (Feng Shui & Remedies) -->
+          <section class="bazi-section-card bazi-fengshui-section" id="baziAdvanceFengShuiSection">
+            <div class="bazi-card-title-bar">
+              <div class="title-left">
+                <i class="fa-solid fa-yin-yang" style="color: #10b981;"></i>
+                <strong>การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา (Feng Shui &amp; Remedies)</strong>
+              </div>
+              <span class="bazi-mode-tag advance-tag"><i class="fa-solid fa-gem"></i> Advance Remedies</span>
+            </div>
+            <div class="bazi-fengshui-three-col" id="baziAdvanceFengShuiThreeCol">
+              <!-- Dynamically populated: 1. สีมงคล, 2. ทิศมงคล, 3. ธาตุปรับดวง -->
+            </div>
           </section>
 
           <!-- DESK VIEW (หน้าโต๊ะหมอดู: 4 หัวข้อวิชาการเจาะลึก) -->
@@ -2460,9 +2520,9 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_5000"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_3184"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_5000"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_3184"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -2471,23 +2531,23 @@
   <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
   <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_5000"></script>
-  <script src="app.js?v=20261115_v5_5000"></script>
+  <script src="auth.js?v=20261115_v5_3184"></script>
+  <script src="app.js?v=20261115_v5_3184"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_5000"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_5000"></script>
-  <script src="bazi.js?v=20261115_v5_5000"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_3184"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_3184"></script>
+  <script src="bazi.js?v=20261115_v5_3184"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
