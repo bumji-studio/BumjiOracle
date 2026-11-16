@@ -1,7 +1,7 @@
 /**
  * Bazi Marriage & Relationships Knowledge Database (ฐานข้อมูลว่าด้วยคู่ครองและชีวิตสมรส)
  * อ้างอิงจากคลังตำราวิชาการ:
- * - "ว่าด้วยคู่ครอง.pdf" (สำนักลิ้มแชเล้ง 林青龍宮)
+ * - "ว่าด้วยคู่ครอง.pdf"
  */
 
 var BaziMarriageDB = (function () {
@@ -94,7 +94,7 @@ var BaziMarriageDB = (function () {
       combinations: {
         dayBranchCombined: 'เรือนคู่ครองถูกฮะ: ความสัมพันธ์แนบแน่น อบอุ่น ผูกพัน แต่หากถูกฮะไปเป็นธาตุที่ไม่ให้คุณ ระวังคู่ครองใจอ่อนหรือมีคนอื่นเข้ามาแทรก'
       },
-      // 5. นั่งดาวตรงจริต vs นั่งดาวต่างจริต (จากตำราสำนักลิ้มแชเล้ง ข้อ 8)
+      // 5. นั่งดาวตรงจริต vs นั่งดาวต่างจริต
       affinityTypes: {
         directAffinity: {
           code: 'direct',
@@ -152,7 +152,7 @@ var BaziMarriageDB = (function () {
         }
       }
 
-      // นั่งดาวตรงจริต vs นั่งดาวต่างจริต (จากตำราสำนักลิ้มแชเล้ง ข้อ 8)
+      // นั่งดาวตรงจริต vs นั่งดาวต่างจริต
       const directAffinityBranches = ['子', '午', '亥', '巳'];
       const affinity = directAffinityBranches.includes(dayBranch)
         ? MARRIAGE_RULES.spousePalace.affinityTypes.directAffinity
