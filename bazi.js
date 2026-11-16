@@ -2547,11 +2547,8 @@
       `;
     },
 
-    renderBasicSpiderChart: function (chart) {
-      const svgWrap = document.getElementById('baziSpiderChartSvgWrap');
-      const legendWrap = document.getElementById('baziSpiderLegendWrap');
-      if (!svgWrap || !chart) return;
-
+    calculateRealisticLifeScores: function (chart) {
+      if (!chart) return { lifeScore: 50, wealthScore: 50, careerScore: 50, loveScore: 50, healthScore: 50 };
       const p = chart.pillars || {};
       const dm = chart.dayMaster || (p.day ? p.day.stem : null) || { element: 'metal', polarity: 'yin', zh: '辛' };
       const dmElem = dm.element;
@@ -2725,12 +2722,27 @@
 
       healthScore = Math.max(20, Math.min(95, Math.round(healthScore)));
 
+      return {
+        lifeScore,
+        wealthScore,
+        careerScore,
+        loveScore,
+        healthScore
+      };
+    },
+
+    renderBasicSpiderChart: function (chart) {
+      const svgWrap = document.getElementById('baziSpiderChartSvgWrap');
+      const legendWrap = document.getElementById('baziSpiderLegendWrap');
+      if (!svgWrap || !chart) return;
+
+      const scores = this.calculateRealisticLifeScores(chart);
       const radarData = [
-        { label: 'ภาพรวมชีวิต', value: lifeScore, color: '#8b5cf6', icon: 'fa-solid fa-heart-pulse', desc: 'พลังชีวิต ธาตุส่งเสริม และความหนักแน่นของตัวตน' },
-        { label: 'การเงิน', value: wealthScore, color: '#10b981', icon: 'fa-solid fa-coins', desc: 'โอกาสสร้างทรัพย์ โชคลาภ และกระแสเงินหมุนเวียน' },
-        { label: 'การงาน', value: careerScore, color: '#0284c7', icon: 'fa-solid fa-briefcase', desc: 'ความก้าวหน้า ตำแหน่ง หน้าที่ และการยอมรับทางวิชาชีพ' },
-        { label: 'ความสัมพันธ์', value: loveScore, color: '#ec4899', icon: 'fa-solid fa-heart', desc: 'ความรัก คู่ครอง วังคู่ครอง และคนรอบข้างเกื้อหนุน' },
-        { label: 'สุขภาพ', value: healthScore, color: '#f59e0b', icon: 'fa-solid fa-shield-heart', desc: 'สมดุลเบญจธาตุ อวัยวะ และการปรับพลังหยินหยาง' }
+        { label: 'ภาพรวมชีวิต', value: scores.lifeScore, color: '#8b5cf6', icon: 'fa-solid fa-heart-pulse', desc: 'พลังชีวิต ธาตุส่งเสริม และความหนักแน่นของตัวตน' },
+        { label: 'การเงิน', value: scores.wealthScore, color: '#10b981', icon: 'fa-solid fa-coins', desc: 'โอกาสสร้างทรัพย์ โชคลาภ และกระแสเงินหมุนเวียน' },
+        { label: 'การงาน', value: scores.careerScore, color: '#0284c7', icon: 'fa-solid fa-briefcase', desc: 'ความก้าวหน้า ตำแหน่ง หน้าที่ และการยอมรับทางวิชาชีพ' },
+        { label: 'ความสัมพันธ์', value: scores.loveScore, color: '#ec4899', icon: 'fa-solid fa-heart', desc: 'ความรัก คู่ครอง วังคู่ครอง และคนรอบข้างเกื้อหนุน' },
+        { label: 'สุขภาพ', value: scores.healthScore, color: '#f59e0b', icon: 'fa-solid fa-shield-heart', desc: 'สมดุลเบญจธาตุ อวัยวะ และการปรับพลังหยินหยาง' }
       ];
 
       // SVG Generation
@@ -3023,6 +3035,325 @@
           <p class="fortune-item-text">${annual.love}</p>
         </div>
       `;
+
+      this.renderBasicAnnualSpiderChart(chart, annual, y);
+    },
+
+    renderBasicAnnualSpiderChart: function (chart, annual, year) {
+      const svgWrap = document.getElementById('baziAnnualSpiderChartSvgWrap');
+      const legendWrap = document.getElementById('baziAnnualSpiderLegendWrap');
+      const yearLabel = document.getElementById('baziAnnualRadarYearLabel');
+      const daYunLabel = document.getElementById('baziAnnualRadarDaYunLabel');
+      if (!svgWrap || !chart || !annual) return;
+
+      if (yearLabel) yearLabel.textContent = year || annual.year || 2026;
+
+      const curDaYun = annual.curDaYun;
+      if (daYunLabel) {
+        if (curDaYun && !curDaYun.isChildhood) {
+          const dyName = (curDaYun.stem ? curDaYun.stem.zh : '') + (curDaYun.branch ? curDaYun.branch.zh : '');
+          const dyAge = curDaYun.ageRange || `${curDaYun.ageFrom}-${curDaYun.ageTo} ปี`;
+          daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> วัยจร 10 ปี: <strong>${dyName}</strong> (อายุ ${dyAge})`;
+        } else if (curDaYun && curDaYun.isChildhood) {
+          daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> วัยจร: <strong>${curDaYun.ageRange}</strong>`;
+        } else {
+          daYunLabel.innerHTML = `<i class="fa-solid fa-timeline"></i> คำนวณตามวัยจร 10 ปี`;
+        }
+      }
+
+      // Base realistic scores from natal chart
+      const base = this.calculateRealisticLifeScores(chart);
+      let annualLife = base.lifeScore;
+      let annualWealth = base.wealthScore;
+      let annualCareer = base.careerScore;
+      let annualLove = base.loveScore;
+      let annualHealth = base.healthScore;
+
+      const favList = chart.favorableElements || [];
+
+      // 1. Da Yun Macro Environment (ผลจากวัยจร 10 ปี)
+      const dyStemFav = curDaYun && curDaYun.stem ? favList.includes(curDaYun.stem.element) : false;
+      const dyBranchFav = curDaYun && curDaYun.branch ? favList.includes(curDaYun.branch.element) : false;
+      const dyFavCount = (dyStemFav ? 1 : 0) + (dyBranchFav ? 1 : 0);
+
+      if (dyFavCount === 2) {
+        annualLife += 6;
+        annualCareer += 5;
+        annualWealth += 5;
+      } else if (dyFavCount === 1) {
+        annualLife += 3;
+        annualCareer += 3;
+        annualWealth += 3;
+      } else if (dyFavCount === 0 && curDaYun && !curDaYun.isChildhood) {
+        annualLife -= 5;
+        annualCareer -= 4;
+        annualWealth -= 4;
+      }
+
+      // 2. Annual Stem & Branch Favorability (ผลจากกิ่งฟ้า-ก้านดินปีจร)
+      const annStemFav = favList.includes(annual.stem.element);
+      const annBranchFav = favList.includes(annual.branch.element);
+
+      if (annStemFav && annBranchFav) {
+        annualLife += 12;
+      } else if (annStemFav || annBranchFav) {
+        annualLife += 6;
+      } else {
+        annualLife -= 8;
+      }
+
+      // 3. Interactions: Clashes & Harmonies (ปะทะและสมพงศ์)
+      (annual.clashes || []).forEach(c => {
+        if (c.pillarKey === 'day') {
+          annualLove -= 16;
+          annualHealth -= 8;
+          annualLife -= 6;
+        } else if (c.pillarKey === 'month') {
+          annualCareer -= 14;
+          annualLife -= 6;
+        } else if (c.pillarKey === 'year') {
+          annualLife -= 6;
+          annualHealth -= 4;
+        } else if (c.pillarKey === 'hour') {
+          annualWealth -= 8;
+          annualLife -= 4;
+        } else if (c.pillarKey === 'dayun') {
+          annualLife -= 8;
+          annualCareer -= 6;
+        }
+      });
+
+      (annual.harmonies || []).forEach(h => {
+        if (h.pillarKey === 'day') {
+          annualLove += 15;
+          annualLife += 4;
+        } else if (h.pillarKey === 'month') {
+          annualCareer += 12;
+          annualLife += 4;
+        } else if (h.pillarKey === 'year') {
+          annualLife += 5;
+        } else if (h.pillarKey === 'dayun') {
+          annualLife += 7;
+          annualCareer += 5;
+          annualWealth += 5;
+        }
+      });
+
+      // 4. Ten Gods Stars of the Annual Pillar
+      const sGod = annual.stemGod ? annual.stemGod.zh : '';
+      const bGod = annual.branchGod ? annual.branchGod.zh : '';
+
+      // Wealth stars (正財 / 偏財)
+      if (sGod === '正財' || sGod === '偏財' || bGod === '正財' || bGod === '偏財') {
+        if (chart.isStrong || dyFavCount >= 1) {
+          annualWealth += 15;
+        } else {
+          annualWealth -= 6;
+          annualHealth -= 4;
+        }
+      }
+
+      // Rob Wealth (劫財)
+      if (sGod === '劫財' || bGod === '劫財') {
+        annualWealth -= 12;
+      }
+
+      // Output stars (食神 / 傷官)
+      if (sGod === '食神' || sGod === '傷官') {
+        annualWealth += 8;
+        annualCareer += 4;
+        if (sGod === '傷官') {
+          const p = chart.pillars || {};
+          if ((p.month && p.month.tenGod && p.month.tenGod.zh === '正官') || (p.year && p.year.tenGod && p.year.tenGod.zh === '正官')) {
+            annualCareer -= 12;
+          }
+        }
+      }
+
+      // Power stars (正官 / 七殺)
+      if (sGod === '正官' || sGod === '七殺') {
+        if (chart.isStrong || dyFavCount >= 1) {
+          annualCareer += 14;
+        } else {
+          annualCareer -= 8;
+          annualHealth -= 6;
+        }
+      }
+
+      // Resource stars (正印 / 偏印)
+      if (sGod === '正印' || sGod === '偏印') {
+        annualCareer += 8;
+        annualHealth += 8;
+      }
+
+      // Peach Blossom (桃花: 子, 午, 卯, 酉)
+      if (['子', '午', '卯', '酉'].includes(annual.branch.zh)) {
+        annualLove += 8;
+      }
+
+      // 5. Health specific adjustments
+      const elemPcts = chart.elementPercentages || { wood: 20, fire: 20, earth: 20, metal: 20, water: 20 };
+      const annElemPct = elemPcts[annual.branch.element] || 0;
+      if (annElemPct >= 40) {
+        annualHealth -= 14; // Element already excessive
+      } else if (annElemPct <= 8 && annBranchFav) {
+        annualHealth += 10; // Element replenishes deficiency
+      }
+      if ((annual.clashes || []).length >= 2) {
+        annualHealth -= 8;
+      }
+
+      // Clamp to authentic 20-95%
+      annualLife = Math.max(20, Math.min(95, Math.round(annualLife)));
+      annualWealth = Math.max(20, Math.min(95, Math.round(annualWealth)));
+      annualCareer = Math.max(20, Math.min(95, Math.round(annualCareer)));
+      annualLove = Math.max(20, Math.min(95, Math.round(annualLove)));
+      annualHealth = Math.max(20, Math.min(95, Math.round(annualHealth)));
+
+      // Contextual Explanations for the Annual Scores
+      let lifeDesc = '';
+      if (annualLife > base.lifeScore) lifeDesc = 'วัยจรและปีจรหนุนนำ จังหวะชีวิตเปิดกว้างและมีพลังขับเคลื่อนสูง';
+      else if (annualLife < base.lifeScore) lifeDesc = 'ปีนี้มีแรงเสียดทานหรือการปะทะของพลังงาน ควรดำเนินชีวิตอย่างมีสติรอบคอบ';
+      else lifeDesc = 'กระแสชะตาในปีนี้ดำเนินไปอย่างราบรื่นตามรากฐานพื้นดวงเดิม';
+
+      let wealthDesc = '';
+      if (annualWealth > base.wealthScore) wealthDesc = 'ดาวการเงินและธาตุส่งเสริมเปิดทาง โอกาสสร้างรายได้หมุนเวียนเด่นชัด';
+      else if (annualWealth < base.wealthScore) wealthDesc = 'ระวังรายจ่ายจรและการแข่งขันทางการเงิน ควรเน้นการออมและเลี่ยงความเสี่ยง';
+      else wealthDesc = 'กระแสการเงินทรงตัวตามแผนงานและการบริหารจัดการ';
+
+      let careerDesc = '';
+      if (annualCareer > base.careerScore) careerDesc = 'ดาวการงานและตำแหน่งส่งผลดี ผู้ใหญ่เกื้อหนุน ผลงานได้รับการยอมรับ';
+      else if (annualCareer < base.careerScore) careerDesc = 'มีความกดดันจากหน้าที่หรือการปรับเปลี่ยนโครงสร้าง ต้องใช้ความอดทนและสุขุม';
+      else careerDesc = 'การงานดำเนินไปตามสายงานและบทบาทหน้าที่ปกติ';
+
+      let loveDesc = '';
+      if (annualLove > base.loveScore) loveDesc = 'วังคู่ครองสมพงศ์หรือมีดาวเสน่ห์เกื้อหนุน ความสัมพันธ์อบอุ่นลงตัว';
+      else if (annualLove < base.loveScore) loveDesc = 'มีแรงปะทะกับวังคู่ครอง ระวังความขัดแย้งจากอารมณ์ ควรรับฟังซึ่งกันและกัน';
+      else loveDesc = 'ความสัมพันธ์ดำเนินไปอย่างเรียบง่าย มั่นคง และเข้าใจกัน';
+
+      let healthDesc = '';
+      if (annualHealth > base.healthScore) healthDesc = 'ธาตุปีนี้ช่วยเติมเต็มส่วนที่พร่องในดวง สุขภาพกายและใจได้รับการฟื้นฟูดี';
+      else if (annualHealth < base.healthScore) healthDesc = 'ธาตุปีนี้ซ้ำเติมธาตุที่หนักอยู่แล้วหรือมีแรงปะทะ ควรพักผ่อนและดูแลร่างกาย';
+      else healthDesc = 'สมดุลร่างกายอยู่ในเกณฑ์ปกติ ดูแลสุขภาพต่อเนื่อง';
+
+      const radarData = [
+        { label: 'ภาพรวมปีนี้', value: annualLife, baseVal: base.lifeScore, color: '#f59e0b', icon: 'fa-solid fa-sparkles', desc: lifeDesc },
+        { label: 'การเงินปีนี้', value: annualWealth, baseVal: base.wealthScore, color: '#10b981', icon: 'fa-solid fa-coins', desc: wealthDesc },
+        { label: 'การงานปีนี้', value: annualCareer, baseVal: base.careerScore, color: '#0284c7', icon: 'fa-solid fa-briefcase', desc: careerDesc },
+        { label: 'ความสัมพันธ์ปีนี้', value: annualLove, baseVal: base.loveScore, color: '#ec4899', icon: 'fa-solid fa-heart', desc: loveDesc },
+        { label: 'สุขภาพปีนี้', value: annualHealth, baseVal: base.healthScore, color: '#8b5cf6', icon: 'fa-solid fa-shield-heart', desc: healthDesc }
+      ];
+
+      // SVG Generation
+      const cx = 175;
+      const cy = 145;
+      const r = 85;
+      const numAxes = 5;
+      const angles = [];
+      for (let i = 0; i < numAxes; i++) {
+        angles.push(-Math.PI / 2 + (i * 2 * Math.PI) / numAxes);
+      }
+
+      const levels = [0.2, 0.4, 0.6, 0.8, 1.0];
+      let gridLinesSvg = '';
+      levels.forEach(lvl => {
+        const polyPoints = angles.map(a => `${(cx + r * lvl * Math.cos(a)).toFixed(1)},${(cy + r * lvl * Math.sin(a)).toFixed(1)}`).join(' ');
+        gridLinesSvg += `<polygon points="${polyPoints}" fill="${lvl === 1.0 ? 'rgba(217, 119, 6, 0.04)' : 'none'}" stroke="rgba(217, 119, 6, 0.25)" stroke-width="1" />`;
+      });
+
+      let spokesSvg = '';
+      angles.forEach(a => {
+        spokesSvg += `<line x1="${cx}" y1="${cy}" x2="${(cx + r * Math.cos(a)).toFixed(1)}" y2="${(cy + r * Math.sin(a)).toFixed(1)}" stroke="rgba(217, 119, 6, 0.3)" stroke-width="1" stroke-dasharray="3,3" />`;
+      });
+
+      const maxVal = 100;
+      const dataPoints = radarData.map((d, i) => {
+        const a = angles[i];
+        const ratio = Math.max(0.15, Math.min(1.0, d.value / maxVal));
+        const x = cx + r * ratio * Math.cos(a);
+        const y = cy + r * ratio * Math.sin(a);
+        return { x, y, data: d };
+      });
+
+      const polyString = dataPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+      let verticesSvg = '';
+      dataPoints.forEach(p => {
+        verticesSvg += `
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.5" fill="${p.data.color}" stroke="#ffffff" stroke-width="2" />
+          <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8.5" fill="none" stroke="${p.data.color}" stroke-opacity="0.4" stroke-width="1.5" />
+        `;
+      });
+
+      let labelsSvg = '';
+      radarData.forEach((d, i) => {
+        const a = angles[i];
+        const dist = (i === 0) ? (r + 22) : (r + 18);
+        const lx = cx + dist * Math.cos(a);
+        const ly = cy + dist * Math.sin(a);
+        let textAnchor = 'middle';
+        if (Math.cos(a) > 0.25) textAnchor = 'start';
+        else if (Math.cos(a) < -0.25) textAnchor = 'end';
+
+        labelsSvg += `
+          <text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="${textAnchor}" fill="#78350f" font-family="'Prompt', sans-serif" font-size="12" font-weight="700">
+            ${d.label}
+          </text>
+          <text x="${lx.toFixed(1)}" y="${(ly + 14).toFixed(1)}" text-anchor="${textAnchor}" fill="${d.color}" font-family="'Outfit', sans-serif" font-size="12" font-weight="800">
+            ${d.value}%
+          </text>
+        `;
+      });
+
+      svgWrap.innerHTML = `
+        <svg viewBox="0 0 350 300" style="width: 100%; max-width: 350px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="baziAnnualRadarGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.55" />
+              <stop offset="60%" stop-color="#ec4899" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.1" />
+            </radialGradient>
+          </defs>
+          ${gridLinesSvg}
+          ${spokesSvg}
+          <polygon points="${polyString}" fill="url(#baziAnnualRadarGrad)" stroke="#d97706" stroke-width="2.5" />
+          ${verticesSvg}
+          ${labelsSvg}
+        </svg>
+      `;
+
+      if (legendWrap) {
+        legendWrap.innerHTML = radarData.map(d => {
+          const diff = d.value - d.baseVal;
+          let diffBadge = '';
+          if (diff > 0) {
+            diffBadge = `<span style="font-size: 11px; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 2px 7px; border-radius: 6px; margin-left: 6px;"><i class="fa-solid fa-arrow-trend-up"></i> +${diff}% เทียบพื้นดวง</span>`;
+          } else if (diff < 0) {
+            diffBadge = `<span style="font-size: 11px; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 2px 7px; border-radius: 6px; margin-left: 6px;"><i class="fa-solid fa-arrow-trend-down"></i> ${diff}% เทียบพื้นดวง</span>`;
+          } else {
+            diffBadge = `<span style="font-size: 11px; font-weight: 600; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 6px; margin-left: 6px;">คงที่ตามพื้นดวง</span>`;
+          }
+
+          return `
+            <div class="radar-score-row" style="background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(253, 230, 138, 0.6); margin-bottom: 8px; border-radius: 10px; padding: 8px 12px;">
+              <div class="radar-score-left">
+                <i class="${d.icon}" style="color: ${d.color}; font-size: 16px;"></i>
+                <div>
+                  <div style="color: #1e293b; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; flex-wrap: wrap;">
+                    <span>${d.label}</span>
+                    ${diffBadge}
+                  </div>
+                  <div style="color: #64748b; font-size: 11px; font-weight: 400; margin-top: 2px;">${d.desc}</div>
+                </div>
+              </div>
+              <div class="radar-score-bar-wrap" style="background: rgba(226, 232, 240, 0.7);">
+                <div class="radar-score-bar-fill" style="width: ${d.value}%; background: ${d.color};"></div>
+              </div>
+              <span class="radar-score-num" style="color: ${d.color}; font-size: 14px; font-weight: 800;">${d.value}%</span>
+            </div>
+          `;
+        }).join('');
+      }
     },
 
     renderAdvanceSuite: function (chart) {
