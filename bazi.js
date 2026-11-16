@@ -350,7 +350,7 @@
         }
       });
 
-      // 5.1 Branch Combinations & Transformations (การภาคีแปรธาตุตามตำรา: 六合 / 半三合 / 三合 / 三會 化神)
+      // 5.1 Branch Combinations & Transformations (การภาคีแปรธาตุ: 六合 / 半三合 / 三合 / 三會 化神)
       // เมื่อกิ่งดินจับคู่ภาคีกัน และมีดาวธาตุที่แปรสภาพปรากฏบนกิ่งฟ้า (化神透干) พลังจะแปรสภาพหนุนธาตุนั้นอย่างแท้จริง
       const bZhList = [hourBranch, dayBranch, monthBranch, yearBranch].map(b => b ? b.zh : '');
       const hasStemElem = (elem) => [hourStem, dayStem, monthStem, yearStem].some(s => s && s.element === elem);
@@ -3674,7 +3674,10 @@
                     ${inter.primary.length > 0 ? inter.primary.map(it => {
                       const cls = this.getInteractionClass(it);
                       const st = this.getInteractionStyle(it);
-                      return `<div class="interaction-item ${cls}" style="${st}">${it}</div>`;
+                      const info = this.getInteractionTooltipData(it);
+                      const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+                      const cleanIt = it.replace(/"/g, '&quot;');
+                      return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
                     }).join('') : '<div style="color: #94a3b8; font-size: 11px;">- ไม่มีจุดปะทะในพื้นดวง -</div>'}
                   </td>
                 `;
@@ -3725,6 +3728,7 @@
       this.initGuestInputs();
       this.renderQuickProfileSelect();
       this.bindEvents();
+      this.initInteractionTooltips();
 
       const isAuth = this.isLoggedIn();
       if (!isAuth) {
@@ -5322,8 +5326,11 @@
               ${detailedInteractions.natalInteractions.map(it => {
                 const cls = this.getInteractionClass(it);
                 const st = this.getInteractionStyle(it);
+                const info = this.getInteractionTooltipData(it);
+                const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+                const cleanIt = it.replace(/"/g, '&quot;');
                 return `
-                  <div class="interaction-item ${cls}" style="${st}">
+                  <div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">
                     • ${it}
                   </div>
                 `;
@@ -5338,8 +5345,11 @@
               ${detailedInteractions.luckInteractions.map(it => {
                 const cls = this.getInteractionClass(it);
                 const st = this.getInteractionStyle(it);
+                const info = this.getInteractionTooltipData(it);
+                const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+                const cleanIt = it.replace(/"/g, '&quot;');
                 return `
-                  <div class="interaction-item ${cls}" style="${st}">
+                  <div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">
                     • ${it}
                   </div>
                 `;
@@ -6376,6 +6386,377 @@
       return 'color: #475569;';
     },
 
+    getInteractionTooltipData: function (rawText) {
+      if (!rawText || typeof rawText !== 'string') return null;
+      const text = rawText.trim().replace(/,$/, '').replace(/^•\s*/, '');
+      const lower = text.toLowerCase();
+
+      // Extract parentheses info e.g. (BingShen-XinSi), (Si-Shen), (Yin-Si-Shen)
+      const parenMatch = text.match(/\(([^)]+)\)/);
+      const parenContent = parenMatch ? parenMatch[1].trim() : '';
+
+      const stemDict = {
+        'Jia': 'เจี่ย (ไม้หยาง)', 'Yi': 'อิก (ไม้หยิน)', 'Bing': 'เปี้ย (ไฟหยาง)', 'Ding': 'ติง (ไฟหยิน)',
+        'Wu': 'โบ่ว (ดินหยาง)', 'Ji': 'จี่ (ดินหยิน)', 'Geng': 'แก (ทองหยาง)', 'Xin': 'ซิง (ทองหยิน)',
+        'Ren': 'หยิม (น้ำหยาง)', 'Gui': 'กุ่ย (น้ำหยิน)',
+        '甲': 'เจี่ย (ไม้หยาง)', '乙': 'อิก (ไม้หยิน)', '丙': 'เปี้ย (ไฟหยาง)', '丁': 'ติง (ไฟหยิน)',
+        '戊': 'โบ่ว (ดินหยาง)', '己': 'จี่ (ดินหยิน)', '庚': 'แก (ทองหยาง)', '辛': 'ซิง (ทองหยิน)',
+        '壬': 'หยิม (น้ำหยาง)', '癸': 'กุ่ย (น้ำหยิน)'
+      };
+
+      const branchDict = {
+        'Zi': 'ชวด (หนู/น้ำ)', 'Chou': 'ฉลู (วัว/ดิน)', 'Yin': 'ขาล (เสือ/ไม้)', 'Mao': 'เถาะ (กระต่าย/ไม้)',
+        'Chen': 'มะโรง (มังกร/ดิน)', 'Si': 'มะเส็ง (งู/ไฟ)', 'Wu': 'มะเมีย (ม้า/ไฟ)', 'Wei': 'มะแม (แพะ/ดิน)',
+        'Shen': 'วอก (ลิง/ทอง)', 'You': 'ระกา (ไก่/ทอง)', 'Xu': 'จอ (หมา/ดิน)', 'Hai': 'กุน (หมู/น้ำ)',
+        '子': 'ชวด (หนู/น้ำ)', '丑': 'ฉลู (วัว/ดิน)', '寅': 'ขาล (เสือ/ไม้)', '卯': 'เถาะ (กระต่าย/ไม้)',
+        '辰': 'มะโรง (มังกร/ดิน)', '巳': 'มะเส็ง (งู/ไฟ)', '午': 'มะเมีย (ม้า/ไฟ)', '未': 'มะแม (แพะ/ดิน)',
+        '申': 'วอก (ลิง/ทอง)', '酉': 'ระกา (ไก่/ทอง)', '戌': 'จอ (หมา/ดิน)', '亥': 'กุน (หมู/น้ำ)'
+      };
+
+      const isStemOnly = lower.includes('stem combination') || lower.includes('wu he') || text.includes('五合');
+      const isBranchOnly = lower.includes('branch conflict') || lower.includes('six combination') ||
+                           lower.includes('half triangular') || lower.includes('triangular') ||
+                           lower.includes('destruction') || lower.includes('harm') ||
+                           lower.includes('punishment') || lower.includes('penalty') ||
+                           lower.includes('zi xing') || lower.includes('liu he') || lower.includes('liu chong') ||
+                           lower.includes('liu po') || lower.includes('liu hai');
+
+      const formatParenTokens = (str) => {
+        if (!str) return '';
+        const tokens = str.split(/[-–—\s,]+/).filter(Boolean);
+        return tokens.map(tok => {
+          if (isStemOnly && stemDict[tok]) return stemDict[tok];
+          if (isBranchOnly && branchDict[tok]) return branchDict[tok];
+          if (branchDict[tok]) return branchDict[tok];
+          if (stemDict[tok]) return stemDict[tok];
+          // Combined stem+branch like BingShen or XinSi
+          for (const sKey of Object.keys(stemDict)) {
+            if (tok.startsWith(sKey) && tok.length > sKey.length) {
+              const bKey = tok.substring(sKey.length);
+              if (branchDict[bKey]) {
+                const sName = stemDict[sKey].split(' ')[0];
+                const bName = branchDict[bKey].split(' ')[0];
+                return `${sName}-${bName} (${sKey}${bKey})`;
+              }
+            }
+          }
+          return tok;
+        }).join(' ⇋ ');
+      };
+
+      const formattedPair = formatParenTokens(parenContent);
+
+      // 1. Heaven Earth Union (天地德合)
+      if (lower.includes('tian di he') || lower.includes('heaven earth union') || text.includes('天地德合')) {
+        return {
+          type: 'tian-di-he',
+          badge: '🌟 มหาภาคีมงคลสูงสุด',
+          badgeBg: '#ea580c',
+          title: 'มหาภาคีฟ้าดิน (天地德合 - Tian Di He)',
+          pair: formattedPair || parenContent,
+          meaning: 'ก้านฟ้าภาคีเป็นคู่ธาตุ (五合) และกิ่งดินภาคีเป็นคู่ธาตุ (六合) พร้อมกันทั้งฟ้าและดิน สื่อถึงการผูกพันธมิตรที่กลมกลืนสมบูรณ์แบบที่สุดในวิชาปาจื่อ',
+          effect: 'เป็นสิริมงคลสูงมาก มีเสน่ห์ เมตตามหานิยม ผู้ใหญ่ผู้มีอำนาจอุปถัมภ์ค้ำชู ความสัมพันธ์หรือหุ้นส่วนแนบแน่นมั่นคง และได้รับโอกาสเกื้อกูลราบรื่นเสมอ',
+          advice: 'ใช้โอกาสนี้เจรจา ประสานงาน หรือร่วมมือกับพันธมิตร จะได้รับความไว้วางใจและส่งเสริมให้ก้าวหน้าอย่างรวดเร็ว'
+        };
+      }
+
+      // 2. Stem Combination (五合)
+      if (lower.includes('wu he') || lower.includes('stem combination') || text.includes('五合')) {
+        return {
+          type: 'stem-combo',
+          badge: '🤝 ภาคีก้านฟ้า (โหงวฮะ)',
+          badgeBg: '#16a34a',
+          title: 'ภาคีก้านฟ้า (天干五合 - Wu He)',
+          pair: formattedPair || parenContent,
+          meaning: 'การดึงดูดสมพงศ์ระหว่างก้านฟ้าคู่ธาตุหยางกับหยิน สื่อถึงการประสานความคิด วิสัยทัศน์ และสายสัมพันธ์ระหว่างบุคคลที่มองเห็นได้ชัดเจน',
+          effect: 'ช่วยสร้างมิตรภาพ ความร่วมมือ พันธมิตรธุรกิจ มีเสน่ห์เมตตา เข้ากับผู้อื่นได้ง่าย และเจรจาประนีประนอมได้ราบรื่น',
+          advice: 'เหมาะอย่างยิ่งสำหรับการสร้างคอนเนกชัน การรวมพลังทำงานเป็นทีม และการแสวงหาความร่วมมือเชิงกลยุทธ์'
+        };
+      }
+
+      // 3. Six Combination (六合)
+      if (lower.includes('liu he') || lower.includes('six combination') || text.includes('六合')) {
+        return {
+          type: 'six-combo',
+          badge: '💕 หกภาคีกิ่งดิน (หลักฮะ)',
+          badgeBg: '#ec4899',
+          title: 'หกภาคีกิ่งดิน (地支六合 - Liu He)',
+          pair: formattedPair || parenContent,
+          meaning: 'การสมพงศ์เกื้อหนุนของ 12 นักษัตรคู่มิตร สื่อถึงความเข้าอกเข้าใจ สภาพแวดล้อมที่เป็นมิตร และความผูกพันลึกซึ้งในระดับชีวิตจริง',
+          effect: 'ช่วยลดทอนและสลายแรงปะทะ (ชง) นำพาความสงบสุข ความสามัคคีในครอบครัวและทีมงาน คนใกล้ชิดคอยหยิบยื่นความช่วยเหลือ',
+          advice: 'รักษาไมตรีจิตกับคนใกล้ชิด ร่วมมือประสานประโยชน์ และเปิดใจรับการสนับสนุนจากกัลยาณมิตร'
+        };
+      }
+
+      // 4. Triangular / Half Triangular Combination (三合 / 半合)
+      if (lower.includes('half triangular') || lower.includes('ban san he') || text.includes('半合') || lower.includes('triangular') || text.includes('三合')) {
+        const isHalf = lower.includes('half') || lower.includes('ban') || text.includes('半');
+        return {
+          type: isHalf ? 'half-triangular' : 'triangular',
+          badge: isHalf ? '🔷 ครึ่งไตรภาคี (ปั๊นซาฮะ)' : '🔺 ไตรภาคีเต็ม (ซาฮะ)',
+          badgeBg: isHalf ? '#0284c7' : '#2563eb',
+          title: isHalf ? 'ครึ่งไตรภาคีกิ่งดิน (地支半合 - Ban San He)' : 'ไตรภาคีกิ่งดินครบชุด (地支三合 - San He)',
+          pair: formattedPair || parenContent,
+          meaning: 'การรวมตัวของกิ่งดินเพื่อก่อกำเนิดพลังธาตุที่เข้มข้นทรงพลัง มุ่งหน้าไปสู่เป้าหมายร่วมกันอย่างเด่นชัด',
+          effect: 'เสริมสร้างพลังของธาตุที่เกิดจากการฮะให้โดดเด่น ผลักดันเป้าหมายและโครงการให้คืบหน้าอย่างรวดเร็วด้วยพลังหมู่คณะ',
+          advice: 'โฟกัสที่เป้าหมายหลัก รวมทีมเพื่อทำโปรเจกต์ใหญ่ พลังความสามัคคีจะขับเคลื่อนให้บรรลุเป้าหมายที่ตั้งใจไว้'
+        };
+      }
+
+      // 5. Branch Conflict / Clash (冲)
+      if (lower.includes('conflict') || lower.includes('liu chong') || lower.includes('clash') || text.includes('冲') || text.includes('沖') || text.includes('ปะทะ')) {
+        return {
+          type: 'clash',
+          badge: '⚡ กิ่งดินปะทะ (ชง)',
+          badgeBg: '#dc2626',
+          title: 'กิ่งดินปะทะ (地支六冲 - Liu Chong)',
+          pair: formattedPair || parenContent,
+          meaning: 'การเผชิญหน้ากันของนักษัตรคู่ตรงข้ามที่มีพลังหักล้างกัน สื่อถึงความเปลี่ยนแปลง การเคลื่อนไหว ความกระตือรือร้น หรือจุดหักเห',
+          effect: 'กระตุ้นให้เกิดการเดินทาง โยกย้ายที่อยู่ เปลี่ยนหน้าที่การงาน หรือมีมุมมองขัดแย้งกับบุคคลตามเสาที่ถูกชง',
+          advice: 'มองการชงเป็นโอกาสในการปรับปรุงเปลี่ยนแปลง ไม่ควรใจร้อนหรือใช้อารมณ์ การเดินทางหรือจัดฮวงจุ้ยใหม่ช่วยระบายพลังชงได้ดี'
+        };
+      }
+
+      // 6. Destruction (破)
+      if (lower.includes('destruction') || lower.includes('liu po') || text.includes('破')) {
+        return {
+          type: 'destruction',
+          badge: '💔 กิ่งดินทำลาย (ผั่ว)',
+          badgeBg: '#64748b',
+          title: 'กิ่งดินทำลาย (地支六破 - Liu Po)',
+          pair: formattedPair || parenContent,
+          meaning: 'การแตกร้าว การสึกหรอ หรือมีข้อบกพร่องที่ซ่อนอยู่ภายใน สื่อถึงการเสื่อมสภาพหรือการละเลยจุดเล็กๆ จนกระทบภาพรวม',
+          effect: 'ระวังข้อตกลงหรือสัญญามีรอยร้าว ข้าวของเครื่องใช้เสียหายต้องซ่อมแซม หรือความสัมพันธ์สะดุดเพราะเรื่องไม่เป็นเรื่อง',
+          advice: 'ตรวจทานเอกสารสัญญาอย่างละเอียดรอบคอบ บำรุงรักษาสิ่งของเครื่องใช้ และสื่อสารอย่างจริงใจเพื่อไม่ให้เกิดรอยร้าว'
+        };
+      }
+
+      // 7. Harm (害)
+      if (lower.includes('harm') || lower.includes('liu hai') || text.includes('害')) {
+        return {
+          type: 'harm',
+          badge: '⚠️ กิ่งดินให้ร้าย (ไห่)',
+          badgeBg: '#7c3aed',
+          title: 'กิ่งดินให้ร้าย (地支六害 - Liu Hai)',
+          pair: formattedPair || parenContent,
+          meaning: 'ความขัดแย้งทางอารมณ์ ความอึดอัดใจ ความระแวง หรือความรู้สึกเหมือนถูกแทงข้างหลังและทำคุณคนไม่ขึ้น',
+          effect: 'อาจเกิดความน้อยใจ ถูกเข้าใจผิด เสียความรู้สึกจากคนใกล้ชิด หรือมีความคาดหวังที่สวนทางกัน',
+          advice: 'รักษาระยะห่างที่พอดี ไม่ยึดติดกับคำวิจารณ์ ทำงานให้โปร่งใสตรงไปตรงมา และดูแลสุขภาพจิตใจให้ผ่องใส'
+        };
+      }
+
+      // 8. Bullying punishment (持势之刑 / Yin-Si-Shen)
+      if (lower.includes('bullying') || text.includes('持势之刑') || lower.includes('yin-si-shen')) {
+        return {
+          type: 'penalty',
+          badge: '⚖️ ซาเฮ้งอวดอำนาจ',
+          badgeBg: '#d946ef',
+          title: 'ซาเฮ้งอวดอำนาจ (持势之刑 - Bullying Punishment)',
+          pair: formattedPair || 'ขาล (Yin) ⚡ มะเส็ง (Si) ⚡ วอก (Shen)',
+          meaning: 'ซาเฮ้งกลุ่มแก่งแย่งชิงดี เกิดจาก 3 นักษัตรธาตุเกิดที่มีความเชื่อมั่นในอำนาจและศักยภาพของตนเองสูงจนปะทะกัน',
+          effect: 'ระวังการแข่งขันชิงดีชิงเด่น ข้อพิพาทเรื่องบทบาทหน้าที่ คดีความ หรืออุบัติเหตุจากความใจร้อนประมาท',
+          advice: 'ควรอ่อนน้อมถ่อมตน ปฏิบัติตามกฎหมายและระเบียบวินัยอย่างเคร่งครัด หลีกเลี่ยงการปะทะคารมโดยไม่จำเป็น'
+        };
+      }
+
+      // 9. Three Earths punishment (无恩之刑 / Wei-Chou-Xu)
+      if (lower.includes('three earths') || text.includes('无恩之刑') || lower.includes('wei-chou-xu')) {
+        return {
+          type: 'penalty',
+          badge: '⚖️ ซาเฮ้งไร้บุญคุณ',
+          badgeBg: '#d946ef',
+          title: 'ซาเฮ้งไร้บุญคุณ (无恩之刑 - Three Earths Punishment)',
+          pair: formattedPair || 'มะแม (Wei) ⚡ ฉลู (Chou) ⚡ จอ (Xu)',
+          meaning: 'การรวมตัวของ 3 นักษัตรธาตุดินจนพลังดินทับถมหนาแน่น สื่อถึงความรู้สึกน้อยใจ ทำคุณคนไม่ขึ้น หรือถูกคนใกล้ตัวสร้างความลำบากให้',
+          effect: 'อารมณ์ดิ่ง รู้สึกโดดเดี่ยว และระวังปัญหาสุขภาพเกี่ยวกับระบบย่อยอาหาร ทางเดินอาหาร ม้าม หรือช่องท้อง',
+          advice: 'ปล่อยวางความคาดหวังในการตอบแทนบุญคุณ ทำจิตใจให้สงบ รับประทานอาหารที่มีประโยชน์และดูแลสุขภาพสม่ำเสมอ'
+        };
+      }
+
+      // 10. Uncivil punishment (无礼之刑 / Zi-Mao)
+      if (lower.includes('uncivil') || text.includes('无礼之刑') || lower.includes('zi-mao') || lower.includes('mao-zi')) {
+        return {
+          type: 'penalty',
+          badge: '⚖️ ซาเฮ้งไร้มารยาท',
+          badgeBg: '#d946ef',
+          title: 'ซาเฮ้งไร้มารยาท (无礼之刑 - Uncivil Punishment)',
+          pair: formattedPair || 'ชวด (Zi) ⚡ เถาะ (Mao)',
+          meaning: 'ความขัดแย้งที่เกิดจากการขาดความเกรงใจ การล้ำเส้น หรือประเด็นเรื่องเพศสัมพันธ์และความสัมพันธ์ส่วนตัวที่ไม่ชัดเจน',
+          effect: 'อาจเผชิญคำพูดเสียดสี ล่วงเกิน ถูกเข้าใจผิดเรื่องชู้สาว หรือขัดแย้งกับผู้ใหญ่/บริวารเพราะเรื่องมารยาท',
+          advice: 'ระมัดระวังการใช้วาจาและการวางตัว มีขอบเขตความสัมพันธ์ที่ชัดเจน และให้เกียรติซึ่งกันและกันเสมอ'
+        };
+      }
+
+      // 11. Self punishment (自刑 / Zi Xing)
+      if (lower.includes('self punishment') || lower.includes('zi xing') || text.includes('自刑')) {
+        return {
+          type: 'penalty',
+          badge: '⚖️ จื่อเฮ้ง (ลงโทษตนเอง)',
+          badgeBg: '#d946ef',
+          title: 'จื่อเฮ้ง / ลงโทษตนเอง (自刑 - Self Punishment)',
+          pair: formattedPair || parenContent || 'มะโรง, มะเมีย, ระกา, กุน',
+          meaning: 'การที่นักษัตรเดียวกันปรากฏซ้ำ (辰-辰, 午-午, 酉-酉, 亥-亥) สื่อถึงการคิดวนเวียน วิตกกังวล กดดันตัวเอง หรือทำร้ายจิตใจตัวเองโดยไม่รู้ตัว',
+          effect: 'มักโทษตัวเอง ลังเลไม่มั่นใจ หรือตั้งมาตรฐานสูงเกินไปจนเกิดความเครียดสะสม',
+          advice: 'ฝึกให้อภัยตนเอง มีเมตตาต่อใจตัวเอง ปรึกษาคนที่ไว้ใจ และอย่าแบกรับความคาดหวังไว้เพียงลำพัง'
+        };
+      }
+
+      // 12. Fan Yin (反吟)
+      if (lower.includes('fan yin') || text.includes('反吟')) {
+        return {
+          type: 'fanyin',
+          badge: '🌪️ ฮวงงิ้ม (ปะทะฟ้าดิน)',
+          badgeBg: '#d97706',
+          title: 'ฮวงงิ้ม (反吟 - Fan Yin)',
+          pair: formattedPair || parenContent,
+          meaning: 'ก้านฟ้าชงกันและกิ่งดินชงกันพร้อมกัน ก่อให้เกิดคลื่นพลังผันผวนอย่างรุนแรง สื่อถึงจุดเปลี่ยนพลิกผันครั้งใหญ่ในชีวิต',
+          effect: 'เกิดความเปลี่ยนแปลงอย่างรวดเร็ว ทั้งหน้าที่การงาน ที่อยู่อาศัย หรือวิถีชีวิต ต้องปรับตัวอย่างฉับพลัน',
+          advice: 'ตั้งรับด้วยสติและความสุขุม หลีกเลี่ยงการลงทุนที่มีความเสี่ยงสูง และมองการเปลี่ยนแปลงเป็นการเปิดบทเรียนใหม่'
+        };
+      }
+
+      // 13. Fu Yin (伏吟)
+      if (lower.includes('fu yin') || text.includes('伏吟')) {
+        return {
+          type: 'fuyin',
+          badge: '⏳ ฮกงิ้ม (ซ้ำซ้อนฟ้าดิน)',
+          badgeBg: '#059669',
+          title: 'ฮกงิ้ม (伏吟 - Fu Yin)',
+          pair: formattedPair || parenContent,
+          meaning: 'ก้านฟ้าและกิ่งดินซ้ำซ้อนกัน พลังนิ่งสงบเกินไปจนกลายเป็นความหน่วง ซ้ำซาก อึดอัด หรือความลังเลไม่เด็ดขาด',
+          effect: 'รู้สึกเหมือนพายเรือในอ่าง เรื่องเก่าๆ ย้อนกลับมาให้แก้ไข ความก้าวหน้าเป็นไปอย่างล่าช้า',
+          advice: 'อดทนรอจังหวะที่เหมาะสม ใช้เวลานี้ทบทวนตนเอง พัฒนาทักษะ และจัดระเบียบชีวิตให้พร้อมเมื่อโอกาสมาถึง'
+        };
+      }
+
+      // 14. Void / Kong Wang (日空亡)
+      if (lower.includes('void') || lower.includes('kong wang') || lower.includes('kongwang') || text.includes('空亡')) {
+        return {
+          type: 'void',
+          badge: '🕳️ คงหวัง (ตกช่องว่าง)',
+          badgeBg: '#ca8a04',
+          title: 'คงหวัง / ตกช่องว่าง (日空亡 - Kong Wang)',
+          pair: formattedPair || parenContent || 'กิ่งดินตกช่องว่างประจำวัน',
+          meaning: 'กิ่งดินที่ตกอยู่ในช่วง 2 นักษัตรที่ไร้ก้านฟ้าประจำวงรอบวัน ทำให้พลังในโลกกายภาพเบาบางลง',
+          effect: 'ผลประโยชน์ทางโลกหรือความคาดหวังในเสานั้นอาจมาถึงช้า หรือต้องเหน็ดเหนื่อยมากกว่าผู้อื่นถึงจะได้มา',
+          advice: 'โดดเด่นอย่างยิ่งสำหรับงานด้านจิตวิญญาณ การศึกษา ปรัชญา ศิลปะ ความคิดสร้างสรรค์ และงานเบื้องหลัง'
+        };
+      }
+
+      // Default fallback
+      return {
+        type: 'general',
+        badge: '🔍 ปฏิสัมพันธ์ในผังดวง',
+        badgeBg: '#64748b',
+        title: text,
+        pair: formattedPair || parenContent,
+        meaning: 'ปฏิสัมพันธ์ระหว่างเสาชะตาในวิชาปาจื่อ สะท้อนถึงการแลกเปลี่ยนพลังงาน อุปนิสัย และจังหวะชีวิต',
+        effect: 'ส่งผลต่อสภาวะอารมณ์ ความสัมพันธ์ และโอกาสในด้านที่เกี่ยวข้องกับเสานั้นๆ',
+        advice: 'สังเกตและปรับตัวตามพลังงานเพื่อสร้างสมดุลให้กับชีวิต'
+      };
+    },
+
+    initInteractionTooltips: function () {
+      let tip = document.getElementById('baziInteractionTooltip');
+      if (!tip) {
+        tip = document.createElement('div');
+        tip.id = 'baziInteractionTooltip';
+        tip.className = 'bazi-interaction-tooltip';
+        document.body.appendChild(tip);
+      }
+
+      let activeItem = null;
+
+      const positionTooltip = (e, item) => {
+        if (!tip || !tip.classList.contains('visible')) return;
+        const tipRect = tip.getBoundingClientRect();
+        const tipWidth = tipRect.width || 320;
+        const tipHeight = tipRect.height || 220;
+
+        let x = e.clientX + 16;
+        let y = e.clientY + 14;
+
+        if (x + tipWidth > window.innerWidth - 16) {
+          x = e.clientX - tipWidth - 16;
+        }
+        if (x < 16) x = 16;
+
+        if (y + tipHeight > window.innerHeight - 16) {
+          y = e.clientY - tipHeight - 14;
+        }
+        if (y < 16) y = 16;
+
+        tip.style.left = `${x}px`;
+        tip.style.top = `${y}px`;
+      };
+
+      const showTooltip = (item, e) => {
+        const text = item.getAttribute('data-interaction-text') || item.textContent.trim();
+        const data = this.getInteractionTooltipData(text);
+        if (!data) return;
+
+        tip.innerHTML = `
+          <div class="bazi-it-header">
+            <span class="bazi-it-badge" style="background: ${data.badgeBg}22; color: ${data.badgeBg}; border: 1px solid ${data.badgeBg}55;">
+              ${data.badge}
+            </span>
+          </div>
+          <div class="bazi-it-title">${data.title}</div>
+          ${data.pair ? `<div class="bazi-it-pair">⚡ <strong>คู่สัมพันธ์:</strong> ${data.pair}</div>` : ''}
+          <div class="bazi-it-section">
+            <div class="bazi-it-label" style="color: #93c5fd;">📖 ความหมาย</div>
+            <div class="bazi-it-desc">${data.meaning}</div>
+          </div>
+          <div class="bazi-it-section">
+            <div class="bazi-it-label" style="color: #f472b6;">⚡ อิทธิพลในดวง</div>
+            <div class="bazi-it-effect">${data.effect}</div>
+          </div>
+          <div class="bazi-it-advice">
+            💡 <strong>คำแนะนำ:</strong> ${data.advice}
+          </div>
+        `;
+
+        tip.classList.add('visible');
+        positionTooltip(e, item);
+      };
+
+      const hideTooltip = () => {
+        if (tip) tip.classList.remove('visible');
+        activeItem = null;
+      };
+
+      document.addEventListener('mouseover', (e) => {
+        const item = e.target.closest('.interaction-item, .interaction-pill, [data-interaction-tooltip]');
+        if (item) {
+          activeItem = item;
+          showTooltip(item, e);
+        }
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (activeItem && tip && tip.classList.contains('visible')) {
+          positionTooltip(e, activeItem);
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        const item = e.target.closest('.interaction-item, .interaction-pill, [data-interaction-tooltip]');
+        if (item && (!e.relatedTarget || !item.contains(e.relatedTarget))) {
+          hideTooltip();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        const item = e.target.closest('.interaction-item, .interaction-pill, [data-interaction-tooltip]');
+        if (item) {
+          activeItem = item;
+          showTooltip(item, e);
+        } else if (tip && tip.classList.contains('visible')) {
+          hideTooltip();
+        }
+      });
+    },
+
     computeDetailedInteractions: function (col, allCols, annualCol, luckCol, colType = 'natal') {
       const primaryInteractions = [];
       const secondaryInteractions = [];
@@ -6820,7 +7201,10 @@
                     ${inter.primary.length > 0 ? inter.primary.map(it => {
                       const cls = this.getInteractionClass(it);
                       const st = this.getInteractionStyle(it);
-                      return `<div class="interaction-item ${cls}" style="${st}">${it},</div>`;
+                      const info = this.getInteractionTooltipData(it);
+                      const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+                      const cleanIt = it.replace(/"/g, '&quot;');
+                      return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
                     }).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
 
                     ${inter.secondary.length > 0 ? `
@@ -6828,7 +7212,10 @@
                       ${inter.secondary.map(it => {
                         const cls = this.getInteractionClass(it);
                         const st = this.getInteractionStyle(it);
-                        return `<div class="interaction-item ${cls}" style="${st}">${it},</div>`;
+                        const info = this.getInteractionTooltipData(it);
+                        const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+                        const cleanIt = it.replace(/"/g, '&quot;');
+                        return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
                       }).join('')}
                     ` : ''}
                   </td>

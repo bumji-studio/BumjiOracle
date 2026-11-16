@@ -9933,6 +9933,16 @@ body.is-mobile .synthesis-box-body {
   font-weight: 600;
   background: #ffffff;
   transition: all 0.2s ease;
+  cursor: help;
+  position: relative;
+  user-select: none;
+}
+
+.bazi-interactions-cell .interaction-item:hover,
+.interaction-pill:hover {
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  filter: brightness(0.97);
 }
 
 /* User-Requested Interaction Colors */
@@ -10058,6 +10068,115 @@ body.is-mobile .synthesis-box-body {
   color: #b45309;
   margin-top: 6px;
   margin-bottom: 2px;
+}
+
+/* ============================================================
+   Floating Rich Tooltip for BaZi Interactions (ภาคี/ชง/เฮ้ง/ไห่)
+   ============================================================ */
+#baziInteractionTooltip,
+.bazi-interaction-tooltip {
+  position: fixed;
+  z-index: 999999;
+  max-width: 360px;
+  min-width: 270px;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.45), 0 6px 16px -2px rgba(0, 0, 0, 0.3);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  transition: opacity 0.16s cubic-bezier(0.16, 1, 0.3, 1), transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
+}
+
+#baziInteractionTooltip.visible,
+.bazi-interaction-tooltip.visible {
+  display: block;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.bazi-it-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.bazi-it-badge {
+  display: inline-block;
+  padding: 2.5px 8px;
+  border-radius: 9999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.bazi-it-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.bazi-it-pair {
+  font-size: 11px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.bazi-it-section {
+  margin-bottom: 7px;
+}
+
+.bazi-it-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bazi-it-desc {
+  font-size: 11.5px;
+  color: #cbd5e1;
+  line-height: 1.45;
+}
+
+.bazi-it-effect {
+  font-size: 11.5px;
+  color: #e2e8f0;
+  line-height: 1.45;
+}
+
+.bazi-it-advice {
+  font-size: 11px;
+  color: #fde047;
+  background: rgba(234, 179, 8, 0.14);
+  border-left: 3px solid #eab308;
+  padding: 5px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+  line-height: 1.42;
 }
 
 /* Dayun Selected Card State */
