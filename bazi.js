@@ -1198,6 +1198,73 @@
           adviceText = `พลังงานประจำเดือนไหลเวียนปกติ ดำเนินการตามแผนที่วางไว้ รักษาสมดุลกระแสเงินสด และดูแลสุขภาพกายใจให้แจ่มใส`;
         }
 
+        // Deep 5 Dimensions for the Month
+        const monthlyGodOverviewMap = {
+          '比肩': `เดือนแห่งการพึ่งพาความสามารถตนเอง การร่วมมือกับพันธมิตร หรือสร้างเครือข่ายความสัมพันธ์เพื่อเป้าหมายร่วมกัน`,
+          '劫財': `เดือนแห่งการขับเคี่ยว แข่งขันสูง ท้าทายความกล้าคิดกล้าทำ มีความมุ่งมั่นสูง ระวังความใจร้อนและค่าใช้จ่ายจร`,
+          '食神': `เดือนแห่งความสุขสำราญ ความคิดสร้างสรรค์ งานนวัตกรรม และการต่อยอดโปรเจกต์ใหม่ มีกินมีใช้ไม่ขาดมือ`,
+          '傷官': `เดือนแห่งการฉีกกรอบ โดดเด่นทางสติปัญญา ไหวพริบเฉียบคม ระวังการแสดงความคิดเห็นที่ตรงเกินไป`,
+          '偏財': `เดือนแห่งโอกาสทางการค้า โชคลาภพิเศษ กระแสเงินสดหมุนเวียนคล่องตัว และการเจรจาธุรกิจใหม่`,
+          '正財': `เดือนแห่งความมั่นคง รายได้ประจำเติบโต การบริหารจัดการที่มีวินัย และการสั่งสมผลงานที่ชัดเจน`,
+          '七殺': `เดือนแห่งบททดสอบ งานท้าทายที่มีความรับผิดชอบสูง ต้องอาศัยความเด็ดเดี่ยวและสติในการบริหารสถานการณ์`,
+          '正官': `เดือนแห่งเกียรติยศชื่อเสียง ความก้าวหน้าในตำแหน่ง หน้าที่การงานได้รับความไว้วางใจจากผู้ใหญ่`,
+          '偏印': `เดือนแห่งปัญญาญาณ การศึกษาค้นคว้าศาสตร์เฉพาะทาง วิชาการ งานเบื้องหลัง หรือเทคโนโลยีใหม่`,
+          '正印': `เดือนแห่งความร่มเย็นเป็นสุข ผู้ใหญ่อุปถัมภ์ค้ำชู จิตใจสงบ และการฟื้นฟูพลังกายใจอย่างมีคุณภาพ`
+        };
+        const overview = monthlyGodOverviewMap[stemGod.zh] || adviceText;
+
+        let career = '';
+        if (clashWithMonth) {
+          career = `มีพลังปะทะกับเสาเดือน (วังการงาน): งานอาจมีการปรับเปลี่ยนแผนก โยกย้ายสถานที่ หรือมีภาระเร่งด่วนเข้ามาแทรก ต้องมีความยืดหยุ่นและรอบคอบในการประสานงาน`;
+        } else if (clashWithTaiSui) {
+          career = `ปะทะกับปีจร (ไท้ส่วย): หน้าที่การงานมีความผันผวนสูง ระวังการขัดแย้งกับผู้บังคับบัญชาหรือผู้ใหญ่ หลีกเลี่ยงการตัดสินใจฉับพลันด้วยอารมณ์`;
+        } else if (clashWithDaYun) {
+          career = `มีพลังปะทะกับวัยจร 10 ปี: เป็นเดือนแห่งจุดเปลี่ยนสำคัญของเส้นทางงาน ควรตั้งรับอย่างสุขุม ตรวจทานข้อตกลงอย่างรอบคอบ`;
+        } else if (harmWithDaYun || isFav) {
+          career = `ได้รับแรงหนุนนำจากธาตุให้คุณและวัยจร: การเจรจา การประสานงาน และการริเริ่มโครงการใหม่ก้าวหน้าราบรื่น มีผู้ช่วยเหลือ`;
+        } else {
+          career = `การงานดำเนินไปอย่างมั่นคงสม่ำเสมอ เหมาะกับการสะสมผลงาน จัดการงานคั่งค้าง และวางแผนสำหรับระยะถัดไป`;
+        }
+
+        let wealth = '';
+        if (['偏財', '正財'].includes(stemGod.zh)) {
+          wealth = `การเงินโดดเด่นเป็นพิเศษ มีกระแสเงินสดเข้ามาคล่องตัว เหมาะแก่การค้าขาย ปิดการขาย หรือได้รับผลตอบแทนจากผลงาน`;
+        } else if (stemGod.zh === '劫財') {
+          wealth = `ระวังเงินรั่วไหล มีรายจ่ายจรเกี่ยวกับเรื่องสังคมหรือคนรอบข้าง ไม่ควรให้ผู้อื่นหยิบยืมเงินหรือลงทุนเสี่ยงสูงในเดือนนี้`;
+        } else if (['食神', '傷官'].includes(stemGod.zh)) {
+          wealth = `มีช่องทางทำเงินใหม่ๆ ต่อยอดจากไอเดียและความสามารถเฉพาะตัว การค้าขายมีกำไรเป็นกอบเป็นกำ`;
+        } else if (clashWithDay) {
+          wealth = `อาจมีค่าใช้จ่ายเกี่ยวกับบ้าน ที่อยู่อาศัย หรือคนในครอบครัว ควรสำรองสภาพคล่องและมีวินัยการใช้จ่าย`;
+        } else {
+          wealth = `สภาพคล่องทางการเงินปกติ หมุนเวียนได้ตามแผน ควบคุมค่าใช้จ่ายส่วนตัวให้สมดุล`;
+        }
+
+        let love = '';
+        if (clashWithDay) {
+          love = `มีพลังปะทะกับเสาวัน (วังคู่ครอง/ตัวตน): ความสัมพันธ์อาจเปราะบาง ระวังคำพูดที่ทิ่มแทงใจ ควรใจเย็น ให้เกียรติ และรับฟังคนรัก คนโสดยังไม่ควรรีบร้อน`;
+        } else if (branch.zh === chart.pillars.day.branch.zh) {
+          love = `กิ่งดินซ้ำกับเสาวัน: มีความวิตกกังวลหรือคิดมากในเรื่องความสัมพันธ์ ควรเปิดใจคุยกันอย่างตรงไปตรงมา`;
+        } else if (['正官', '七殺'].includes(stemGod.zh) && chart.gender === 'female') {
+          love = `ดาวคู่ครองปรากฏในเดือนนี้: คนโสดมีโอกาสพบคนถูกใจหรือมีผู้ใหญ่แนะนำ คนมีคู่ความสัมพันธ์ได้รับความใส่ใจ`;
+        } else if (['正財', '偏財'].includes(stemGod.zh) && chart.gender === 'male') {
+          love = `ดาวภรรยา/คนรักส่งพลังเด่น: คนโสดมีเสน่ห์ดึงดูดใจ คนมีคู่ความสัมพันธ์อบอุ่นและเข้าใจกันดี`;
+        } else {
+          love = `ความสัมพันธ์ราบรื่นสงบสุข ชวนกันไปทานอาหารอร่อยหรือเปลี่ยนบรรยากาศเพื่อเติมความสดชื่นให้ชีวิตคู่`;
+        }
+
+        let health = '';
+        if (clashWithDay || clashWithTaiSui) {
+          health = `ระวังความเครียดสะสม การพักผ่อนไม่เพียงพอ และอุบัติเหตุจากการเดินทางด้วยความเร่งรีบ ควรหมั่นยืดเหยียดร่างกายและฝึกสมาธิ`;
+        } else if (['子', '午'].includes(branch.zh)) {
+          health = `ธาตุน้ำ-ไฟกระทบกัน: ระวังเรื่องความดันโลหิต สายตา อาการปวดหัวไมเกรน และการนอนหลับ`;
+        } else if (['寅', '申'].includes(branch.zh)) {
+          health = `ธาตุไม้-ทองปะทะ: ระวังอาการปวดเมื่อยเส้นเอ็น กล้ามเนื้อ และระมัดระวังขณะขับขี่ยานพาหนะ`;
+        } else if (['辰', '戌', '丑', '未'].includes(branch.zh)) {
+          health = `ธาตุดินหนาแน่น: ดูแลระบบทางเดินอาหาร กระเพาะ ม้าม และรับประทานอาหารให้ตรงเวลา`;
+        } else {
+          health = `สุขภาพร่างกายโดยรวมแข็งแรงดี รักษาสุขอนามัยและออกกำลังกายเป็นประจำ`;
+        }
+
         return {
           index: idx,
           monthNum: m.num,
@@ -1215,7 +1282,12 @@
           ratingBadgeShort,
           ratingType,
           isCurrent,
-          adviceText
+          adviceText,
+          overview,
+          career,
+          wealth,
+          love,
+          health
         };
       });
     },
@@ -3457,9 +3529,25 @@
       if (!chart) return;
       this.renderAdvanceMasterPillars(chart);
       this.renderBasicElementsPieChart(chart, 'baziAdvanceElementsPieCard');
+      this.renderAdvanceDimensions(chart);
       this.renderDaYunCards();
       this.renderDaYunInterpretation();
       this.renderAnnualAndMonthlyFortune();
+    },
+
+    renderAdvanceDimensions: function (chart) {
+      if (!chart) return;
+      const deep = this.generateDeepInsights(chart);
+      const setHtml = (id, html) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html || '-';
+      };
+      setHtml('baziAdvanceTraitsText', deep.traits);
+      setHtml('baziAdvanceCareerText', deep.career);
+      setHtml('baziAdvanceWealthText', deep.wealth);
+      setHtml('baziAdvanceLoveText', deep.love);
+      setHtml('baziAdvanceHealthText', deep.health);
+      setHtml('baziAdvanceWeaknessText', deep.weakness);
     },
 
     renderAdvanceMasterPillars: function (chart) {
@@ -4823,26 +4911,28 @@
         savedSearchInput.addEventListener('input', (e) => this.renderSavedProfilesList(e.target.value));
       }
 
-      // Populate Annual Year Dropdown (1950 - 2040)
-      const yearSelect = document.getElementById('baziAnnualYearSelect');
-      if (yearSelect) {
-        yearSelect.innerHTML = '';
-        const curY = this.selectedYear || new Date().getFullYear();
-        for (let y = 2040; y >= 1950; y--) {
-          const sIdx = ((y - 4) % 10 + 10) % 10;
-          const bIdx = ((y - 4) % 12 + 12) % 12;
-          const opt = document.createElement('option');
-          opt.value = y;
-          opt.textContent = `ปี ${y} (${STEMS[sIdx].zh}${BRANCHES[bIdx].zh} • ${BRANCHES[bIdx].zodiac.split(' ')[0]})`;
-          if (y === curY) opt.selected = true;
-          yearSelect.appendChild(opt);
-        }
+      // Populate Annual Year Dropdowns (1950 - 2040)
+      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect'].forEach(id => {
+        const yearSelect = document.getElementById(id);
+        if (yearSelect) {
+          yearSelect.innerHTML = '';
+          const curY = this.selectedYear || new Date().getFullYear();
+          for (let y = 2040; y >= 1950; y--) {
+            const sIdx = ((y - 4) % 10 + 10) % 10;
+            const bIdx = ((y - 4) % 12 + 12) % 12;
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = `ปี ${y} (${STEMS[sIdx].zh}${BRANCHES[bIdx].zh} • ${BRANCHES[bIdx].zodiac.split(' ')[0]})`;
+            if (y === curY) opt.selected = true;
+            yearSelect.appendChild(opt);
+          }
 
-        yearSelect.addEventListener('change', (e) => {
-          const y = parseInt(e.target.value, 10);
-          if (y) this.selectAnnualYear(y);
-        });
-      }
+          yearSelect.addEventListener('change', (e) => {
+            const y = parseInt(e.target.value, 10);
+            if (y) this.selectAnnualYear(y);
+          });
+        }
+      });
 
       // Annual Year Chips
       document.querySelectorAll('.bazi-year-chip').forEach(btn => {
@@ -5183,10 +5273,12 @@
         btn.classList.toggle('active', parseInt(btn.dataset.year, 10) === year);
       });
       // Update dropdown select UI
-      const yearSelect = document.getElementById('baziAnnualYearSelect');
-      if (yearSelect && parseInt(yearSelect.value, 10) !== year) {
-        yearSelect.value = year;
-      }
+      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect'].forEach(id => {
+        const yearSelect = document.getElementById(id);
+        if (yearSelect && parseInt(yearSelect.value, 10) !== year) {
+          yearSelect.value = year;
+        }
+      });
 
       // Automatically sync active Da Yun with target year
       if (this.currentChart && this.currentChart.daYunPillars) {
@@ -5597,70 +5689,110 @@
       if (!this.currentChart) return;
       const y = this.selectedYear || new Date().getFullYear();
 
+      // Sync Year Display Labels
+      const labelEl = document.getElementById('baziMonthYearLabel');
+      if (labelEl) labelEl.textContent = y;
+      const advYearDisplay = document.getElementById('baziAdvanceAnnualYearDisplay');
+      if (advYearDisplay) advYearDisplay.textContent = y;
+
+      // Sync Year Chips in Advance
+      document.querySelectorAll('#baziAdvanceYearChips .bazi-year-chip').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.year, 10) === y);
+      });
+      const advYearSelect = document.getElementById('baziAdvanceAnnualYearSelect');
+      if (advYearSelect && parseInt(advYearSelect.value, 10) !== y) {
+        advYearSelect.value = y;
+      }
+
       // 1. Annual Fortune
       const annual = BaziEngine.calculateAnnualFortune(this.currentChart, y);
       if (annual) {
-        const bannerEl = document.getElementById('baziAnnualBanner');
-        if (bannerEl) {
-          const sMeta = ELEMENTS_META[annual.stem.element];
-          const bMeta = ELEMENTS_META[annual.branch.element];
-          const starsHtml = '⭐'.repeat(annual.scoreStars);
+        const sMeta = ELEMENTS_META[annual.stem.element];
+        const bMeta = ELEMENTS_META[annual.branch.element];
+        const starsHtml = '⭐'.repeat(annual.scoreStars);
 
-          let interactionTags = '';
-          if (annual.clashes.length > 0) {
-            interactionTags += annual.clashes.map(c => `<span class="annual-clash-tag"><i class="fa-solid fa-triangle-exclamation"></i> ชงกับ${c.label} (${c.desc})</span>`).join('');
-          }
-          if (annual.harmonies.length > 0) {
-            interactionTags += annual.harmonies.map(h => `<span class="annual-harmony-tag"><i class="fa-solid fa-handshake"></i> ${h.name} (${h.label})</span>`).join('');
-          }
-          if (!interactionTags) {
-            interactionTags = `<span class="annual-normal-tag"><i class="fa-solid fa-circle-check"></i> ไม่มีการปะทะรุนแรงกับพื้นดวงกำเนิด</span>`;
-          }
+        // Compute Annual Interactions with 4 Natal Pillars + Da Yun
+        const annualPillar = { stem: annual.stem, branch: annual.branch, label: `ปีจร ${y}` };
+        const natalCols = [
+          this.currentChart.pillars.hour,
+          this.currentChart.pillars.day,
+          this.currentChart.pillars.month,
+          this.currentChart.pillars.year
+        ];
+        const luckPillar = annual.curDaYun ? { stem: annual.curDaYun.stem, branch: annual.curDaYun.branch, label: `วัยจร ${annual.curDaYun.ageRange}` } : null;
 
-          bannerEl.innerHTML = `
-            <div class="annual-banner-left">
-              <div class="annual-year-chars">
-                <span style="color: ${sMeta.color};">${annual.stem.zh}</span>
-                <span style="color: ${bMeta.color};">${annual.branch.zh}</span>
-              </div>
-              <div class="annual-year-meta">
-                <h3>ปี ${annual.year} (${annual.stem.py} ${annual.branch.py} - ${annual.branch.zodiac})</h3>
-                <div class="annual-god-pill">ก้านฟ้า: ${annual.stemGod.zh} (${annual.stemGod.th}) • กิ่งดิน: ${annual.branchGod.zh}</div>
-                ${annual.curDaYun ? `<div style="font-size: 11.5px; color: #7c3aed; font-weight: 600; margin-top: 4px;"><i class="fa-solid fa-timeline"></i> คุมโดยวัยจรช่วงอายุ ${annual.curDaYun.ageRange} (${annual.curDaYun.stem.zh}${annual.curDaYun.branch.zh} • ${annual.curDaYun.tenGod.zh} ${annual.curDaYun.tenGod.th})</div>` : ''}
-                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${annual.naYin}</div>
-              </div>
-            </div>
-            <div class="annual-banner-right">
-              <div class="annual-rating-box">
-                <span class="rating-label">ดัชนีสิริมงคลปีนี้:</span>
-                <span class="rating-stars">${starsHtml} (${annual.scoreStars}/5)</span>
-              </div>
-              <div class="annual-interaction-wrap">
-                ${interactionTags}
-              </div>
-            </div>
-          `;
+        const annualInter = this.computeDetailedInteractions(annualPillar, natalCols, null, luckPillar, 'annual');
+        const allAnnualInteractions = [...annualInter.primary, ...annualInter.secondary];
+
+        let annualInteractionsHtml = '';
+        if (allAnnualInteractions.length > 0) {
+          annualInteractionsHtml = allAnnualInteractions.map(it => {
+            const cls = this.getInteractionClass(it);
+            const st = this.getInteractionStyle(it);
+            const info = this.getInteractionTooltipData(it);
+            const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+            const cleanIt = it.replace(/"/g, '&quot;');
+            return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
+          }).join('');
+        } else {
+          annualInteractionsHtml = '<div style="color: #10b981; font-size: 13px; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> พลังงานปีจรไหลเวียนกลมกลืน ไม่มีจุดปะทะรุนแรงกับพื้นดวงกำเนิดและวัยจร</div>';
         }
+
+        const bannerHtml = `
+          <div class="annual-banner-left">
+            <div class="annual-year-chars">
+              <span style="color: ${sMeta.color};">${annual.stem.zh}</span>
+              <span style="color: ${bMeta.color};">${annual.branch.zh}</span>
+            </div>
+            <div class="annual-year-meta">
+              <h3>ปี ${annual.year} (${annual.stem.py} ${annual.branch.py} - ${annual.branch.zodiac})</h3>
+              <div class="annual-god-pill">ก้านฟ้า: ${annual.stemGod.zh} (${annual.stemGod.th}) • กิ่งดิน: ${annual.branchGod.zh}</div>
+              ${annual.curDaYun ? `<div style="font-size: 11.5px; color: #7c3aed; font-weight: 600; margin-top: 4px;"><i class="fa-solid fa-timeline"></i> คุมโดยวัยจรช่วงอายุ ${annual.curDaYun.ageRange} (${annual.curDaYun.stem.zh}${annual.curDaYun.branch.zh} • ${annual.curDaYun.tenGod.zh} ${annual.curDaYun.tenGod.th})</div>` : ''}
+              <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${annual.naYin}</div>
+            </div>
+          </div>
+          <div class="annual-banner-right">
+            <div class="annual-rating-box">
+              <span class="rating-label">ดัชนีสิริมงคลปีนี้:</span>
+              <span class="rating-stars">${starsHtml} (${annual.scoreStars}/5)</span>
+            </div>
+          </div>
+        `;
+
+        const bannerEl = document.getElementById('baziAnnualBanner');
+        if (bannerEl) bannerEl.innerHTML = bannerHtml;
+        const advBannerEl = document.getElementById('baziAdvanceAnnualBanner');
+        if (advBannerEl) advBannerEl.innerHTML = bannerHtml;
+
+        const advInterListEl = document.getElementById('baziAdvanceAnnualInteractionsList');
+        if (advInterListEl) advInterListEl.innerHTML = annualInteractionsHtml;
 
         const setText = (id, txt) => {
           const el = document.getElementById(id);
-          if (el) el.textContent = txt;
+          if (el) el.textContent = txt || '-';
         };
+
         setText('baziAnnualOverviewText', annual.overview);
         setText('baziAnnualCareerText', annual.career);
         setText('baziAnnualWealthText', annual.wealth);
         setText('baziAnnualLoveText', annual.love);
 
+        setText('baziAdvanceAnnualOverviewText', annual.overview);
+        setText('baziAdvanceAnnualCareerText', annual.career);
+        setText('baziAdvanceAnnualWealthText', annual.wealth);
+        setText('baziAdvanceAnnualLoveText', annual.love);
+
         const healthEl = document.getElementById('baziAnnualHealthText');
         if (healthEl) {
           healthEl.innerHTML = `<i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i> <strong>สุขภาพ & สิ่งที่ต้องระวังปี ${y}:</strong> ${annual.health}`;
         }
+        const advHealthEl = document.getElementById('baziAdvanceAnnualHealthText');
+        if (advHealthEl) {
+          advHealthEl.textContent = annual.health;
+        }
       }
 
       // 2. Monthly Fortune
-      const labelEl = document.getElementById('baziMonthYearLabel');
-      if (labelEl) labelEl.textContent = y;
-
       const months = BaziEngine.calculateMonthlyFortune(this.currentChart, y);
       const monthsGrid = document.getElementById('baziMonthsGrid');
       if (monthsGrid) {
@@ -5701,25 +5833,113 @@
       const sMeta = ELEMENTS_META[m.stem.element];
       const bMeta = ELEMENTS_META[m.branch.element];
 
+      // Compute monthly interactions with Natal + Annual + Da Yun
+      const mCol = {
+        stem: m.stem,
+        branch: m.branch,
+        label: `เดือนที่ ${m.monthNum} (${m.branch.zh})`
+      };
+      const natalCols = [
+        this.currentChart.pillars.hour,
+        this.currentChart.pillars.day,
+        this.currentChart.pillars.month,
+        this.currentChart.pillars.year
+      ];
+
+      // Annual Col
+      const yrSIdx = ((y - 4) % 10 + 10) % 10;
+      const yrBIdx = ((y - 4) % 12 + 12) % 12;
+      const annualCol = { stem: STEMS[yrSIdx], branch: BRANCHES[yrBIdx], label: `ปีจร ${y}` };
+
+      // Da Yun Col
+      const birthYear = this.currentChart.birthDateString ? parseInt(this.currentChart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = y - birthYear;
+      const curDaYun = (this.currentChart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      const luckCol = curDaYun ? { stem: curDaYun.stem, branch: curDaYun.branch, label: `วัยจร ${curDaYun.ageRange}` } : null;
+
+      const inter = this.computeDetailedInteractions(mCol, natalCols, annualCol, luckCol, 'monthly');
+      const allInteractions = [...inter.primary, ...inter.secondary];
+
+      let interactionsHtml = '';
+      if (allInteractions.length > 0) {
+        interactionsHtml = allInteractions.map(it => {
+          const cls = this.getInteractionClass(it);
+          const st = this.getInteractionStyle(it);
+          const info = this.getInteractionTooltipData(it);
+          const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+          const cleanIt = it.replace(/"/g, '&quot;');
+          return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
+        }).join('');
+      } else {
+        interactionsHtml = '<div style="color: #10b981; font-size: 12.5px; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> พลังงานประจำเดือนราบรื่น ไม่มีจุดปะทะรุนแรงกับพื้นดวงและปีจร</div>';
+      }
+
       cardEl.innerHTML = `
-        <div class="month-detail-header">
+        <div class="month-detail-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 14px;">
           <div class="month-detail-title">
-            <i class="fa-solid fa-calendar-day" style="color: #0284c7;"></i> <strong>คำทำนายเดือนที่ ${m.monthNum}: ${m.title}</strong>
-            <span style="font-size: 13px; color: #64748b;">(ช่วงเวลา ${m.dates})</span>
+            <i class="fa-solid fa-calendar-day" style="color: #0284c7; font-size: 18px;"></i>
+            <strong style="font-size: 16px; color: #0f172a;">คำทำนายเดือนที่ ${m.monthNum}: ${m.title}</strong>
+            <span style="font-size: 13px; color: #64748b; margin-left: 6px;">(${m.dates})</span>
           </div>
-          <span class="month-cell-rating rating-${m.ratingType}" style="font-size: 12.5px; padding: 4px 10px;">${m.ratingBadge}</span>
+          <span class="month-cell-rating rating-${m.ratingType}" style="font-size: 13px; padding: 4px 12px; border-radius: 20px;">${m.ratingBadge}</span>
         </div>
-        <div class="month-detail-body">
-          <div class="month-detail-pillar-box">
-            <span style="color: ${sMeta.color}; font-size: 24px; font-weight: 800;">${m.stem.zh}</span>
-            <span style="color: ${bMeta.color}; font-size: 24px; font-weight: 800;">${m.branch.zh}</span>
-            <div style="font-size: 12px; color: #475569;">${m.stem.py} ${m.branch.py}</div>
-            <div style="font-size: 11px; color: #7c3aed; font-weight: 600;">${m.stemGod.zh} (${m.stemGod.th})</div>
-            <div style="font-size: 10.5px; color: #94a3b8;">${m.naYin.split(' ')[0]}</div>
+
+        <!-- Pillar Chars & Meta Bar -->
+        <div style="display: flex; align-items: center; gap: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 18px; margin-bottom: 16px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: ${sMeta.color}; font-size: 28px; font-weight: 800; font-family: 'Cinzel', serif;">${m.stem.zh}</span>
+            <span style="color: ${bMeta.color}; font-size: 28px; font-weight: 800; font-family: 'Cinzel', serif;">${m.branch.zh}</span>
           </div>
-          <div class="month-detail-text">
-            <p><i class="fa-solid fa-circle-info" style="color: #0284c7;"></i> <strong>พลังงานและแนวโน้มประจำเดือน:</strong> ${m.adviceText}</p>
+          <div style="font-size: 13px; color: #475569; line-height: 1.4;">
+            <strong>${m.stem.py} ${m.branch.py}</strong> (${m.branch.zodiac})
+            <div style="font-size: 12px; color: #7c3aed; font-weight: 600;">ก้านฟ้า: ${m.stemGod.zh} (${m.stemGod.th}) • กิ่งดิน: ${m.branchGod.zh}</div>
+            <div style="font-size: 11.5px; color: #94a3b8;">${m.naYin}</div>
           </div>
+        </div>
+
+        <!-- Interactions ในดวงประจำเดือน -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+            <div style="font-weight: 700; color: #1e293b; font-size: 13.5px; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-bolt" style="color: #0284c7;"></i> ปฏิสัมพันธ์ฟ้าดินประจำเดือนในดวง (Monthly Interactions 刑沖合害)
+            </div>
+            <span style="font-size: 11px; color: #64748b;">(ชี้เมาส์ที่ป้ายเพื่อดูคำอธิบายขยายความ)</span>
+          </div>
+          <div class="bazi-interactions-flow">
+            ${interactionsHtml}
+          </div>
+        </div>
+
+        <!-- 5 Dimensions of the Month -->
+        <div class="bazi-fortune-grid">
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-compass" style="color: #0284c7;"></i> 1. ภาพรวมเดือนนี้ &amp; จังหวะชีวิต
+            </div>
+            <p class="fortune-item-text">${m.overview}</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-briefcase" style="color: #7c3aed;"></i> 2. การงาน &amp; ธุรกิจในเดือนนี้
+            </div>
+            <p class="fortune-item-text">${m.career}</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-coins" style="color: #10b981;"></i> 3. การเงิน &amp; สภาพคล่อง
+            </div>
+            <p class="fortune-item-text">${m.wealth}</p>
+          </div>
+          <div class="fortune-grid-item">
+            <div class="fortune-item-header">
+              <i class="fa-solid fa-heart" style="color: #ec4899;"></i> 4. ความรัก &amp; ความสัมพันธ์
+            </div>
+            <p class="fortune-item-text">${m.love}</p>
+          </div>
+        </div>
+
+        <div class="fortune-warning-bar" style="margin-top: 14px;">
+          <i class="fa-solid fa-shield-heart" style="color: #ef4444;"></i> <strong>สุขภาพ &amp; ข้อควรระวังในเดือนนี้:</strong> ${m.health}
         </div>
       `;
     },
@@ -6926,6 +7146,16 @@
           secondaryHeading = 'Annual year / 流年:';
           comparePillars(col, [annualCol], secondaryInteractions);
         }
+      } else if (colType === 'monthly') {
+        // 1. Primary: Compare Monthly Pillar against all 4 natal pillars
+        comparePillars(col, allCols, primaryInteractions);
+        checkSanXing(b, [...allCols.map(c => c.branch.zh), b], primaryInteractions);
+        checkVoid(col, dayCol, primaryInteractions);
+
+        // 2. Secondary: Compare Monthly Pillar against Annual Year & Luck Pillar
+        secondaryHeading = 'Annual & Luck / 年运:';
+        if (annualCol) comparePillars(col, [annualCol], secondaryInteractions);
+        if (luckCol) comparePillars(col, [luckCol], secondaryInteractions);
       }
 
       const cleanList = (list) => Array.from(new Set(list));

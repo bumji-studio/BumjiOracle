@@ -10179,6 +10179,19 @@ body.is-mobile .synthesis-box-body {
   line-height: 1.42;
 }
 
+.bazi-interactions-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.bazi-interactions-flow .interaction-item {
+  margin-bottom: 0 !important;
+  display: inline-block;
+  cursor: help;
+}
+
 /* Dayun Selected Card State */
 .dayun-card.selected-dayun {
   border: 2px solid #db2777 !important;
