@@ -2552,50 +2552,178 @@
       const legendWrap = document.getElementById('baziSpiderLegendWrap');
       if (!svgWrap || !chart) return;
 
-      // 1. Calculate scores for 5 life dimensions
-      let lifeScore = 70;
-      if (chart.isStrong) lifeScore += 12;
-      if (chart.favorableElements && chart.favorableElements.length >= 2) lifeScore += 8;
-      lifeScore = Math.min(95, Math.max(65, lifeScore));
+      const p = chart.pillars || {};
+      const dm = chart.dayMaster || (p.day ? p.day.stem : null) || { element: 'metal', polarity: 'yin', zh: '辛' };
+      const dmElem = dm.element;
+      const isStrong = !!chart.isStrong;
+      const favList = chart.favorableElements || [];
+      const elemPcts = chart.elementPercentages || { wood: 20, fire: 20, earth: 20, metal: 20, water: 20 };
+      const pArray = [p.year, p.month, p.day, p.hour].filter(Boolean);
 
-      let wealthScore = 68;
-      const pArray = [chart.pillars.year, chart.pillars.month, chart.pillars.day, chart.pillars.hour];
-      pArray.forEach(p => {
-        if (!p || p.isUnknown) return;
-        if (p.tenGod && (p.tenGod.zh === '正財' || p.tenGod.zh === '偏財')) wealthScore += 7;
-        if (p.hiddenStems) {
-          p.hiddenStems.forEach(h => {
-            if (h.tenGod && (h.tenGod.zh === '正財' || h.tenGod.zh === '偏財')) wealthScore += 3;
+      const elementsMeta = {
+        wood: { controls: 'earth', generates: 'fire' },
+        fire: { controls: 'metal', generates: 'earth' },
+        earth: { controls: 'water', generates: 'metal' },
+        metal: { controls: 'wood', generates: 'water' },
+        water: { controls: 'fire', generates: 'wood' }
+      };
+
+      const tenGodsCount = {};
+      pArray.forEach(pillar => {
+        if (pillar.tenGod && pillar.tenGod.zh) {
+          tenGodsCount[pillar.tenGod.zh] = (tenGodsCount[pillar.tenGod.zh] || 0) + 1.0;
+        }
+        if (pillar.hiddenStems) {
+          pillar.hiddenStems.forEach(h => {
+            if (h.tenGod && h.tenGod.zh) {
+              tenGodsCount[h.tenGod.zh] = (tenGodsCount[h.tenGod.zh] || 0) + (h.weight || 0.35);
+            }
           });
         }
       });
-      wealthScore = Math.min(95, Math.max(62, wealthScore));
 
-      let careerScore = 70;
-      pArray.forEach(p => {
-        if (!p || p.isUnknown) return;
-        if (p.tenGod && (p.tenGod.zh === '正官' || p.tenGod.zh === '七殺')) careerScore += 6;
-        if (p.tenGod && (p.tenGod.zh === '正印' || p.tenGod.zh === '偏印')) careerScore += 5;
+      // 1. ภาพรวมชีวิตและพลังดิถี (Life Vitality & Foundation) - ฐาน 50 (เกณฑ์ตามจริง)
+      let lifeScore = 50;
+      if (isStrong) lifeScore += 8;
+      else lifeScore -= 4;
+
+      let hasRoot = false;
+      pArray.forEach(pillar => {
+        if (pillar.branch && pillar.branch.element === dmElem) {
+          lifeScore += 8;
+          hasRoot = true;
+        } else if (pillar.hiddenStems && pillar.hiddenStems.some(h => h.stemObj && h.stemObj.element === dmElem)) {
+          lifeScore += 5;
+          hasRoot = true;
+        }
       });
-      careerScore = Math.min(95, Math.max(65, careerScore));
+      if (!hasRoot) lifeScore -= 12;
 
-      let loveScore = 70;
-      const dayBranch = chart.pillars.day.branch;
-      if (chart.pillars.month && chart.pillars.month.branch) {
-        const mb = chart.pillars.month.branch;
-        if (this.areBranchesHarmony && this.areBranchesHarmony(dayBranch.zh, mb.zh)) loveScore += 10;
-        if (this.areBranchesClash && this.areBranchesClash(dayBranch.zh, mb.zh)) loveScore -= 8;
-      }
-      loveScore = Math.min(95, Math.max(62, loveScore));
+      const favPct = favList.reduce((acc, k) => acc + (elemPcts[k] || 0), 0);
+      if (favPct >= 40) lifeScore += 12;
+      else if (favPct >= 25) lifeScore += 6;
+      else if (favPct < 15) lifeScore -= 10;
 
-      let healthScore = 74;
-      const scores = Object.values(chart.elementPercentages || {});
-      if (scores.length > 0) {
-        const avg = 20;
-        const dev = scores.reduce((acc, v) => acc + Math.abs(v - avg), 0) / scores.length;
-        healthScore = Math.round(92 - dev * 0.85);
+      const unfavPct = 100 - favPct;
+      if (unfavPct >= 50) lifeScore -= 10;
+      else if (unfavPct >= 40) lifeScore -= 5;
+
+      const hasNobleman = pArray.some(pillar => (pillar.stars || []).some(s => (s.name || '').includes('GuiRen') || (s.name || '').includes('FuXing') || (s.th || '').includes('กุ้ยเหริน') || (s.th || '').includes('ฮกแช')));
+      if (hasNobleman) lifeScore += 6;
+
+      lifeScore = Math.max(20, Math.min(95, Math.round(lifeScore)));
+
+      // 2. การเงินและทรัพย์สิน (Wealth & Financial Capacity) - ฐาน 45 (เกณฑ์ตามจริง)
+      let wealthScore = 45;
+      const wealthElem = elementsMeta[dmElem].controls;
+      const outputElem = elementsMeta[dmElem].generates;
+      const wealthPct = elemPcts[wealthElem] || 0;
+      const outputPct = elemPcts[outputElem] || 0;
+
+      if (wealthPct >= 15 && wealthPct <= 30) {
+        wealthScore += 14;
+      } else if (wealthPct < 5) {
+        wealthScore -= 14;
+      } else if (wealthPct > 40) {
+        wealthScore += isStrong ? 12 : -14;
       }
-      healthScore = Math.min(95, Math.max(65, healthScore));
+
+      if (isStrong && wealthPct >= 10) {
+        wealthScore += 14;
+      } else if (!isStrong && wealthPct > 20) {
+        wealthScore -= 8;
+      }
+
+      if (outputPct >= 12 && wealthPct >= 5) {
+        wealthScore += 10;
+      } else if (outputPct >= 5 && wealthPct > 0) {
+        wealthScore += 4;
+      }
+
+      const rwScore = (tenGodsCount['劫財'] || 0);
+      if (rwScore >= 1.5 && (tenGodsCount['正官'] || 0) < 0.5) {
+        wealthScore -= 10;
+      }
+
+      wealthScore = Math.max(20, Math.min(95, Math.round(wealthScore)));
+
+      // 3. การงานและอำนาจบารมี (Career & Authority) - ฐาน 50 (เกณฑ์ตามจริง)
+      let careerScore = 50;
+      const powerElem = Object.keys(elementsMeta).find(k => elementsMeta[k].controls === dmElem);
+      const resourceElem = Object.keys(elementsMeta).find(k => elementsMeta[k].generates === dmElem);
+      const powerPct = elemPcts[powerElem] || 0;
+      const resourcePct = elemPcts[resourceElem] || 0;
+
+      if (powerPct >= 12 && powerPct <= 30) {
+        careerScore += 14;
+      } else if (powerPct > 45) {
+        careerScore -= isStrong ? 6 : 14;
+      } else if (powerPct < 5) {
+        careerScore -= 8;
+      }
+
+      if (powerPct >= 12 && resourcePct >= 15) {
+        careerScore += 12;
+      }
+
+      if ((tenGodsCount['傷官'] || 0) >= 1.0 && (tenGodsCount['正官'] || 0) >= 1.0) {
+        careerScore -= 16;
+      }
+
+      careerScore = Math.max(20, Math.min(95, Math.round(careerScore)));
+
+      // 4. ความสัมพันธ์และคู่ครอง (Relationships & Marriage) - ฐาน 50 (เกณฑ์ตามจริง)
+      let loveScore = 50;
+      const dayBranch = p.day ? p.day.branch : null;
+      const spouseElem = dayBranch ? dayBranch.element : null;
+
+      if (spouseElem) {
+        if (favList.includes(spouseElem)) {
+          loveScore += 12;
+        } else {
+          loveScore -= 8;
+        }
+      }
+
+      const isFemale = chart.gender === 'female';
+      if (isFemale) {
+        if ((tenGodsCount['正官'] || 0) >= 1.0 && (tenGodsCount['七殺'] || 0) >= 1.0) {
+          loveScore -= 10;
+        }
+      } else {
+        if ((tenGodsCount['正財'] || 0) >= 1.0 && (tenGodsCount['偏財'] || 0) >= 1.0) {
+          loveScore -= 10;
+        }
+      }
+
+      if (p.day && p.month && p.day.branch && p.month.branch) {
+        const db = p.day.branch.zh, mb = p.month.branch.zh;
+        const clashes = { '子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳' };
+        if (clashes[db] === mb) loveScore -= 18;
+      }
+      if (p.day && p.hour && p.day.branch && p.hour.branch) {
+        const db = p.day.branch.zh, hb = p.hour.branch.zh;
+        const clashes = { '子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳' };
+        if (clashes[db] === hb) loveScore -= 14;
+      }
+
+      loveScore = Math.max(20, Math.min(95, Math.round(loveScore)));
+
+      // 5. สุขภาพและความสมดุล (Health & Elemental Balance) - ฐาน 85 (เกณฑ์ตามจริง)
+      let healthScore = 85;
+      const vals = Object.values(elemPcts);
+      const avg = 20;
+      const dev = vals.reduce((acc, v) => acc + Math.abs(v - avg), 0) / vals.length;
+      healthScore -= Math.round(dev * 1.5);
+
+      vals.forEach(v => {
+        if (v <= 2) healthScore -= 10;
+        else if (v <= 5) healthScore -= 5;
+        if (v >= 50) healthScore -= 16;
+        else if (v >= 40) healthScore -= 8;
+      });
+
+      healthScore = Math.max(20, Math.min(95, Math.round(healthScore)));
 
       const radarData = [
         { label: 'ภาพรวมชีวิต', value: lifeScore, color: '#8b5cf6', icon: 'fa-solid fa-heart-pulse', desc: 'พลังชีวิต ธาตุส่งเสริม และความหนักแน่นของตัวตน' },
