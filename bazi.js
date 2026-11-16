@@ -357,6 +357,10 @@
 
       // Fire transformations (午未合火, 卯戌合火, 寅午戌/午戌/寅午半合火, 巳午未三會火)
       if (hasStemElem('fire')) {
+        if (bZhList.includes('巳') && bZhList.includes('午') && bZhList.includes('未') && elementScores.earth >= 1.0) {
+          elementScores.earth -= 1.0;
+          elementScores.fire += 1.0;
+        }
         if (bZhList.includes('午') && bZhList.includes('未') && elementScores.earth >= 1.0) {
           elementScores.earth -= 1.0;
           elementScores.fire += 1.0;
@@ -375,8 +379,12 @@
         }
       }
 
-      // Wood transformations (寅亥合木, 亥卯/卯未半合木, 亥卯未三合木)
+      // Wood transformations (寅亥合木, 亥卯/卯未半合木, 亥卯未三合木, 寅卯辰三會木)
       if (hasStemElem('wood')) {
+        if (bZhList.includes('寅') && bZhList.includes('卯') && bZhList.includes('辰') && elementScores.earth >= 1.0) {
+          elementScores.earth -= 1.0;
+          elementScores.wood += 1.0;
+        }
         if (bZhList.includes('寅') && bZhList.includes('亥') && elementScores.water >= 0.8) {
           elementScores.water -= 0.8;
           elementScores.wood += 0.8;
@@ -391,8 +399,12 @@
         }
       }
 
-      // Metal transformations (辰酉合金, 巳酉/酉丑半合金, 巳酉丑三合金)
+      // Metal transformations (辰酉合金, 巳酉/酉丑半合金, 巳酉丑三合金, 申酉戌三會金)
       if (hasStemElem('metal')) {
+        if (bZhList.includes('申') && bZhList.includes('酉') && bZhList.includes('戌') && elementScores.earth >= 1.0) {
+          elementScores.earth -= 1.0;
+          elementScores.metal += 1.0;
+        }
         if (bZhList.includes('辰') && bZhList.includes('酉') && elementScores.earth >= 0.8) {
           elementScores.earth -= 0.8;
           elementScores.metal += 0.8;
@@ -407,8 +419,12 @@
         }
       }
 
-      // Water transformations (巳申合水, 申子/子辰半合水, 申子辰三合水)
+      // Water transformations (巳申合水, 申子/子辰半合水, 申子辰三合水, 亥子丑三會水)
       if (hasStemElem('water')) {
+        if (bZhList.includes('亥') && bZhList.includes('子') && bZhList.includes('丑') && elementScores.earth >= 1.0) {
+          elementScores.earth -= 1.0;
+          elementScores.water += 1.0;
+        }
         if (bZhList.includes('巳') && bZhList.includes('申') && elementScores.fire >= 0.8) {
           elementScores.fire -= 0.8;
           elementScores.water += 0.8;
