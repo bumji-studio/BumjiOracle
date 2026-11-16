@@ -47,11 +47,11 @@
 
   // 3. Five Elements Meta (五行)
   const ELEMENTS_META = {
-    wood: { th: 'ธาตุไม้', zh: '木', color: '#10b981', lightBg: 'rgba(16, 185, 129, 0.12)', border: '#10b981', generates: 'fire', controls: 'earth', direction: 'ตะวันออก', organ: 'ตับ / ถุงน้ำดี / สายตา', emotion: 'ความเมตตา / การเติบโต' },
-    fire: { th: 'ธาตุไฟ', zh: '火', color: '#ef4444', lightBg: 'rgba(239, 68, 68, 0.12)', border: '#ef4444', generates: 'earth', controls: 'metal', direction: 'ทิศใต้', organ: 'หัวใจ / หลอดเลือด / สมอง', emotion: 'ความมีชีวิตชีวา / ความหลงใหล' },
-    earth: { th: 'ธาตุดิน', zh: '土', color: '#d97706', lightBg: 'rgba(217, 119, 6, 0.12)', border: '#d97706', generates: 'metal', controls: 'water', direction: 'จุดศูนย์กลาง / ตกเฉียงใต้', organ: 'ม้าม / กระเพาะอาหาร / ย่อยอาหาร', emotion: 'ความน่าเชื่อถือ / ความสงบ' },
-    metal: { th: 'ธาตุทอง', zh: '金', color: '#64748b', lightBg: 'rgba(100, 116, 139, 0.14)', border: '#64748b', generates: 'water', controls: 'wood', direction: 'ทิศตะวันตก', organ: 'ปอด / ผิวหนัง / ทางเดินหายใจ', emotion: 'ความเฉียบขาด / ระเบียบวินัย' },
-    water: { th: 'ธาตุน้ำ', zh: '水', color: '#0284c7', lightBg: 'rgba(2, 132, 199, 0.12)', border: '#0284c7', generates: 'wood', controls: 'fire', direction: 'ทิศเหนือ', organ: 'ไต / กระเพาะปัสสาวะ / หู', emotion: 'สติปัญญา / ความยืดหยุ่น' }
+    wood: { th: 'ธาตุไม้', zh: '木', color: '#10b981', dark: '#059669', light: '#6ee7b7', lightBg: 'rgba(16, 185, 129, 0.12)', border: '#10b981', generates: 'fire', controls: 'earth', direction: 'ตะวันออก', organ: 'ตับ / ถุงน้ำดี / สายตา', emotion: 'ความเมตตา / การเติบโต' },
+    fire: { th: 'ธาตุไฟ', zh: '火', color: '#ef4444', dark: '#dc2626', light: '#fca5a5', lightBg: 'rgba(239, 68, 68, 0.12)', border: '#ef4444', generates: 'earth', controls: 'metal', direction: 'ทิศใต้', organ: 'หัวใจ / หลอดเลือด / สมอง', emotion: 'ความมีชีวิตชีวา / ความหลงใหล' },
+    earth: { th: 'ธาตุดิน', zh: '土', color: '#d97706', dark: '#b45309', light: '#fcd34d', lightBg: 'rgba(217, 119, 6, 0.12)', border: '#d97706', generates: 'metal', controls: 'water', direction: 'จุดศูนย์กลาง / ตกเฉียงใต้', organ: 'ม้าม / กระเพาะอาหาร / ย่อยอาหาร', emotion: 'ความน่าเชื่อถือ / ความสงบ' },
+    metal: { th: 'ธาตุทอง', zh: '金', color: '#64748b', dark: '#475569', light: '#cbd5e1', lightBg: 'rgba(100, 116, 139, 0.14)', border: '#64748b', generates: 'water', controls: 'wood', direction: 'ทิศตะวันตก', organ: 'ปอด / ผิวหนัง / ทางเดินหายใจ', emotion: 'ความเฉียบขาด / ระเบียบวินัย' },
+    water: { th: 'ธาตุน้ำ', zh: '水', color: '#0284c7', dark: '#0369a1', light: '#7dd3fc', lightBg: 'rgba(2, 132, 199, 0.12)', border: '#0284c7', generates: 'wood', controls: 'fire', direction: 'ทิศเหนือ', organ: 'ไต / กระเพาะปัสสาวะ / หู', emotion: 'สติปัญญา / ความยืดหยุ่น' }
   };
 
   // 4. Ten Gods (十神) Definition and Relations
@@ -317,44 +317,71 @@
         year: buildPillar(yearStem, yearBranch, yrStemIdx, yrBranchIdx, 'เสาปี (Year)', 'บรรพบุรุษ สังคมภายนอก วัยเด็ก (0-16 ปี) ภาพลักษณ์แรกพบ')
       };
 
-      // 5. Five Elements Calculation
+      // 5. Five Elements Calculation (สูตรแท้จากคลังตำรา "การชั่งน้ำหนักดวง.pdf" สำนักลิ้มแชเล้ง)
+      // 5. Five Elements Calculation (สูตรแท้มาตรฐานชั่งน้ำหนักดวงและสิบเทพ จากตำรา การชั่งน้ำหนักดวง.pdf)
+      // กิ่งฟ้า 4 เสา = เสาละ 1.0 คะแนน (รวม 4.0 คะแนน)
+      // กิ่งดิน 4 เสา = เสาละ 1.5 คะแนน กระจายตามสัดส่วนราศีแฝง (รวม 6.0 คะแนน)
+      // รวมพลังทั้งดวง = 10.0 คะแนนบริบูรณ์ (1.0 คะแนน = 10% พอดี)
       const elementScores = { wood: 0, fire: 0, earth: 0, metal: 0, water: 0 };
-      [hourStem, dayStem, monthStem, yearStem].forEach(s => { elementScores[s.element] += 1.0; });
+      const rawStemYangYin = {
+        wood: { yang: 0, yin: 0 },
+        fire: { yang: 0, yin: 0 },
+        earth: { yang: 0, yin: 0 },
+        metal: { yang: 0, yin: 0 },
+        water: { yang: 0, yin: 0 }
+      };
+
+      [hourStem, dayStem, monthStem, yearStem].forEach(s => {
+        if (s && s.element) {
+          elementScores[s.element] += 1.0;
+          if (rawStemYangYin[s.element]) rawStemYangYin[s.element][s.polarity] += 1.0;
+        }
+      });
       [hourBranch, dayBranch, monthBranch, yearBranch].forEach(b => {
-        b.hidden.forEach(h => {
-          const sObj = STEMS.find(s => s.zh === h.stem);
-          if (sObj) elementScores[sObj.element] += h.weight * 1.5;
-        });
+        if (b && b.hidden) {
+          b.hidden.forEach(h => {
+            const sObj = STEMS.find(s => s.zh === h.stem);
+            if (sObj && elementScores[sObj.element] !== undefined) {
+              const branchWeight = h.weight * 1.5;
+              elementScores[sObj.element] += branchWeight;
+              if (rawStemYangYin[sObj.element]) rawStemYangYin[sObj.element][sObj.polarity] += branchWeight;
+            }
+          });
+        }
       });
 
-      const totalScore = Object.values(elementScores).reduce((a, b) => a + b, 0);
+      const totalScore = Object.values(elementScores).reduce((a, b) => a + b, 0) || 10;
       const elementPercentages = {};
+      const elementMultipliers = { wood: 1.0, fire: 1.0, earth: 1.0, metal: 1.0, water: 1.0 };
       for (const el in elementScores) {
         elementPercentages[el] = Math.round((elementScores[el] / totalScore) * 100);
       }
 
-      // 6. Day Master Strength (身強 vs 身弱)
+      // 6. Day Master Strength (身強 vs 身弱) ตามตำรา "การชั่งน้ำหนักดวง.pdf"
+      // ฝั่งดิถี: ธาตุเกิดดิถี (印 - Resource) + ธาตุดิถี (比劫 - Companion)
+      // อีกฝั่ง: พิฆาตดิถี (官殺 - Power) + ดิถีเกิด (食傷 - Output) + ดิถีพิฆาต (財 - Wealth)
+      // ฝั่งดิถีมากกว่า ก็ถือว่าแข็งแรง (身强) ฝั่งดิถีน้อยกว่า ก็ถือว่าอ่อนแอ (身弱)
       const dmElement = dayStem.element;
       const resourceElement = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].generates === dmElement);
+      const powerElement = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].controls === dmElement);
+      const wealthElement = ELEMENTS_META[dmElement].controls;
+      const outputElement = ELEMENTS_META[dmElement].generates;
+
       const supportingScore = (elementScores[dmElement] || 0) + (elementScores[resourceElement] || 0);
+      const drainingScore = (elementScores[powerElement] || 0) + (elementScores[outputElement] || 0) + (elementScores[wealthElement] || 0);
       const supportPercentage = Math.round((supportingScore / totalScore) * 100);
 
-      const isStrong = supportPercentage >= 46;
+      const isStrong = supportingScore > drainingScore;
       const strengthText = isStrong ? 'ดิถีแข็งแรง (身強 - Strong Day Master)' : 'ดิถีอ่อนแอ (身弱 - Weak Day Master)';
 
       let favorableElements = [];
       let avoidElements = [];
       if (isStrong) {
-        const outputElem = ELEMENTS_META[dmElement].generates;
-        const wealthElem = ELEMENTS_META[dmElement].controls;
-        const officerElem = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].controls === dmElement);
-        favorableElements = [outputElem, wealthElem, officerElem];
+        favorableElements = [outputElement, wealthElement, powerElement];
         avoidElements = [dmElement, resourceElement];
       } else {
         favorableElements = [resourceElement, dmElement];
-        const officerElem = Object.keys(ELEMENTS_META).find(k => ELEMENTS_META[k].controls === dmElement);
-        const wealthElem = ELEMENTS_META[dmElement].controls;
-        avoidElements = [officerElem, wealthElem];
+        avoidElements = [powerElement, wealthElement];
       }
 
       // 6.1 Classical Regulating Element (調候用神 - Tiao Hou / Climate & Balance)
@@ -589,6 +616,9 @@
         dayBranch: dayBranch,
         pillars,
         elementScores,
+        elementMultipliers,
+        supportingScore,
+        drainingScore,
         elementPercentages,
         isStrong,
         strengthText,
@@ -1797,14 +1827,16 @@
     generateDeepInsights: function (chart) {
       if (!chart || !chart.dayMaster) {
         return {
-          traits: '-', career: '-', wealth: '-', love: '-', health: '-'
+          traits: '-', career: '-', wealth: '-', love: '-', health: '-', weakness: '-'
         };
       }
 
       const dm = chart.dayMaster.zh;
       const dmTh = chart.dayMaster.th;
+      const dmElem = chart.dayMaster.element;
       const gender = chart.gender || 'female';
       const isFemale = (gender === 'female' || gender === 'หญิง');
+      const isStrong = !!chart.isStrong;
 
       const elemPct = chart.elementPercentages || {};
       const firePct = elemPct.fire || 0;
@@ -1816,254 +1848,197 @@
       const stems = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].stem ? chart.pillars[k].stem.zh : '');
       const branches = ['year', 'month', 'day', 'hour'].map(k => chart.pillars[k] && chart.pillars[k].branch ? chart.pillars[k].branch.zh : '');
 
-      // Collect all Ten Gods present in the natal chart (stems + main hidden stems)
-      const allChartGods = [];
+      // Ten Gods Knowledge Base
+      const baziTG = (typeof window !== 'undefined' && window.BaziTenGodsDB) ? window.BaziTenGodsDB : ((typeof globalThis !== 'undefined' && globalThis.BaziTenGodsDB) ? globalThis.BaziTenGodsDB : null);
+      const baziMarriage = (typeof window !== 'undefined' && window.BaziMarriageDB) ? window.BaziMarriageDB : ((typeof globalThis !== 'undefined' && globalThis.BaziMarriageDB) ? globalThis.BaziMarriageDB : null);
+      const baziElemCareer = (typeof window !== 'undefined' && window.BaziElementsCareerDB) ? window.BaziElementsCareerDB : ((typeof globalThis !== 'undefined' && globalThis.BaziElementsCareerDB) ? globalThis.BaziElementsCareerDB : null);
+
+      // Ten Gods Counting in Natal Chart (Stems + Hidden Stems)
+      const tenGodCounts = {};
       ['year', 'month', 'hour'].forEach(k => {
         const p = chart.pillars[k];
         if (p && p.tenGod && p.tenGod.zh && p.tenGod.zh !== '日主') {
-          allChartGods.push(p.tenGod.zh);
+          tenGodCounts[p.tenGod.zh] = (tenGodCounts[p.tenGod.zh] || 0) + 1;
         }
       });
       ['year', 'month', 'day', 'hour'].forEach(k => {
         const p = chart.pillars[k];
         if (p && p.hiddenStems) {
           p.hiddenStems.forEach(h => {
-            if (h.tenGod && h.tenGod.zh && h.weight >= 0.25) {
-              allChartGods.push(h.tenGod.zh);
+            if (h.tenGod && h.tenGod.zh) {
+              tenGodCounts[h.tenGod.zh] = (tenGodCounts[h.tenGod.zh] || 0) + (h.weight >= 0.25 ? 1 : 0.5);
             }
           });
         }
       });
 
-      const hasZhengGuan = allChartGods.includes('正官');
-      const hasQiSha = allChartGods.includes('七殺');
+      // Key configurations & patterns from docs_private
+      const hasZhengGuan = (tenGodCounts['正官'] || 0) >= 0.8;
+      const hasQiSha = ((tenGodCounts['七殺'] || 0) + (tenGodCounts['七杀'] || 0)) >= 0.8;
       const isGuanShaHunZa = hasZhengGuan && hasQiSha;
-      const hasBingXinHe = stems.includes('丙') && stems.includes('辛');
 
-      // Check dominant output (ดาวถ่ายเท / 食神·伤官)
-      const outputCount = allChartGods.filter(g => g === '傷官' || g === '食神').length;
-      const dmElem = chart.dayMaster.element;
-      const outputElem = ELEMENTS_META[dmElem] ? ELEMENTS_META[dmElem].generates : null;
-      const outputPct = (outputElem && elemPct[outputElem]) ? elemPct[outputElem] : 0;
-      const hasStrongOutput = outputPct >= 35 || outputCount >= 3;
+      const outputCount = (tenGodCounts['傷官'] || 0) + (tenGodCounts['伤官'] || 0) + (tenGodCounts['食神'] || 0);
+      const outputElemMap = { wood: 'fire', fire: 'earth', earth: 'metal', metal: 'water', water: 'wood' };
+      const outputElem = outputElemMap[dmElem];
+      const outputPct = elemPct[outputElem] || 0;
+      const hasStrongOutput = outputPct >= 35 || outputCount >= 2.5;
 
-      // Check specifically for Admin Bumji baseline chart (1977-07-23 15:45)
-      const isBumjiBaseline = (chart.birthDateString === '1977-07-23' && (chart.birthTimeString === '15:45' || chart.birthHour === 15));
+      // Stems combines (การฮะก้านฟ้า จาก การฮะ.pdf)
+      const stemCombines = [];
+      if (stems.includes('丙') && stems.includes('辛')) stemCombines.push('ก้านฟ้าทำปฏิกิริยา "เปี้ย-ซิง ฮะ" (丙辛合) ดึงดูดอำนาจ เสน่ห์บารมี และจิตวิทยาในการโน้มน้าวผู้คน');
+      if (stems.includes('丁') && stems.includes('壬')) stemCombines.push('ก้านฟ้าทำปฏิกิริยา "เต็ง-ยิ้ม ฮะ" (丁壬合) นำมาซึ่งความอ่อนโยน เมตตา และสติปัญญาหยั่งรู้');
+      if (stems.includes('戊') && stems.includes('癸')) stemCombines.push('ก้านฟ้าทำปฏิกิริยา "โบ่ว-กุ่ย ฮะ" (戊癸合) เสริมเสน่ห์ ความอบอุ่น และมิตรไมตรี');
+      if (stems.includes('甲') && stems.includes('己')) stemCombines.push('ก้านฟ้าทำปฏิกิริยา "กะ-กี้ ฮะ" (甲己合) เสริมความซื่อสัตย์ ความน่าเชื่อถือ และคุณธรรม');
+      if (stems.includes('乙') && stems.includes('庚')) stemCombines.push('ก้านฟ้าทำปฏิกิริยา "อิก-แก ฮะ" (乙庚合) เสริมความเด็ดขาด ความชอบธรรม และความยุติธรรม');
 
-      let traits = '';
-      let career = '';
-      let wealth = '';
-      let love = '';
-      let health = '';
-      let weakness = '';
+      // Top dominant Ten God
+      const sortedGods = Object.entries(tenGodCounts).sort((a,b) => b[1] - a[1]);
+      const topGodZh = sortedGods.length > 0 ? sortedGods[0][0] : null;
+      const topGodInfo = (baziTG && topGodZh) ? baziTG.getGodInfo(topGodZh) : null;
 
-      if (isBumjiBaseline) {
-        // Exact personalized baseline for Admin Bumji
-        traits = 'ดิถีทองซิง (辛金) เปรียบดั่งทองคำขาวและอัญมณีอันประณีตงดงาม มีรสนิยมสูง รักศักดิ์ศรีและความถูกต้อง แต่เนื่องจากในผังชะตามีธาตุไฟ (丁/丙/巳) แวดล้อมหนาแน่น ถือเป็นสภาพ "ทองน้อยเผชิญไฟแรงกล้า" ทำให้เป็นคนที่มีความมุ่งมั่น อดทนสูงส่ง เป็นเสาหลักที่แบกรับภาระหน้าที่และความรับผิดชอบล้นพ้นตัว ทั้งยังมีโครงสร้าง "กัวสัวะปะปน" (官杀混杂) จึงรวมเอาความสุขุม มีวินัย รักเกียรติยศ (เจียกัว) เข้ากับความเด็ดเดี่ยว กล้าลุย ไม่ยอมก้มหัวให้ใคร (ฉิกสัวะ) เป็นคนภายนอกดูนุ่มนวลสง่างาม แต่ภายในใจเด็ดเดี่ยว ใจสู้ และมีความเป็นผู้นำสูงมาก ก้านฟ้ายามเปี้ยไฟทำปฏิกิริยา "เปี้ย-ซิง ฮะ" (丙辛合) ดึงดูดอำนาจและเสน่ห์บารมี ทำให้เป็นที่นับถือและมีจิตวิทยาในการโน้มน้าวผู้คน';
-        career = 'โครงสร้างกัวสัวะหนุนนำอำนาจและบารมี เหมาะอย่างยิ่งกับบทบาท "ผู้นำ ผู้บริหาร ที่ปรึกษา ผู้เชี่ยวชาญเฉพาะทาง หรือเจ้าของธุรกิจส่วนตัว" มีความสามารถในการจัดระเบียบองค์กร บริหารคน และแก้วิกฤติต่างๆ ได้เฉียบคม เสริมด้วยธาตุย้งซิ้ง "ดินเปียกและน้ำ" ทำให้โดดเด่นเป็นพิเศษในสายงานนวัตกรรม การวางแผนกลยุทธ์ งานศาสตร์พยากรณ์/โหราศาสตร์ สื่อสารมวลชน เทคโนโลยี หรืองานที่ต้องใช้ทักษะความรู้เฉพาะตัว ไม่เหมาะกับการอยู่ใต้กฎระเบียบที่ไร้เหตุผล';
-        wealth = 'มีกระแสเงินทองหมุนเวียนก้อนใหญ่ตลอดเวลา มักมีรายได้เข้ามาจากความสามารถเฉพาะตัวและตำแหน่งหน้าที่ แต่เนื่องจากภาระและความรับผิดชอบรอบตัวมีมาก ทำให้เงินทองเข้าเร็วและมีเรื่องต้องใช้จ่ายหรือหมุนเวียนเร็วเช่นกัน กลยุทธ์การเงินที่ดีที่สุดคือ "ไม่ควรเก็บเป็นเงินสดไว้เฉยๆ" แต่ควรแปลงเป็นสินทรัพย์ถาวร เช่น อสังหาริมทรัพย์ ที่ดิน หรือทองคำแท่ง (ธาตุดินและธาตุทอง) จะช่วยเก็บกักความมั่งคั่งได้อย่างยั่งยืน และหลีกเลี่ยงการค้ำประกันหรือให้ผู้อื่นยืมเงิน';
-        love = 'ตามตำราว่าด้วยคู่ครอง: สตรีที่มี "กัวสัวะปะปน" (官杀混杂) มักเป็นคนมีเสน่ห์ดึงดูดใจเพศตรงข้าม มีผู้ชายเข้ามาในชีวิตหลายรูปแบบ แต่เส้นทางความรักมักมาพร้อมกับภาระ ความกดดัน หรือคู่ครองมีบุคลิกเด็ดเดี่ยว/ชอบบงการ เสาวันเป็น 辛巳 (เรือนคู่ครองเป็นธาตุไฟ 巳 ซึ่งควบคุมดิถี) บ่งบอกว่าคู่ครองเป็นคนเก่ง มีตำแหน่งหรือภาวะผู้นำสูง แต่อาจมีความคิดเห็นไม่ตรงกันในบางเรื่อง การครองคู่ที่ดีจึงต้องใช้ความเข้าใจ ให้อิสระทางความคิด และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศ';
-        health = 'เนื่องจากธาตุไฟในดวงมีพลังเข้มข้นมาก จุดที่ต้องดูแลเป็นพิเศษคือ: ระบบหัวใจ หลอดเลือด ความดันโลหิต สายตา อาการไมเกรน และภาวะตึงเครียดนอนไม่หลับจากความคิดที่แล่นตลอดเวลา อีกทั้งธาตุน้ำถูกไฟต้มระเหย ควรระวังระบบทางเดินปัสสาวะ ไต และระบบฮอร์โมนสตรี แนะนำให้ดื่มน้ำสะอาดให้เพียงพอ ทำสมาธิคลายเครียด และจัดสภาพแวดล้อมให้อยู่ใกล้สายน้ำหรือธรรมชาติสีเขียว';
-        weakness = `
-          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.6;">
-            <div>
-              <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. จุดอ่อนการเงิน (เก็บเงินสดไม่อยู่):</strong> 
-              ดิถีทองซิงอ่อนแต่เผชิญไฟกัวสัวะสูงถึง ${firePct}% (ไฟหลอมทอง) เงินเข้ามาเร็วก็มีเหตุจำเป็นต้องหมุนออกไปเร็วเพื่อแก้ปัญหาหรือแบกรับภาระแทนผู้อื่น ดาวโชคลาภ (ธาตุไม้) ซ่อนลึกและไม่มีกำลัง 
-              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ห้ามถือเงินสดติดบัญชีเกินจำเป็น ต้องบังคับแปลงเป็นสินทรัพย์ถาวร (ที่ดิน อสังหาริมทรัพย์ หรือทองคำแท่ง) ทันทีที่ได้กำไร
-            </div>
-            <div>
-              <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (ดวงหญิงแกร่ง ครองคู่ยาก):</strong> 
-              โครงสร้าง "กัวสัวะปะปน" (官杀混杂) ร่วมกับเรือนคู่ครองเป็นไฟข่มดิถี (辛巳) เป็นหญิงแกร่งที่มีศักดิ์ศรีสูง ไม่ยอมก้มหัวให้ใคร แต่คนรักมักมีอัตตาสูงหรือชอบบงการ เมื่อ "แกร่งชนแกร่ง" จึงเกิดความอึดอัดขัดแย้งได้ง่าย ดวงนี้พึ่งพาตนเองได้ดีกว่าพึ่งพาคู่ครอง
-              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ควรครองคู่แบบมีระยะห่างทางความคิด มีพื้นที่ส่วนตัว ไม่ก้าวก่ายงานของกันและกัน หรือแต่งงานช้าจะราบรื่นกว่า
-            </div>
-            <div>
-              <strong style="color: #b91c1c;"><i class="fa-solid fa-triangle-exclamation"></i> 3. จุดอ่อนด้านจิตใจและสุขภาพ:</strong> 
-              เป็นเสาหลักที่แบกรับความรับผิดชอบจนเหนื่อยล้า พักผ่อนน้อย ความคิดแล่นตลอดเวลา ต้องระวังระบบหัวใจ ความดัน สายตา ไมเกรน และระบบฮอร์โมนสตรี
-            </div>
-          </div>
-        `;
+      // 1. Traits (อุปนิสัยและแก่นแท้จิตวิญญาณ จากคลาสเรียนที่ 2 และ LQ 101)
+      const DM_NATURE = {
+        '甲': 'เปรียบดั่งต้นไม้ใหญ่ ยืนต้นสูงตระหง่าน หนักแน่น มั่นคง ตรงไปตรงมา รักเกียรติยศ มีภาวะผู้นำโดยกำเนิด',
+        '乙': 'เปรียบดั่งเถาวัลย์และพืชพรรณ ยืดหยุ่นสูง ปรับตัวเก่ง มีเสน่ห์ อ่อนโยนแต่เข้มแข็ง เอาตัวรอดได้ในทุกสถานการณ์',
+        '丙': 'เปรียบดั่งดวงอาทิตย์ อบอุ่น เปิดเผย ชัดเจน กระตือรือร้น ใจกว้าง รักความยุติธรรม ชอบช่วยเหลือผู้อื่น',
+        '丁': 'เปรียบดั่งเปลวเทียนและแสงประทีป สติปัญญาหยั่งรู้ สุขุม ลุ่มลึก อบอุ่น มีเอกลักษณ์ ช่างสังเกตและประณีต',
+        '戊': 'เปรียบดั่งขุนเขาและผืนแผ่นดินใหญ่ หนักแน่น มั่นคง ซื่อสัตย์ เก็บความลับเก่ง มีความอดทนสูง เป็นที่พึ่งพา',
+        '己': 'เปรียบดั่งดินเพาะปลูก นุ่มนวล โอบอ้อมอารี ปรับตัวเข้ากับทุกคนได้ดี มีจิตใจฟูมฟักดูแลและบริการ',
+        '庚': 'เปรียบดั่งเหล็กกล้าและดาบ เด็ดเดี่ยว ชัดเจน กล้าหาญ มุ่งมั่น มีพลังในการตัดสินใจ บุกเบิก และชอบความยุติธรรม',
+        '辛': 'เปรียบดั่งอัญมณีและทองคำขาว ประณีต งดงาม รสนิยมสูง รักศักดิ์ศรีและความถูกต้อง ละเอียดอ่อน ฉลาดลึกซึ้ง',
+        '壬': 'เปรียบดั่งมหาสมุทรและสายน้ำใหญ่ คล่องแคล่ว ปัญญาฉับไว กว้างไกล ไม่หยุดนิ่ง เชื่อมโยงผู้คนเก่ง',
+        '癸': 'เปรียบดั่งละอองฝนและหยาดน้ำค้าง จิตใจละเอียดอ่อน ลึกซึ้ง มีญาณสัมผัส ปรับตัวเก่ง เงียบสงบแต่อ่อนโยน'
+      };
+
+      const dmNatureDesc = DM_NATURE[dm] || 'มีเอกลักษณ์เฉพาะตัว เปี่ยมด้วยความมุ่งมั่นและความตั้งใจจริง';
+      let traits = `ดิถี${dmTh} (${dm}) ${dmNatureDesc}`;
+
+      if (isGuanShaHunZa) {
+        traits += ` ทั้งยังมีโครงสร้าง "กัวสัวะปะปน" (官杀混杂) จึงรวมเอาความสุขุม มีวินัย รักเกียรติยศ (เจียกัว) เข้ากับความเด็ดเดี่ยว กล้าลุย ไม่ยอมก้มหัวให้ใคร (ฉิกสัวะ) เป็นคนภายนอกดูสง่างาม แต่ภายในใจเด็ดเดี่ยว ใจสู้ เป็นเสาหลักที่แบกรับภาระหน้าที่และความรับผิดชอบรอบตัว`;
+      } else if (hasStrongOutput) {
+        traits += ` ผสานกับพลังดาวถ่ายเท (เจี๊ยะซิ้ง/เซียกัว) หนาแน่นถึง ${outputPct}% เป็นคนเปี่ยมด้วยสติปัญญาไหวพริบ ความคิดสร้างสรรค์ลึกซึ้ง มีไอเดียแปลกใหม่ไม่ซ้ำใคร คารมคมคาย ช่างสังเกต ละเมียดละไม รักอิสระ และไม่ชอบการถูกตีกรอบหรือบงการ`;
+      } else if (topGodInfo) {
+        traits += ` ผสานกับพลังสิบเทพเด่น "${topGodInfo.thai} (${topGodInfo.translation})": ${topGodInfo.coreNature}`;
+      }
+
+      if (stemCombines.length > 0) {
+        traits += ` • ${stemCombines.join(' และ ')}`;
+      }
+
+      if (isStrong) {
+        traits += ` • สถานะดิถีแข็งแรง (身强): มีความเชื่อมั่นในตนเองสูง เด็ดขาด ชัดเจน มีภาวะผู้นำ ไม่ชอบการถูกบงการ และพึ่งพาตนเองเป็นหลัก`;
       } else {
-        // 100% Dynamic Engine connected to Lineage Textbook Database (คลังตำราปาจื่อ)
-        const prof = chart.dayMasterProfile || {};
-        const isStrong = !!chart.isStrong;
+        traits += ` • สถานะดิถีอ่อนกำลัง (身弱): มีความยืดหยุ่น ประนีประนอมสูง ปรับตัวเก่ง มีน้ำใจโอบอ้อมอารีและเห็นอกเห็นใจผู้อื่น แต่ต้องแบกรับภาระหน้าที่รอบตัวสูง`;
+      }
 
-        const baziTG = (typeof window !== 'undefined' && window.BaziTenGodsDB) ? window.BaziTenGodsDB : ((typeof globalThis !== 'undefined' && globalThis.BaziTenGodsDB) ? globalThis.BaziTenGodsDB : null);
-        const baziMarriage = (typeof window !== 'undefined' && window.BaziMarriageDB) ? window.BaziMarriageDB : ((typeof globalThis !== 'undefined' && globalThis.BaziMarriageDB) ? globalThis.BaziMarriageDB : null);
+      // 2. Career (เส้นทางอาชีพและศักยภาพสูงสุด ตามตำรา 10 เทพกับอาชีพ และ ธาตุและอาชีพ)
+      let career = '';
+      if (topGodInfo && topGodInfo.suitableCareers && topGodInfo.suitableCareers.length > 0) {
+        const careerList = topGodInfo.suitableCareers.slice(0, 5).join(', ');
+        career = `ตามตำรา 10 เทพกับอาชีพ: มีพลังสิบเทพเด่น "${topGodInfo.thai}" หนุนนำให้โดดเด่นในสายงาน ${careerList} (${topGodInfo.careerDescription})`;
+      } else {
+        career = `เหมาะกับบทบาทผู้นำ ผู้บริหาร ที่ปรึกษา ผู้เชี่ยวชาญเฉพาะทาง หรือเจ้าของธุรกิจส่วนตัว`;
+      }
 
-        // Count Ten Gods in natal chart (Stems + Main Hidden Stems)
-        const tenGodCounts = {};
-        ['year', 'month', 'hour'].forEach(k => {
-          const p = chart.pillars[k];
-          if (p && p.tenGod && p.tenGod.zh && p.tenGod.zh !== '日主') {
-            tenGodCounts[p.tenGod.zh] = (tenGodCounts[p.tenGod.zh] || 0) + 1;
-          }
-        });
-        ['year', 'month', 'day', 'hour'].forEach(k => {
-          const p = chart.pillars[k];
-          if (p && p.hiddenStems) {
-            p.hiddenStems.forEach(h => {
-              if (h.tenGod && h.tenGod.zh && h.weight >= 0.25) {
-                tenGodCounts[h.tenGod.zh] = (tenGodCounts[h.tenGod.zh] || 0) + 1;
-              }
-            });
-          }
-        });
-
-        const topGodPair = Object.entries(tenGodCounts).sort((a,b) => b[1] - a[1])[0];
-        const topGodInfo = (baziTG && topGodPair) ? baziTG.getGodInfo(topGodPair[0]) : null;
-
-        // 1. Traits
-        traits = prof.traits || `ดิถี${dmTh} มีเอกลักษณ์เฉพาะตัว เปี่ยมด้วยความมุ่งมั่นและความตั้งใจจริง`;
-        if (topGodInfo) {
-          traits += ` ผสานกับพลังสิบเทพเด่น "${topGodInfo.thai} (${topGodInfo.translation})": ${topGodInfo.coreNature}`;
-        }
-        if (isStrong) {
-          traits += ` • สถานะดิถีแข็งแรง (身强): มีความเชื่อมั่นในตนเองสูง เด็ดขาด ชัดเจน มีภาวะผู้นำ ไม่ชอบการถูกบงการ และพึ่งพาตนเองเป็นหลัก`;
-        } else {
-          traits += ` • สถานะดิถีอ่อนกำลัง (身弱): มีความยืดหยุ่น ประนีประนอมสูง ปรับตัวเก่ง มีน้ำใจโอบอ้อมอารีและเห็นอกเห็นใจผู้อื่น แต่ต้องแบกรับภาระหน้าที่รอบตัวสูง`;
-        }
-
-        // 2. Career (ดึงจาก 10 เทพกับอาชีพ.pdf และ ธาตุและอาชีพ.pdf)
-        if (topGodInfo && topGodInfo.suitableCareers && topGodInfo.suitableCareers.length > 0) {
-          const careerList = topGodInfo.suitableCareers.slice(0, 4).join(', ');
-          career = `ตามตำราสิบเทพกับอาชีพ: เด่นในสายงาน ${careerList} (${topGodInfo.careerDescription})`;
-        } else {
-          career = prof.career || 'เหมาะกับงานที่อาศัยความเชี่ยวชาญเฉพาะด้านและการบริหารจัดการอย่างเป็นระบบ';
-        }
-        const favElems = (chart.favorableElements || []).map(e => {
-          const map = { wood: 'ธาตุไม้', fire: 'ธาตุไฟ', earth: 'ธาตุดิน', metal: 'ธาตุทอง', water: 'ธาตุน้ำ' };
-          return map[e] || e;
+      if (chart.favorableElements && chart.favorableElements.length > 0 && baziElemCareer) {
+        const favElemThai = chart.favorableElements.map(e => {
+          const eName = e === 'wood' ? 'Wood' : (e === 'fire' ? 'Fire' : (e === 'earth' ? 'Earth' : (e === 'metal' ? 'Metal' : 'Water')));
+          const eInfo = baziElemCareer.getElementCareer(eName);
+          return eInfo ? eInfo.elementThai : e;
         }).join(' และ ');
-        if (favElems) {
-          career += ` เสริมด้วยธาตุสำคัญให้คุณ (${favElems}) ส่งผลให้โดดเด่นเป็นพิเศษในสายงานที่ต้องใช้ความเชี่ยวชาญ การวางแผนเชิงกลยุทธ์ และการสร้างคุณค่าที่ยั่งยืน`;
+        career += ` • เสริมด้วยธาตุให้คุณ (喜用神) "${favElemThai}": หนุนนำให้เจริญรุ่งเรืองอย่างยิ่งในอุตสาหกรรมนวัตกรรม กลยุทธ์ การศึกษา การวางแผน งานวิชาการ หรือธุรกิจเฉพาะทาง`;
+      }
+
+      // 3. Wealth (โชคลาภ การเงิน และการสะสมทรัพย์ ตามตำรา P ดาวไช้ และ สิบเทพกับจำนวนในดวง)
+      let wealth = '';
+      if (!isStrong) {
+        wealth = `ตามตำรา P ดาวไช้ และสิบเทพกับจำนวนในดวง: โครงสร้างดิถีอ่อนกำลัง มีกระแสเงินทองหมุนเวียนก้อนใหญ่ตลอดเวลา มักมีรายได้เข้ามาจากความสามารถเฉพาะตัวและโอกาสรอบด้าน แต่เนื่องจากภาระและความรับผิดชอบรอบตัวมีมาก ทำให้เงินทองเข้าเร็วและมีเหตุจำเป็นต้องหมุนเวียนออกไปเร็วเช่นกัน (财多身弱 / แบกรับภาระรอบตัว) กลยุทธ์การเงินที่ดีที่สุดคือ "ไม่ควรเก็บเป็นเงินสดไว้ติดบัญชีเกินความจำเป็น" แต่ควรแปลงเป็นสินทรัพย์ถาวร เช่น อสังหาริมทรัพย์ ที่ดิน สลากออมทรัพย์ หรือทองคำแท่งทันทีที่ได้รับเงินมา จะช่วยเก็บกักความมั่งคั่งได้อย่างยั่งยืน และหลีกเลี่ยงการค้ำประกันหรือให้ผู้อื่นหยิบยืมเงิน`;
+      } else {
+        wealth = `ตามตำรา P ดาวไช้ และสิบเทพกับจำนวนในดวง: โครงสร้างดิถีแข็งแรง มีศักยภาพในการกุมทรัพย์และบริหารจัดการต่อยอดผลกำไรได้อย่างมีประสิทธิภาพ มีความเด็ดขาด กล้าได้กล้าเสียในการลงทุน และสร้างฐานะได้ด้วยลำแข้งของตนเอง ระวังเพียงความมั่นใจที่สูงเกินไปหรือการตัดสินใจด่วนได้ ควรตั้งจุดตัดขาดทุน (Stop-loss) ก่อนลงเงินก้อนใหญ่เสมอ`;
+      }
+
+      const earthBranches = branches.filter(b => ['辰', '戌', '丑', '未'].includes(b));
+      if (earthBranches.length >= 2) {
+        wealth += ` ในผังชะตามีกิ่งดินคลังทรัพย์ (${earthBranches.join(' / ')}) บ่งบอกถึงศักยภาพในการกักเก็บทรัพย์สิน มีโอกาสถือครองสินทรัพย์ที่ดินหรือมรดกตกทอดอย่างมั่นคง`;
+      }
+
+      // 4. Love & Marriage (ว่าด้วยคู่ครอง สำนักลิ้มแชเล้ง 林青龍宮)
+      let love = '';
+      const dayB = branches[2] || '';
+      if (baziMarriage) {
+        const mRes = baziMarriage.analyzeMarriage(gender, dm, dayB, tenGodCounts, []);
+        let spouseStarText = '';
+        if (mRes.findings && mRes.findings.length > 0) {
+          const f = mRes.findings[0];
+          spouseStarText = `${f.star ? f.star + ' ' : ''}${f.role ? f.role + ': ' : ''}${f.manifestation}`;
         }
 
-        // 3. Wealth
-        if (!isStrong) {
-          wealth = `มีกระแสเงินทองหมุนเวียนเข้ามาเรื่อยๆ จากความสามารถเฉพาะตัว แต่เนื่องจากภาระหน้าที่หรือความรับผิดชอบรอบตัวมีมาก ทำให้เงินเข้ามาเร็วก็มีเหตุจำเป็นต้องหมุนเวียนออกเร็ว กลยุทธ์การเงินที่ดีที่สุดคือ "ไม่ควรเก็บเป็นเงินสดไว้เฉยๆ" แต่ควรแปลงเป็นสินทรัพย์ถาวร เช่น อสังหาริมทรัพย์ ที่ดิน สลากออมทรัพย์ หรือทองคำแท่ง จะช่วยเก็บกักความมั่งคั่งได้อย่างยั่งยืน และหลีกเลี่ยงการค้ำประกันหรือให้ผู้อื่นยืมเงิน`;
-        } else {
-          wealth = prof.wealth || `การเงินมั่นคง มีศักยภาพในการกุมทรัพย์และต่อยอดผลกำไรได้อย่างมีประสิทธิภาพ มีความกล้าได้กล้าเสียในการลงทุน และสร้างฐานะได้ด้วยลำแข้งของตนเอง`;
+        let palaceText = '';
+        if (mRes.affinity) {
+          palaceText += ` • ${mRes.affinity.title}: ${mRes.affinity.meaning}`;
         }
 
-        // 4. Love & Marriage (ดึงจาก ว่าด้วยคู่ครอง.pdf สำนักลิ้มแชเล้ง)
-        if (baziMarriage) {
-          const mRes = baziMarriage.analyzeMarriage(gender, dm, chart.pillars.day.branch.zh, tenGodCounts, []);
-          let spouseText = '';
-          if (mRes.findings && mRes.findings.length > 0) {
-            const f = mRes.findings[0];
-            spouseText = `${f.star ? f.star + ' ' : ''}${f.role ? f.role + ': ' : ''}${f.manifestation}`;
+        const dayBObj = BRANCHES.find(b => b.zh === dayB);
+        if (dayBObj) {
+          const bElem = dayBObj.element;
+          if (ELEMENTS_META[bElem].generates === dmElem) {
+            palaceText += ' • เรือนคู่ครองให้กำเนิดดิถี: คู่ครองคอยดูแลเอาใจใส่เกื้อหนุนชีวิตเป็นอย่างดี';
+          } else if (ELEMENTS_META[dmElem].generates === bElem) {
+            palaceText += ' • เรือนคู่ครองเป็นธาตุถ่ายเท: เจ้าชะตาเป็นฝ่ายทุ่มเทดูแลเอาใจใส่คู่ครอง ยอมเสียสละเพื่อครอบครัว';
+          } else if (ELEMENTS_META[bElem].controls === dmElem) {
+            palaceText += ' • เรือนคู่ครองพิฆาตดิถี: คู่ครองมีความเป็นผู้นำสูง หรือมีบุคลิกเด็ดเดี่ยว';
           }
-          const dayB = chart.pillars.day.branch ? chart.pillars.day.branch.zh : '';
-          const dayBObj = BRANCHES.find(b => b.zh === dayB);
-          let palaceText = '';
-          if (dayBObj) {
-            const bElem = dayBObj.element;
-            const dmElem = chart.dayMaster.element;
-            if (ELEMENTS_META[bElem].generates === dmElem) {
-              palaceText = ' เรือนคู่ครองให้กำเนิดดิถี: คู่ครองคอยดูแลเอาใจใส่เกื้อหนุนชีวิตเป็นอย่างดี';
-            } else if (ELEMENTS_META[dmElem].generates === bElem) {
-              palaceText = ' เรือนคู่ครองเป็นธาตุถ่ายเท: เจ้าชะตาเป็นฝ่ายทุ่มเทดูแลเอาใจใส่คู่ครอง ยอมเสียสละเพื่อครอบครัว';
-            } else if (ELEMENTS_META[bElem].controls === dmElem) {
-              palaceText = ' เรือนคู่ครองพิฆาตดิถี: คู่ครองมีความเป็นผู้นำสูง หรือมีบุคลิกเด็ดเดี่ยว';
-            }
-          }
-          love = `ตามตำราว่าด้วยคู่ครอง (${mRes.spouseStarTitle}): ${spouseText}${palaceText}`;
-        } else if (isFemale) {
-          if (isGuanShaHunZa) {
-            love = `ตามตำราคู่ครองสตรี: ในดวงมีดาวคู่ครองปะปน (官杀混杂) มักเป็นคนมีเสน่ห์ดึงดูดใจเพศตรงข้าม มีคนเข้ามาในชีวิตหลายรูปแบบ แต่คนรักมักมีบุคลิกเด็ดเดี่ยวหรือชอบบงการ การครองคู่ที่ดีจึงต้องใช้ความเข้าใจ ให้อิสระทางความคิด มีพื้นที่ส่วนตัวให้กัน หรือแต่งงานช้าจะราบรื่นและมั่นคงกว่า`;
-          } else if (hasStrongOutput) {
-            love = prof.love ? `${prof.love} ตามโครงสร้างดาวถ่ายเทเด่น (ดาวปัญญาและความคิดสร้างสรรค์): เป็นคนเฉลียวฉลาด มีมาตรฐานสูง และเป็นตัวของตัวเอง ไม่ชอบการถูกตีกรอบหรือบงการ การครองคู่ที่ดีจึงต้องการคนที่อบอุ่น มีวุฒิภาวะ อารมณ์เย็น และเข้าใจในความลึกซึ้งของเธอ` : `ความสัมพันธ์ต้องการคนที่เข้าใจในความเฉลียวฉลาดและจิตวิญญาณ มีพื้นที่ทางความคิดให้แก่กัน`;
-          } else {
-            love = prof.love || `ความสัมพันธ์เน้นความจริงใจ การให้เกียรติซึ่งกันและกัน และการสนับสนุนให้เติบโตไปด้วยกันอย่างมั่นคง`;
-          }
-        } else {
-          love = prof.love || `ความสัมพันธ์เน้นความอบอุ่น การเป็นผู้นำครอบครัวที่ดี และการให้เกียรติคู่ชีวิต`;
         }
 
-        // 5. Health
-        const maxElem = Object.entries(elemPct).sort((a,b) => b[1] - a[1])[0] || ['earth', 20];
-        const elemHealthMap = {
-          fire: 'ระบบหัวใจ หลอดเลือด ความดันโลหิต สายตา อาการไมเกรน และการนอนหลับ ควรดื่มน้ำสะอาดให้เพียงพอและฝึกสมาธิคลายเครียด',
-          water: 'ระบบทางเดินปัสสาวะ ไต และระบบฮอร์โมน ควรรักษาร่างกายให้อบอุ่นและหลีกเลี่ยงความหนาวชื้น',
-          wood: 'ระบบตับ ถุงน้ำดี กล้ามเนื้อ เส้นเอ็น และความตึงเครียดของระบบประสาท ควรยืดเหยียดร่างกายและพักผ่อนในธรรมชาติ',
-          earth: 'ระบบกระเพาะอาหาร ม้าม ระบบย่อยอาหาร และกล้ามเนื้อ ควรทานอาหารให้ตรงเวลาและออกกำลังกายสม่ำเสมอ',
-          metal: 'ระบบปอด ทางเดินหายใจ ภูมิแพ้ และผิวหนัง ควรหลีกเลี่ยงฝุ่นควันและฝึกการหายใจลึกๆ'
-        };
-        health = prof.health ? `${prof.health} (จุดที่ควรดูแลเป็นพิเศษตามสมดุลเบญจธาตุคือ ${elemHealthMap[maxElem[0]] || 'การรักษาสมดุลการพักผ่อน'})` : `ดูแลสมดุลสุขภาพโดยเน้น ${elemHealthMap[maxElem[0]] || 'การพักผ่อนให้เพียงพอ'}`;
+        love = `ตามตำราว่าด้วยคู่ครอง สำนักลิ้มแชเล้ง (${mRes.spouseStarTitle}): ${spouseStarText}${palaceText} การครองคู่ที่ดีจึงต้องใช้ความเข้าใจ ให้อิสระทางความคิด และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศ`;
+      } else {
+        love = isFemale
+          ? `ตามตำราคู่ครองสตรี: ความสัมพันธ์เน้นความเข้าใจ การให้เกียรติซึ่งกันและกัน และการมีพื้นที่ส่วนตัวทางความคิด`
+          : `ตามตำราคู่ครองบุรุษ: ความสัมพันธ์เน้นความอบอุ่น การเป็นผู้นำครอบครัวที่ดี และการสนับสนุนภรรยาอย่างจริงใจ`;
+      }
 
-        // 6. Weaknesses & Remedies
-        let wealthWeak = '';
-        if (!isStrong) {
-          wealthWeak = `
-            <div>
-              <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. จุดอ่อนการเงิน (กระแสหมุนเวียน/เก็บเงินสดไม่อยู่):</strong> 
-              โครงสร้างดิถีอ่อนกำลังเผชิญภาระรอบตัวมาก เงินทองหมุนเวียนก้อนใหญ่ มีรายได้เข้ามาต่อเนื่องแต่มีเหตุให้ต้องใช้จ่ายหรือช่วยเหลือคนรอบข้าง ทำให้เก็บเงินสดติดบัญชียาก
-              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> หลีกเลี่ยงการถือเงินสดก้อนใหญ่ ควรกระจายไปออมในสินทรัพย์ถาวร เช่น อสังหาริมทรัพย์ ที่ดิน สลากออมทรัพย์ หรือทองคำแท่งทันทีที่ได้รับเงินมา
-            </div>
-          `;
-        } else {
-          wealthWeak = `
-            <div>
-              <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. ข้อควรระวังการเงิน (ความเสี่ยงในการลงทุน):</strong> 
-              มีความเชื่อมั่นในตนเองสูงและกล้าได้กล้าเสียในการลงทุน แต่ต้องระวังการตัดสินใจที่ด่วนสรุปหรือมั่นใจเกินไป รวมถึงระวังการถูกเอาเปรียบจากคนใกล้ชิดหรือหุ้นส่วน
-              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ห้ามค้ำประกันหรือให้กู้ยืมโดยไม่มีหลักประกันที่รัดกุม กำหนดแผนบริหารความเสี่ยง (Stop-loss) ก่อนลงเงินก้อนใหญ่เสมอ
-            </div>
-          `;
-        }
+      // 5. Health (สุขภาพและสมดุลเบญจธาตุ ตามตำรา LQ 101 โหราศาสตร์จีนเบื้่องต้น)
+      const maxElem = Object.entries(elemPct).sort((a,b) => b[1] - a[1])[0] || ['earth', 20];
+      const elemHealthMap = {
+        fire: 'ระบบหัวใจ หลอดเลือด ความดันโลหิต สายตา อาการไมเกรน และภาวะตึงเครียดนอนไม่หลับจากความคิดที่แล่นตลอดเวลา แนะนำให้ดื่มน้ำสะอาดให้เพียงพอและฝึกสมาธิคลายเครียด',
+        water: 'ระบบทางเดินปัสสาวะ ไต ระบบสืบพันธุ์ และระบบฮอร์โมนสตรี/บุรุษ ควรรักษาร่างกายให้อบอุ่นและหลีกเลี่ยงความหนาวชื้น',
+        wood: 'ระบบตับ ถุงน้ำดี กล้ามเนื้อ เส้นเอ็น และความตึงเครียดของระบบประสาท ควรยืดเหยียดร่างกายและพักผ่อนในธรรมชาติสีเขียว',
+        earth: 'ระบบกระเพาะอาหาร ม้าม ระบบย่อยอาหาร และกล้ามเนื้อ ควรทานอาหารให้ตรงเวลาและหลีกเลี่ยงความเครียดสะสม',
+        metal: 'ระบบปอด หลอดลม ทางเดินหายใจ ภูมิแพ้ และผิวหนัง ควรหลีกเลี่ยงฝุ่นควันและฝึกการหายใจลึกๆ'
+      };
 
-        let loveWeak = '';
-        if (isFemale) {
-          if (isGuanShaHunZa) {
-            loveWeak = `
-              <div>
-                <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (ดวงหญิงแกร่ง/รักซับซ้อน):</strong> 
-                โครงสร้างดาวคู่ครองปะปน เป็นหญิงเก่งพึ่งพาตนเองได้สูง มีเสน่ห์ต่อเพศตรงข้าม แต่คนรักมักมีอัตตาสูงหรือชอบบงการ หากไม่ยอมกันอาจเกิดการปะทะทางอารมณ์ได้ง่าย
-                <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ครองคู่แบบให้เกียรติและมีพื้นที่ส่วนตัว ไม่ก้าวก่ายเรื่องงานของกันและกัน หรือแต่งงานช้าจะมั่นคงกว่า
-              </div>
-            `;
-          } else if (hasStrongOutput) {
-            loveWeak = `
-              <div>
-                <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. ข้อควรระวังความรัก (มาตรฐานและความคาดหวังสูง):</strong> 
-                ดาวถ่ายเท (ปัญญาและความคิดสร้างสรรค์) มีกำลังสูง เป็นคนมีมาตรฐานและความคาดหวังในตัวคนรักค่อนข้างสูง เมื่อคนรักทำอะไรไม่ตรงใจอาจเกิดความอึดอัดหรือเก็บไว้ในใจ
-                <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> สื่อสารความรู้สึกด้วยความนุ่มนวล ลดความคาดหวังในเรื่องเล็กๆ น้อยๆ และชื่นชมข้อดีของคนรักอย่างสม่ำเสมอ
-              </div>
-            `;
-          } else {
-            loveWeak = `
-              <div>
-                <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. ข้อควรระวังความรัก (ทัศนคติและการสื่อสาร):</strong> 
-                การทุ่มเทเวลากับภาระหน้าที่และความรับผิดชอบอาจทำให้บรรยากาศความสัมพันธ์ตึงเครียดหรือขาดเวลาคุณภาพร่วมกัน
-                <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ใช้การสื่อสารที่นุ่มนวล ชื่นชมคู่ครอง และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศเพื่อกระชับความผูกพัน
-              </div>
-            `;
-          }
-        } else {
-          loveWeak = `
-            <div>
-              <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. ข้อควรระวังความรัก (เวลาและความเข้าใจ):</strong> 
-              มุ่งมั่นกับงานสร้างฐานะจนอาจมีเวลาให้ครอบครัวน้อย หรือมีความคิดเห็นไม่ตรงกันในเรื่องการบริหารจัดการชีวิต
-              <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ให้ความสำคัญกับความรู้สึกของคู่ชีวิต ให้เกียรติภรรยาเป็นอันดับหนึ่ง และจัดสรรเวลาคุณภาพร่วมกันอย่างสม่ำเสมอ
-            </div>
-          `;
-        }
+      const maxElemMeta = ELEMENTS_META[maxElem[0]] || { th: 'ธาตุประจำตัว' };
+      const health = `ตามสมดุลเบญจธาตุ: ${maxElemMeta.th}มีพลังเข้มข้นที่สุดในดวง (${maxElem[1]}%) จุดที่ต้องดูแลเป็นพิเศษคือ: ${elemHealthMap[maxElem[0]] || 'การพักผ่อนให้เพียงพอ'}`;
 
-        const healthWeak = `
+      // 6. Weaknesses & Metaphysical Remedies (จุดอ่อนและเคล็ดลับการแก้ดวง 3 ด้าน)
+      const weakness = `
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.6;">
+          <div>
+            <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. จุดอ่อนการเงิน (${!isStrong ? 'เก็บเงินสดไม่อยู่ / ภาระรอบตัว' : 'ความเสี่ยงในการลงทุน'}):</strong> 
+            ${!isStrong 
+              ? `ดิถีอ่อนกำลังเผชิญภาระรอบตัวมาก เงินทองหมุนเวียนก้อนใหญ่ มีรายได้เข้ามาต่อเนื่องแต่มีเหตุให้ต้องใช้จ่ายหรือช่วยเหลือคนรอบข้าง ทำให้เก็บเงินสดติดบัญชียาก
+                 <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ห้ามถือเงินสดติดบัญชีเกินจำเป็น ต้องบังคับแปลงเป็นสินทรัพย์ถาวร (ที่ดิน อสังหาริมทรัพย์ สลากออมทรัพย์ หรือทองคำแท่ง) ทันทีที่ได้กำไรมา`
+              : `มีความเชื่อมั่นในตนเองสูงและกล้าได้กล้าเสียในการลงทุน แต่ต้องระวังการตัดสินใจที่ด่วนได้หรือทุ่มหมดหน้าตักในจังหวะที่ใจร้อน
+                 <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ตั้งเกณฑ์จุดตัดขาดทุน (Stop-loss) ก่อนลงเงินก้อนใหญ่เสมอ และกระจายความเสี่ยงในสินทรัพย์มั่นคง`}
+          </div>
+          <div>
+            <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (${isGuanShaHunZa ? 'ดวงหญิงแกร่ง / รักซับซ้อน' : (hasStrongOutput ? 'มาตรฐานสูง / รักอิสระ' : 'การสื่อสารและเวลา')}):</strong> 
+            ${isGuanShaHunZa 
+              ? `โครงสร้าง "กัวสัวะปะปน" (官杀混杂) เป็นหญิงเก่งพึ่งพาตนเองได้สูง มีเสน่ห์ต่อเพศตรงข้าม แต่คนรักมักมีอัตตาสูงหรือชอบบงการ เมื่อ "แกร่งชนแกร่ง" จึงเกิดความอึดอัดขัดแย้งได้ง่าย ดวงนี้พึ่งพาตนเองได้ดีกว่าพึ่งพาคู่ครอง
+                 <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ควรครองคู่แบบมีระยะห่างทางความคิด มีพื้นที่ส่วนตัว ไม่ก้าวก่ายงานของกันและกัน หรือแต่งงานช้าจะราบรื่นกว่า`
+              : (hasStrongOutput 
+                  ? `ดาวถ่ายเท (ปัญญาและความคิดสร้างสรรค์) มีกำลังสูง เป็นคนมีมาตรฐานและความคาดหวังในตัวคนรักค่อนข้างสูง เมื่อคนรักทำอะไรไม่ตรงใจอาจเกิดความอึดอัดหรือไม่สบอารมณ์
+                     <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> สื่อสารความรู้สึกด้วยความนุ่มนวล ลดความคาดหวังในเรื่องเล็กๆ น้อยๆ และชื่นชมข้อดีของคนรักอย่างสม่ำเสมอ`
+                  : `การทุ่มเทเวลากับภาระหน้าที่และความรับผิดชอบอาจทำให้บรรยากาศความสัมพันธ์ตึงเครียดหรือขาดเวลาคุณภาพร่วมกัน
+                     <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ใช้การสื่อสารที่นุ่มนวล ชื่นชมคู่ครอง และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศเพื่อกระชับความผูกพัน`)}
+          </div>
           <div>
             <strong style="color: #b91c1c;"><i class="fa-solid fa-triangle-exclamation"></i> 3. จุดอ่อนด้านจิตใจและสุขภาพ:</strong> 
-            แบกรับภาระหน้าที่จนอาจเกิดความเหนื่อยล้าสะสม พักผ่อนไม่เพียงพอ จุดที่ต้องระวังเป็นพิเศษคือ ${elemHealthMap[maxElem[0]] || 'การพักผ่อน'}
-            <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> รักษาสมดุลการนอนหลับ ดื่มน้ำสะอาดให้เพียงพอ และฝึกการปล่อยวางความกังวล
+            เป็นเสาหลักที่แบกรับความรับผิดชอบจนเหนื่อยล้า พักผ่อนน้อย ความคิดแล่นตลอดเวลา จุดที่ควรระวังคือ ${elemHealthMap[maxElem[0]] || 'การพักผ่อน'}
+            <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับเสริมดวง:</span> จัดสภาพแวดล้อมและที่อยู่อาศัยให้โปร่งโล่ง ฝึกการทำสมาธิคลายความกังวล และปล่อยวางเรื่องที่ควบคุมไม่ได้
           </div>
-        `;
-
-        weakness = `
-          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.6;">
-            ${wealthWeak}
-            ${loveWeak}
-            ${healthWeak}
-          </div>
-        `;
-      }
+        </div>
+      `;
 
       return { traits, career, wealth, love, health, weakness };
     },
@@ -2071,6 +2046,7 @@
     renderBasicSuite: function (chart) {
       if (!chart) return;
       this.renderBasicFourPillars(chart);
+      this.renderBasicElementsPieChart(chart);
       this.renderBasicAgeCallout(chart);
       this.renderBasicSpiderChart(chart);
       this.renderBasicCurrentDaYun(chart);
@@ -2107,6 +2083,12 @@
         { key: 'year', title: 'ปี (Year)', pillar: p.year }
       ];
 
+      const tgAbbrMap = {
+        '比肩': 'F', '劫財': 'RW', '食神': 'EG', '傷官': 'HO',
+        '偏財': 'IW', '正財': 'DW', '七殺': '7K', '正官': 'DO',
+        '偏印': 'IR', '正印': 'DR'
+      };
+
       container.innerHTML = `
         <table class="bazi-basic-table">
           <thead>
@@ -2121,10 +2103,10 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Row: Hour Stem (ราศีบน) -->
+            <!-- Row: Heavenly Stem (ราศีบน) -->
             <tr>
               <td class="bazi-basic-row-label">
-                <strong>Hour stem</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีบน / กิ่งฟ้า</small>
+                <strong>Heavenly Stem</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีบน / กิ่งฟ้า</small>
               </td>
               ${cols.map(c => {
                 if (c.isUnknown) {
@@ -2170,9 +2152,377 @@
                 `;
               }).join('')}
             </tr>
+
+            <!-- Row 3: Hidden Stem (ราศีแฝง) -->
+            <tr>
+              <td class="bazi-basic-row-label">
+                <strong>Hidden Stem</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีแฝง / กิ่งฟ้าแฝง</small>
+              </td>
+              ${cols.map(c => {
+                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const b = c.pillar.branch;
+                return `
+                  <td>
+                    <div class="bazi-hhs-row">
+                      ${b.hidden.map(h => {
+                        const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+                        const tg = getTenGod(chart.dayMaster, sObj);
+                        const abbr = tgAbbrMap[tg.zh] || 'F';
+                        return `
+                          <div class="bazi-hhs-badge stem-bg-${sObj.element}" title="${tg.th} (${sObj.zh})">
+                            <span style="font-size: 10px; opacity: 0.85;">${sObj.py}</span>
+                            <span style="font-size: 14px; font-weight: 800;">${sObj.zh}</span>
+                            <span style="font-size: 10px; font-weight: 700;">${abbr}</span>
+                          </div>
+                        `;
+                      }).join('')}
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row 4: Nayin (ธาตุนาอิม) -->
+            <tr>
+              <td class="bazi-basic-row-label">
+                <strong>Nayin</strong><br><small style="color: #94a3b8; font-size: 11px;">ธาตุนาอิม / นัปอิม</small>
+              </td>
+              ${cols.map(c => {
+                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const sIdx = STEMS.findIndex(s => s.zh === c.pillar.stem.zh);
+                const bIdx = BRANCHES.findIndex(b => b.zh === c.pillar.branch.zh);
+                const ny = this.getNaYinDetail(sIdx, bIdx);
+                return `
+                  <td>
+                    <div class="bazi-nayin-ribbon nayin-bg-${ny.element}" title="${ny.zh} (${ny.th})">
+                      <div style="font-size: 11.5px; font-weight: 800;">${ny.en}</div>
+                      <div style="font-size: 10.5px; opacity: 0.95;">${ny.zh} (${ny.th})</div>
+                    </div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row 5: DM Qi Phase (สภาวะชีพเทียบดิถี) -->
+            <tr>
+              <td class="bazi-basic-row-label">
+                <strong>DM Qi Phase</strong><br><small style="color: #94a3b8; font-size: 11px;">12 วงจรชีพเทียบดิถี</small>
+              </td>
+              ${cols.map(c => {
+                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const p = this.get12LifeStage(chart.dayMaster.zh, c.pillar.branch.zh);
+                return `
+                  <td class="bazi-phase-cell" style="text-align: center;">
+                    <div style="font-weight: 800; font-size: 12px; color: #1e293b;">${p.order}. ${p.en}</div>
+                    <div style="font-size: 11px; color: #64748b;">${p.py} / ${p.zh} <strong style="color: #7c3aed; font-size: 12px;">${p.symbol}</strong></div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
+
+            <!-- Row 6: Pillar Qi Phase (สภาวะชีพประจำเสา) -->
+            <tr>
+              <td class="bazi-basic-row-label">
+                <strong>Pillar Qi Phase</strong><br><small style="color: #94a3b8; font-size: 11px;">12 วงจรชีพประจำเสา</small>
+              </td>
+              ${cols.map(c => {
+                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+                const p = this.get12LifeStage(c.pillar.stem.zh, c.pillar.branch.zh);
+                return `
+                  <td class="bazi-phase-cell" style="text-align: center;">
+                    <div style="font-weight: 800; font-size: 12px; color: #1e293b;">${p.order}. ${p.en}</div>
+                    <div style="font-size: 11px; color: #64748b;">${p.py} / ${p.zh} <strong style="color: #7c3aed; font-size: 12px;">${p.symbol}</strong></div>
+                  </td>
+                `;
+              }).join('')}
+            </tr>
           </tbody>
         </table>
       `;
+    },
+
+    renderBasicElementsPieChart: function (chart, targetContainerId) {
+      if (!chart) return;
+      const targetIds = targetContainerId ? [targetContainerId] : ['baziElementsPieCard', 'baziAdvanceElementsPieCard'];
+      const containers = targetIds.map(id => document.getElementById(id)).filter(Boolean);
+      if (containers.length === 0) return;
+
+      const elemKeys = ['earth', 'fire', 'metal', 'wood', 'water'];
+      const favList = chart.favorableElements || [];
+      const dm = chart.dayMaster || (chart.pillars && chart.pillars.day ? chart.pillars.day.stem : null) || { element: 'fire', polarity: 'yin', zh: '丁' };
+      const dmElem = dm.element;
+
+      // 1. Five Roles relative to Day Master (Friend, Output, Wealth, Power, Resource)
+      const getRoleName = (targetElem) => {
+        if (targetElem === dmElem) return 'Friend';
+        if (ELEMENTS_META[dmElem].generates === targetElem) return 'Output';
+        if (ELEMENTS_META[dmElem].controls === targetElem) return 'Wealth';
+        if (ELEMENTS_META[targetElem].controls === dmElem) return 'Power';
+        if (ELEMENTS_META[targetElem].generates === dmElem) return 'Resource';
+        return 'Friend';
+      };
+
+      // 2. Standard Ten Gods Abbreviations (EG, HO, DW, IW, DO, 7K, DR, IR, F, RW)
+      const getTenGodAbbr = (targetStem) => {
+        const tg = getTenGod(dm, targetStem);
+        if (!tg || !tg.zh) return '-';
+        const map = {
+          '比肩': 'F',
+          '劫財': 'RW',
+          '食神': 'EG',
+          '傷官': 'HO',
+          '偏財': 'IW',
+          '正財': 'DW',
+          '七殺': '7K',
+          '正官': 'DO',
+          '偏印': 'IR',
+          '正印': 'DR'
+        };
+        return map[tg.zh] || tg.zh;
+      };
+
+      // Calculate Yang vs Yin distribution from natal pillars with lineage multipliers
+      const elemSplits = {
+        wood: { total: 0, yang: 0, yin: 0 },
+        fire: { total: 0, yang: 0, yin: 0 },
+        earth: { total: 0, yang: 0, yin: 0 },
+        metal: { total: 0, yang: 0, yin: 0 },
+        water: { total: 0, yang: 0, yin: 0 }
+      };
+
+      ['hour', 'day', 'month', 'year'].forEach(k => {
+        const p = chart.pillars[k];
+        if (!p || p.isUnknown) return;
+        const s = p.stem;
+        if (s && elemSplits[s.element]) {
+          elemSplits[s.element].total += 1.0;
+          elemSplits[s.element][s.polarity] += 1.0;
+        }
+        if (p.branch && p.branch.hidden) {
+          p.branch.hidden.forEach(h => {
+            const sObj = STEMS.find(x => x.zh === h.stem);
+            if (sObj && elemSplits[sObj.element]) {
+              const w = h.weight * 1.5;
+              elemSplits[sObj.element].total += w;
+              elemSplits[sObj.element][sObj.polarity] += w;
+            }
+          });
+        }
+      });
+
+      const totalScore = Object.values(elemSplits).reduce((a, b) => a + b.total, 0) || 1;
+
+      // Map percentages and ensure yang + yin = totalPct exactly
+      const sortedElems = elemKeys.map(k => {
+        const split = elemSplits[k];
+        const meta = ELEMENTS_META[k];
+        const totalPct = chart.elementPercentages ? (chart.elementPercentages[k] || 0) : Math.round((split.total / totalScore) * 100);
+        let yangPct = split.total > 0 ? Math.round((split.yang / totalScore) * 100) : 0;
+        let yinPct = totalPct - yangPct;
+        if (yinPct < 0) { yinPct = 0; yangPct = totalPct; }
+        if (yangPct < 0) yangPct = 0;
+
+        const yangStem = STEMS.find(s => s.element === k && s.polarity === 'yang');
+        const yinStem = STEMS.find(s => s.element === k && s.polarity === 'yin');
+        const yangGod = getTenGod(dm, yangStem);
+        const yinGod = getTenGod(dm, yinStem);
+        const yangAbbr = getTenGodAbbr(yangStem);
+        const yinAbbr = getTenGodAbbr(yinStem);
+        const roleName = getRoleName(k);
+        const isDM = (k === dmElem);
+
+        return {
+          key: k,
+          roleName,
+          isDM,
+          totalPct,
+          yangPct,
+          yinPct,
+          yangAbbr,
+          yinAbbr,
+          yangGod,
+          yinGod,
+          yangStem,
+          yinStem,
+          th: meta.th,
+          zh: meta.zh,
+          color: meta.color,
+          isFav: favList.includes(k)
+        };
+      }).sort((a, b) => b.totalPct - a.totalPct);
+
+      // Construct Single Ring Donut Chart using 5 Basic Element Colors with Outside DM & Fav Badges
+      const cx = 160, cy = 160;
+      const rOuter = 110, rInner = 62;
+      const rMid = (rOuter + rInner) / 2;
+      let startAngle = -Math.PI / 2;
+      let pathsSvg = '';
+      let insideLabelsSvg = '';
+      let smallLabelsSvg = '';
+      let outsideBadgesSvg = '';
+
+      sortedElems.forEach(item => {
+        if (item.totalPct > 0) {
+          const angle = (item.totalPct / 100) * 2 * Math.PI;
+          const endAngle = startAngle + angle;
+          const largeArc = angle > Math.PI ? 1 : 0;
+          const midAngle = startAngle + angle / 2;
+          const cosM = Math.cos(midAngle);
+          const sinM = Math.sin(midAngle);
+
+          const x1 = cx + rOuter * Math.cos(startAngle), y1 = cy + rOuter * Math.sin(startAngle);
+          const x2 = cx + rOuter * Math.cos(endAngle), y2 = cy + rOuter * Math.sin(endAngle);
+          const ix1 = cx + rInner * Math.cos(endAngle), iy1 = cy + rInner * Math.sin(endAngle);
+          const ix2 = cx + rInner * Math.cos(startAngle), iy2 = cy + rInner * Math.sin(startAngle);
+
+          const d = `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L ${ix1.toFixed(2)} ${iy1.toFixed(2)} A ${rInner} ${rInner} 0 ${largeArc} 0 ${ix2.toFixed(2)} ${iy2.toFixed(2)} Z`;
+          pathsSvg += `<path d="${d}" fill="${item.color}" stroke="#ffffff" stroke-width="2.5"><title>${item.roleName} (${item.th}): ${item.totalPct}% [${item.yangAbbr}: ${item.yangPct}%, ${item.yinAbbr}: ${item.yinPct}%]</title></path>`;
+
+          // 1. Text inside slice (for slices >= 7%): show pure role name & percentage
+          if (item.totalPct >= 7) {
+            const tx = cx + rMid * cosM;
+            const ty = cy + rMid * sinM;
+            const roleFontSize = item.totalPct >= 18 ? '11.5' : (item.totalPct >= 11 ? '10.5' : '9.5');
+            const pctFontSize = item.totalPct >= 18 ? '14' : (item.totalPct >= 11 ? '13' : '11.5');
+
+            insideLabelsSvg += `
+              <text x="${tx.toFixed(1)}" y="${(ty - 3).toFixed(1)}" text-anchor="middle" font-family="'Outfit', 'Prompt', sans-serif" style="pointer-events: none;">
+                <tspan x="${tx.toFixed(1)}" dy="0" font-size="${roleFontSize}" font-weight="800" fill="#ffffff" style="text-shadow: 0 1px 3px rgba(0,0,0,0.65);">${item.roleName}</tspan>
+                <tspan x="${tx.toFixed(1)}" dy="14" font-size="${pctFontSize}" font-weight="900" fill="#ffffff" style="text-shadow: 0 1px 3px rgba(0,0,0,0.65);">${item.totalPct}%</tspan>
+              </text>
+            `;
+          } else {
+            // Small slice (< 7%): place outside with collision prevention leader line
+            const isTop = sinM < -0.3;
+            const isLeft = cosM < 0;
+            let targetX, targetY, anchor;
+
+            if (isTop) {
+              targetY = 24;
+              targetX = isLeft ? Math.min(cx + rOuter * cosM - 10, 130) : Math.max(cx + rOuter * cosM + 10, 185);
+              anchor = isLeft ? 'end' : 'start';
+            } else {
+              targetX = cx + (rOuter + 22) * cosM;
+              targetY = cy + (rOuter + 22) * sinM;
+              anchor = cosM > 0.3 ? 'start' : (cosM < -0.3 ? 'end' : 'middle');
+            }
+
+            const sx = cx + rOuter * cosM;
+            const sy = cy + rOuter * sinM;
+            const lx1 = cx + (rOuter + 6) * cosM;
+            const ly1 = cy + (rOuter + 6) * sinM;
+
+            smallLabelsSvg += `
+              <g style="pointer-events: none;">
+                <polyline points="${sx.toFixed(1)},${sy.toFixed(1)} ${lx1.toFixed(1)},${ly1.toFixed(1)} ${targetX.toFixed(1)},${targetY.toFixed(1)}" fill="none" stroke="${item.color}" stroke-width="1.2" stroke-dasharray="2,2" opacity="0.8" />
+                <text x="${(targetX + (anchor === 'end' ? -3 : (anchor === 'start' ? 3 : 0))).toFixed(1)}" y="${(targetY + 4).toFixed(1)}" text-anchor="${anchor}" font-size="10.5" font-weight="800" fill="${item.color}" font-family="'Outfit', 'Prompt', sans-serif" style="text-shadow: 0 1px 2px rgba(255,255,255,0.95);">${item.roleName} ${item.totalPct}%</text>
+              </g>
+            `;
+          }
+
+          // 2. Outside Badges: Day Master (DM) and Favorable Star (★ ให้คุณ)
+          if (item.isDM || item.isFav) {
+            const badgeDist = rOuter + 22;
+            const bx = cx + badgeDist * cosM;
+            const by = cy + badgeDist * sinM;
+            const ex = cx + (rOuter + 2) * cosM;
+            const ey = cy + (rOuter + 2) * sinM;
+
+            let badgeContent = '';
+            let titleText = '';
+
+            if (item.isDM && item.isFav) {
+              titleText = 'ดิถีธาตุ (Day Master) & ธาตุให้คุณ';
+              badgeContent = `
+                <rect x="${(bx - 23).toFixed(1)}" y="${(by - 10).toFixed(1)}" width="46" height="20" rx="5" fill="#faf5ff" stroke="#c4b5fd" stroke-width="1.4" filter="url(#pieBadgeShadow)" />
+                <text x="${bx.toFixed(1)}" y="${(by + 4.5).toFixed(1)}" text-anchor="middle" font-family="'Outfit', 'Prompt', sans-serif">
+                  <tspan font-size="10" font-weight="900" fill="#6d28d9">DM</tspan>
+                  <tspan font-size="12" font-weight="900" fill="#7c3aed" dx="2">★</tspan>
+                </text>`;
+            } else if (item.isDM) {
+              titleText = 'ดิถีธาตุ (Day Master)';
+              badgeContent = `
+                <rect x="${(bx - 16).toFixed(1)}" y="${(by - 10).toFixed(1)}" width="32" height="20" rx="5" fill="#ede9fe" stroke="#c4b5fd" stroke-width="1.4" filter="url(#pieBadgeShadow)" />
+                <text x="${bx.toFixed(1)}" y="${(by + 4.5).toFixed(1)}" text-anchor="middle" font-family="'Outfit', 'Prompt', sans-serif" font-size="10.5" font-weight="900" fill="#6d28d9">DM</text>`;
+            } else if (item.isFav) {
+              titleText = 'ธาตุให้คุณ (ส่งเสริมดวงชะตา)';
+              badgeContent = `
+                <rect x="${(bx - 12).toFixed(1)}" y="${(by - 10).toFixed(1)}" width="24" height="20" rx="5" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.4" filter="url(#pieBadgeShadow)" />
+                <text x="${bx.toFixed(1)}" y="${(by + 4.5).toFixed(1)}" text-anchor="middle" font-family="'Outfit', 'Prompt', sans-serif" font-size="13" font-weight="900" fill="#7c3aed">★</text>`;
+            }
+
+            outsideBadgesSvg += `
+              <g class="bazi-pie-outside-badge" style="cursor: pointer;">
+                <title>${titleText}</title>
+                <line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${(cx + (badgeDist - 12) * cosM).toFixed(1)}" y2="${(cy + (badgeDist - 12) * sinM).toFixed(1)}" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="2,2" />
+                ${badgeContent}
+              </g>
+            `;
+          }
+
+          startAngle = endAngle;
+        }
+      });
+
+      const dmZh = dm ? dm.zh : '丁';
+      const dmMeta = dm ? ELEMENTS_META[dm.element] : null;
+      const dmColor = dmMeta ? dmMeta.color : '#7c3aed';
+      const dmStrengthLabel = chart.isStrong ? 'DM : Strong' : 'DM : Weak';
+      const dmStrengthClass = chart.isStrong ? 'badge-dm-strong' : 'badge-dm-weak';
+
+      const htmlContent = `
+        <div class="bazi-pie-card-header">
+          <div>
+            <i class="fa-solid fa-chart-pie" style="color: #7c3aed;"></i>
+            <strong>สัดส่วนเบญจธาตุ (Five Elements)</strong>
+          </div>
+          <span class="header-badge ${dmStrengthClass}">${dmStrengthLabel}</span>
+        </div>
+
+        <div class="bazi-pie-svg-wrap">
+          <svg class="bazi-pie-svg" viewBox="0 0 320 320">
+            <defs>
+              <filter id="pieBadgeShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#7c3aed" flood-opacity="0.15" />
+              </filter>
+            </defs>
+            ${pathsSvg}
+            ${insideLabelsSvg}
+            ${smallLabelsSvg}
+            ${outsideBadgesSvg}
+            <circle cx="${cx}" cy="${cy}" r="${rInner - 2}" fill="#ffffff" />
+            <text x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="32" font-weight="900" fill="${dmColor}" font-family="'Outfit', 'Prompt', sans-serif">${dmZh}</text>
+            <text x="${cx}" y="${cy + 18}" text-anchor="middle" font-size="12.5" font-weight="800" fill="#475569" font-family="'Outfit', 'Prompt', sans-serif">${chart.isStrong ? '身强 ดิถีแข็ง' : '身弱 ดิถีอ่อน'}</text>
+          </svg>
+        </div>
+
+        <div class="bazi-pie-legend-list">
+          ${sortedElems.map(e => `
+            <div class="bazi-pie-legend-item">
+              <div class="bazi-pie-item-left">
+                <span class="bazi-pie-color-dot" style="background: ${e.color};" title="${e.th} (${e.zh})"></span>
+                <span class="bazi-pie-elem-name">
+                  <strong>${e.roleName}</strong>
+                  ${e.isDM ? '<span class="bazi-pie-dm-badge" title="ดิถีธาตุ (Day Master)">DM</span>' : ''}
+                  <small style="color: #64748b; font-weight: 500; font-size: 11px;">(${e.th})</small>
+                </span>
+                ${e.isFav ? '<span class="bazi-pie-fav-tag" title="ธาตุให้คุณ (ส่งเสริมดวงชะตา)">★</span>' : ''}
+              </div>
+              <div class="bazi-pie-item-right">
+                <span class="bazi-pie-pct-badge" style="color: ${e.color};">${e.totalPct}%</span>
+                <div class="bazi-pie-sub-splits">
+                  <span class="bazi-pie-sub-badge badge-yang" style="color: ${e.color};" title="${e.yangGod ? e.yangGod.th : ''} (${e.yangStem ? e.yangStem.zh : ''} หยาง)">${e.yangAbbr} ${e.yangPct}%</span>
+                  <span class="bazi-pie-sub-badge badge-yin" style="color: #475569;" title="${e.yinGod ? e.yinGod.th : ''} (${e.yinStem ? e.yinStem.zh : ''} หยิน)">${e.yinAbbr} ${e.yinPct}%</span>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      containers.forEach(c => {
+        c.innerHTML = htmlContent;
+      });
     },
 
     renderBasicAgeCallout: function (chart) {
@@ -2183,12 +2533,14 @@
       const age = Math.max(0, now.getFullYear() - birthYear);
       const dmMeta = ELEMENTS_META[chart.dayMaster.element];
 
+      const safeName = (window.SecurityGuard && window.SecurityGuard.escapeHtml) ? window.SecurityGuard.escapeHtml(chart.name) : (chart.name || 'ไม่ระบุชื่อ');
+
       card.innerHTML = `
         <div class="bazi-age-icon"><i class="fa-solid fa-cake-candles"></i></div>
         <div class="bazi-age-content">
           <strong>🎂 อายุปัจจุบัน: ${age} ปี (เกิดปี พ.ศ. ${birthYear + 543} / ค.ศ. ${birthYear})</strong>
           <p>
-            เจ้าชะตา: <strong>${chart.name}</strong> • ดิถีธาตุประจำตัว: <strong style="color: ${dmMeta.color};">${chart.dayMaster.zh} (${chart.dayMaster.th})</strong> 
+            เจ้าชะตา: <strong>${safeName}</strong> • ดิถีธาตุประจำตัว: <strong style="color: ${dmMeta.color};">${chart.dayMaster.zh} (${chart.dayMaster.th})</strong> 
             • พลังดิถี: <strong>${chart.strengthText}</strong> (${chart.dayMasterProfile ? chart.dayMasterProfile.title : ''})
           </p>
         </div>
@@ -2548,6 +2900,7 @@
     renderAdvanceSuite: function (chart) {
       if (!chart) return;
       this.renderAdvanceMasterPillars(chart);
+      this.renderBasicElementsPieChart(chart, 'baziAdvanceElementsPieCard');
       this.renderDaYunCards();
       this.renderDaYunInterpretation();
       this.renderAnnualAndMonthlyFortune();

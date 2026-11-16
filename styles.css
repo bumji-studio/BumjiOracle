@@ -7491,12 +7491,14 @@ body.is-mobile .synthesis-box-body {
   font-size: 14.5px;
   line-height: 1.5;
   overflow-y: auto;
-  padding: 20px;
+  padding: 16px 20px;
   box-sizing: border-box;
+  width: 100%;
 }
 
 .bazi-app-container {
-  max-width: 1100px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -9756,7 +9758,7 @@ body.is-mobile .synthesis-box-body {
 
 .bazi-master-grid-table {
   width: 100%;
-  min-width: 880px;
+  min-width: 720px;
   border-collapse: collapse;
   table-layout: fixed;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'Sarabun', sans-serif;
@@ -9772,7 +9774,7 @@ body.is-mobile .synthesis-box-body {
 }
 
 .bazi-master-grid-table .row-header-col {
-  width: 80px;
+  width: 90px;
   background: #f8fafc;
   font-weight: 700;
   color: #475569;
@@ -21539,6 +21541,269 @@ body.is-mobile .direct-answer-verdict {
   transform: translateY(-1px);
 }
 
+/* Basic 4 Pillars Container (Table + 5-Elements Donut Pie) */
+.bazi-pillars-row-container {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.bazi-pillars-row-container .bazi-basic-table-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.bazi-pillars-row-container .bazi-master-table-responsive {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.bazi-pie-dm-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ede9fe;
+  color: #6d28d9;
+  border: 1px solid #c4b5fd;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  margin-left: 4px;
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+.bazi-elements-pie-card {
+  flex: 0 0 340px;
+  max-width: 360px;
+  background: #ffffff;
+  border: 1.5px solid #e9d5ff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bazi-pie-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #581c87;
+  border-bottom: 1px dashed #f3e8ff;
+  padding-bottom: 8px;
+}
+
+.bazi-pie-card-header .header-badge {
+  font-size: 11px;
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #d8b4fe;
+  padding: 2.5px 8px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-family: 'Outfit', 'Prompt', sans-serif;
+  letter-spacing: 0.3px;
+}
+
+.bazi-pie-card-header .header-badge.badge-dm-strong {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #86efac;
+}
+
+.bazi-pie-card-header .header-badge.badge-dm-weak {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.bazi-pie-svg-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 6px 0 12px 0;
+}
+
+.bazi-pie-svg {
+  width: 270px;
+  height: 270px;
+  max-width: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.08));
+}
+
+.bazi-pie-outside-badge {
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.bazi-pie-outside-badge:hover {
+  transform: scale(1.08);
+  filter: drop-shadow(0 4px 8px rgba(124, 58, 237, 0.3));
+}
+
+.bazi-pie-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+}
+
+.bazi-pie-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
+}
+
+.bazi-pie-legend-item:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.bazi-pie-item-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bazi-pie-color-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+.bazi-pie-elem-name {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 11.5px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.bazi-pie-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.bazi-pie-pct-badge {
+  font-weight: 800;
+  font-size: 12.5px;
+  min-width: 32px;
+  text-align: right;
+  font-family: 'Outfit', 'Prompt', sans-serif;
+}
+
+.bazi-pie-sub-splits {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bazi-pie-sub-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: 5px;
+  white-space: nowrap;
+  font-family: 'Outfit', 'Prompt', sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.bazi-pie-sub-badge.badge-yang {
+  background: rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.bazi-pie-sub-badge.badge-yin {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+}
+
+.bazi-pie-strength-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.bazi-pie-strength-tag.strength-strong {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.bazi-pie-strength-tag.strength-balanced {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.bazi-pie-strength-tag.strength-weak {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.bazi-pie-fav-tag {
+  font-size: 11px;
+  color: #7c3aed;
+  font-weight: 800;
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 4px;
+  padding: 0 4px;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .bazi-advance-pillars-row {
+    flex-direction: column;
+  }
+  .bazi-advance-pillars-row .bazi-elements-pie-card {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 960px) {
+  .bazi-pillars-row-container {
+    flex-direction: column;
+  }
+  .bazi-elements-pie-card {
+    flex: 1 1 auto;
+    max-width: 100%;
+  }
+}
+
 /* Basic 4 Pillars Table */
 .bazi-basic-table-wrap {
   width: 100%;
@@ -21573,7 +21838,7 @@ body.is-mobile .direct-answer-verdict {
 }
 
 .bazi-basic-table td {
-  padding: 14px 10px;
+  padding: 10px 8px;
   border: 1px solid #f1f5f9;
   vertical-align: middle;
 }
@@ -21947,6 +22212,29 @@ body.is-mobile .direct-answer-verdict {
   border-color: #fde68a;
 }
 
+.bazi-btn-go-advance {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.22);
+  transition: all 0.2s ease;
+}
+
+.bazi-btn-go-advance:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(124, 58, 237, 0.32);
+}
+
 .bazi-btn-toggle-inputs {
   background: #f8fafc;
   border: 1px solid #cbd5e1;
@@ -22005,4 +22293,47 @@ body.is-mobile .direct-answer-verdict {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ==========================================================================
+   SECURITY & ANTI-THEFT PROTECTION (การป้องกันการขโมยข้อมูลและลิขสิทธิ์)
+   ========================================================================== */
+.bazi-app-container,
+.bazi-section-card,
+.bazi-master-grid-table,
+.bazi-elements-pie-card,
+.bazi-deep-insights-card,
+.qimen-app-container,
+.tongshu-app-container,
+.personality-app-container,
+.protected-content {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Allow normal text selection & typing inside form fields */
+input,
+textarea,
+select,
+.bazi-form-field input,
+.bazi-form-field select,
+[contenteditable="true"] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+}
+
+/* Prevent image dragging theft */
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
 }

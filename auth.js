@@ -14,7 +14,8 @@
   const STORAGE_KEY = 'jiutian_arcana_user_session';
   const ADMIN_CONFIG = {
     email: 'bumjaa@gmail.com',
-    password: 'bumjiOnly',
+    passwordHash: '2939f90c231733cba588fa88fa14a4775425a877528e78f5a05a109476660c2e',
+    salt: 'maemortidtid_salt_2026:',
     name: 'Bumji (Admin)',
     firstName: 'Bumji',
     lastName: ''
@@ -34,7 +35,6 @@
       this.bindEvents();
       this.updateUI();
       this.notifyModeChange();
-      console.log('[AuthManager] Admin Gatekeeper Initialized.');
     },
 
     loadSession: function () {
@@ -42,7 +42,17 @@
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           const u = JSON.parse(saved);
-          if (u && (u.email === ADMIN_CONFIG.email || u.isAdmin)) {
+          const isValidSession = u && (u.email === ADMIN_CONFIG.email || u.isAdmin) && (
+            (window.SecurityGuard && window.SecurityGuard.verifySession(u)) ||
+            (!u._token && u.email === ADMIN_CONFIG.email) // Migration path on first run
+          );
+
+          if (isValidSession) {
+            // Auto-sign session if token is missing
+            if (!u._token && window.SecurityGuard) {
+              u._token = window.SecurityGuard.signSession(u.id || 'admin_bumji', u.email);
+              try { localStorage.setItem(STORAGE_KEY, JSON.stringify(u)); } catch (e) {}
+            }
             // Auto-migrate Admin Bumji to 1977-07-23 15:45 female
             if (u.id === 'admin_bumji' || u.email === ADMIN_CONFIG.email) {
               if (u.birthDate !== '1977-07-23' || u.birthTime !== '15:45' || u.gender !== 'female') {
@@ -56,7 +66,7 @@
             }
             this.currentUser = u;
           } else {
-            // Discard any non-admin demo user session
+            // Discard any forged or invalid user session
             this.currentUser = null;
             localStorage.removeItem(STORAGE_KEY);
           }
@@ -67,6 +77,9 @@
     },
 
     saveSession: function (user) {
+      if (user && window.SecurityGuard) {
+        user._token = window.SecurityGuard.signSession(user.id, user.email);
+      }
       this.currentUser = user;
       try {
         if (user) {
@@ -93,7 +106,7 @@
       return !this.isAdmin();
     },
 
-    // Admin Login Verification
+    // Admin Login Verification with Secure SHA-256 Hashing
     loginWithEmail: async function (email, password) {
       const cleanEmail = (email || '').trim().toLowerCase();
       const cleanPass = (password || '').trim();
@@ -103,7 +116,9 @@
         return false;
       }
 
-      if (cleanEmail === ADMIN_CONFIG.email.toLowerCase() && cleanPass === ADMIN_CONFIG.password) {
+      const inputHash = window.SecurityGuard ? window.SecurityGuard.sha256(ADMIN_CONFIG.salt + cleanPass) : cleanPass;
+
+      if (cleanEmail === ADMIN_CONFIG.email.toLowerCase() && inputHash === ADMIN_CONFIG.passwordHash) {
         const adminUser = {
           id: 'admin_bumji',
           uid: 'admin_bumji',

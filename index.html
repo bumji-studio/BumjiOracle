@@ -21,7 +21,17 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_7539">
+  <!-- Security & Anti-Scraping Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  
+  <!-- Security & Anti-Scraping Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_7352">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -651,28 +661,23 @@
           <section class="bazi-section-card bazi-basic-pillars-section">
             <div class="bazi-card-title-bar">
               <div class="title-left">
+                <span class="bazi-mode-tag">Basic Edition</span>
                 <i class="fa-solid fa-table-cells" style="color: #7c3aed;"></i>
                 <strong>ตาราง 4 เสาชะตาฟ้าดิน (Four Pillars Matrix)</strong>
               </div>
-              <span class="bazi-mode-tag">Basic Edition</span>
-            </div>
-
-            <div id="baziBasicPillarsTable" class="bazi-basic-table-wrap">
-              <!-- Dynamically populated 4 columns (ยาม วัน เดือน ปี) with Hour stem & Earth Branch -->
-            </div>
-
-            <!-- Prominent Link to Advance with Data Carry-Over -->
-            <div class="bazi-advance-link-banner">
-              <div class="link-banner-text">
-                <i class="fa-solid fa-wand-magic-sparkles link-icon"></i>
-                <div>
-                  <strong>ดูตาราง 4 เสาฉบับเจาะลึกระดับซินแส (Advance)</strong>
-                  <p>เจาะลึกราศีแฝง, นัปอิม, 12 ขั้นชีพ, สิบเทพ, เทพดาวชะตา, และจุดปะทะ/ฮะ พร้อมดึงข้อมูลจากหน้านี้ไปแสดงทันที</p>
-                </div>
-              </div>
-              <button type="button" class="bazi-advance-link-btn" onclick="window.BaziApp.goToAdvance()">
-                <span>ดูตาราง 4 เสาฉบับเจาะลึก (หน้า Advance) ➔</span>
+              <button type="button" class="bazi-btn-go-advance" onclick="window.BaziApp.goToAdvance()">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>ดู Advance Edition ➔</span>
               </button>
+            </div>
+
+            <div class="bazi-pillars-row-container">
+              <div id="baziBasicPillarsTable" class="bazi-basic-table-wrap">
+                <!-- Dynamically populated 4 columns (ยาม วัน เดือน ปี) with Hour stem & Earth Branch -->
+              </div>
+              <div id="baziElementsPieCard" class="bazi-elements-pie-card">
+                <!-- Dynamically populated: กราฟวงกลม 5 ธาตุ แบ่งสีเข้มอ่อน (แข็งอ่อน) ตามสีธาตุ -->
+              </div>
             </div>
           </section>
 
@@ -856,8 +861,13 @@
             <p class="bazi-section-desc">
               แจกแจง 9 มิติวิชาการ: Hour stem, Earth Branch, Hidden Stem, Nayin, DM Qi, Pillar Qi, Deity, Star, และ Interactions
             </p>
-            <div id="baziAdvanceMasterTableWrap" class="bazi-master-table-responsive">
-              <!-- Dynamically populated 4 columns (ยาม วัน เดือน ปี) with 9 rows -->
+            <div class="bazi-pillars-row-container bazi-advance-pillars-row">
+              <div id="baziAdvanceMasterTableWrap" class="bazi-master-table-responsive">
+                <!-- Dynamically populated 4 columns (ยาม วัน เดือน ปี) with 9 rows -->
+              </div>
+              <div id="baziAdvanceElementsPieCard" class="bazi-elements-pie-card">
+                <!-- Five Elements Donut Pie Chart & Legend in Advance -->
+              </div>
             </div>
           </section>
 
@@ -2278,32 +2288,34 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_7539"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_7352"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_7539"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_7352"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
+  <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
+  <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_7539"></script>
-  <script src="app.js?v=20261115_v5_7539"></script>
+  <script src="auth.js?v=20261115_v5_7352"></script>
+  <script src="app.js?v=20261115_v5_7352"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_7539"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_7539"></script>
-  <script src="bazi.js?v=20261115_v5_7539"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_7352"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_7352"></script>
+  <script src="bazi.js?v=20261115_v5_7352"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

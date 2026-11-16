@@ -93,6 +93,19 @@ var BaziMarriageDB = (function () {
       },
       combinations: {
         dayBranchCombined: 'เรือนคู่ครองถูกฮะ: ความสัมพันธ์แนบแน่น อบอุ่น ผูกพัน แต่หากถูกฮะไปเป็นธาตุที่ไม่ให้คุณ ระวังคู่ครองใจอ่อนหรือมีคนอื่นเข้ามาแทรก'
+      },
+      // 5. นั่งดาวตรงจริต vs นั่งดาวต่างจริต (จากตำราสำนักลิ้มแชเล้ง ข้อ 8)
+      affinityTypes: {
+        directAffinity: {
+          code: 'direct',
+          title: 'นั่งดาวตรงจริต (子 ชวด, 午 มะเมีย, 亥 กุน, 巳 มะเส็ง)',
+          meaning: 'คู่ครองกับเจ้าชะตามีรสนิยมตรงกัน คุยกันเข้าใจง่าย มีมุมมองและวิถีชีวิตสอดคล้องกัน'
+        },
+        differentAffinity: {
+          code: 'different',
+          title: 'นั่งดาวต่างจริต (丑, 寅, 卯, 辰, 未, 申, 酉, 戌)',
+          meaning: 'คู่ครองกับเจ้าชะตามีรสนิยมต่างกัน มุมมองและความชอบไม่เหมือนกัน ต้องเปิดใจเรียนรู้และปรับตัวเข้าหากัน'
+        }
       }
     },
 
@@ -106,7 +119,7 @@ var BaziMarriageDB = (function () {
 
   return {
     MARRIAGE_RULES,
-    analyzeMarriage: function (gender, dayStem, dayBranch, tenGodsCounts, branchInteractions) {
+    analyzeMarriage: function (gender, dayStem, dayBranch, tenGodsCounts, branchInteractions, favorableElements) {
       const isMale = (gender === 'male' || gender === 'ชาย');
       const rules = isMale ? MARRIAGE_RULES.maleChart : MARRIAGE_RULES.femaleChart;
       const findings = [];
@@ -139,10 +152,17 @@ var BaziMarriageDB = (function () {
         }
       }
 
+      // นั่งดาวตรงจริต vs นั่งดาวต่างจริต (จากตำราสำนักลิ้มแชเล้ง ข้อ 8)
+      const directAffinityBranches = ['子', '午', '亥', '巳'];
+      const affinity = directAffinityBranches.includes(dayBranch)
+        ? MARRIAGE_RULES.spousePalace.affinityTypes.directAffinity
+        : MARRIAGE_RULES.spousePalace.affinityTypes.differentAffinity;
+
       return {
         gender: isMale ? 'ชาย' : 'หญิง',
         spouseStarTitle: rules.spouseStarTitle,
         findings,
+        affinity,
         spousePalaceInfo: MARRIAGE_RULES.spousePalace,
         guidance: MARRIAGE_RULES.guidance
       };

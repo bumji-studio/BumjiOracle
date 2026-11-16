@@ -9,3 +9,25 @@ JiuTianCardImage_original/
 *.pdf
 docs_private/
 private_refs/
+
+# Security: Private documentation, extraction scripts, and proprietary matrices
+*.xlsx
+*.xls
+*.csv
+*.jsonl
+.env
+.env.*
+*.key
+*.pem
+scripts/*_private*
+scripts/extract_*
+scripts/patch_*
+scripts/test_*
+scripts/calc_*
+scripts/deep_*
+scripts/get_*
+scripts/export_*
+scripts/find_*
+scripts/serve_*
+scripts/*.svg
+scripts/*.json
