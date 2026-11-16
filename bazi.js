@@ -1840,6 +1840,185 @@
         timelineLabel,
         advice
       };
+    },
+
+    // 12. Deep Astrological Consultation Engine (ถามตอบเจาะลึกผังดวงเฉพาะบุคคล)
+    consultAstrologer: function (chart, rawQuery, defaultYear) {
+      if (!chart) {
+        return {
+          title: 'ยังไม่มีข้อมูลผังดวง',
+          headline: 'กรุณาตั้งผังดวงชะตาก่อนถามคำถามค่ะ',
+          probText: 'ยังไม่มีข้อมูล',
+          probBg: '#64748b',
+          points: [
+            {
+              title: 'คำแนะนำ:',
+              body: 'ท่านสามารถกดแท็บ 1. Basic หรือ 2. Advance ด้านบน เพื่อกรอกวันเดือนปีเกิดและเวลาเกิดก่อน จากนั้นระบบจะดึงข้อมูลผังดวง 4 เสามาวิเคราะห์ถามตอบได้ทันทีค่ะ'
+            }
+          ],
+          advice: 'ตั้งผังดวงชะตาเพื่อเริ่มต้นการวิเคราะห์เชิงลึก'
+        };
+      }
+
+      const q = (rawQuery || '').trim();
+      const lowerQ = q.toLowerCase();
+
+      // Resolve Target Year
+      let simY = defaultYear || new Date().getFullYear() || 2026;
+      const beMatch = lowerQ.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
+      const ceMatch = lowerQ.match(/(?:ปี\s*)?(20\d{2})/);
+      if (ceMatch) simY = parseInt(ceMatch[1], 10);
+      else if (beMatch) simY = parseInt(beMatch[1], 10) - 543;
+      else if (lowerQ.includes('ปีหน้า')) simY = (new Date().getFullYear() || 2026) + 1;
+      else if (lowerQ.includes('ปีที่แล้ว')) simY = (new Date().getFullYear() || 2026) - 1;
+
+      // Active Da Yun for simY
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = simY - birthYear;
+      let curDaYun = (chart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      if (!curDaYun && chart.daYunPillars && chart.daYunPillars.length > 0) {
+        if (ageInYear < chart.daYunPillars[0].ageFrom) {
+          curDaYun = {
+            ageRange: `0 - ${chart.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์)`,
+            stem: chart.pillars.month.stem,
+            branch: chart.pillars.month.branch,
+            tenGod: chart.pillars.month.tenGod,
+            isChildhood: true
+          };
+        } else {
+          curDaYun = chart.daYunPillars[chart.daYunPillars.length - 1];
+        }
+      }
+
+      // Tai Sui (Annual Pillar)
+      const yrStemIdx = ((simY - 4) % 10 + 10) % 10;
+      const yrBranchIdx = ((simY - 4) % 12 + 12) % 12;
+      const simStem = STEMS[yrStemIdx];
+      const simBranch = BRANCHES[yrBranchIdx];
+      const simStemGod = getTenGod(chart.dayMaster, simStem);
+
+      // Monthly Fortunes for simY
+      const allMonths = BaziEngine.calculateMonthlyFortune(chart, simY);
+
+      // Metaphysical foundations
+      const dm = chart.dayMaster;
+      const favElements = chart.favorableElements || [];
+      const favNames = favElements.map(k => ELEMENTS_META[k].th).join(', ');
+      const tiaoHou = chart.tiaoHou ? ELEMENTS_META[chart.tiaoHou.element].th : '';
+      const p = chart.pillars;
+
+      // Classify Intent
+      const isTimingQuery = /เดือนไหนดี|ช่วงเวลา|จังหวะ|ปลายปี|ต้นปี|กลางปี|สิ้นปี|ไตรมาส|เมื่อไหร่|ช่วงไหน|เดือนที่ดี|เดือนที่ควรระวัง/.test(lowerQ);
+      const isJobQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|สมัครงาน|สัมภาษณ์|เลื่อนขั้น|ก้าวหน้า|งานประจำ|ธุรกิจ|ค้าขาย|เปิดร้าน|หุ้นส่วน|โปรเจกต์|เจรจา|หน้าที่|การงาน|อาชีพ/.test(lowerQ);
+      const isWealthQuery = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|อสังหา|ค้าขาย|กำไร|เงินก้อน|เงินรั่ว|เสี่ยงโชค|หวย|คลังทรัพย์|สภาพคล่อง/.test(lowerQ);
+      const isLoveQuery = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|คู่ครอง|เนื้อคู่|วังคู่ครอง|ความสัมพันธ์|ทะเลาะ|คนรัก/.test(lowerQ);
+      const isHealthQuery = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|ปอด|ตับ|เครียด|นอนไม่หลับ|อุบัติเหตุ|เคราะห์|เจ็บป่วย/.test(lowerQ);
+      const isFengShuiQuery = /สีมงคล|ทิศมงคล|เสริมดวง|แก้ดวง|ฮวงจุ้ย|ปรับดวง|ของมงคล|แต่งบ้าน|โต๊ะทำงาน|ทำบุญ/.test(lowerQ);
+      const isProfileQuery = /ดิถี|แข็งหรืออ่อน|ตัวตน|อุปนิสัย|จุดเด่น|จุดอ่อน|พรสวรรค์|ธาตุให้คุณ|แก่นแท้|ดวงนี้เป็นยังไง/.test(lowerQ);
+
+      // 1. TIMING QUERY
+      if (isTimingQuery && !isJobQuery && !isWealthQuery && !isLoveQuery) {
+        const auspiciousMonths = allMonths.filter(m => m.ratingType === 'auspicious');
+        const clashMonths = allMonths.filter(m => m.ratingType === 'clash');
+        const bestM = auspiciousMonths[0] || allMonths[0];
+        const cautionM = clashMonths[0] || allMonths[10] || allMonths[0];
+
+        return {
+          title: `วิเคราะห์จังหวะเวลา & เดือนสำคัญประจำปี ${simY}`,
+          headline: `ช่วงเวลาที่พลังธาตุเปิดรับดีที่สุดคือ ${bestM.labelDate} (${bestM.solarTh.split(' ')[0]}) ส่วนช่วงที่ต้องเฝ้าระวังคือ ${cautionM.labelDate} (${cautionM.solarTh.split(' ')[0]})`,
+          probText: 'ไทม์ไลน์ 12 สารท',
+          probBg: '#7c3aed',
+          points: [
+            {
+              title: '⭐ เดือนที่มีพลังมงคลและเกื้อหนุนสูงสุด (จังหวะรุก/เจรจา/เริ่มต้น):',
+              body: auspiciousMonths.length > 0 
+                ? auspiciousMonths.map(m => `• สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}): ${m.ratingBadge} - ${m.overview.slice(0, 75)}...`).join('<br>')
+                : `• สารท ${bestM.labelDate} (${bestM.stem.zh}${bestM.branch.zh}): ${bestM.ratingBadge} - เหมาะแก่การสะสางงานและเตรียมความพร้อม`
+            },
+            {
+              title: '⚠️ เดือนที่มีการปะทะหรือความผันผวน (จังหวะตั้งรับ/รอบคอบ):',
+              body: clashMonths.length > 0
+                ? clashMonths.map(m => `• สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}): ${m.ratingBadge} - ${m.overview.slice(0, 75)}...`).join('<br>')
+                : '• ตลอดทั้งปีไม่มีเดือนที่มีการปะทะรุนแรง พลังงานหมุนเวียนค่อนข้างราบรื่น'
+            },
+            {
+              title: `🌌 สภาพภูมิพลังงานรวมของปี ${simY} (${simStem.zh}${simBranch.zh}):`,
+              body: `ปีจรส่งพลังก้านฟ้า ${simStem.zh} (${simStemGod.th}) และกิ่งดิน ${simBranch.zh} ควบคู่กับวัยจร 10 ปีช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : '-'})`
+            }
+          ],
+          advice: `ควรรอจังหวะลงมือหรือเซ็นสัญญาในเดือนที่ได้รับการส่งเสริม เช่น สารท ${bestM.labelDate} และใช้ธาตุให้คุณ (${favNames}) ในการปรับสมดุล`
+        };
+      }
+
+      // 2. FENG SHUI & REMEDIES QUERY
+      if (isFengShuiQuery) {
+        const favDirs = favElements.map(k => ELEMENTS_META[k].direction).join(', ');
+        const favColors = favElements.map(k => {
+          if (k === 'wood') return 'เขียว, เขียวพาสเทล, ลายไม้ธรรมชาติ';
+          if (k === 'fire') return 'แดง, ชมพู, ส้มสดใส, ม่วง';
+          if (k === 'earth') return 'เหลือง, ครีม, น้ำตาล, เอิร์ธโทน';
+          if (k === 'metal') return 'ขาว, เงิน, ทองคำ, เทาเมทัลลิก';
+          return 'ฟ้า, น้ำเงิน, ดำ, กรมท่า';
+        }).join(' | ');
+
+        return {
+          title: 'การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตาชีวิต',
+          headline: `ธาตุปรับสมดุลหลักของดวงชะตานี้คือ ธาตุ${favNames} และธาตุปรับดวงคือ ธาตุ${tiaoHou}`,
+          probText: 'เคล็ดลับเสริมพลังชี่',
+          probBg: '#059669',
+          points: [
+            {
+              title: '🎨 สีมงคลเสริมบารมี & เสื้อผ้าเครื่องประดับ:',
+              body: `สีที่ช่วยเหนี่ยวนำพลังงานธาตุให้คุณคือ: ${favColors} แนะนำให้สวมใส่ในวันเจรจาสำคัญหรือใช้งานเป็นโทนสีห้องทำงาน`
+            },
+            {
+              title: '🧭 ทิศมงคลเปิดรับโชคลาภ (โต๊ะทำงาน & หัวนอน):',
+              body: `ทิศที่เป็นสิริมงคลคือ ทิศ${favDirs} แนะนำให้หันหน้าโต๊ะทำงานหรือหันหัวนอนไปทางทิศดังกล่าวเพื่อรับพลังมงคล`
+            },
+            {
+              title: '⚖️ ธาตุปรับอุณหภูมิดวงชะตา (調候用神):',
+              body: `ดวงชะตานี้ได้รับพลังจากธาตุ${tiaoHou} ช่วยปรับสมดุลให้จิตใจสงบ ผ่อนคลาย และตัดสินใจได้อย่างเฉียบคม`
+            }
+          ],
+          advice: `จัดโต๊ะทำงานให้โปร่ง โล่ง สะอาด วางของมงคลหรือต้นไม้มงคลตามธาตุให้คุณ เพื่อเปิดทางให้พลังชี่ไหลเวียนราบรื่น`
+        };
+      }
+
+      // 3. PROFILE & TALENTS QUERY
+      if (isProfileQuery && !isJobQuery && !isWealthQuery) {
+        return {
+          title: `วิเคราะห์แก่นแท้ดวงชะตา: ดิถี ${dm.zh} (${dm.th})`,
+          headline: `เจ้าชะตามีสถานะดิถี "${chart.strengthText}" โดดเด่นด้าน ${chart.dayMasterProfile.traits.slice(0, 80)}...`,
+          probText: `ดิถี${chart.isStrong ? 'แข็ง' : 'อ่อน'}`,
+          probBg: chart.isStrong ? '#059669' : '#b45309',
+          points: [
+            {
+              title: '🌟 ลักษณะตัวตนและบุคลิกภาพแก่นแท้ (Day Master):',
+              body: chart.dayMasterProfile.traits
+            },
+            {
+              title: '⚖️ สมดุลกำลังดิถีและโครงสร้างธาตุ:',
+              body: `ดวงนี้มีพลังธาตุหนุน ${chart.supportingPercentage}% และธาตุต้าน ${chart.opposingPercentage}% ส่งผลให้เป็นคนมีจุดยืน ${chart.isStrong ? 'กล้าตัดสินใจ มุ่งมั่น พึ่งพาตนเองสูง' : 'ยืดหยุ่น มีไหวพริบ เข้ากับผู้คนง่าย'}`
+            },
+            {
+              title: '💼 อุตสาหกรรมและบทบาทที่ถูกโฉลกกับดวง:',
+              body: `ควรเลือกงานที่ส่งเสริมด้วยธาตุ ${favNames} เช่น ${favElements.includes('water') ? 'การค้าต่างประเทศ โลจิสติกส์ การสื่อสาร ไอที ' : ''}${favElements.includes('wood') ? 'การศึกษา ศิลปะ การแพทย์ สิ่งแวดล้อม ' : ''}${favElements.includes('fire') ? 'เทคโนโลยี การตลาด มีเดีย นวัตกรรม ' : ''}${favElements.includes('metal') ? 'การเงิน ธนาคาร กฎหมาย วิศวกรรม ' : ''}${favElements.includes('earth') ? 'อสังหาริมทรัพย์ ที่ดิน การบริหารสินทรัพย์ ' : ''}`
+            }
+          ],
+          advice: `ดึงจุดเด่นของดิถี ${dm.zh} มาใช้นำทาง และบริหารจัดการจุดอ่อนด้วยธาตุปรับดวง ${tiaoHou}`
+        };
+      }
+
+      // Use computeOracleVerdict as the core reasoning engine for Job, Wealth, Love, Health
+      const verdict = BaziEngine.computeOracleVerdict(chart, q, simY);
+      return {
+        title: verdict.topicTitle,
+        headline: verdict.verdictMain + (verdict.verdictSub ? ' • ' + verdict.verdictSub : ''),
+        probText: verdict.probBadgeText,
+        probBg: verdict.probBadgeBg,
+        points: verdict.analysisPoints,
+        advice: verdict.advice
+      };
     }
   };
 
@@ -1868,23 +2047,35 @@
     },
 
     currentSubMenu: 'basic',
+    askChatHistory: [],
 
     switchSubMenu: function (mode) {
       this.currentSubMenu = mode;
       const isBasic = mode === 'basic';
+      const isAdvance = mode === 'advance';
+      const isAsk = mode === 'ask';
+
       const tabBasic = document.getElementById('baziSubTabBasic');
       const tabAdvance = document.getElementById('baziSubTabAdvance');
+      const tabAsk = document.getElementById('baziSubTabAsk');
+
       const viewBasic = document.getElementById('baziSubViewBasic');
       const viewAdvance = document.getElementById('baziSubViewAdvance');
+      const viewAsk = document.getElementById('baziSubViewAsk');
 
       if (tabBasic) tabBasic.classList.toggle('active', isBasic);
-      if (tabAdvance) tabAdvance.classList.toggle('active', !isBasic);
+      if (tabAdvance) tabAdvance.classList.toggle('active', isAdvance);
+      if (tabAsk) tabAsk.classList.toggle('active', isAsk);
+
       if (viewBasic) viewBasic.classList.toggle('hidden', !isBasic);
-      if (viewAdvance) viewAdvance.classList.toggle('hidden', isBasic);
+      if (viewAdvance) viewAdvance.classList.toggle('hidden', !isAdvance);
+      if (viewAsk) viewAsk.classList.toggle('hidden', !isAsk);
 
       this.updateResultVisibility(!!this.currentChart);
 
-      if (!isBasic) {
+      if (isAsk) {
+        this.renderAskView();
+      } else if (isAdvance) {
         if (this.currentChart) {
           this.renderAdvanceSuite(this.currentChart);
           const advInputCard = document.getElementById('baziAdvanceInputCard');
@@ -1907,6 +2098,16 @@
       const basicResults = document.getElementById('baziBasicResults');
       const advanceResults = document.getElementById('baziAdvanceResults');
       const emptyPrompt = document.getElementById('baziEmptyStatePrompt');
+
+      if (this.currentSubMenu === 'ask') {
+        if (basicResults) basicResults.style.display = 'none';
+        if (advanceResults) {
+          advanceResults.style.display = 'none';
+          advanceResults.classList.add('hidden');
+        }
+        if (emptyPrompt) emptyPrompt.style.display = 'none';
+        return;
+      }
 
       if (hasChart) {
         if (emptyPrompt) emptyPrompt.style.display = 'none';
@@ -1931,6 +2132,256 @@
         }
         if (emptyPrompt) emptyPrompt.style.display = 'block';
       }
+    },
+
+    // ========================================================
+    // BAZI CONSULTATION & DEEP Q&A CHAT (เมนู 3. ถามดวง)
+    // ========================================================
+    renderAskView: function () {
+      const profileCard = document.getElementById('baziAskProfileCard');
+      const chatFeed = document.getElementById('baziAskChatFeed');
+      if (!profileCard || !chatFeed) return;
+
+      if (!this.currentChart) {
+        profileCard.innerHTML = `
+          <div style="text-align: center; padding: 24px 16px;">
+            <div style="width: 56px; height: 56px; border-radius: 16px; background: rgba(124, 58, 237, 0.1); color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 14px auto;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">ยังไม่ได้ตั้งผังดวงชะตา</h3>
+            <p style="font-size: 13.5px; color: #64748b; max-width: 460px; margin: 0 auto 16px auto;">
+              กรุณากรอกวันเดือนปีเกิดและเวลาเกิดในแท็บ <strong>1. Basic</strong> หรือ <strong>2. Advance</strong> ก่อน เพื่อให้ระบบคำนวณผัง 4 เสา วัยจร และปีจร แล้วนำมาเปิดระบบสนทนาถามดวงเฉพาะบุคคลค่ะ
+            </p>
+            <button type="button" class="bazi-btn-primary" onclick="window.BaziApp.switchSubMenu('basic')" style="display: inline-flex; align-items: center; gap: 8px; border-radius: 25px; padding: 10px 24px; font-size: 14px; font-weight: 700;">
+              <i class="fa-solid fa-arrow-left"></i> ไปกรอกวันเดือนปีเกิด (Basic)
+            </button>
+          </div>
+        `;
+        chatFeed.innerHTML = `
+          <div style="text-align: center; padding: 40px 16px; color: #94a3b8;">
+            <i class="fa-solid fa-comments" style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>
+            รอข้อมูลผังดวงชะตาเพื่อเริ่มการสนทนา...
+          </div>
+        `;
+        return;
+      }
+
+      const c = this.currentChart;
+      const curYear = this.selectedYear || new Date().getFullYear();
+      const yrSIdx = ((curYear - 4) % 10 + 10) % 10;
+      const yrBIdx = ((curYear - 4) % 12 + 12) % 12;
+      const yrStem = STEMS[yrSIdx];
+      const yrBranch = BRANCHES[yrBIdx];
+
+      const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = curYear - birthYear;
+      const curDaYun = (c.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo) || (c.daYunPillars ? c.daYunPillars[0] : null);
+
+      const favNames = (c.favorableElements || []).map(k => ELEMENTS_META[k].th).join(', ');
+      const p = c.pillars;
+
+      // Populate Profile Banner
+      profileCard.innerHTML = `
+        <div class="bazi-ask-profile-header">
+          <div class="profile-avatar-wrap">
+            <div class="profile-avatar-icon">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <div class="profile-title-wrap">
+              <div class="profile-title-row">
+                <span class="profile-name">${c.name} (${c.gender === 'male' ? 'ชาย' : 'หญิง'})</span>
+                <span class="profile-badge-dm" style="color: ${ELEMENTS_META[c.dayMaster.element].color}; background: #faf5ff; border: 1px solid #d8b4fe;">ดิถี ${c.dayMaster.zh} (${c.dayMaster.th})</span>
+                <span class="profile-badge-strength" style="${c.isStrong ? 'color: #059669; background: #ecfdf5; border-color: #a7f3d0;' : 'color: #b45309; background: #fffbeb; border-color: #fde68a;'}">${c.strengthText}</span>
+              </div>
+              <p class="profile-birth-detail">
+                <i class="fa-solid fa-cake-candles" style="color: #ec4899;"></i> เกิดวันที่ ${c.birthDateString} เวลา ${c.birthTimeString} น. (อายุ ${ageInYear} ปี)
+              </p>
+            </div>
+          </div>
+          <div class="profile-actions-wrap">
+            <button type="button" class="bazi-btn-replot" onclick="window.BaziApp.switchSubMenu('basic')">
+              <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลดวง
+            </button>
+          </div>
+        </div>
+
+        <div class="bazi-ask-pillars-strip">
+          <div class="mini-pillar-cell">
+            <span class="mini-pillar-lbl">เสาปี (Year)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.year.stem.element].color};">${p.year.stem.zh}${p.year.branch.zh}</span>
+            <span class="mini-pillar-god">${p.year.tenGod.zh} (${p.year.tenGod.th.split(' ')[0]})</span>
+          </div>
+          <div class="mini-pillar-cell">
+            <span class="mini-pillar-lbl">เสาเดือน (Month)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.month.stem.element].color};">${p.month.stem.zh}${p.month.branch.zh}</span>
+            <span class="mini-pillar-god">${p.month.tenGod.zh} (${p.month.tenGod.th.split(' ')[0]})</span>
+          </div>
+          <div class="mini-pillar-cell active-self">
+            <span class="mini-pillar-lbl">เสาวัน (Day/Self)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.day.stem.element].color};">${p.day.stem.zh}${p.day.branch.zh}</span>
+            <span class="mini-pillar-god">ดิถีตัวตน</span>
+          </div>
+          <div class="mini-pillar-cell">
+            <span class="mini-pillar-lbl">เสายาม (Hour)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.hour.stem.element].color};">${p.hour.stem.zh}${p.hour.branch.zh}</span>
+            <span class="mini-pillar-god">${p.hour.tenGod.zh} (${p.hour.tenGod.th.split(' ')[0]})</span>
+          </div>
+        </div>
+
+        <div class="bazi-ask-context-bar">
+          <span class="context-item"><i class="fa-solid fa-timeline" style="color: #6366f1;"></i> <strong>วัยจร 10 ปี:</strong> ${curDaYun ? curDaYun.ageRange + ' (' + curDaYun.stem.zh + curDaYun.branch.zh + ' • ' + (curDaYun.tenGod ? curDaYun.tenGod.th.split(' ')[0] : '') + ')' : '-'}</span>
+          <span class="context-item"><i class="fa-solid fa-calendar-star" style="color: #ea580c;"></i> <strong>ปีจรปัจจุบัน:</strong> ${curYear} (${yrStem.zh}${yrBranch.zh} • ${yrBranch.zodiac.split(' ')[0]})</span>
+          <span class="context-item"><i class="fa-solid fa-wand-magic-sparkles" style="color: #10b981;"></i> <strong>ธาตุให้คุณ (喜用神):</strong> ${favNames || '-'}</span>
+        </div>
+      `;
+
+      // If chat is empty, initialize welcome message
+      if (!this.askChatHistory || this.askChatHistory.length === 0) {
+        this.askChatHistory = [
+          {
+            sender: 'bot',
+            time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
+            html: `
+              <div class="bot-msg-header">
+                <div class="bot-msg-title">
+                  <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+                  <span>ผู้เชี่ยวชาญผังดวงปาจื่อ (BaZi Astrological Consultant)</span>
+                </div>
+                <span class="bot-msg-prob-badge" style="background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);">พร้อมสนทนาเฉพาะบุคคล</span>
+              </div>
+              <div class="bot-headline-box">
+                สวัสดีค่ะคุณ ${c.name}! ผังดวงชะตา 4 เสา วัยจร และปีจรของคุณพร้อมให้คำปรึกษาแล้วค่ะ ✨
+              </div>
+              <p style="font-size: 13.5px; color: #334155; line-height: 1.6; margin-bottom: 12px;">
+                ระบบได้เชื่อมโยงโครงสร้างดิถี <strong>${c.dayMaster.zh} (${c.dayMaster.th})</strong> สถานะ <strong>${c.strengthText}</strong> 
+                ร่วมกับวัยจร 10 ปี <strong>${curDaYun ? curDaYun.ageRange : ''} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : ''})</strong> 
+                และปีจร <strong>${curYear} (${yrStem.zh}${yrBranch.zh})</strong> เรียบร้อยแล้ว
+              </p>
+              <div class="bot-advice-box">
+                💡 <strong>ท่านสามารถพิมพ์ถามเจาะลึกได้ทุกเรื่อง เช่น:</strong><br>
+                • <strong>การงาน & ธุรกิจ:</strong> มีเกณฑ์เปลี่ยนงานไหม? สิ้นปีนี้ควรโยกย้ายหรืออยู่ที่เดิม?<br>
+                • <strong>การเงิน & โชคลาภ:</strong> ปีนี้มีเกณฑ์เงินก้อนหรือเงินรั่วไหลไหม? ลงทุนช่วงไหนดี?<br>
+                • <strong>ความรัก & คู่ครอง:</strong> คนโสดจะเจอคู่เมื่อไหร่? คนมีคู่ความสัมพันธ์เป็นอย่างไร?<br>
+                • <strong>สุขภาพ & ข้อควรระวัง:</strong> ธาตุในดวงส่งผลต่ออวัยวะส่วนไหน? ควรระวังอุบัติเหตุเดือนใด?<br>
+                • <strong>จังหวะเวลา:</strong> เดือนไหนดีที่สุดของปีนี้? หรือเดือนไหนต้องระวังตัวเป็นพิเศษ?
+              </div>
+            `
+          }
+        ];
+      }
+
+      this.renderAskChatMessages();
+    },
+
+    renderAskChatMessages: function () {
+      const chatFeed = document.getElementById('baziAskChatFeed');
+      if (!chatFeed) return;
+
+      chatFeed.innerHTML = (this.askChatHistory || []).map(msg => {
+        if (msg.sender === 'user') {
+          return `
+            <div class="chat-bubble-user">
+              <div>${msg.text}</div>
+              <div style="font-size: 10.5px; opacity: 0.8; text-align: right; margin-top: 4px;">${msg.time}</div>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="chat-bubble-bot">
+              ${msg.html}
+              <div style="font-size: 11px; color: #94a3b8; text-align: right; margin-top: 10px;">${msg.time}</div>
+            </div>
+          `;
+        }
+      }).join('');
+
+      chatFeed.scrollTop = chatFeed.scrollHeight;
+    },
+
+    sendAskMessage: function () {
+      const input = document.getElementById('baziAskInput');
+      if (!input) return;
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (!this.currentChart) {
+        this.showToast('กรุณากรอกวันเดือนปีเกิดก่อนถามคำถามค่ะ');
+        this.switchSubMenu('basic');
+        return;
+      }
+
+      const timeStr = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+
+      // Add user message
+      if (!this.askChatHistory) this.askChatHistory = [];
+      this.askChatHistory.push({
+        sender: 'user',
+        text: text,
+        time: timeStr
+      });
+      input.value = '';
+
+      this.renderAskChatMessages();
+
+      // Show typing state then respond
+      const sendBtn = document.getElementById('baziAskSendBtn');
+      if (sendBtn) sendBtn.disabled = true;
+
+      setTimeout(() => {
+        const resp = BaziEngine.consultAstrologer(this.currentChart, text, this.selectedYear);
+        
+        let pointsHtml = '';
+        if (resp.points && resp.points.length > 0) {
+          pointsHtml = resp.points.map(pt => `
+            <div class="bot-point-box">
+              <div class="bot-point-title">${pt.title}</div>
+              <p class="bot-point-body">${pt.body}</p>
+            </div>
+          `).join('');
+        }
+
+        const botHtml = `
+          <div class="bot-msg-header">
+            <div class="bot-msg-title">
+              <i class="fa-solid fa-compass" style="color: #7c3aed;"></i>
+              <span>${resp.title || 'คำวินิจฉัยดวงชะตา'}</span>
+            </div>
+            <span class="bot-msg-prob-badge" style="background: ${resp.probBg || '#7c3aed'};">${resp.probText || 'วิเคราะห์เจาะลึก'}</span>
+          </div>
+          <div class="bot-headline-box">
+            ${resp.headline}
+          </div>
+          ${pointsHtml}
+          ${resp.advice ? `<div class="bot-advice-box">💡 <strong>กลยุทธ์ & เคล็ดลับเสริมดวง:</strong> ${resp.advice}</div>` : ''}
+        `;
+
+        this.askChatHistory.push({
+          sender: 'bot',
+          html: botHtml,
+          time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
+        });
+
+        if (sendBtn) sendBtn.disabled = false;
+        this.renderAskChatMessages();
+      }, 250);
+    },
+
+    askQuickQuestion: function (query) {
+      const input = document.getElementById('baziAskInput');
+      if (input) input.value = query;
+      this.sendAskMessage();
+    },
+
+    handleAskKeydown: function (event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        this.sendAskMessage();
+      }
+    },
+
+    clearAskChat: function () {
+      this.askChatHistory = [];
+      this.renderAskView();
     },
 
     goToAdvance: function () {

@@ -31,7 +31,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_1216">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_8483">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -552,6 +552,13 @@
           <span class="sub-nav-label-wrap">
             <span class="sub-nav-title">2. Advance</span>
             <span class="sub-nav-desc">วิเคราะห์ 4 เสาเจาะลึก • วัยจร • รายเดือน</span>
+          </span>
+        </button>
+      <button type="button" class="bazi-sub-nav-btn" id="baziSubTabAsk" onclick="window.BaziApp.switchSubMenu('ask')">
+          <i class="fa-solid fa-comments"></i>
+          <span class="sub-nav-label-wrap">
+            <span class="sub-nav-title">3. ถามดวง</span>
+            <span class="sub-nav-desc">สนทนาถามตอบ • เจาะลึกดวงชะตาเฉพาะบุคคล</span>
           </span>
         </button>
       </nav>
@@ -1382,6 +1389,125 @@
 
         </div> <!-- END baziAdvanceResults -->
       </div> <!-- END baziSubViewAdvance -->
+
+      <!-- ======================================================= -->
+      <!-- 3. SUB-VIEW: ASK (ถามดวงชะตาเจาะลึกเฉพาะบุคคล) -->
+      <!-- ======================================================= -->
+      <div id="baziSubViewAsk" class="bazi-sub-view hidden">
+
+        <!-- 1. Owner Profile Summary Card (ข้อมูลดวงชะตาที่กำลังสนทนา) -->
+        <section class="bazi-ask-profile-card" id="baziAskProfileCard">
+          <div class="bazi-ask-profile-header">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar-icon">
+                <i class="fa-solid fa-user-astronaut"></i>
+              </div>
+              <div class="profile-title-wrap">
+                <div class="profile-title-row">
+                  <span class="profile-name" id="baziAskProfileName">เจ้าของดวงชะตา</span>
+                  <span class="profile-badge-dm" id="baziAskProfileDmBadge">ดิถี -</span>
+                  <span class="profile-badge-strength" id="baziAskProfileStrengthBadge">สถานะดิถี -</span>
+                </div>
+                <p class="profile-birth-detail" id="baziAskProfileBirthDetail">
+                  <i class="fa-solid fa-cake-candles" style="color: #ec4899;"></i> วันเกิด: - • เวลา: -
+                </p>
+              </div>
+            </div>
+            <div class="profile-actions-wrap">
+              <button type="button" class="bazi-btn-replot" onclick="window.BaziApp.switchSubMenu('basic')">
+                <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลดวง
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Pillars Mini Strip -->
+          <div class="bazi-ask-pillars-strip" id="baziAskPillarsStrip">
+            <div class="mini-pillar-cell">
+              <span class="mini-pillar-lbl">เสาปี (Year)</span>
+              <span class="mini-pillar-val" id="baziAskPillarYear">-</span>
+              <span class="mini-pillar-god" id="baziAskGodYear">-</span>
+            </div>
+            <div class="mini-pillar-cell">
+              <span class="mini-pillar-lbl">เสาเดือน (Month)</span>
+              <span class="mini-pillar-val" id="baziAskPillarMonth">-</span>
+              <span class="mini-pillar-god" id="baziAskGodMonth">-</span>
+            </div>
+            <div class="mini-pillar-cell active-self">
+              <span class="mini-pillar-lbl">เสาวัน (Day/Self)</span>
+              <span class="mini-pillar-val" id="baziAskPillarDay">-</span>
+              <span class="mini-pillar-god" id="baziAskGodDay">ดิถีตัวตน</span>
+            </div>
+            <div class="mini-pillar-cell">
+              <span class="mini-pillar-lbl">เสายาม (Hour)</span>
+              <span class="mini-pillar-val" id="baziAskPillarHour">-</span>
+              <span class="mini-pillar-god" id="baziAskGodHour">-</span>
+            </div>
+          </div>
+
+          <!-- Quick Context Meta Bar -->
+          <div class="bazi-ask-context-bar" id="baziAskContextBar">
+            <span class="context-item"><i class="fa-solid fa-timeline" style="color: #6366f1;"></i> <strong>วัยจรปัจจุบัน:</strong> <span id="baziAskCurDaYunText">-</span></span>
+            <span class="context-item"><i class="fa-solid fa-calendar-star" style="color: #ea580c;"></i> <strong>ปีจรปัจจุบัน:</strong> <span id="baziAskCurAnnualText">-</span></span>
+            <span class="context-item"><i class="fa-solid fa-wand-magic-sparkles" style="color: #10b981;"></i> <strong>ธาตุให้คุณ (喜用神):</strong> <span id="baziAskFavElementsText">-</span></span>
+          </div>
+        </section>
+
+        <!-- 2. Chat Section Card with Solid Header -->
+        <section class="bazi-section-card bazi-ask-chat-section">
+          <div class="bazi-card-title-bar bar-solid-purple">
+            <div class="title-left">
+              <div class="bazi-section-icon-box theme-purple">
+                <i class="fa-solid fa-comments"></i>
+              </div>
+              <div class="bazi-section-title-wrap">
+                <div class="bazi-section-title-row">
+                  <span class="bazi-section-num-pill purple">เมนู 3</span>
+                  <span class="bazi-section-title-text">สนทนาถามดวงชะตาเจาะลึก</span>
+                  <span class="bazi-section-en-badge">(Deep BaZi Consultation &amp; Q&amp;A)</span>
+                </div>
+                <p class="bazi-section-desc-text">ถามตอบเจาะลึกทุกมิติชีวิต การงาน การเงิน ความรัก สุขภาพ วิเคราะห์เชื่อมโยงผัง 4 เสา วัยจร ปีจร และ 12 สารท</p>
+              </div>
+            </div>
+            <button type="button" class="bazi-btn-clear-chat" onclick="window.BaziApp.clearAskChat()" title="ล้างประวัติการสนทนาและเริ่มถามใหม่">
+              <i class="fa-solid fa-rotate-left"></i> ล้างการสนทนา
+            </button>
+          </div>
+
+          <!-- Quick Suggestion Chips -->
+          <div class="bazi-ask-chips-container">
+            <span class="bazi-ask-chips-label"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> คำถามยอดนิยม:</span>
+            <div class="bazi-ask-chips-scroll" id="baziAskChipsScroll">
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่ไหม?')">💼 มีเกณฑ์เปลี่ยนงานปีนี้ไหม?</button>
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('การเงินและโชคลาภปีนี้เป็นอย่างไร มีเกณฑ์เงินก้อนไหม?')">💰 การเงินและโชคลาภปีนี้?</button>
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ความรักคู่ครองและคนรักช่วงนี้มีเกณฑ์เป็นอย่างไร?')">❤️ ความรักคู่ครองช่วงนี้?</button>
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สุขภาพและจุดอ่อนที่ต้องระวังเป็นพิเศษคือเรื่องอะไร?')">🏥 สุขภาพและข้อควรระวัง?</button>
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ช่วงเดือนไหนของปีนี้ที่ดีที่สุดในการเริ่มโปรเจกต์หรือเจรจา?')">📅 เดือนไหนดีที่สุดของปีนี้?</button>
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('อาชีพและทิศทางธุรกิจที่ถูกโฉลกกับดวงชะตานี้คืออะไร?')">🌟 อาชีพที่ถูกโฉลกกับดวง?</button>
+              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สีมงคลและทิศมงคลที่ช่วยเปิดโชคลาภเสริมดวงชะตามีอะไรบ้าง?')">🧭 สีและทิศมงคลเสริมชะตา?</button>
+            </div>
+          </div>
+
+          <!-- Chat Messages Container -->
+          <div class="bazi-chat-messages-wrap" id="baziAskChatFeed">
+            <!-- Dynamically populated messages -->
+          </div>
+
+          <!-- Chat Input Bar -->
+          <div class="bazi-chat-input-bar">
+            <div class="bazi-chat-input-inner">
+              <textarea id="baziAskInput" class="bazi-chat-textarea" rows="2" placeholder="พิมพ์คำถามที่ต้องการถามดวงชะตานี้ เช่น สิ้นปีนี้มีเกณฑ์เปลี่ยนงานไหม? หรือปี 2026 นี้ควรระวังเรื่องอะไรมากที่สุด?..." onkeydown="window.BaziApp.handleAskKeydown(event)"></textarea>
+              <button type="button" class="bazi-chat-send-btn" id="baziAskSendBtn" onclick="window.BaziApp.sendAskMessage()">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>ถามดวง</span>
+              </button>
+            </div>
+            <div class="bazi-chat-input-hint">
+              <i class="fa-solid fa-circle-info"></i> กด <strong>Enter</strong> เพื่อส่งคำถาม (หรือ Shift+Enter เพื่อขึ้นบรรทัดใหม่)
+            </div>
+          </div>
+        </section>
+
+      </div> <!-- END baziSubViewAsk -->
 
     </div>
   </div>
@@ -2630,9 +2756,9 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_1216"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_8483"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_1216"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_8483"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -2641,23 +2767,23 @@
   <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
   <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_1216"></script>
-  <script src="app.js?v=20261115_v5_1216"></script>
+  <script src="auth.js?v=20261115_v5_8483"></script>
+  <script src="app.js?v=20261115_v5_8483"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_1216"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_1216"></script>
-  <script src="bazi.js?v=20261115_v5_1216"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_8483"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_8483"></script>
+  <script src="bazi.js?v=20261115_v5_8483"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

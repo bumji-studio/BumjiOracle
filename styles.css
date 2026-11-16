@@ -22666,3 +22666,434 @@ img {
   font-weight: 800;
   border: none;
 }
+
+
+/* ========================================================
+   BAZI CONSULTATION & CHAT VIEW (เมนู 3. ถามดวง)
+   ======================================================== */
+.bazi-ask-profile-card {
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+  border: 1.5px solid #d8b4fe;
+  border-radius: 20px;
+  padding: 20px 24px;
+  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.08);
+  margin-bottom: 24px;
+}
+
+.bazi-ask-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #e9d5ff;
+  margin-bottom: 16px;
+}
+
+.profile-avatar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-avatar-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+  flex-shrink: 0;
+}
+
+.profile-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.profile-name {
+  font-family: 'Prompt', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.profile-badge-dm {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: #faf5ff;
+  color: #7c3aed;
+  border: 1px solid #d8b4fe;
+}
+
+.profile-badge-strength {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.profile-birth-detail {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.bazi-btn-replot {
+  background: #ffffff;
+  color: #6d28d9;
+  border: 1.5px solid #d8b4fe;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.bazi-btn-replot:hover {
+  background: #faf5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+}
+
+/* 4 Pillars Mini Strip */
+.bazi-ask-pillars-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.mini-pillar-cell {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.mini-pillar-cell.active-self {
+  border-color: #7c3aed;
+  background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.1);
+}
+
+.mini-pillar-lbl {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.mini-pillar-val {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.mini-pillar-god {
+  font-size: 11px;
+  color: #7c3aed;
+  font-weight: 600;
+}
+
+.bazi-ask-context-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.bazi-ask-context-bar .context-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Chips Container */
+.bazi-ask-chips-container {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bazi-ask-chips-label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.bazi-ask-chips-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bazi-ask-chip {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.bazi-ask-chip:hover {
+  background: #faf5ff;
+  border-color: #d8b4fe;
+  color: #6d28d9;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(124, 58, 237, 0.12);
+}
+
+/* Chat Messages Container */
+.bazi-chat-messages-wrap {
+  min-height: 380px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Chat Bubbles */
+.chat-bubble-user {
+  align-self: flex-end;
+  max-width: 80%;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+  font-size: 14.5px;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.chat-bubble-bot {
+  align-self: flex-start;
+  max-width: 92%;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px 18px 18px 4px;
+  padding: 18px 22px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  font-size: 14px;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+.bot-msg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+
+.bot-msg-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.bot-msg-prob-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.bot-headline-box {
+  background: #f8fafc;
+  border-left: 4px solid #7c3aed;
+  padding: 10px 14px;
+  border-radius: 0 10px 10px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 14px;
+}
+
+.bot-point-box {
+  margin-bottom: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+
+.bot-point-title {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.bot-point-body {
+  font-size: 13px;
+  color: #334155;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.bot-advice-box {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1px solid #a7f3d0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #065f46;
+  font-size: 13px;
+  margin-top: 14px;
+  line-height: 1.5;
+}
+
+/* Chat Input Bar */
+.bazi-chat-input-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bazi-chat-input-inner {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 16px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease;
+}
+
+.bazi-chat-input-inner:focus-within {
+  border-color: #7c3aed;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);
+}
+
+.bazi-chat-textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Prompt', -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #0f172a;
+  max-height: 100px;
+  background: transparent;
+}
+
+.bazi-chat-textarea::placeholder {
+  color: #94a3b8;
+}
+
+.bazi-chat-send-btn {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-family: 'Prompt', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.bazi-chat-send-btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+}
+
+.bazi-chat-input-hint {
+  font-size: 11.5px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 6px;
+}
+
+.bazi-btn-clear-chat {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.bazi-btn-clear-chat:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .bazi-ask-pillars-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .chat-bubble-user,
+  .chat-bubble-bot {
+    max-width: 100%;
+  }
+}
