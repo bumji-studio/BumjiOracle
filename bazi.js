@@ -350,6 +350,87 @@
         }
       });
 
+      // 5.1 Branch Combinations & Transformations (การภาคีแปรธาตุตามตำรา: 六合 / 半三合 / 三合 / 三會 化神)
+      // เมื่อกิ่งดินจับคู่ภาคีกัน และมีดาวธาตุที่แปรสภาพปรากฏบนกิ่งฟ้า (化神透干) พลังจะแปรสภาพหนุนธาตุนั้นอย่างแท้จริง
+      const bZhList = [hourBranch, dayBranch, monthBranch, yearBranch].map(b => b ? b.zh : '');
+      const hasStemElem = (elem) => [hourStem, dayStem, monthStem, yearStem].some(s => s && s.element === elem);
+
+      // Fire transformations (午未合火, 卯戌合火, 寅午戌/午戌/寅午半合火, 巳午未三會火)
+      if (hasStemElem('fire')) {
+        if (bZhList.includes('午') && bZhList.includes('未') && elementScores.earth >= 1.0) {
+          elementScores.earth -= 1.0;
+          elementScores.fire += 1.0;
+        }
+        if (bZhList.includes('午') && bZhList.includes('戌') && elementScores.earth >= 0.8) {
+          elementScores.earth -= 0.8;
+          elementScores.fire += 0.8;
+        }
+        if (bZhList.includes('寅') && bZhList.includes('午') && elementScores.wood >= 0.8) {
+          elementScores.wood -= 0.8;
+          elementScores.fire += 0.8;
+        }
+        if (bZhList.includes('卯') && bZhList.includes('戌') && elementScores.wood >= 0.6) {
+          elementScores.wood -= 0.6;
+          elementScores.fire += 0.6;
+        }
+      }
+
+      // Wood transformations (寅亥合木, 亥卯/卯未半合木, 亥卯未三合木)
+      if (hasStemElem('wood')) {
+        if (bZhList.includes('寅') && bZhList.includes('亥') && elementScores.water >= 0.8) {
+          elementScores.water -= 0.8;
+          elementScores.wood += 0.8;
+        }
+        if (bZhList.includes('亥') && bZhList.includes('卯') && elementScores.water >= 0.8) {
+          elementScores.water -= 0.8;
+          elementScores.wood += 0.8;
+        }
+        if (bZhList.includes('卯') && bZhList.includes('未') && elementScores.earth >= 0.8) {
+          elementScores.earth -= 0.8;
+          elementScores.wood += 0.8;
+        }
+      }
+
+      // Metal transformations (辰酉合金, 巳酉/酉丑半合金, 巳酉丑三合金)
+      if (hasStemElem('metal')) {
+        if (bZhList.includes('辰') && bZhList.includes('酉') && elementScores.earth >= 0.8) {
+          elementScores.earth -= 0.8;
+          elementScores.metal += 0.8;
+        }
+        if (bZhList.includes('巳') && bZhList.includes('酉') && elementScores.fire >= 0.8) {
+          elementScores.fire -= 0.8;
+          elementScores.metal += 0.8;
+        }
+        if (bZhList.includes('酉') && bZhList.includes('丑') && elementScores.earth >= 0.8) {
+          elementScores.earth -= 0.8;
+          elementScores.metal += 0.8;
+        }
+      }
+
+      // Water transformations (巳申合水, 申子/子辰半合水, 申子辰三合水)
+      if (hasStemElem('water')) {
+        if (bZhList.includes('巳') && bZhList.includes('申') && elementScores.fire >= 0.8) {
+          elementScores.fire -= 0.8;
+          elementScores.water += 0.8;
+        }
+        if (bZhList.includes('申') && bZhList.includes('子') && elementScores.metal >= 0.8) {
+          elementScores.metal -= 0.8;
+          elementScores.water += 0.8;
+        }
+        if (bZhList.includes('子') && bZhList.includes('辰') && elementScores.earth >= 0.8) {
+          elementScores.earth -= 0.8;
+          elementScores.water += 0.8;
+        }
+      }
+
+      // Earth transformations (子丑合土)
+      if (hasStemElem('earth')) {
+        if (bZhList.includes('子') && bZhList.includes('丑') && elementScores.water >= 0.8) {
+          elementScores.water -= 0.8;
+          elementScores.earth += 0.8;
+        }
+      }
+
       const totalScore = Object.values(elementScores).reduce((a, b) => a + b, 0) || 10;
       const elementPercentages = {};
       const elementMultipliers = { wood: 1.0, fire: 1.0, earth: 1.0, metal: 1.0, water: 1.0 };
