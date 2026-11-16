@@ -1098,17 +1098,73 @@
     },
 
     // 11. Monthly Fortune Prediction (流月 - Liu Yue)
+    // วิเคราะห์เจาะลึก 12 สารท โดยผสาน [เดือนจร + ปีจร (ไท้ส่วย) + วัยจร 10 ปี + 4 เสาพื้นดวง] ครบถ้วนทั้ง Interactions และปฏิกิริยาธาตุก่อนออกผลทำนาย
     calculateMonthlyFortune: function (chart, targetYear) {
       if (!chart) return [];
       const y = parseInt(targetYear, 10) || new Date().getFullYear();
       const yrStemIdx = ((y - 4) % 10 + 10) % 10;
+      const yrBranchIdx = ((y - 4) % 12 + 12) % 12;
       const mTigerStart = (yrStemIdx % 5) * 2 + 2;
 
-      // Identify active Da Yun and Tai Sui for targetYear
+      // 1. ระบุปีจร (Annual Tai Sui)
+      const taiSuiStem = STEMS[yrStemIdx];
+      const taiSuiBranch = BRANCHES[yrBranchIdx];
+
+      // 2. ระบุวัยจร 10 ปี (Active Da Yun) ณ ปีเป้าหมาย
       const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
       const ageInYear = y - birthYear;
-      const curDaYun = (chart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
-      const taiSuiBranch = BRANCHES[((y - 4) % 12 + 12) % 12];
+      let curDaYun = (chart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      if (!curDaYun && chart.daYunPillars && chart.daYunPillars.length > 0) {
+        if (ageInYear < chart.daYunPillars[0].ageFrom) {
+          curDaYun = {
+            ageRange: `0 - ${chart.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์)`,
+            stem: chart.pillars.month.stem,
+            branch: chart.pillars.month.branch,
+            tenGod: chart.pillars.month.tenGod,
+            isChildhood: true
+          };
+        } else {
+          curDaYun = chart.daYunPillars[chart.daYunPillars.length - 1];
+        }
+      }
+      const daYunStem = curDaYun ? curDaYun.stem : null;
+      const daYunBranch = curDaYun ? curDaYun.branch : null;
+
+      // 3. ข้อมูลพื้นดวง (Natal Chart)
+      const dm = chart.dayMaster;
+      const dayBranch = chart.pillars.day.branch;
+      const monthBranch = chart.pillars.month.branch;
+      const yearBranch = chart.pillars.year.branch;
+      const hourBranch = chart.pillars.hour.branch;
+      const favElements = chart.favorableElements || [];
+      const tiaoHouElement = chart.tiaoHou ? chart.tiaoHou.element : null;
+
+      // Interaction Maps & Metaphysical Formulas
+      const stemCombos = { '甲': '己', '己': '甲', '乙': '庚', '庚': '乙', '丙': '辛', '辛': '丙', '丁': '壬', '壬': '丁', '戊': '癸', '癸': '戊' };
+      const stemComboTrans = {
+        '甲-己': 'ดิน', '己-甲': 'ดิน',
+        '乙-庚': 'ทอง', '庚-乙': 'ทอง',
+        '丙-辛': 'น้ำ', '辛-丙': 'น้ำ',
+        '丁-壬': 'ไม้', '壬-丁': 'ไม้',
+        '戊-癸': 'ไฟ', '癸-戊': 'ไฟ'
+      };
+      const stemClashes = { '甲': '庚', '庚': '甲', '乙': '辛', '辛': '乙', '丙': '壬', '壬': '丙', '丁': '癸', '癸': '丁' };
+      const sixCombos = { '子': '丑', '丑': '子', '寅': '亥', '亥': '寅', '卯': '戌', '戌': '卯', '辰': '酉', '酉': '辰', '巳': '申', '申': '巳', '午': '未', '未': '午' };
+      const sixClashes = { '子': '午', '午': '子', '丑': '未', '未': '丑', '寅': '申', '申': '寅', '卯': '酉', '酉': '卯', '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳' };
+      const sixHarms = { '子': '未', '未': '子', '丑': '午', '午': '丑', '寅': '巳', '巳': '寅', '卯': '辰', '辰': '卯', '申': '亥', '亥': '申', '酉': '戌', '戌': '酉' };
+      const sixDestructions = { '子': '酉', '酉': '子', '丑': '辰', '辰': '丑', '寅': '亥', '亥': '寅', '卯': '午', '午': '卯', '巳': '申', '申': '巳', '未': '戌', '戌': '未' };
+      const triadGroups = [
+        { name: 'Water', element: 'water', th: 'ธาตุน้ำ', branches: ['申', '子', '辰'] },
+        { name: 'Wood', element: 'wood', th: 'ธาตุไม้', branches: ['亥', '卯', '未'] },
+        { name: 'Fire', element: 'fire', th: 'ธาตุไฟ', branches: ['寅', '午', '戌'] },
+        { name: 'Metal', element: 'metal', th: 'ธาตุทอง', branches: ['巳', '酉', '丑'] }
+      ];
+      const sanHuiGroups = [
+        { name: 'Fire', element: 'fire', th: 'ธาตุไฟใต้', branches: ['巳', '午', '未'] },
+        { name: 'Water', element: 'water', th: 'ธาตุน้ำเหนือ', branches: ['亥', '子', '丑'] },
+        { name: 'Wood', element: 'wood', th: 'ธาตุไม้บูรพา', branches: ['寅', '卯', '辰'] },
+        { name: 'Metal', element: 'metal', th: 'ธาตุทองประจิม', branches: ['申', '酉', '戌'] }
+      ];
 
       // 12 Chinese Solar Months metadata
       const monthMeta = [
@@ -1128,142 +1184,281 @@
 
       const now = new Date();
       const currentCalYear = now.getFullYear();
-      const currentCalMonth = now.getMonth() + 1; // 1-12
+      const currentCalMonth = now.getMonth() + 1;
 
       return monthMeta.map((m, idx) => {
         const mStemIdx = (mTigerStart + idx) % 10;
         const stem = STEMS[mStemIdx];
         const branch = BRANCHES[m.branchIdx];
-        const stemGod = getTenGod(chart.dayMaster, stem);
-        const branchGod = getTenGod(chart.dayMaster, STEMS.find(s => s.zh === branch.hidden[0].stem));
+        const stemGod = getTenGod(dm, stem);
+        const branchMainStem = STEMS.find(s => s.zh === branch.hidden[0].stem) || stem;
+        const branchGod = getTenGod(dm, branchMainStem);
         const naYin = getNaYin(mStemIdx, m.branchIdx);
 
-        // Clashes with natal chart
-        const clashWithDay = checkBranchClash(branch.zh, chart.pillars.day.branch.zh);
-        const clashWithMonth = checkBranchClash(branch.zh, chart.pillars.month.branch.zh);
-        const clashWithYear = checkBranchClash(branch.zh, chart.pillars.year.branch.zh);
+        const mS = stem.zh;
+        const mB = branch.zh;
 
-        // Clashes and Harmonies with Annual Tai Sui & Active Da Yun of target year
-        const clashWithTaiSui = checkBranchClash(branch.zh, taiSuiBranch.zh);
-        const clashWithDaYun = curDaYun ? checkBranchClash(branch.zh, curDaYun.branch.zh) : null;
-        const harmWithDaYun = curDaYun ? checkBranchHarmony(branch.zh, curDaYun.branch.zh) : null;
+        // ========================================================
+        // 1. วิเคราะห์ปฏิสัมพันธ์กับปีจร (Annual Tai Sui)
+        // ========================================================
+        const tianDiHeTaiSui = (stemCombos[mS] === taiSuiStem.zh && sixCombos[mB] === taiSuiBranch.zh);
+        const wuHeTaiSui = (stemCombos[mS] === taiSuiStem.zh);
+        const stemClashTaiSui = (stemClashes[mS] === taiSuiStem.zh);
+        const sixHeTaiSui = (sixCombos[mB] === taiSuiBranch.zh);
+        const clashTaiSui = (sixClashes[mB] === taiSuiBranch.zh);
+        const fanYinTaiSui = (stemClashTaiSui && clashTaiSui);
+        const fuYinTaiSui = (mS === taiSuiStem.zh && mB === taiSuiBranch.zh);
+        const harmTaiSui = (sixHarms[mB] === taiSuiBranch.zh);
+        const destructionTaiSui = (sixDestructions[mB] === taiSuiBranch.zh);
+        const banSanHeTaiSui = triadGroups.find(g => g.branches.includes(mB) && g.branches.includes(taiSuiBranch.zh) && mB !== taiSuiBranch.zh);
 
-        const hasClash = !!(clashWithDay || clashWithMonth || clashWithYear || clashWithTaiSui || clashWithDaYun);
-        const isFav = chart.favorableElements.includes(stem.element) || chart.favorableElements.includes(branch.element);
+        // ========================================================
+        // 2. วิเคราะห์ปฏิสัมพันธ์กับวัยจร 10 ปี (Active Da Yun)
+        // ========================================================
+        const dyS = daYunStem ? daYunStem.zh : null;
+        const dyB = daYunBranch ? daYunBranch.zh : null;
+        const tianDiHeDaYun = dyS && dyB ? (stemCombos[mS] === dyS && sixCombos[mB] === dyB) : false;
+        const wuHeDaYun = dyS ? (stemCombos[mS] === dyS) : false;
+        const stemClashDaYun = dyS ? (stemClashes[mS] === dyS) : false;
+        const sixHeDaYun = dyB ? (sixCombos[mB] === dyB) : false;
+        const clashDaYun = dyB ? (sixClashes[mB] === dyB) : false;
+        const fanYinDaYun = (stemClashDaYun && clashDaYun);
+        const fuYinDaYun = dyS && dyB ? (mS === dyS && mB === dyB) : false;
+        const harmDaYun = dyB ? (sixHarms[mB] === dyB) : false;
+        const destructionDaYun = dyB ? (sixDestructions[mB] === dyB) : false;
+        const banSanHeDaYun = dyB ? triadGroups.find(g => g.branches.includes(mB) && g.branches.includes(dyB) && mB !== dyB) : null;
 
+        // ========================================================
+        // 3. วิเคราะห์ปฏิสัมพันธ์กับพื้นดวง 4 เสา (Natal Pillars)
+        // ========================================================
+        const clashDay = (sixClashes[mB] === dayBranch.zh);
+        const clashMonth = (sixClashes[mB] === monthBranch.zh);
+        const clashYear = (sixClashes[mB] === yearBranch.zh);
+        const clashHour = (sixClashes[mB] === hourBranch.zh);
+        const stemClashDM = (stemClashes[mS] === dm.zh);
+        const tianDiHeDay = (stemCombos[mS] === dm.zh && sixCombos[mB] === dayBranch.zh);
+        const wuHeDM = (stemCombos[mS] === dm.zh);
+        const sixHeDay = (sixCombos[mB] === dayBranch.zh);
+        const sixHeMonth = (sixCombos[mB] === monthBranch.zh);
+        const fanYinDay = (stemClashDM && clashDay);
+        const fuYinDay = (mS === dm.zh && mB === dayBranch.zh);
+        const harmDay = (sixHarms[mB] === dayBranch.zh);
+        const destructionDay = (sixDestructions[mB] === dayBranch.zh);
+
+        // ========================================================
+        // 4. วิเคราะห์ไตรภาคี (San He), 3 ประสานทิศ (San Hui) & ซาเฮ้ง (San Xing)
+        // ========================================================
+        const fullBranches = [
+          hourBranch.zh,
+          dayBranch.zh,
+          monthBranch.zh,
+          yearBranch.zh,
+          taiSuiBranch.zh,
+          mB
+        ];
+        if (dyB) fullBranches.push(dyB);
+
+        // ไตรภาคีสมบูรณ์ (Full San He)
+        const fullSanHe = triadGroups.find(g => g.branches.includes(mB) && g.branches.every(br => fullBranches.includes(br)));
+
+        // 3 ประสานทิศสมบูรณ์ (Full San Hui)
+        const fullSanHui = sanHuiGroups.find(g => g.branches.includes(mB) && g.branches.every(br => fullBranches.includes(br)));
+
+        // ซาเฮ้ง (San Xing Punishments)
+        const hasBullyingPunishment = ['寅', '巳', '申'].includes(mB) &&
+          fullBranches.filter(x => ['寅', '巳', '申'].includes(x)).length >= 2;
+        const hasEarthsPunishment = ['丑', '未', '戌'].includes(mB) &&
+          Array.from(new Set(fullBranches.filter(x => ['丑', '未', '戌'].includes(x)))).length >= 3;
+        const hasUncivilPunishment = (mB === '子' && fullBranches.includes('卯')) || (mB === '卯' && fullBranches.includes('子'));
+        const hasSelfPunishment = ['辰', '午', '酉', '亥'].includes(mB) && fullBranches.filter(x => x === mB).length >= 2;
+
+        // ========================================================
+        // 5. วิเคราะห์ปฏิกิริยาธาตุ (Elemental Dynamics & Reactions)
+        // ========================================================
+        const isFavStem = favElements.includes(stem.element);
+        const isFavBranch = favElements.includes(branch.element);
+        const isFavOverall = isFavStem || isFavBranch;
+        const isTiaoHou = (stem.element === tiaoHouElement || branch.element === tiaoHouElement);
+
+        // สงครามธาตุ (Elemental Conflicts)
+        const isWaterFireConflict = (['子'].includes(mB) && ['午'].includes(taiSuiBranch.zh)) ||
+                                    (['午'].includes(mB) && ['子'].includes(taiSuiBranch.zh)) ||
+                                    (['water'].includes(stem.element) && ['fire'].includes(taiSuiStem.element)) ||
+                                    (['fire'].includes(stem.element) && ['water'].includes(taiSuiStem.element));
+
+        const isMetalWoodConflict = (['寅', '卯'].includes(mB) && ['申', '酉'].includes(taiSuiBranch.zh)) ||
+                                    (['申', '酉'].includes(mB) && ['寅', '卯'].includes(taiSuiBranch.zh));
+
+        const isHeavyEarth = ['辰', '戌', '丑', '未'].includes(mB) && ['辰', '戌', '丑', '未'].includes(taiSuiBranch.zh);
+
+        // ตรวจสอบการแปรธาตุจากการฮะ
+        let transformedElementNote = '';
+        if (wuHeTaiSui) {
+          const trans = stemComboTrans[`${mS}-${taiSuiStem.zh}`] || '';
+          if (trans) transformedElementNote = `ก้านฟ้าเดือนฮะกับปีจรแปลงเป็นธาตุ${trans}`;
+        }
+
+        // ========================================================
+        // 6. สังเคราะห์เรตติ้งและป้ายกำกับของเดือน (Rating Badge Synthesis)
+        // ========================================================
         let ratingBadge = 'ราบรื่น';
         let ratingBadgeShort = 'ราบรื่น';
         let ratingType = 'normal';
-        if (hasClash) {
-          if (clashWithDaYun) {
-            ratingBadge = '⚠️ ชงวัยจร';
-            ratingBadgeShort = '⚠️ ชงวัยจร';
-          } else if (clashWithTaiSui) {
-            ratingBadge = '⚠️ ชงปีจร';
-            ratingBadgeShort = '⚠️ ชงปีจร';
-          } else {
-            ratingBadge = '⚠️ ระวังการปะทะ';
-            ratingBadgeShort = '⚠️ ปะทะ';
-          }
+
+        if (fanYinTaiSui || fanYinDaYun || fanYinDay) {
+          ratingBadge = '🚨 ฟ้าพิฆาตดินปะทะ (Fan Yin)';
+          ratingBadgeShort = '🚨 ชงฟ้าดิน';
           ratingType = 'clash';
-        } else if (harmWithDaYun || isFav) {
-          ratingBadge = harmWithDaYun ? '⭐ ฮะวัยจร มงคล' : '⭐ มงคลยิ่ง';
-          ratingBadgeShort = harmWithDaYun ? '⭐ ฮะวัยจร' : '⭐ มงคล';
+        } else if (clashDaYun) {
+          ratingBadge = '⚠️ ชงวัยจร 10 ปี (จุดเปลี่ยน)';
+          ratingBadgeShort = '⚠️ ชงวัยจร';
+          ratingType = 'clash';
+        } else if (clashTaiSui) {
+          ratingBadge = '⚠️ ชงปีจร (ไท้ส่วย)';
+          ratingBadgeShort = '⚠️ ชงปีจร';
+          ratingType = 'clash';
+        } else if (clashDay) {
+          ratingBadge = '⚠️ ปะทะเสาวัน (วังคู่ครอง)';
+          ratingBadgeShort = '⚠️ ปะทะวัน';
+          ratingType = 'clash';
+        } else if (clashMonth) {
+          ratingBadge = '⚠️ ปะทะเสาเดือน (วังการงาน)';
+          ratingBadgeShort = '⚠️ ปะทะงาน';
+          ratingType = 'clash';
+        } else if (hasEarthsPunishment || hasBullyingPunishment) {
+          ratingBadge = '⚡ บททดสอบซาเฮ้ง (ระวังเอกสาร/อารมณ์)';
+          ratingBadgeShort = '⚡ ซาเฮ้ง';
+          ratingType = 'volatile';
+        } else if (tianDiHeTaiSui || tianDiHeDaYun || tianDiHeDay) {
+          ratingBadge = '⭐ มงคลยอดเยี่ยม (ฟ้าดินฮะส่งเสริม)';
+          ratingBadgeShort = '⭐ มงคลฟ้าดิน';
           ratingType = 'auspicious';
+        } else if (fullSanHe || fullSanHui) {
+          const groupName = fullSanHe ? fullSanHe.th : fullSanHui.th;
+          ratingBadge = `⭐ รวมพลังมหา${groupName} (จังหวะพุ่งทะยาน)`;
+          ratingBadgeShort = '⭐ รวมมหาธาตุ';
+          ratingType = 'auspicious';
+        } else if (sixHeTaiSui || sixHeDaYun || sixHeDay) {
+          ratingBadge = '⭐ ฮะสมพงศ์ส่งเสริม (พันธมิตรราบรื่น)';
+          ratingBadgeShort = '⭐ ฮะสมพงศ์';
+          ratingType = 'auspicious';
+        } else if (isFavOverall || isTiaoHou) {
+          ratingBadge = '⭐ ธาตุให้คุณเกื้อหนุน (โอกาสเติบโต)';
+          ratingBadgeShort = '⭐ มงคลเกื้อหนุน';
+          ratingType = 'auspicious';
+        } else if (isWaterFireConflict || isMetalWoodConflict || hasSelfPunishment || harmDay || harmTaiSui) {
+          ratingBadge = '⚡ ระวังความผันผวน (ธาตุปะทะ/บั่นทอน)';
+          ratingBadgeShort = '⚡ ระวังผันผวน';
+          ratingType = 'volatile';
         }
 
-        // Determine if current real-world month
+        // Current real-world month
         let isCurrent = false;
         if (y === currentCalYear) {
-          // approx match: month 1 is Feb (2), month 2 is Mar (3)... month 11 is Dec (12), month 12 is Jan (1 next year)
           if (m.num === 12 && currentCalMonth === 1) isCurrent = true;
           else if (m.num === currentCalMonth - 1 && currentCalMonth >= 2) isCurrent = true;
         }
 
-        // Generate tailored monthly advice
-        let adviceText = '';
-        if (clashWithDaYun) {
-          adviceText = `เดือนนี้มีพลังปะทะกับวัยจร 10 ปี (${curDaYun.stem.zh}${curDaYun.branch.zh}) เป็นจุดเปลี่ยนสำคัญของจังหวะชีวิต ควรตั้งรับอย่างมีสติและรอบคอบ`;
-        } else if (clashWithTaiSui) {
-          adviceText = `เดือนนี้ปะทะกับปีจร (ไท้ส่วย) ระวังความขัดแย้งกับผู้ใหญ่หรือความผันผวนของงาน ควรหลีกเลี่ยงการตัดสินใจผลีผลาม`;
-        } else if (clashWithDay) {
-          adviceText = `เดือนนี้มีพลังปะทะกับเสาวัน (วังคู่ครอง/ตัวตน) ควรใจเย็นกับคนรักและดูแลสุขภาพตนเอง`;
-        } else if (clashWithMonth) {
-          adviceText = `เดือนนี้ปะทะกับเสาเดือน (วังการงาน) มีเกณฑ์ปรับเปลี่ยนงาน เดินทาง หรือมีภาระเร่งด่วน`;
-        } else if (harmWithDaYun) {
-          adviceText = `เดือนนี้สมพงศ์กับวัยจร 10 ปี (${curDaYun.stem.zh}${curDaYun.branch.zh}) ได้รับแรงส่งเสริมให้กิจการและการงานก้าวหน้าราบรื่น`;
-        } else if (isFav) {
-          adviceText = `พลังธาตุเกื้อหนุนดวงชะตา (${stemGod.zh} - ${stemGod.th}) มีโอกาสดีทางการงานและการเงิน เหมาะแก่การเปิดตัวโปรเจกต์ใหม่ เจรจาธุรกิจ`;
+        // ========================================================
+        // 7. สังเคราะห์บทวิเคราะห์เจาะลึก 5 มิติ (Deep 5 Dimensions Synthesis)
+        // ========================================================
+
+        // 7.1 ภาพรวมเดือนนี้ & จังหวะชีวิต (Overview)
+        let overview = '';
+        if (fanYinTaiSui || fanYinDaYun) {
+          overview = `เดือนนี้ตกอยู่ในสภาวะฟ้าพิฆาตดินปะทะ (天克地冲) กับ${fanYinTaiSui ? 'ปีจรไท้ส่วย' : 'วัยจร 10 ปี'} (${mS}${mB} ปะทะ ${fanYinTaiSui ? taiSuiStem.zh + taiSuiBranch.zh : dyS + dyB}) เป็นเดือนแห่งการรื้อปรับโครงสร้างและจุดเปลี่ยนผันสำคัญของจังหวะชีวิต ต้องตั้งรับด้วยสติ วางแผนสำรอง และหลีกเลี่ยงการใช้อารมณ์ปะทะ`;
+        } else if (tianDiHeTaiSui) {
+          overview = `เดือนนี้เกิดสภาวะฟ้าฮะดินฮะ (天地德合) ระหว่างเดือนจร ${mS}${mB} กับปีจรไท้ส่วย ${taiSuiStem.zh}${taiSuiBranch.zh} เป็นช่วงเวลาที่ฟ้าเปิดและได้รับแรงสนับสนุนเต็มที่จากสภาพแวดล้อม ผู้ใหญ่ และโอกาสรอบตัว เหมาะแก่การเจรจาตกลงเรื่องใหญ่หรือลงมือสร้างผลงานชิ้นสำคัญ`;
+        } else if (tianDiHeDaYun) {
+          overview = `เดือนนี้ฮะสมพงศ์ฟ้าดินกับวัยจร 10 ปี (${dyS}${dyB}) ช่วยเปิดทางให้แผนงานระยะยาวเดินหน้าได้อย่างคล่องตัว มีพลังขับเคลื่อนชีวิตที่สอดคล้องกับเส้นทางโชคชะตาอย่างลงตัว`;
+        } else if (fullSanHe || fullSanHui) {
+          const tName = fullSanHe ? fullSanHe.th : fullSanHui.th;
+          overview = `เดือนนี้ผสานพลังงานกับปีจรและดวงชะตาก่อเกิดเป็นกลุ่มมหา${tName} พลังงานธาตุขับเคลื่อนอย่างเข้มข้น มีแรงผลักดันสูง ${favElements.includes(fullSanHe ? fullSanHe.element : fullSanHui.element) ? 'ซึ่งเป็นธาตุให้คุณ ส่งผลให้กิจการงานและการเงินก้าวกระโดด' : 'ควรระวังความใจร้อนหรือความเคร่งเครียดจากภาระหน้าที่หนาแน่น'}`;
+        } else if (clashDaYun) {
+          overview = `เดือนนี้มีพลังปะทะกับวัยจร 10 ปี (${dyS}${dyB}): สัญญาณของจังหวะก้าวข้ามหรือการเปลี่ยนแปลงวิถีชีวิต มีเรื่องให้ต้องตัดสินใจปรับเปลี่ยนทิศทาง ควรตั้งมั่นในความรอบคอบและไม่ผลีผลาม`;
+        } else if (clashTaiSui) {
+          overview = `เดือนนี้ปะทะกับปีจรไท้ส่วย (${taiSuiBranch.zh} ปะทะ ${mB}): จังหวะชีวิตมีความผันผวนสูง ระวังความขัดแย้งกับผู้มีอำนาจหรือข้อตกลงที่เปลี่ยนกะทันหัน ควรใช้ความยืดหยุ่นและการเจรจาประนีประนอมเป็นหลัก`;
+        } else if (hasBullyingPunishment) {
+          overview = `เดือนนี้ตกอยู่ในวังวนซาเฮ้งข่มอำนาจ (持势之刑 寅-巳-申): ต้องระวังเรื่องความขัดแย้งในหน้าที่การงาน การถูกหักหลัง หรือปัญหาเอกสารสัญญา ควรตรวจสอบรายละเอียดตัวอักษรอย่างถี่ถ้วน`;
+        } else if (hasEarthsPunishment) {
+          overview = `เดือนนี้ตกในพลังซาเฮ้งธาตุดิน (无恩之刑 丑-未-戌): ระวังความเข้าใจผิดกับคนใกล้ชิด ความน้อยใจ หรือปัญหาเกี่ยวกับอสังหาริมทรัพย์และภาระครอบครัว ควรใช้สติและความปล่อยวาง`;
+        } else if (sixHeTaiSui || banSanHeTaiSui) {
+          overview = `เดือนนี้กิ่งดินฮะสมพงศ์กับปีจรไท้ส่วย (${mB} ฮะ ${taiSuiBranch.zh}) ได้รับแรงสนับสนุนที่ดีจากเจ้านายและพันธมิตร บรรยากาศราบรื่น การประสานงานเป็นไปในทิศทางที่น่าพอใจ`;
+        } else if (isFavOverall) {
+          overview = `เดือนนี้พลังธาตุให้คุณ (${stemGod.zh} - ${stemGod.th}) หมุนเวียนเข้ามาเกื้อหนุนดวงชะตา มีความปลอดโปร่ง จังหวะชีวิตผ่อนคลายและมีโอกาสดีในการต่อยอดสิ่งใหม่ๆ`;
         } else {
-          adviceText = `พลังงานประจำเดือนไหลเวียนปกติ ดำเนินการตามแผนที่วางไว้ รักษาสมดุลกระแสเงินสด และดูแลสุขภาพกายใจให้แจ่มใส`;
+          overview = `เดือนนี้พลังงานประจำเดือน (${stemGod.zh}) หมุนเวียนตามครรลองปกติ ดำเนินชีวิตตามแผนงานที่วางไว้ รักษาสมดุลทั้งการทำงานและการพักผ่อนอย่างมีคุณภาพ`;
         }
 
-        // Deep 5 Dimensions for the Month
-        const monthlyGodOverviewMap = {
-          '比肩': `เดือนแห่งการพึ่งพาความสามารถตนเอง การร่วมมือกับพันธมิตร หรือสร้างเครือข่ายความสัมพันธ์เพื่อเป้าหมายร่วมกัน`,
-          '劫財': `เดือนแห่งการขับเคี่ยว แข่งขันสูง ท้าทายความกล้าคิดกล้าทำ มีความมุ่งมั่นสูง ระวังความใจร้อนและค่าใช้จ่ายจร`,
-          '食神': `เดือนแห่งความสุขสำราญ ความคิดสร้างสรรค์ งานนวัตกรรม และการต่อยอดโปรเจกต์ใหม่ มีกินมีใช้ไม่ขาดมือ`,
-          '傷官': `เดือนแห่งการฉีกกรอบ โดดเด่นทางสติปัญญา ไหวพริบเฉียบคม ระวังการแสดงความคิดเห็นที่ตรงเกินไป`,
-          '偏財': `เดือนแห่งโอกาสทางการค้า โชคลาภพิเศษ กระแสเงินสดหมุนเวียนคล่องตัว และการเจรจาธุรกิจใหม่`,
-          '正財': `เดือนแห่งความมั่นคง รายได้ประจำเติบโต การบริหารจัดการที่มีวินัย และการสั่งสมผลงานที่ชัดเจน`,
-          '七殺': `เดือนแห่งบททดสอบ งานท้าทายที่มีความรับผิดชอบสูง ต้องอาศัยความเด็ดเดี่ยวและสติในการบริหารสถานการณ์`,
-          '正官': `เดือนแห่งเกียรติยศชื่อเสียง ความก้าวหน้าในตำแหน่ง หน้าที่การงานได้รับความไว้วางใจจากผู้ใหญ่`,
-          '偏印': `เดือนแห่งปัญญาญาณ การศึกษาค้นคว้าศาสตร์เฉพาะทาง วิชาการ งานเบื้องหลัง หรือเทคโนโลยีใหม่`,
-          '正印': `เดือนแห่งความร่มเย็นเป็นสุข ผู้ใหญ่อุปถัมภ์ค้ำชู จิตใจสงบ และการฟื้นฟูพลังกายใจอย่างมีคุณภาพ`
-        };
-        const overview = monthlyGodOverviewMap[stemGod.zh] || adviceText;
-
+        // 7.2 การงาน & ธุรกิจ (Career)
         let career = '';
-        if (clashWithMonth) {
-          career = `มีพลังปะทะกับเสาเดือน (วังการงาน): งานอาจมีการปรับเปลี่ยนแผนก โยกย้ายสถานที่ หรือมีภาระเร่งด่วนเข้ามาแทรก ต้องมีความยืดหยุ่นและรอบคอบในการประสานงาน`;
-        } else if (clashWithTaiSui) {
-          career = `ปะทะกับปีจร (ไท้ส่วย): หน้าที่การงานมีความผันผวนสูง ระวังการขัดแย้งกับผู้บังคับบัญชาหรือผู้ใหญ่ หลีกเลี่ยงการตัดสินใจฉับพลันด้วยอารมณ์`;
-        } else if (clashWithDaYun) {
-          career = `มีพลังปะทะกับวัยจร 10 ปี: เป็นเดือนแห่งจุดเปลี่ยนสำคัญของเส้นทางงาน ควรตั้งรับอย่างสุขุม ตรวจทานข้อตกลงอย่างรอบคอบ`;
-        } else if (harmWithDaYun || isFav) {
-          career = `ได้รับแรงหนุนนำจากธาตุให้คุณและวัยจร: การเจรจา การประสานงาน และการริเริ่มโครงการใหม่ก้าวหน้าราบรื่น มีผู้ช่วยเหลือ`;
-        } else {
-          career = `การงานดำเนินไปอย่างมั่นคงสม่ำเสมอ เหมาะกับการสะสมผลงาน จัดการงานคั่งค้าง และวางแผนสำหรับระยะถัดไป`;
-        }
-
-        let wealth = '';
-        if (['偏財', '正財'].includes(stemGod.zh)) {
-          wealth = `การเงินโดดเด่นเป็นพิเศษ มีกระแสเงินสดเข้ามาคล่องตัว เหมาะแก่การค้าขาย ปิดการขาย หรือได้รับผลตอบแทนจากผลงาน`;
-        } else if (stemGod.zh === '劫財') {
-          wealth = `ระวังเงินรั่วไหล มีรายจ่ายจรเกี่ยวกับเรื่องสังคมหรือคนรอบข้าง ไม่ควรให้ผู้อื่นหยิบยืมเงินหรือลงทุนเสี่ยงสูงในเดือนนี้`;
+        if (clashMonth) {
+          career = `มีพลังปะทะกับเสาเดือน (วังการงานโดยตรง): หน้าที่การงานมีเกณฑ์ปรับโครงสร้าง กะทันหัน โยกย้ายสถานที่ทำงาน หรือมีภาระเร่งด่วนเข้ามาแทรก ต้องมีแผนสำรองและยืดหยุ่นในการทำงานร่วมกับผู้อื่น`;
+        } else if (clashTaiSui) {
+          career = `ปะทะกับปีจรไท้ส่วย: งานมีความท้าทายสูง อาจถูกตรวจสอบอย่างเข้มงวดหรือมีข้อขัดแย้งกับผู้บริหาร หลีกเลี่ยงการเผชิญหน้าโดยตรงและเน้นการทำงานด้วยหลักฐานเอกสารที่รัดกุม`;
+        } else if (tianDiHeTaiSui || sixHeTaiSui) {
+          career = `ได้รับแรงเกื้อหนุนจากปีจร (${taiSuiBranch.zh}): มีโอกาสได้รับความไว้วางใจจากผู้ใหญ่ การเจรจาธุรกิจ ปิดดีล หรือการนำเสนองานใหญ่ผ่านฉลุย มีพันธมิตรยื่นมือเข้ามาช่วยเหลือ`;
+        } else if (clashDaYun) {
+          career = `มีพลังปะทะกับวัยจร 10 ปี: เป็นเดือนแห่งจุดเปลี่ยนทางอาชีพ อาจมีการตัดสินใจเปลี่ยนแผนก เปลี่ยนงาน หรือริเริ่มโครงการใหม่ที่เป็นก้าวสำคัญระยะยาว`;
+        } else if (['七殺', '正官'].includes(stemGod.zh)) {
+          career = `ดาวหน้าที่และบารมีส่งพลังเด่น (${stemGod.zh} - ${stemGod.th}): ได้รับมอบหมายภารกิจที่มีเกียรติแต่ความรับผิดชอบสูง การแสดงภาวะผู้นำที่สุขุมจะนำพาความสำเร็จและชื่อเสียงมาให้`;
         } else if (['食神', '傷官'].includes(stemGod.zh)) {
-          wealth = `มีช่องทางทำเงินใหม่ๆ ต่อยอดจากไอเดียและความสามารถเฉพาะตัว การค้าขายมีกำไรเป็นกอบเป็นกำ`;
-        } else if (clashWithDay) {
-          wealth = `อาจมีค่าใช้จ่ายเกี่ยวกับบ้าน ที่อยู่อาศัย หรือคนในครอบครัว ควรสำรองสภาพคล่องและมีวินัยการใช้จ่าย`;
+          career = `ดาวความคิดสร้างสรรค์และสติปัญญา (${stemGod.zh} - ${stemGod.th}): โดดเด่นเรื่องนวัตกรรม ไอเดียใหม่ๆ และการแก้ไขปัญหาเฉพาะหน้า ค้าขายและเจรจาประสบผลสำเร็จงดงาม`;
+        } else if (['比肩', '劫財'].includes(stemGod.zh)) {
+          career = `ดาวมิตรสหายและการแข่งขัน (${stemGod.zh}): มีการทำงานเป็นทีมหรือเครือข่าย ควรแบ่งผลประโยชน์และหน้าที่ให้โปร่งใส ระวังความเห็นต่างกับเพื่อนร่วมงาน`;
         } else {
-          wealth = `สภาพคล่องทางการเงินปกติ หมุนเวียนได้ตามแผน ควบคุมค่าใช้จ่ายส่วนตัวให้สมดุล`;
+          career = `การงานดำเนินไปอย่างมั่นคงสม่ำเสมอ เหมาะกับการสะสางงานคั่งค้าง ปรับปรุงระบบงาน และพัฒนาทักษะเฉพาะตัวเพื่อเตรียมรับโอกาสถัดไป`;
         }
 
+        // 7.3 การเงิน & สภาพคล่อง (Wealth)
+        let wealth = '';
+        if (['正財', '偏財'].includes(stemGod.zh)) {
+          wealth = `ดาวโชคลาภการเงินส่งผลเด่น (${stemGod.zh} - ${stemGod.th}): มีกระแสเงินสดเข้ามาคล่องตัว รายได้เสริมและลาภลอยมีเกณฑ์ปรากฏ เหมาะแก่การปิดการขายและเก็บเกี่ยวผลกำไรจากการลงทุน`;
+        } else if (stemGod.zh === '劫財') {
+          wealth = `ตกดาวปล้นทรัพย์ (劫財): ระวังกระเป๋ารั่ว มีรายจ่ายจรด้านภาษีสังคมหรือช่วยเหลือคนรอบข้าง หลีกเลี่ยงการให้ผู้อื่นหยิบยืมเงินหรือการเก็งกำไรที่มีความเสี่ยงสูงในเดือนนี้`;
+        } else if (isHeavyEarth && ['辰', '戌', '丑', '未'].includes(dayBranch.zh)) {
+          wealth = `พลังกระทบคลังทรัพย์ (辰/戌/丑/未): มีเกณฑ์หมุนเงินก้อนใหญ่หรือการจัดการสินทรัพย์ ที่ดิน อสังหาริมทรัพย์ หากวางแผนดีจะมีโอกาสเปิดคลังรับทรัพย์`;
+        } else if (clashDay || clashTaiSui) {
+          wealth = `ระวังค่าใช้จ่ายไม่คาดคิดเกี่ยวกับที่อยู่อาศัย ยานพาหนะ หรือคนในครอบครัว ควรสำรองสภาพคล่องและมีวินัยทางการเงินอย่างเคร่งครัด`;
+        } else if (['食神', '傷官'].includes(stemGod.zh)) {
+          wealth = `ดาวกำเนิดโชคลาภ (${stemGod.zh}): ไอเดียและความสามารถสร้างสรรค์แปรเปลี่ยนเป็นเงินทอง มีช่องทางรายได้ใหม่ๆ ต่อยอดอย่างงดงาม`;
+        } else {
+          wealth = `สภาพคล่องหมุนเวียนได้ตามแผน ควบคุมค่าใช้จ่ายส่วนตัวให้สมดุล และเน้นการออมสะสมอย่างต่อเนื่อง`;
+        }
+
+        // 7.4 ความรัก & ความสัมพันธ์ (Love)
         let love = '';
-        if (clashWithDay) {
-          love = `มีพลังปะทะกับเสาวัน (วังคู่ครอง/ตัวตน): ความสัมพันธ์อาจเปราะบาง ระวังคำพูดที่ทิ่มแทงใจ ควรใจเย็น ให้เกียรติ และรับฟังคนรัก คนโสดยังไม่ควรรีบร้อน`;
-        } else if (branch.zh === chart.pillars.day.branch.zh) {
-          love = `กิ่งดินซ้ำกับเสาวัน: มีความวิตกกังวลหรือคิดมากในเรื่องความสัมพันธ์ ควรเปิดใจคุยกันอย่างตรงไปตรงมา`;
+        if (fanYinDay || clashDay) {
+          love = `มีพลังปะทะกับเสาวัน (วังคู่ครองโดยตรง ${dayBranch.zh} ปะทะ ${mB}): ความสัมพันธ์มีความเปราะบาง อาจเกิดความขัดแย้งจากเรื่องเล็กน้อย ควรใจเย็น รับฟังอย่างเข้าอกเข้าใจ และหลีกเลี่ยงการประชดประชัน คนโสดควรดูใจนานๆ`;
+        } else if (tianDiHeDay || sixHeDay) {
+          love = `กิ่งดินฮะสมพงศ์กับเสาวัน (วังคู่ครอง ${dayBranch.zh} ฮะ ${mB}): ความสัมพันธ์อบอุ่น หวานชื่น มีความเข้าใจกันลึกซึ้ง คนโสดมีเสน่ห์โดดเด่นและมีเกณฑ์พบคนที่ถูกใจอย่างยิ่ง`;
         } else if (['正官', '七殺'].includes(stemGod.zh) && chart.gender === 'female') {
-          love = `ดาวคู่ครองปรากฏในเดือนนี้: คนโสดมีโอกาสพบคนถูกใจหรือมีผู้ใหญ่แนะนำ คนมีคู่ความสัมพันธ์ได้รับความใส่ใจ`;
+          love = `ดาวคู่ครองปรากฏในเดือนนี้ (${stemGod.zh}): คนมีคู่คนรักให้เกียรติและคอยเป็นที่ปรึกษา คนโสดมีโอกาสพบคนที่มีวุฒิภาวะสูงหรือได้รับการแนะนำจากผู้ใหญ่`;
         } else if (['正財', '偏財'].includes(stemGod.zh) && chart.gender === 'male') {
-          love = `ดาวภรรยา/คนรักส่งพลังเด่น: คนโสดมีเสน่ห์ดึงดูดใจ คนมีคู่ความสัมพันธ์อบอุ่นและเข้าใจกันดี`;
+          love = `ดาวคนรักส่งพลังเด่น (${stemGod.zh}): ความสัมพันธ์ราบรื่น มีเสน่ห์ต่อเพศตรงข้าม คนมีคู่ควรหาเวลาเติมความหวานและสร้างบรรยากาศพิเศษร่วมกัน`;
+        } else if (harmDay || destructionDay) {
+          love = `ระวังความรู้สึกอึดอัดใจหรือความหวาดระแวง ควรเปิดใจพูดคุยกันอย่างตรงไปตรงมาด้วยความเมตตา`;
         } else {
-          love = `ความสัมพันธ์ราบรื่นสงบสุข ชวนกันไปทานอาหารอร่อยหรือเปลี่ยนบรรยากาศเพื่อเติมความสดชื่นให้ชีวิตคู่`;
+          love = `ความสัมพันธ์ราบรื่นสงบสุข ชวนกันไปทานอาหารอร่อยหรือเปลี่ยนบรรยากาศเพื่อเติมความสดชื่นให้ชีวิตคู่ คนโสดมีความสุขกับพื้นที่ส่วนตัว`;
         }
 
+        // 7.5 สุขภาพ & ข้อควรระวัง (Health)
         let health = '';
-        if (clashWithDay || clashWithTaiSui) {
-          health = `ระวังความเครียดสะสม การพักผ่อนไม่เพียงพอ และอุบัติเหตุจากการเดินทางด้วยความเร่งรีบ ควรหมั่นยืดเหยียดร่างกายและฝึกสมาธิ`;
-        } else if (['子', '午'].includes(branch.zh)) {
-          health = `ธาตุน้ำ-ไฟกระทบกัน: ระวังเรื่องความดันโลหิต สายตา อาการปวดหัวไมเกรน และการนอนหลับ`;
-        } else if (['寅', '申'].includes(branch.zh)) {
-          health = `ธาตุไม้-ทองปะทะ: ระวังอาการปวดเมื่อยเส้นเอ็น กล้ามเนื้อ และระมัดระวังขณะขับขี่ยานพาหนะ`;
-        } else if (['辰', '戌', '丑', '未'].includes(branch.zh)) {
-          health = `ธาตุดินหนาแน่น: ดูแลระบบทางเดินอาหาร กระเพาะ ม้าม และรับประทานอาหารให้ตรงเวลา`;
+        if (isWaterFireConflict) {
+          health = `สงครามธาตุน้ำ-ไฟปะทะกันรุนแรง (子-午 冲): ระวังสุขภาพระบบหัวใจ ความดันโลหิต สายตา อาการไมเกรน และการนอนหลับไม่สนิท ควรดื่มน้ำสะอาดให้เพียงพอและงดกิจกรรมหักโหม`;
+        } else if (isMetalWoodConflict) {
+          health = `สงครามธาตุทอง-ไม้ปะทะ (寅-申 / 卯-酉): ระวังอาการปวดเมื่อยกระดูก ข้อต่อ เส้นเอ็น กล้ามเนื้อ และระมัดระวังเป็นพิเศษขณะขับขี่ยานพาหนะหรือเล่นกีฬา`;
+        } else if (hasEarthsPunishment || isHeavyEarth) {
+          health = `ธาตุดินหนาแน่น/ปะทะคลังดิน (丑-未-戌): ระวังระบบทางเดินอาหาร กระเพาะ ม้าม กรดไหลย้อน และอาการท้องอืด ควรรับประทานอาหารตรงเวลาและเคี้ยวให้ละเอียด`;
+        } else if (hasBullyingPunishment) {
+          health = `อิทธิพลซาเฮ้ง (寅-巳-申): ระวังความเครียดสะสม อาการอักเสบในร่างกาย และอุบัติเหตุจากการเดินทาง ควรบริจาคโลหิตหรือทำบุญเพื่อเสริมมงคล`;
+        } else if (clashDay || clashTaiSui) {
+          health = `ระวังความเหนื่อยล้าสะสมจากการเดินทางและความเร่งรีบ จัดสรรเวลาพักผ่อนให้เพียงพอและหมั่นฝึกการหายใจลึกๆ`;
         } else {
-          health = `สุขภาพร่างกายโดยรวมแข็งแรงดี รักษาสุขอนามัยและออกกำลังกายเป็นประจำ`;
+          health = `สุขภาพร่างกายโดยรวมแข็งแรงสมบูรณ์ดี รักษาสุขอนามัย พักผ่อนให้ตรงเวลา และออกกำลังกายเบาๆ สม่ำเสมอ`;
         }
+
+        const adviceText = `ภาพรวมเดือนนี้: ${ratingBadge} • ${overview}`;
 
         return {
           index: idx,
@@ -1287,7 +1482,28 @@
           career,
           wealth,
           love,
-          health
+          health,
+          // Contextual Metaphysical Flags
+          context: {
+            taiSui: { stem: taiSuiStem.zh, branch: taiSuiBranch.zh },
+            daYun: curDaYun ? { stem: daYunStem.zh, branch: daYunBranch.zh, range: curDaYun.ageRange } : null,
+            interactions: {
+              tianDiHeTaiSui,
+              wuHeTaiSui,
+              clashTaiSui,
+              sixHeTaiSui,
+              fanYinTaiSui,
+              clashDaYun,
+              sixHeDaYun,
+              fanYinDaYun,
+              clashDay,
+              sixHeDay,
+              hasBullyingPunishment,
+              hasEarthsPunishment,
+              fullSanHe: !!fullSanHe,
+              fullSanHui: !!fullSanHui
+            }
+          }
         };
       });
     },
@@ -5912,16 +6128,34 @@
 
       let interactionsHtml = '';
       if (allInteractions.length > 0) {
-        interactionsHtml = allInteractions.map(it => {
+        const renderBadge = (it) => {
           const cls = this.getInteractionClass(it);
           const st = this.getInteractionStyle(it);
           const info = this.getInteractionTooltipData(it);
           const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
           const cleanIt = it.replace(/"/g, '&quot;');
           return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
-        }).join('');
+        };
+
+        const primaryBadges = inter.primary.map(renderBadge).join('');
+        const secondaryBadges = inter.secondary.map(renderBadge).join('');
+
+        interactionsHtml = `
+          ${inter.primary.length > 0 ? `
+            <div style="margin-bottom: 8px;">
+              <div style="font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 4px;">• ปฏิสัมพันธ์กับพื้นดวง 4 เสา (Natal Chart):</div>
+              <div class="bazi-interactions-flow">${primaryBadges}</div>
+            </div>
+          ` : ''}
+          ${inter.secondary.length > 0 ? `
+            <div style="${inter.primary.length > 0 ? 'margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e2e8f0;' : ''}">
+              <div style="font-size: 11.5px; font-weight: 700; color: #6d28d9; margin-bottom: 4px;">• ปฏิสัมพันธ์กับปีจร & วัยจร 10 ปี (Annual Tai Sui & Luck Pillars):</div>
+              <div class="bazi-interactions-flow">${secondaryBadges}</div>
+            </div>
+          ` : ''}
+        `;
       } else {
-        interactionsHtml = '<div style="color: #10b981; font-size: 12.5px; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> พลังงานประจำเดือนราบรื่น ไม่มีจุดปะทะรุนแรงกับพื้นดวงและปีจร</div>';
+        interactionsHtml = '<div style="color: #10b981; font-size: 12.5px; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> พลังงานประจำเดือนราบรื่น ไม่มีจุดปะทะรุนแรงกับพื้นดวง ปีจร หรือวัยจร</div>';
       }
 
       cardEl.innerHTML = `
@@ -7206,6 +7440,25 @@
         secondaryHeading = 'Annual & Luck / 年运:';
         if (annualCol) comparePillars(col, [annualCol], secondaryInteractions);
         if (luckCol) comparePillars(col, [luckCol], secondaryInteractions);
+
+        // Comprehensive Triads & San Xing across full context (Month + Natal + Annual + Luck)
+        const fullContextBranches = [...allCols.map(c => c.branch.zh), b];
+        if (annualCol) fullContextBranches.push(annualCol.branch.zh);
+        if (luckCol) fullContextBranches.push(luckCol.branch.zh);
+        checkSanXing(b, fullContextBranches, secondaryInteractions);
+
+        // Check full Triad (三合) across Month + Natal + Annual + Luck
+        triadGroups.forEach(grp => {
+          if (grp.branches.includes(b)) {
+            const hasAll3 = grp.branches.every(br => fullContextBranches.includes(br));
+            if (hasAll3) {
+              const name = `triangular combination / San He / 三合 (${grp.name} - ${grp.branches.join('-')})`;
+              if (!secondaryInteractions.includes(name) && !primaryInteractions.includes(name)) {
+                secondaryInteractions.push(name);
+              }
+            }
+          }
+        });
       }
 
       const cleanList = (list) => Array.from(new Set(list));
