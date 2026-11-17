@@ -2477,25 +2477,27 @@
               <div class="bot-msg-header">
                 <div class="bot-msg-title">
                   <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-                  <span>ผู้เชี่ยวชาญผังดวงปาจื่อ (BaZi Astrological Consultant)</span>
+                  <span>แม่หมอปาจื่อ (BaZi Astrological Consultant)</span>
                 </div>
                 <span class="bot-msg-prob-badge" style="background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);">พร้อมสนทนาเฉพาะบุคคล</span>
               </div>
-              <div class="bot-headline-box">
-                สวัสดีค่ะคุณ ${c.name}! ผังดวงชะตา 4 เสา วัยจร และปีจรของคุณพร้อมให้คำปรึกษาแล้วค่ะ ✨
-              </div>
-              <p style="font-size: 13.5px; color: #334155; line-height: 1.6; margin-bottom: 12px;">
-                ระบบได้เชื่อมโยงโครงสร้างดิถี <strong>${c.dayMaster.zh} (${c.dayMaster.th})</strong> สถานะ <strong>${c.strengthText}</strong> 
-                ร่วมกับวัยจร 10 ปี <strong>${curDaYun ? curDaYun.ageRange : ''} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : ''})</strong> 
-                และปีจร <strong>${curYear} (${yrStem.zh}${yrBranch.zh})</strong> เรียบร้อยแล้ว
-              </p>
-              <div class="bot-advice-box">
-                💡 <strong>ท่านสามารถพิมพ์ถามเจาะลึกได้ทุกเรื่อง เช่น:</strong><br>
-                • <strong>การงาน & ธุรกิจ:</strong> มีเกณฑ์เปลี่ยนงานไหม? สิ้นปีนี้ควรโยกย้ายหรืออยู่ที่เดิม?<br>
-                • <strong>การเงิน & โชคลาภ:</strong> ปีนี้มีเกณฑ์เงินก้อนหรือเงินรั่วไหลไหม? ลงทุนช่วงไหนดี?<br>
-                • <strong>ความรัก & คู่ครอง:</strong> คนโสดจะเจอคู่เมื่อไหร่? คนมีคู่ความสัมพันธ์เป็นอย่างไร?<br>
-                • <strong>สุขภาพ & ข้อควรระวัง:</strong> ธาตุในดวงส่งผลต่ออวัยวะส่วนไหน? ควรระวังอุบัติเหตุเดือนใด?<br>
-                • <strong>จังหวะเวลา:</strong> เดือนไหนดีที่สุดของปีนี้? หรือเดือนไหนต้องระวังตัวเป็นพิเศษ?
+              <div class="bot-conversation-wrap">
+                <p class="bot-speech-intro">
+                  สวัสดีค่ะคุณ <strong>${c.name}</strong>! ยินดีต้อนรับสู่ห้องตรวจดวงชะตาเฉพาะบุคคลนะคะ ✨
+                </p>
+                <p style="margin: 0; color: #475569; font-size: 13.5px; line-height: 1.6;">
+                  แม่หมอได้ผูกผังดวง 4 เสาชะตา (ดิถี <strong>${c.dayMaster.zh} ${c.dayMaster.th}</strong> สถานะ <strong>${c.strengthText}</strong>) พร้อมเชื่อมโยงวัยจร 10 ปี <strong>${curDaYun ? curDaYun.ageRange : ''} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : ''})</strong> และปีจรปัจจุบัน <strong>${curYear} (${yrStem.zh}${yrBranch.zh})</strong> ให้เรียบร้อยแล้วค่ะ
+                </p>
+                <div class="bot-speech-advice" style="background: #faf5ff; border: 1px solid #f3e8ff; border-left: 4px solid #8b5cf6; color: #581c87;">
+                  🔮 <strong>คุณ ${c.name} อยากปรึกษาเรื่องไหนเป็นพิเศษ ถามแม่หมอได้เลยนะคะ:</strong>
+                  <div class="bot-welcome-topics">
+                    <div>💼 <strong>การงาน & ธุรกิจ:</strong> มีเกณฑ์เปลี่ยนงานปีนี้ไหม? สิ้นปีนี้ควรโยกย้ายหรืออยู่ที่เดิม?</div>
+                    <div>💰 <strong>การเงิน & โชคลาภ:</strong> ปีนี้มีเกณฑ์รับทรัพย์ก้อนโตหรือเงินรั่วไหลไหม?</div>
+                    <div>💖 <strong>ความรัก & คู่ครอง:</strong> คนโสดจะเจอคู่เมื่อไหร่? คนมีคู่ความสัมพันธ์เป็นอย่างไร?</div>
+                    <div>🌿 <strong>สุขภาพ & ข้อควรระวัง:</strong> ธาตุในดวงสัมพันธ์กับอวัยวะไหน? ควรระวังเรื่องอะไร?</div>
+                    <div>📅 <strong>จังหวะเวลา:</strong> เดือนไหนดีที่สุดของปีนี้? เดือนไหนควรระวังตัว?</div>
+                  </div>
+                </div>
               </div>
             `
           }
@@ -2583,27 +2585,47 @@
             return true;
           });
 
-          pointsHtml = cleanPoints.map(pt => `
-            <div class="bot-point-box">
-              <div class="bot-point-title">${pt.title}</div>
-              <p class="bot-point-body">${pt.body}</p>
+          pointsHtml = `
+            <div class="bot-speech-list">
+              ${cleanPoints.map(pt => {
+                const iconMatch = pt.title.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Extended_Pictographic})/u);
+                const icon = iconMatch ? iconMatch[0] : '•';
+                let cleanTitle = pt.title.replace(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Extended_Pictographic})\s*/u, '').trim();
+                if (cleanTitle.endsWith(':')) cleanTitle = cleanTitle.slice(0, -1).trim();
+                return `
+                  <div class="bot-speech-item">
+                    <span class="speech-icon">${icon}</span>
+                    <div class="speech-text">
+                      <strong class="speech-title">${cleanTitle}:</strong>
+                      <span class="speech-body">${pt.body}</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
             </div>
-          `).join('');
+          `;
         }
 
         const botHtml = `
           <div class="bot-msg-header">
             <div class="bot-msg-title">
-              <i class="fa-solid fa-compass" style="color: #7c3aed;"></i>
+              <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
               <span>${resp.title || 'คำวินิจฉัยดวงชะตา'}</span>
             </div>
             <span class="bot-msg-prob-badge" style="background: ${resp.probBg || '#7c3aed'};">${resp.probText || 'วิเคราะห์เจาะลึก'}</span>
           </div>
-          <div class="bot-headline-box">
-            ${resp.headline}
+
+          <div class="bot-conversation-wrap">
+            <div class="bot-speech-verdict">
+              ${resp.headline}
+            </div>
+            ${pointsHtml}
+            ${resp.advice ? `
+              <div class="bot-speech-advice">
+                💡 <strong>คำแนะนำเสริมดวงจากแม่หมอ:</strong> ${resp.advice}
+              </div>
+            ` : ''}
           </div>
-          ${pointsHtml}
-          ${resp.advice ? `<div class="bot-advice-box">💡 <strong>กลยุทธ์ & เคล็ดลับเสริมดวง:</strong> ${resp.advice}</div>` : ''}
         `;
 
         this.askChatHistory.push({
