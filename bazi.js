@@ -2306,38 +2306,36 @@
 
       const prompt = `
 คุณคือ "แม่หมอปาจื่อ" (BaZi Astrological Consultant) ผู้เชี่ยวชาญการอ่านดวงชะตา 4 เสาแห่งสำนักแม่หมอติ๊ดติ๊ด
-ผู้ใช้ชื่อ: ${name} (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, เกิด ${chart.birthDateString} เวลา ${chart.birthTimeString} น., อายุ ${ageInYear} ปี)
-ตั้งคำถามว่า: "${q}"
+กำลังคุยตอบแชทกับลูกดวงชื่อ "${name}" (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, เกิด ${chart.birthDateString} เวลา ${chart.birthTimeString} น., อายุ ${ageInYear} ปี)
+คำถามของลูกดวง: "${q}"
 
 ข้อมูลผังดวงปาจื่อที่คำนวณได้จริง (Ground Truth ห้ามมโนข้อมูลอื่น):
 - ดิถีธาตุ (Day Master): ${dm.zh} (${dm.th}) สถานะ: ${chart.strengthText} (ธาตุหนุน ${chart.supportingPercentage}%, ธาตุต้าน ${chart.opposingPercentage}%)
 - ธาตุให้คุณและปรับสมดุล (喜用神): ธาตุ${favNames} ${tiaoHou ? `| ธาตุปรับอุณหภูมิดวง (調候): ธาตุ${tiaoHou}` : ''}
 - โครงสร้าง 4 เสาชะตาเดิม:
-  * เสาปี: ${p.year.stem.zh}${p.year.branch.zh} (สิบเทพ: ${p.year.tenGod.zh} - ${p.year.tenGod.th})
+  * เสายาม: ${p.hour.stem.zh}${p.hour.branch.zh} (สิบเทพ: ${p.hour.tenGod.zh} - ${p.hour.tenGod.th})
+  * เสาวัน (ตัวตน/วังคู่ครอง): ${p.day.stem.zh}${p.day.branch.zh} (กิ่งดินวังคู่ครอง: ${p.day.branch.zh})
   * เสาเดือน (การงาน/สังคม/บทบาท): ${p.month.stem.zh}${p.month.branch.zh} (สิบเทพ: ${p.month.tenGod.zh} - ${p.month.tenGod.th})
-  * เสาวัน (ตัวตน/คู่ครอง/วังคู่): ${p.day.stem.zh}${p.day.branch.zh} (กิ่งดินวังคู่ครอง: ${p.day.branch.zh})
-  * เสายาม (บริวาร/การลงทุน/บั้นปลาย): ${p.hour.stem.zh}${p.hour.branch.zh} (สิบเทพ: ${p.hour.tenGod.zh} - ${p.hour.tenGod.th})
+  * เสาปี: ${p.year.stem.zh}${p.year.branch.zh} (สิบเทพ: ${p.year.tenGod.zh} - ${p.year.tenGod.th})
 - วัยจร 10 ปีปัจจุบัน: ${curDaYun ? curDaYun.ageRange + ' (' + curDaYun.stem.zh + curDaYun.branch.zh + ' • ' + (curDaYun.tenGod ? curDaYun.tenGod.th : '') + ')' : '-'}
 - ปีจรพิจารณา: ${simY} (${simStem.zh}${simBranch.zh} • ${simStemGod.th})
 - ปฏิสัมพันธ์ปีจรกับผังดวง: ${clashMonth ? 'ปะทะเสาเดือนการงาน (沖月柱) ' : ''}${clashDay ? 'ปะทะเสาวันเรือนคู่ครอง (沖日支) ' : ''}${harmMonth ? 'สมพงศ์เสาเดือน (合月柱) ' : ''}${harmDay ? 'สมพงศ์เสาวัน (合日支) ' : ''}
 
-คำแนะนำในการตอบ:
-1. น้ำเสียง: อบอุ่น เป็นมิตร สุภาพ คมคาย และฉลาดลึกซึ้ง เหมือนแม่หมอผู้เชี่ยวชาญกำลังคุยกับลูกดวงตัวต่อตัว
-2. direct_answer: ฟันธงตอบคำถามของผู้ใช้โดยตรงอย่างชัดเจน ไม่ตอบอ้อมค้อม (ขึ้นต้นด้วย: คุณ${name}คะ...)
-3. analysis_items: แจกแจง 3 ประเด็นสำคัญที่ตอบคำถามนั้นๆ โดยเชื่อมโยงผัง 4 เสา, ปีจร ${simY}, วัยจร, และจังหวะเวลาอย่างเป็นเหตุเป็นผล
-4. advice: เคล็ดลับเสริมดวงและการตัดสินใจตามธาตุให้คุณ (${favNames})
-5. ห้ามใช้คำว่า "ตามตำรา" หรืออ้างสำนักโบราณ ส่งออกเป็น JSON ภาษาไทยเท่านั้น:
+คำสั่งสำคัญที่สุดในการตอบ:
+เขียนตอบในรูปแบบ "ข้อความแชทคุยกันธรรมดาที่เป็นธรรมชาติ" เหมือนแม่หมอกำลังพิมพ์ตอบใน LINE / Messenger ให้ลูกดวง:
+1. น้ำเสียง: อบอุ่น สุภาพ เป็นกันเอง คมคาย และมีความหวังดีเหมือนแม่หมอคุยกับลูกดวงตัวต่อตัว
+2. ห้ามตอบเป็นกล่องข้อความเด็ดขาด
+3. ห้ามทำเป็นหัวข้อย่อยแบบรายงาน ห้ามมีคำว่า "หัวข้อ:" หรือ "ประเด็นที่ 1:" หรือ "บทสรุป:" ห้ามมีป้ายเปอร์เซ็นต์
+4. ตอบเป็นข้อความแชท 3-4 ย่อหน้า:
+   - ย่อหน้าที่ 1: ทักทายคุณ${name}อย่างอบอุ่น แล้วฟันธงตอบคำถามโดยตรงอย่างชัดเจน
+   - ย่อหน้าที่ 2: อธิบายเหตุผลในผังดวง 4 เสา (เช่น เสาเดือน, เสาวัน, สิบเทพ หรือวัยจร) ให้เข้าใจง่าย เห็นภาพชัดเจน
+   - ย่อหน้าที่ 3: ชี้จังหวะเวลา โอกาส หรือช่วงเดือน/สารทที่ส่งพลังดีในปี ${simY}
+   - ย่อหน้าที่ 4: คำแนะนำจากใจแม่หมอ และวิธีเสริมดวง/การปฏิบัติตัวตามธาตุให้คุณ (${favNames}) ปิดท้ายด้วยความปรารถนาดี
+5. สามารถใช้อิโมจิน่ารักๆ (🔮, ✨, 💖, 🌸, 🌿) และใช้ **ตัวหนา** เพื่อเน้นคำสำคัญได้
+
+ตอบเป็น JSON รูปแบบนี้เท่านั้น:
 {
-  "topic_title": "หัวข้อวิเคราะห์สั้นๆ กระชับ",
-  "probability_text": "ป้ายสรุป เช่น โอกาสเปลี่ยนงาน 58% หรือ ดัชนีโชคลาภ 4.2/5",
-  "probability_bg": "#2563eb",
-  "direct_answer": "คำทักทายและคำวินิจฉัยฟันธงตอบตรงคำถามอย่างเป็นธรรมชาติ 1-2 ย่อหน้า",
-  "analysis_items": [
-    { "icon": "🏛️", "title": "ประเด็นที่ 1 จากเสาเดิม", "detail": "คำอธิบาย..." },
-    { "icon": "⚡", "title": "ประเด็นที่ 2 จากปีจรและวัยจร", "detail": "คำอธิบาย..." },
-    { "icon": "📅", "title": "ประเด็นที่ 3 จังหวะเวลาและโอกาส", "detail": "คำอธิบาย..." }
-  ],
-  "advice": "คำแนะนำเสริมดวงจากแม่หมอ..."
+  "reply_text": "เนื้อหาข้อความแชทภาษาไทยทั้งหมด 3-4 ย่อหน้า..."
 }
 `;
 
@@ -2364,19 +2362,30 @@
           const data = await res.json();
           const raw = data.choices?.[0]?.message?.content || '{}';
           const clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```json|```/g, '').trim();
-          const match = clean.match(/\{[\s\S]*\}/);
-          const json = JSON.parse(match ? match[0] : clean);
-          if (json && json.direct_answer) {
+
+          let replyText = '';
+          try {
+            const match = clean.match(/\{[\s\S]*\}/);
+            const json = JSON.parse(match ? match[0] : clean);
+            if (json && json.reply_text) {
+              replyText = json.reply_text;
+            } else if (json && json.direct_answer) {
+              const parts = [json.direct_answer];
+              if (json.analysis_items && json.analysis_items.length > 0) {
+                parts.push(json.analysis_items.map(it => `• **${it.title || ''}**: ${it.detail || ''}`).join('\n\n'));
+              }
+              if (json.advice) parts.push(`💡 **คำแนะนำเสริมดวงจากแม่หมอ**: ${json.advice}`);
+              replyText = parts.join('\n\n');
+            }
+          } catch (e) {
+            if (clean && clean.length > 30) {
+              replyText = clean;
+            }
+          }
+
+          if (replyText) {
             return {
-              title: json.topic_title || `คำวินิจฉัยดวงชะตา: ${rawQuery}`,
-              probText: json.probability_text || 'วิเคราะห์เจาะลึก',
-              probBg: json.probability_bg || '#7c3aed',
-              headline: json.direct_answer,
-              points: (json.analysis_items || []).map(it => ({
-                title: `${it.icon || '•'} ${it.title}`,
-                body: it.detail || ''
-              })),
-              advice: json.advice || ''
+              chatText: replyText
             };
           }
         } catch (e) {
@@ -2386,17 +2395,51 @@
       return null;
     },
 
+    buildConversationalText: function (chart, rawQuery, defaultYear, localResp) {
+      if (!chart) return 'กรุณาตั้งผังดวงชะตาก่อนถามคำถามค่ะ';
+      const name = chart.name || 'เจ้าชะตา';
+      const dm = chart.dayMaster;
+      const favNames = (chart.favorableElements || []).map(k => ELEMENTS_META[k].th).join(', ');
+
+      const paragraphs = [];
+      if (localResp && localResp.headline) {
+        paragraphs.push(localResp.headline.replace(/<[^>]+>/g, '').trim());
+      } else {
+        paragraphs.push(`สวัสดีค่ะคุณ **${name}** สำหรับคำถามเรื่อง "${rawQuery}" แม่หมอได้ตรวจดูผังดวงชะตา 4 เสาของคุณแล้วค่ะ`);
+      }
+
+      if (localResp && localResp.points && localResp.points.length > 0) {
+        const cleanPoints = localResp.points.map(pt => {
+          const body = (pt.body || '').replace(/<[^>]+>/g, '').trim();
+          let title = (pt.title || '').replace(/^[\p{Emoji_Presentation}\p{Emoji}\uFE0F\p{Extended_Pictographic}\s•]+/u, '').replace(/:$/, '').trim();
+          return `• **${title}**: ${body}`;
+        });
+        paragraphs.push(cleanPoints.join('\n\n'));
+      } else {
+        paragraphs.push(`พื้นดวงของคุณมีดิถีเป็น **${dm.zh} (${dm.th})** สถานะ **${chart.strengthText}** ซึ่งต้องการพลังของ **ธาตุ${favNames}** มาช่วยปรับสมดุลและเกื้อหนุนชีวิตให้ราบรื่น`);
+      }
+
+      if (localResp && localResp.advice) {
+        paragraphs.push(`💡 **คำแนะนำเสริมดวงจากแม่หมอ**: ${localResp.advice.replace(/<[^>]+>/g, '').trim()}`);
+      }
+
+      return paragraphs.join('\n\n');
+    },
+
     consultAstrologerAsync: async function (chart, rawQuery, defaultYear) {
-      if (!chart) return this.consultAstrologer(chart, rawQuery, defaultYear);
+      if (!chart) return { chatText: 'กรุณาตั้งผังดวงชะตาก่อนถามคำถามค่ะ' };
       try {
         const aiResp = await this.fetchBaZiAIAnswer(chart, rawQuery, defaultYear);
-        if (aiResp && aiResp.headline) {
+        if (aiResp && aiResp.chatText) {
           return aiResp;
         }
       } catch (err) {
         console.warn('Groq BaZi AI call failed, falling back to local engine:', err);
       }
-      return this.consultAstrologer(chart, rawQuery, defaultYear);
+      const localResp = this.consultAstrologer(chart, rawQuery, defaultYear);
+      return {
+        chatText: this.buildConversationalText(chart, rawQuery, defaultYear, localResp)
+      };
     }
   };
 
@@ -2621,42 +2664,55 @@
 
       // If chat is empty, initialize welcome message
       if (!this.askChatHistory || this.askChatHistory.length === 0) {
+        const welcomeText = `สวัสดีค่ะคุณ **${c.name}** ยินดีต้อนรับสู่ห้องตรวจดวงชะตาเฉพาะบุคคลนะคะ ✨🔮\n\nแม่หมอได้ผูกผังดวง 4 เสาชะตาของคุณเรียบร้อยแล้ว โดยคุณมีดิถีเป็น **${c.dayMaster.zh} (${c.dayMaster.th})** สถานะ **${c.strengthText}** พร้อมเชื่อมโยงกับวัยจร 10 ปี **${curDaYun ? curDaYun.ageRange : ''}** และปีจรปัจจุบัน **${curYear} (${yrStem.zh}${yrBranch.zh})** ไว้อย่างครบถ้วนค่ะ\n\nคุณสามารถพิมพ์ถามเจาะลึกได้ทุกเรื่องที่อยากรู้เลยนะคะ ไม่ว่าจะเป็นเรื่องการงาน เกณฑ์เปลี่ยนงาน ความรักคู่ครอง การเงินโชคลาภ หรือสุขภาพ หรือจะแตะเลือกคำถามยอดนิยมด้านบนเพื่อเริ่มคุยกับแม่หมอได้ทันทีเลยค่ะ 😊`;
+
         this.askChatHistory = [
           {
             sender: 'bot',
-            time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
-            html: `
-              <div class="bot-msg-header">
-                <div class="bot-msg-title">
-                  <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-                  <span>แม่หมอปาจื่อ (BaZi Astrological Consultant)</span>
-                </div>
-                <span class="bot-msg-prob-badge" style="background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);">พร้อมสนทนาเฉพาะบุคคล</span>
-              </div>
-              <div class="bot-conversation-wrap">
-                <p class="bot-speech-intro">
-                  สวัสดีค่ะคุณ <strong>${c.name}</strong>! ยินดีต้อนรับสู่ห้องตรวจดวงชะตาเฉพาะบุคคลนะคะ ✨
-                </p>
-                <p style="margin: 0; color: #475569; font-size: 13.5px; line-height: 1.6;">
-                  แม่หมอได้ผูกผังดวง 4 เสาชะตา (ดิถี <strong>${c.dayMaster.zh} ${c.dayMaster.th}</strong> สถานะ <strong>${c.strengthText}</strong>) พร้อมเชื่อมโยงวัยจร 10 ปี <strong>${curDaYun ? curDaYun.ageRange : ''} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : ''})</strong> และปีจรปัจจุบัน <strong>${curYear} (${yrStem.zh}${yrBranch.zh})</strong> ให้เรียบร้อยแล้วค่ะ
-                </p>
-                <div class="bot-speech-advice" style="background: #faf5ff; border: 1px solid #f3e8ff; border-left: 4px solid #8b5cf6; color: #581c87;">
-                  🔮 <strong>คุณ ${c.name} อยากปรึกษาเรื่องไหนเป็นพิเศษ ถามแม่หมอได้เลยนะคะ:</strong>
-                  <div class="bot-welcome-topics">
-                    <div>💼 <strong>การงาน & ธุรกิจ:</strong> มีเกณฑ์เปลี่ยนงานปีนี้ไหม? สิ้นปีนี้ควรโยกย้ายหรืออยู่ที่เดิม?</div>
-                    <div>💰 <strong>การเงิน & โชคลาภ:</strong> ปีนี้มีเกณฑ์รับทรัพย์ก้อนโตหรือเงินรั่วไหลไหม?</div>
-                    <div>💖 <strong>ความรัก & คู่ครอง:</strong> คนโสดจะเจอคู่เมื่อไหร่? คนมีคู่ความสัมพันธ์เป็นอย่างไร?</div>
-                    <div>🌿 <strong>สุขภาพ & ข้อควรระวัง:</strong> ธาตุในดวงสัมพันธ์กับอวัยวะไหน? ควรระวังเรื่องอะไร?</div>
-                    <div>📅 <strong>จังหวะเวลา:</strong> เดือนไหนดีที่สุดของปีนี้? เดือนไหนควรระวังตัว?</div>
-                  </div>
-                </div>
-              </div>
-            `
+            text: welcomeText,
+            time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
           }
         ];
       }
 
       this.renderAskChatMessages();
+    },
+
+    escapeHtml: function (str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    },
+
+    formatChatBody: function (text) {
+      if (!text) return '';
+      // If text is already wrapped in <p> tags
+      if (text.trim().startsWith('<p>') || text.includes('<div class="chat-')) {
+        return text;
+      }
+      let str = text.trim();
+      // Safe HTML escaping
+      str = this.escapeHtml(str);
+      // Markdown bold **word** -> <strong>word</strong>
+      str = str.replace(/\*\*(.+?)\*\*/g, function (_, m) {
+        return '<strong>' + m + '</strong>';
+      });
+      // Markdown italic *word* -> <em>word</em>
+      str = str.replace(/\*(.+?)\*/g, function (_, m) {
+        return '<em>' + m + '</em>';
+      });
+      // Split into paragraphs by double newline
+      const paragraphs = str.split(/\n\s*\n/).filter(function (p) { return p.trim().length > 0; });
+      if (paragraphs.length <= 1) {
+        return '<p>' + str.replace(/\n/g, '<br>') + '</p>';
+      }
+      return paragraphs.map(function (p) {
+        return '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>';
+      }).join('');
     },
 
     renderAskChatMessages: function () {
@@ -2669,21 +2725,37 @@
       chatFeed.innerHTML = (this.askChatHistory || []).map(msg => {
         if (msg.sender === 'user') {
           return `
-            <div class="chat-bubble-user">
-              <div class="user-bubble-tag"><i class="fa-solid fa-circle-user"></i> คุณ ${ownerName} ถาม:</div>
-              <div class="user-bubble-text">${msg.text}</div>
-              <div class="user-bubble-time">${msg.time}</div>
+            <div class="chat-message-row user-row">
+              <div class="chat-message-content">
+                <div class="chat-bubble-user">
+                  <div class="user-bubble-text">${this.escapeHtml(msg.text)}</div>
+                  <div class="chat-bubble-time">${msg.time}</div>
+                </div>
+              </div>
+              <div class="chat-avatar user-avatar" title="${this.escapeHtml(ownerName)}">
+                <i class="fa-solid fa-circle-user"></i>
+              </div>
             </div>
           `;
         } else {
+          const bodyHtml = this.formatChatBody(msg.text || msg.html || '');
           return `
-            <div class="chat-bubble-bot">
-              <div class="bot-sender-badge">
-                <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-                <span>แม่หมอปาจื่อ (BaZi Astrological Consultant)</span>
+            <div class="chat-message-row bot-row">
+              <div class="chat-avatar bot-avatar" title="แม่หมอปาจื่อ">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
               </div>
-              ${msg.html}
-              <div class="bot-msg-footer-time">${msg.time}</div>
+              <div class="chat-message-content">
+                <div class="chat-sender-name">
+                  <span>แม่หมอปาจื่อ</span>
+                  <span class="chat-sender-role">ผู้เชี่ยวชาญผังดวง 4 เสา</span>
+                </div>
+                <div class="chat-bubble-bot">
+                  <div class="bot-chat-body">
+                    ${bodyHtml}
+                  </div>
+                  <div class="chat-bubble-time">${msg.time}</div>
+                </div>
+              </div>
             </div>
           `;
         }
@@ -2728,68 +2800,20 @@
 
       try {
         const resp = await BaziEngine.consultAstrologerAsync(this.currentChart, text, this.selectedYear);
-
-        let pointsHtml = '';
-        if (resp.points && resp.points.length > 0) {
-          const seen = new Set();
-          const cleanPoints = resp.points.filter(pt => {
-            if (!pt || !pt.title) return false;
-            if (seen.has(pt.title)) return false;
-            seen.add(pt.title);
-            if (pt.title.includes('กลยุทธ์') || pt.title.includes('เคล็ดลับ') || pt.title.includes('คำแนะนำเสริมดวง')) return false;
-            return true;
-          });
-
-          pointsHtml = `
-            <div class="bot-speech-list">
-              ${cleanPoints.map(pt => {
-                const iconMatch = pt.title.match(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Extended_Pictographic})/u);
-                const icon = iconMatch ? iconMatch[0] : '•';
-                let cleanTitle = pt.title.replace(/^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Extended_Pictographic})\s*/u, '').trim();
-                if (cleanTitle.endsWith(':')) cleanTitle = cleanTitle.slice(0, -1).trim();
-                return `
-                  <div class="bot-speech-item">
-                    <span class="speech-icon">${icon}</span>
-                    <div class="speech-text">
-                      <strong class="speech-title">${cleanTitle}:</strong>
-                      <span class="speech-body">${pt.body}</span>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          `;
-        }
-
-        const botHtml = `
-          <div class="bot-msg-header">
-            <div class="bot-msg-title">
-              <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-              <span>${resp.title || 'คำวินิจฉัยดวงชะตา'}</span>
-            </div>
-            <span class="bot-msg-prob-badge" style="background: ${resp.probBg || '#7c3aed'};">${resp.probText || 'วิเคราะห์เจาะลึก'}</span>
-          </div>
-
-          <div class="bot-conversation-wrap">
-            <div class="bot-speech-verdict">
-              ${resp.headline}
-            </div>
-            ${pointsHtml}
-            ${resp.advice ? `
-              <div class="bot-speech-advice">
-                💡 <strong>คำแนะนำเสริมดวงจากแม่หมอ:</strong> ${resp.advice}
-              </div>
-            ` : ''}
-          </div>
-        `;
+        const chatText = resp && resp.chatText ? resp.chatText : 'ขออภัยค่ะ ระบบไม่สามารถประมวลผลคำตอบได้ในขณะนี้ กรุณาลองถามใหม่อีกครั้งนะคะ';
 
         this.askChatHistory.push({
           sender: 'bot',
-          html: botHtml,
+          text: chatText,
           time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
         });
       } catch (err) {
         console.error('Error during BaZi consultation:', err);
+        this.askChatHistory.push({
+          sender: 'bot',
+          text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองส่งคำถามใหม่อีกครั้งนะคะ',
+          time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
+        });
       } finally {
         if (sendBtn) {
           sendBtn.disabled = false;

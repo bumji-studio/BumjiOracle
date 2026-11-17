@@ -22893,254 +22893,145 @@ img {
   gap: 18px;
 }
 
+/* Real Chat Message Layout */
+.chat-message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.chat-message-row.user-row {
+  justify-content: flex-end;
+}
+
+.chat-message-row.bot-row {
+  justify-content: flex-start;
+}
+
+.chat-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.chat-avatar.bot-avatar {
+  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  color: #ffffff;
+}
+
+.chat-avatar.user-avatar {
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1.5px solid #cbd5e1;
+}
+
+.chat-message-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 86%;
+}
+
+.chat-message-row.user-row .chat-message-content {
+  align-items: flex-end;
+}
+
+.chat-message-row.bot-row .chat-message-content {
+  align-items: flex-start;
+}
+
+.chat-sender-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 6px;
+  padding-left: 2px;
+}
+
+.chat-sender-role {
+  font-size: 11px;
+  font-weight: 600;
+  color: #7c3aed;
+  background: #f3e8ff;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
 /* Chat Bubbles */
 .chat-bubble-user {
-  align-self: flex-end;
-  max-width: 80%;
   background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
   color: #ffffff;
   padding: 12px 18px;
   border-radius: 18px 18px 4px 18px;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
-  font-size: 14.5px;
-  line-height: 1.5;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.22);
   word-break: break-word;
-}
-
-.user-bubble-tag {
-  font-size: 11.5px;
-  font-weight: 700;
-  opacity: 0.9;
-  margin-bottom: 4px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
 .user-bubble-text {
   font-size: 15px;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-.user-bubble-time {
-  font-size: 10.5px;
-  opacity: 0.75;
-  text-align: right;
-  margin-top: 5px;
+  line-height: 1.55;
+  font-weight: 500;
 }
 
 .chat-bubble-bot {
-  align-self: flex-start;
-  max-width: 92%;
   background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 18px 18px 18px 4px;
-  padding: 18px 22px;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
-  font-size: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px 18px 18px 18px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  word-break: break-word;
+}
+
+/* Pure Natural Chat Content - No Boxes */
+.bot-chat-body {
+  font-size: 15px;
   color: #1e293b;
-  line-height: 1.6;
+  line-height: 1.78;
 }
 
-.bot-sender-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #f3e8ff;
-  color: #6b21a8;
-  font-size: 11.5px;
+.bot-chat-body p {
+  margin: 0 0 12px 0;
+}
+
+.bot-chat-body p:last-child {
+  margin-bottom: 0;
+}
+
+.bot-chat-body strong {
+  color: #0f172a;
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 12px;
-  margin-bottom: 12px;
 }
 
-.bot-msg-footer-time {
+.chat-bubble-time {
   font-size: 11px;
   color: #94a3b8;
-  text-align: right;
-  margin-top: 10px;
-}
-
-.bot-msg-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 12px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #f1f5f9;
-  flex-wrap: wrap;
-}
-
-.bot-msg-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 800;
-  color: #0f172a;
-  font-size: 15px;
-}
-
-.bot-msg-prob-badge {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 800;
-  color: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
-/* Mae Mor Conversational Chat Styles (No Rigid Boxes) */
-.bot-conversation-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-size: 14.5px;
-  line-height: 1.7;
-  color: #1e293b;
-}
-
-.bot-speech-intro {
-  font-size: 15px;
-  font-weight: 600;
-  color: #0f172a;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.bot-speech-verdict {
-  background: #faf5ff;
-  border-left: 4px solid #8b5cf6;
-  padding: 12px 16px;
-  border-radius: 0 12px 12px 0;
-  font-size: 14.5px;
-  font-weight: 500;
-  color: #2e1065;
-  line-height: 1.65;
-  margin: 2px 0 6px 0;
-}
-
-.bot-speech-verdict strong {
-  color: #6b21a8;
-  font-weight: 700;
-}
-
-.bot-speech-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 4px 0;
-}
-
-.bot-speech-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 14px;
-  color: #334155;
-  line-height: 1.65;
-  padding: 4px 0;
-}
-
-.bot-speech-item .speech-icon {
-  font-size: 17px;
-  line-height: 1.4;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.bot-speech-item .speech-text {
-  flex: 1;
-}
-
-.bot-speech-item .speech-title {
-  font-weight: 700;
-  color: #0f172a;
-  margin-right: 4px;
-}
-
-.bot-speech-item .speech-body {
-  display: inline;
-  color: #334155;
-}
-
-.bot-speech-advice {
   margin-top: 6px;
-  padding: 12px 16px;
-  background: #f0fdf4;
-  border-radius: 12px;
-  border-left: 4px solid #10b981;
-  color: #166534;
-  font-size: 13.5px;
-  line-height: 1.65;
+  text-align: right;
 }
 
-.bot-speech-advice strong {
-  color: #14532d;
-  font-weight: 700;
+.chat-bubble-user .chat-bubble-time {
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.bot-welcome-topics {
-  margin: 10px 0 0 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13.5px;
-  color: #475569;
-}
-
-.bot-welcome-topics div {
-  line-height: 1.6;
-}
-
-/* Legacy box overrides: Remove clunky borders */
-.bot-headline-box {
-  background: #faf5ff;
-  border: none;
-  border-left: 4px solid #8b5cf6;
-  padding: 12px 16px;
-  border-radius: 0 12px 12px 0;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: #2e1065;
-  margin-bottom: 12px;
-  line-height: 1.65;
-}
-
-.bot-point-box {
-  margin-bottom: 10px;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  padding: 2px 0;
-}
-
-.bot-point-title {
-  font-weight: 700;
-  font-size: 14px;
-  color: #0f172a;
-  margin-bottom: 4px;
-}
-
-.bot-point-body {
-  font-size: 13.5px;
-  color: #334155;
-  margin: 0;
-  line-height: 1.6;
-}
-
+/* Clean fallback styles */
+.bot-speech-verdict,
+.bot-speech-item,
+.bot-speech-advice,
+.bot-headline-box,
 .bot-advice-box {
-  background: #f0fdf4;
-  border: none;
-  border-left: 4px solid #10b981;
-  border-radius: 0 12px 12px 0;
-  padding: 12px 16px;
-  color: #166534;
-  font-size: 13.5px;
-  margin-top: 10px;
-  line-height: 1.65;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
 
 /* Chat Input Bar */
