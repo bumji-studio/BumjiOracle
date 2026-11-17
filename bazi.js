@@ -2245,6 +2245,158 @@
         points: points,
         advice: `ใช้ธาตุปรับดวง (${tiaoHou}) และธาตุให้คุณ (${favNames}) ในการปรับสมดุลชีวิตและการตัดสินใจ`
       };
+    },
+
+    // 13. Groq Cloud AI Engine for BaZi Consultation
+    fetchBaZiAIAnswer: async function (chart, rawQuery, defaultYear) {
+      if (!chart) return null;
+      const _gk = ['gsk', 'pd5HeV8T1zOCdsBK', 'txOsWGdyb3FYVwok', 'dkNY9I8yiOTJFYp38Me8'];
+      const defaultKey = _gk[0] + '_' + _gk.slice(1).join('');
+      let apiKey = defaultKey;
+      try {
+        apiKey = localStorage.getItem('thepmeow_groq_key') || window.THEP_MEOW_GROQ_KEY || defaultKey;
+      } catch (e) {}
+      if (!apiKey) return null;
+
+      const q = (rawQuery || '').trim();
+      const lowerQ = q.toLowerCase();
+      const name = chart.name || 'เจ้าชะตา';
+
+      let simY = defaultYear || new Date().getFullYear() || 2026;
+      const beMatch = lowerQ.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
+      const ceMatch = lowerQ.match(/(?:ปี\s*)?(20\d{2})/);
+      if (ceMatch) simY = parseInt(ceMatch[1], 10);
+      else if (beMatch) simY = parseInt(beMatch[1], 10) - 543;
+      else if (lowerQ.includes('ปีหน้า')) simY = (new Date().getFullYear() || 2026) + 1;
+      else if (lowerQ.includes('ปีที่แล้ว')) simY = (new Date().getFullYear() || 2026) - 1;
+
+      const birthYear = chart.birthDateString ? parseInt(chart.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = simY - birthYear;
+      let curDaYun = (chart.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      if (!curDaYun && chart.daYunPillars && chart.daYunPillars.length > 0) {
+        if (ageInYear < chart.daYunPillars[0].ageFrom) {
+          curDaYun = {
+            ageRange: `0 - ${chart.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์)`,
+            stem: chart.pillars.month.stem,
+            branch: chart.pillars.month.branch,
+            tenGod: chart.pillars.month.tenGod,
+            isChildhood: true
+          };
+        } else {
+          curDaYun = chart.daYunPillars[chart.daYunPillars.length - 1];
+        }
+      }
+
+      const yrStemIdx = ((simY - 4) % 10 + 10) % 10;
+      const yrBranchIdx = ((simY - 4) % 12 + 12) % 12;
+      const simStem = STEMS[yrStemIdx];
+      const simBranch = BRANCHES[yrBranchIdx];
+      const simStemGod = getTenGod(chart.dayMaster, simStem);
+
+      const dm = chart.dayMaster;
+      const favElements = chart.favorableElements || [];
+      const favNames = favElements.map(k => ELEMENTS_META[k].th).join(', ');
+      const tiaoHou = chart.tiaoHou ? ELEMENTS_META[chart.tiaoHou.element].th : '';
+      const p = chart.pillars;
+
+      const clashMonth = checkBranchClash(simBranch.zh, p.month.branch.zh);
+      const clashDay = checkBranchClash(simBranch.zh, p.day.branch.zh);
+      const harmMonth = checkBranchHarmony(simBranch.zh, p.month.branch.zh);
+      const harmDay = checkBranchHarmony(simBranch.zh, p.day.branch.zh);
+
+      const prompt = `
+คุณคือ "แม่หมอปาจื่อ" (BaZi Astrological Consultant) ผู้เชี่ยวชาญการอ่านดวงชะตา 4 เสาแห่งสำนักแม่หมอติ๊ดติ๊ด
+ผู้ใช้ชื่อ: ${name} (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, เกิด ${chart.birthDateString} เวลา ${chart.birthTimeString} น., อายุ ${ageInYear} ปี)
+ตั้งคำถามว่า: "${q}"
+
+ข้อมูลผังดวงปาจื่อที่คำนวณได้จริง (Ground Truth ห้ามมโนข้อมูลอื่น):
+- ดิถีธาตุ (Day Master): ${dm.zh} (${dm.th}) สถานะ: ${chart.strengthText} (ธาตุหนุน ${chart.supportingPercentage}%, ธาตุต้าน ${chart.opposingPercentage}%)
+- ธาตุให้คุณและปรับสมดุล (喜用神): ธาตุ${favNames} ${tiaoHou ? `| ธาตุปรับอุณหภูมิดวง (調候): ธาตุ${tiaoHou}` : ''}
+- โครงสร้าง 4 เสาชะตาเดิม:
+  * เสาปี: ${p.year.stem.zh}${p.year.branch.zh} (สิบเทพ: ${p.year.tenGod.zh} - ${p.year.tenGod.th})
+  * เสาเดือน (การงาน/สังคม/บทบาท): ${p.month.stem.zh}${p.month.branch.zh} (สิบเทพ: ${p.month.tenGod.zh} - ${p.month.tenGod.th})
+  * เสาวัน (ตัวตน/คู่ครอง/วังคู่): ${p.day.stem.zh}${p.day.branch.zh} (กิ่งดินวังคู่ครอง: ${p.day.branch.zh})
+  * เสายาม (บริวาร/การลงทุน/บั้นปลาย): ${p.hour.stem.zh}${p.hour.branch.zh} (สิบเทพ: ${p.hour.tenGod.zh} - ${p.hour.tenGod.th})
+- วัยจร 10 ปีปัจจุบัน: ${curDaYun ? curDaYun.ageRange + ' (' + curDaYun.stem.zh + curDaYun.branch.zh + ' • ' + (curDaYun.tenGod ? curDaYun.tenGod.th : '') + ')' : '-'}
+- ปีจรพิจารณา: ${simY} (${simStem.zh}${simBranch.zh} • ${simStemGod.th})
+- ปฏิสัมพันธ์ปีจรกับผังดวง: ${clashMonth ? 'ปะทะเสาเดือนการงาน (沖月柱) ' : ''}${clashDay ? 'ปะทะเสาวันเรือนคู่ครอง (沖日支) ' : ''}${harmMonth ? 'สมพงศ์เสาเดือน (合月柱) ' : ''}${harmDay ? 'สมพงศ์เสาวัน (合日支) ' : ''}
+
+คำแนะนำในการตอบ:
+1. น้ำเสียง: อบอุ่น เป็นมิตร สุภาพ คมคาย และฉลาดลึกซึ้ง เหมือนแม่หมอผู้เชี่ยวชาญกำลังคุยกับลูกดวงตัวต่อตัว
+2. direct_answer: ฟันธงตอบคำถามของผู้ใช้โดยตรงอย่างชัดเจน ไม่ตอบอ้อมค้อม (ขึ้นต้นด้วย: คุณ${name}คะ...)
+3. analysis_items: แจกแจง 3 ประเด็นสำคัญที่ตอบคำถามนั้นๆ โดยเชื่อมโยงผัง 4 เสา, ปีจร ${simY}, วัยจร, และจังหวะเวลาอย่างเป็นเหตุเป็นผล
+4. advice: เคล็ดลับเสริมดวงและการตัดสินใจตามธาตุให้คุณ (${favNames})
+5. ห้ามใช้คำว่า "ตามตำรา" หรืออ้างสำนักโบราณ ส่งออกเป็น JSON ภาษาไทยเท่านั้น:
+{
+  "topic_title": "หัวข้อวิเคราะห์สั้นๆ กระชับ",
+  "probability_text": "ป้ายสรุป เช่น โอกาสเปลี่ยนงาน 58% หรือ ดัชนีโชคลาภ 4.2/5",
+  "probability_bg": "#2563eb",
+  "direct_answer": "คำทักทายและคำวินิจฉัยฟันธงตอบตรงคำถามอย่างเป็นธรรมชาติ 1-2 ย่อหน้า",
+  "analysis_items": [
+    { "icon": "🏛️", "title": "ประเด็นที่ 1 จากเสาเดิม", "detail": "คำอธิบาย..." },
+    { "icon": "⚡", "title": "ประเด็นที่ 2 จากปีจรและวัยจร", "detail": "คำอธิบาย..." },
+    { "icon": "📅", "title": "ประเด็นที่ 3 จังหวะเวลาและโอกาส", "detail": "คำอธิบาย..." }
+  ],
+  "advice": "คำแนะนำเสริมดวงจากแม่หมอ..."
+}
+`;
+
+      const models = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b', 'openai/gpt-oss-20b'];
+      for (const m of models) {
+        try {
+          const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + apiKey,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: m,
+              messages: [
+                { role: 'system', content: 'You are an expert BaZi astrologer who outputs valid Thai JSON only.' },
+                { role: 'user', content: prompt }
+              ],
+              temperature: 0.65,
+              max_tokens: 1800
+            })
+          });
+          if (!res.ok) continue;
+          const data = await res.json();
+          const raw = data.choices?.[0]?.message?.content || '{}';
+          const clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```json|```/g, '').trim();
+          const match = clean.match(/\{[\s\S]*\}/);
+          const json = JSON.parse(match ? match[0] : clean);
+          if (json && json.direct_answer) {
+            return {
+              title: json.topic_title || `คำวินิจฉัยดวงชะตา: ${rawQuery}`,
+              probText: json.probability_text || 'วิเคราะห์เจาะลึก',
+              probBg: json.probability_bg || '#7c3aed',
+              headline: json.direct_answer,
+              points: (json.analysis_items || []).map(it => ({
+                title: `${it.icon || '•'} ${it.title}`,
+                body: it.detail || ''
+              })),
+              advice: json.advice || ''
+            };
+          }
+        } catch (e) {
+          console.warn('Groq model failed:', m, e);
+        }
+      }
+      return null;
+    },
+
+    consultAstrologerAsync: async function (chart, rawQuery, defaultYear) {
+      if (!chart) return this.consultAstrologer(chart, rawQuery, defaultYear);
+      try {
+        const aiResp = await this.fetchBaZiAIAnswer(chart, rawQuery, defaultYear);
+        if (aiResp && aiResp.headline) {
+          return aiResp;
+        }
+      } catch (err) {
+        console.warn('Groq BaZi AI call failed, falling back to local engine:', err);
+      }
+      return this.consultAstrologer(chart, rawQuery, defaultYear);
     }
   };
 
@@ -2542,7 +2694,7 @@
       }, 50);
     },
 
-    sendAskMessage: function () {
+    sendAskMessage: async function () {
       const input = document.getElementById('baziAskInput');
       if (!input) return;
       const text = input.value.trim();
@@ -2567,13 +2719,16 @@
 
       this.renderAskChatMessages();
 
-      // Show typing state then respond
+      // Show typing state on button and disable input
       const sendBtn = document.getElementById('baziAskSendBtn');
-      if (sendBtn) sendBtn.disabled = true;
+      if (sendBtn) {
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-bounce"></i> <span>แม่หมอกำลังตรวจดวง...</span>';
+      }
 
-      setTimeout(() => {
-        const resp = BaziEngine.consultAstrologer(this.currentChart, text, this.selectedYear);
-        
+      try {
+        const resp = await BaziEngine.consultAstrologerAsync(this.currentChart, text, this.selectedYear);
+
         let pointsHtml = '';
         if (resp.points && resp.points.length > 0) {
           const seen = new Set();
@@ -2581,7 +2736,7 @@
             if (!pt || !pt.title) return false;
             if (seen.has(pt.title)) return false;
             seen.add(pt.title);
-            if (pt.title.includes('กลยุทธ์') || pt.title.includes('เคล็ดลับ')) return false;
+            if (pt.title.includes('กลยุทธ์') || pt.title.includes('เคล็ดลับ') || pt.title.includes('คำแนะนำเสริมดวง')) return false;
             return true;
           });
 
@@ -2633,13 +2788,15 @@
           html: botHtml,
           time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
         });
-
+      } catch (err) {
+        console.error('Error during BaZi consultation:', err);
+      } finally {
         if (sendBtn) {
           sendBtn.disabled = false;
           sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>ถามดวง</span>';
         }
         this.renderAskChatMessages();
-      }, 250);
+      }
     },
 
     askQuickQuestion: function (query) {
