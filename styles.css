@@ -22907,6 +22907,29 @@ img {
   word-break: break-word;
 }
 
+.user-bubble-tag {
+  font-size: 11.5px;
+  font-weight: 700;
+  opacity: 0.9;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.user-bubble-text {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.user-bubble-time {
+  font-size: 10.5px;
+  opacity: 0.75;
+  text-align: right;
+  margin-top: 5px;
+}
+
 .chat-bubble-bot {
   align-self: flex-start;
   max-width: 92%;
@@ -22918,6 +22941,26 @@ img {
   font-size: 14px;
   color: #1e293b;
   line-height: 1.6;
+}
+
+.bot-sender-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f3e8ff;
+  color: #6b21a8;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.bot-msg-footer-time {
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: right;
+  margin-top: 10px;
 }
 
 .bot-msg-header {

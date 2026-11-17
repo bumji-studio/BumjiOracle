@@ -1862,6 +1862,7 @@
 
       const q = (rawQuery || '').trim();
       const lowerQ = q.toLowerCase();
+      const name = chart.name || 'เจ้าชะตา';
 
       // Resolve Target Year
       let simY = defaultYear || new Date().getFullYear() || 2026;
@@ -1907,50 +1908,256 @@
       const tiaoHou = chart.tiaoHou ? ELEMENTS_META[chart.tiaoHou.element].th : '';
       const p = chart.pillars;
 
+      // Clashes & Harmonies with Natal Pillars
+      const clashMonth = checkBranchClash(simBranch.zh, p.month.branch.zh);
+      const clashDay = checkBranchClash(simBranch.zh, p.day.branch.zh);
+      const clashYear = checkBranchClash(simBranch.zh, p.year.branch.zh);
+      const clashHour = checkBranchClash(simBranch.zh, p.hour.branch.zh);
+
+      const harmMonth = checkBranchHarmony(simBranch.zh, p.month.branch.zh);
+      const harmDay = checkBranchHarmony(simBranch.zh, p.day.branch.zh);
+      const harmYear = checkBranchHarmony(simBranch.zh, p.year.branch.zh);
+      const harmHour = checkBranchHarmony(simBranch.zh, p.hour.branch.zh);
+
       // Classify Intent
-      const isTimingQuery = /เดือนไหนดี|ช่วงเวลา|จังหวะ|ปลายปี|ต้นปี|กลางปี|สิ้นปี|ไตรมาส|เมื่อไหร่|ช่วงไหน|เดือนที่ดี|เดือนที่ควรระวัง/.test(lowerQ);
-      const isJobQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|สมัครงาน|สัมภาษณ์|เลื่อนขั้น|ก้าวหน้า|งานประจำ|ธุรกิจ|ค้าขาย|เปิดร้าน|หุ้นส่วน|โปรเจกต์|เจรจา|หน้าที่|การงาน|อาชีพ/.test(lowerQ);
+      const isJobQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|สมัครงาน|สัมภาษณ์|เลื่อนขั้น|ก้าวหน้า|งานประจำ|ตกงาน|ตำแหน่ง/.test(lowerQ) || (/งาน/.test(lowerQ) && /เปลี่ยน|ย้าย|ลาออก|เริ่ม/.test(lowerQ));
+      const isCareerChoice = /อาชีพ|ธุรกิจ|ค้าขาย|เปิดร้าน|หุ้นส่วน|สายงาน|ถูกโฉลก|ทำอะไรดี|งานอะไร|ธุรกิจอะไร/.test(lowerQ);
       const isWealthQuery = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|อสังหา|ค้าขาย|กำไร|เงินก้อน|เงินรั่ว|เสี่ยงโชค|หวย|คลังทรัพย์|สภาพคล่อง/.test(lowerQ);
       const isLoveQuery = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|คู่ครอง|เนื้อคู่|วังคู่ครอง|ความสัมพันธ์|ทะเลาะ|คนรัก/.test(lowerQ);
       const isHealthQuery = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|ปอด|ตับ|เครียด|นอนไม่หลับ|อุบัติเหตุ|เคราะห์|เจ็บป่วย/.test(lowerQ);
+      const isTimingQuery = /เดือนไหนดี|ช่วงเวลา|จังหวะ|ปลายปี|ต้นปี|กลางปี|สิ้นปี|ไตรมาส|เมื่อไหร่|ช่วงไหน|เดือนที่ดี|เดือนที่ควรระวัง/.test(lowerQ);
       const isFengShuiQuery = /สีมงคล|ทิศมงคล|เสริมดวง|แก้ดวง|ฮวงจุ้ย|ปรับดวง|ของมงคล|แต่งบ้าน|โต๊ะทำงาน|ทำบุญ/.test(lowerQ);
       const isProfileQuery = /ดิถี|แข็งหรืออ่อน|ตัวตน|อุปนิสัย|จุดเด่น|จุดอ่อน|พรสวรรค์|ธาตุให้คุณ|แก่นแท้|ดวงนี้เป็นยังไง/.test(lowerQ);
 
-      // 1. TIMING QUERY
-      if (isTimingQuery && !isJobQuery && !isWealthQuery && !isLoveQuery) {
+      // 1. JOB / CAREER CHANGE QUERY
+      if (isJobQuery) {
+        let prob = 48;
+        if (clashMonth) prob += 24;
+        const monthHasYiMa = (p.month.stars || []).some(s => s.name.includes('驛馬'));
+        const dayHasYiMa = (p.day.stars || []).some(s => s.name.includes('驛馬'));
+        const yiMaMap = { '申': '寅', '子': '寅', '辰': '寅', '寅': '申', '午': '申', '戌': '申', '巳': '亥', '酉': '亥', '丑': '亥', '亥': '巳', '卯': '巳', '未': '巳' };
+        const isYearYiMa = (yiMaMap[p.year.branch.zh] === simBranch.zh || yiMaMap[p.day.branch.zh] === simBranch.zh);
+        if (monthHasYiMa || isYearYiMa) prob += 16;
+        if (simStemGod.zh === '傷官' || simStemGod.zh === '七殺') prob += 14;
+        if (harmMonth) prob += 10;
+        prob = Math.min(94, Math.max(30, prob));
+
         const auspiciousMonths = allMonths.filter(m => m.ratingType === 'auspicious');
-        const clashMonths = allMonths.filter(m => m.ratingType === 'clash');
-        const bestM = auspiciousMonths[0] || allMonths[0];
-        const cautionM = clashMonths[0] || allMonths[10] || allMonths[0];
+        const peakMonth = allMonths.find(m => m.ratingType === 'clash') || auspiciousMonths[0] || allMonths[10] || allMonths[0];
+
+        const headlineText = `คุณ ${name} คะ จากผังดวงปี ${simY} (${simStem.zh}${simBranch.zh}): มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่รับผิดชอบในระดับ <strong>${prob >= 75 ? 'สูงมาก (' + prob + '%)' : 'ปานกลาง (' + prob + '%)'}</strong> ${prob >= 75 ? 'มีกระแสพลังกระตุ้นให้เกิดการขยับขยายหรือเปลี่ยนสภาพแวดล้อมอย่างชัดเจน' : 'แนะนำให้เน้นการปรับบทบาทหรือรับโปรเจกต์ใหม่ในที่เดิม มากกว่าการลาออกกะทันหัน'}`;
+
+        const points = [
+          {
+            title: `🏛️ เสาการงานในดวงเดิม (เสาเดือน ${p.month.stem.zh}${p.month.branch.zh}):`,
+            body: `เสาเดือนของคุณคุมด้านอาชีพและตำแหน่งหน้าที่การงาน เป็น <strong>${p.month.stem.zh}${p.month.branch.zh}</strong> (สิบเทพ: <strong>${p.month.tenGod.zh} - ${p.month.tenGod.th}</strong>) ${clashMonth ? '• ในปีนี้ได้รับแรงปะทะจากปีจร (沖月柱) ทำให้รู้สึกอึดอัดหรืออยากเปลี่ยนแปลงบทบาทเดิม' : harmMonth ? '• ในปีนี้ได้รับแรงสมพงศ์ (合月柱) มีเกณฑ์ผู้ใหญ่สนับสนุนหรือได้เลื่อนขั้นปรับหน้าที่' : '• โครงสร้างการงานเดิมมีความมั่นคง แต่พร้อมขยับตัวเมื่อมีโอกาสที่ดีเข้ามา'}`
+          },
+          {
+            title: `⚡ อิทธิพลปีจร ${simY} (${simStem.zh}${simBranch.zh}) & วัยจร 10 ปี:`,
+            body: `ปี ${simY} ส่งพลังก้านฟ้า <strong>${simStem.zh} (${simStemGod.th})</strong> และกิ่งดิน <strong>${simBranch.zh} (${simBranch.zodiac.split(' ')[0]})</strong> ${curDaYun ? `• ร่วมกับวัยจรช่วงอายุ <strong>${curDaYun.ageRange} (${curDaYun.stem.zh}${curDaYun.branch.zh} • ${curDaYun.tenGod ? curDaYun.tenGod.th.split(' ')[0] : ''})</strong>` : ''} ซึ่งเป็นแรงขับเคลื่อนสำคัญในการเติบโตทางหน้าที่การงาน`
+          },
+          {
+            title: `📅 จังหวะเวลาและช่วงเดือนที่มีโอกาสดีที่สุด:`,
+            body: `ช่วงที่มีแรงส่งเกื้อหนุนสูงสุดคือช่วง <strong>${peakMonth ? peakMonth.labelDate : 'ช่วงปลายปี'} (${peakMonth ? peakMonth.stem.zh + peakMonth.branch.zh : ''})</strong> ${auspiciousMonths.length > 0 ? `และมีเดือนที่เจรจาหรือสัมภาษณ์ราบรื่นคือ สารท ${auspiciousMonths.slice(0, 2).map(m => m.labelDate).join(', ')}` : ''}`
+          }
+        ];
+
+        const adviceText = `เนื่องจากดิถีของคุณเป็น ${dm.zh} (${chart.strengthText}) แนะนำให้ใช้ธาตุให้คุณ (ธาตุ${favNames}) ในการตัดสินใจ หากจะย้ายงาน ควรรอให้มีสัญญาหรือหนังสือตอบรับที่เป็นลายลักษณ์อักษรที่แน่นอนก่อนเสมอ อย่าเพิ่งลาออกด้วยอารมณ์ชั่ววูบ`;
 
         return {
-          title: `วิเคราะห์จังหวะเวลา & เดือนสำคัญประจำปี ${simY}`,
-          headline: `ช่วงเวลาที่พลังธาตุเปิดรับดีที่สุดคือ ${bestM.labelDate} (${bestM.solarTh.split(' ')[0]}) ส่วนช่วงที่ต้องเฝ้าระวังคือ ${cautionM.labelDate} (${cautionM.solarTh.split(' ')[0]})`,
-          probText: 'ไทม์ไลน์ 12 สารท',
-          probBg: '#7c3aed',
-          points: [
-            {
-              title: '⭐ เดือนที่มีพลังมงคลและเกื้อหนุนสูงสุด (จังหวะรุก/เจรจา/เริ่มต้น):',
-              body: auspiciousMonths.length > 0 
-                ? auspiciousMonths.map(m => `• สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}): ${m.ratingBadge} - ${m.overview.slice(0, 75)}...`).join('<br>')
-                : `• สารท ${bestM.labelDate} (${bestM.stem.zh}${bestM.branch.zh}): ${bestM.ratingBadge} - เหมาะแก่การสะสางงานและเตรียมความพร้อม`
-            },
-            {
-              title: '⚠️ เดือนที่มีการปะทะหรือความผันผวน (จังหวะตั้งรับ/รอบคอบ):',
-              body: clashMonths.length > 0
-                ? clashMonths.map(m => `• สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}): ${m.ratingBadge} - ${m.overview.slice(0, 75)}...`).join('<br>')
-                : '• ตลอดทั้งปีไม่มีเดือนที่มีการปะทะรุนแรง พลังงานหมุนเวียนค่อนข้างราบรื่น'
-            },
-            {
-              title: `🌌 สภาพภูมิพลังงานรวมของปี ${simY} (${simStem.zh}${simBranch.zh}):`,
-              body: `ปีจรส่งพลังก้านฟ้า ${simStem.zh} (${simStemGod.th}) และกิ่งดิน ${simBranch.zh} ควบคู่กับวัยจร 10 ปีช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : '-'})`
-            }
-          ],
-          advice: `ควรรอจังหวะลงมือหรือเซ็นสัญญาในเดือนที่ได้รับการส่งเสริม เช่น สารท ${bestM.labelDate} และใช้ธาตุให้คุณ (${favNames}) ในการปรับสมดุล`
+          title: `วิเคราะห์เกณฑ์การเปลี่ยนงาน & หน้าที่ประจำปี ${simY}`,
+          headline: headlineText,
+          probText: `โอกาสเปลี่ยนงาน ${prob}%`,
+          probBg: prob >= 75 ? 'linear-gradient(135deg, #7c3aed 0%, #db2777 100%)' : '#2563eb',
+          points: points,
+          advice: adviceText
         };
       }
 
-      // 2. FENG SHUI & REMEDIES QUERY
+      // 2. CAREER / BUSINESS CHOICE QUERY
+      if (isCareerChoice) {
+        const headlineText = `คุณ ${name} คะ ด้วยผังดวงดิถี <strong>${dm.zh} (${dm.th})</strong> สถานะ <strong>${chart.strengthText}</strong> มีธาตุให้คุณหลักคือ <strong>ธาตุ${favNames}</strong>`;
+        const points = [
+          {
+            title: '🌟 ลักษณะบทบาทและสไตล์การทำงานที่ถูกโฉลก:',
+            body: `พื้นดวงมีความโดดเด่นในด้าน ${chart.dayMasterProfile.traits.slice(0, 100)}... มีสิบเทพเด่นที่เสาเดือนคือ <strong>${p.month.tenGod.zh} (${p.month.tenGod.th})</strong> เหมาะกับบทบาทที่ได้ใช้ความเชี่ยวชาญ การวางแผน และการบริหารจัดการ`
+          },
+          {
+            title: '💼 อุตสาหกรรมและกลุ่มธุรกิจที่เกื้อหนุนดวงชะตา:',
+            body: `ควรเลือกทำธุรกิจหรือทำงานในกลุ่มธาตุให้คุณ: ${favElements.map(k => {
+              if (k === 'water') return '• <strong>ธาตุน้ำ:</strong> การสื่อสาร, การค้าต่างประเทศ, โลจิสติกส์, มีเดีย, การท่องเที่ยว, เครื่องดื่ม';
+              if (k === 'wood') return '• <strong>ธาตุไม้:</strong> การศึกษา, สุขภาพ, แพทย์, เกษตรแปรรูป, ศิลปะ, สิ่งแวดล้อม';
+              if (k === 'fire') return '• <strong>ธาตุไฟ:</strong> เทคโนโลยี, นวัตกรรม, การตลาด, พลังงาน, ความบันเทิง';
+              if (k === 'metal') return '• <strong>ธาตุทอง:</strong> การเงิน, ธนาคาร, กฎหมาย, จิวเวลรี่, วิศวกรรม, อุตสาหกรรมแม่นยำ';
+              return '• <strong>ธาตุดิน:</strong> อสังหาริมทรัพย์, ที่ดิน, ก่อสร้าง, การบริหารสินทรัพย์, คลังสินค้า';
+            }).join('<br>')}`
+          },
+          {
+            title: '🚀 แนวทางการเติบโตและหุ้นส่วน:',
+            body: `หากทำธุรกิจส่วนตัว ควรมีหุ้นส่วนหรือทีมงานที่มีธาตุ <strong>${favNames}</strong> เพื่อช่วยหนุนกำลังและอุดช่องโหว่ด้านการบริหาร`
+          }
+        ];
+
+        return {
+          title: 'วิเคราะห์อาชีพและธุรกิจที่ถูกโฉลกกับดวงชะตา',
+          headline: headlineText,
+          probText: 'อาชีพเสริมบารมี',
+          probBg: '#059669',
+          points: points,
+          advice: `เลือกสายงานที่ตรงกับธาตุให้คุณ (${favNames}) จะช่วยให้ทำงานได้อย่างมีความสุข โดดเด่น และก้าวหน้าได้เร็วกว่าสายงานอื่น`
+        };
+      }
+
+      // 3. WEALTH QUERY
+      if (isWealthQuery) {
+        const dmElem = dm.element;
+        const wealthElem = ELEMENTS_META[dmElem].controls;
+        const wealthMeta = ELEMENTS_META[wealthElem];
+        const wealthPct = chart.elementPercentages[wealthElem] || 0;
+        const outputElem = ELEMENTS_META[dmElem].generates;
+        const outputMeta = ELEMENTS_META[outputElem];
+
+        let wealthScore = 3.8;
+        if (favElements.includes(simStem.element) || favElements.includes(simBranch.element)) wealthScore += 0.6;
+        if (simStemGod.zh === '正財' || simStemGod.zh === '偏財' || simStemGod.zh === '食神') wealthScore += 0.5;
+        if (clashDay || clashMonth) wealthScore -= 0.4;
+        wealthScore = Math.min(4.9, Math.max(2.5, wealthScore));
+        const wealthPctScore = Math.round((wealthScore / 5) * 100);
+
+        const auspiciousMonths = allMonths.filter(m => m.ratingType === 'auspicious');
+        const wealthPeakMonth = auspiciousMonths[0] || allMonths[0];
+
+        const headlineText = `คุณ ${name} คะ ภาพรวมดวงการเงินและโชคลาภในปี ${simY} (${simStem.zh}${simBranch.zh}) อยู่ในระดับ <strong>${wealthScore >= 4.0 ? 'คล่องตัวสูง มีโอกาสรับทรัพย์ก้อนโต' : 'หมุนเวียนต่อเนื่อง แต่ต้องวางแผนงบประมาณรอบคอบ'} (ดัชนี ${wealthScore.toFixed(1)}/5)</strong>`;
+
+        const points = [
+          {
+            title: `💎 ศักยภาพคลังทรัพย์ในดวงเดิม:`,
+            body: `ธาตุโชคลาภของดิถี ${dm.zh} คือธาตุ <strong>${wealthMeta.th} (${wealthPct}%)</strong> และธาตุสร้างรายได้ (ถ่ายเท) คือธาตุ <strong>${outputMeta.th} (${chart.elementPercentages[outputElem] || 0}%)</strong> บ่งบอกถึงศักยภาพในการมองเห็นลู่ทางการเงินและการแปลงความสามารถเป็นมูลค่า`
+          },
+          {
+            title: `🔥 ปฏิสัมพันธ์ปีจร ${simY} (${simStem.zh}${simBranch.zh}) ต่อกระเป๋าเงิน:`,
+            body: `ปีนี้พลังก้านฟ้า ${simStem.zh} (${simStemGod.th}) ${favElements.includes(simStem.element) ? 'เป็นธาตุส่งเสริม ช่วยเพิ่มความมั่นใจในการต่อยอดการเงินและการลงทุน' : 'เตือนให้ระวังเรื่องการใช้จ่ายตามอารมณ์หรือรายจ่ายจรที่ไม่คาดคิด'} ${clashDay ? '• กิ่งดินปะทะเสาวัน ควรระวังเรื่องสัญญาเงินกู้หรือการค้ำประกันให้คนใกล้ชิด' : '• กระแสการเงินหมุนเวียนได้ดี'}`
+          },
+          {
+            title: `📅 จังหวะเวลารับทรัพย์และเดือนสภาพคล่องสูงสุด:`,
+            body: `ช่วงเดือนที่มีเกณฑ์โชคลาภและสภาพคล่องโดดเด่นคือช่วง <strong>${wealthPeakMonth ? wealthPeakMonth.labelDate : 'ช่วงกลางปี'} (${wealthPeakMonth ? wealthPeakMonth.stem.zh + wealthPeakMonth.branch.zh : ''})</strong>`
+          }
+        ];
+
+        return {
+          title: `วิเคราะห์การเงิน โชคลาภ & การบริหารทรัพย์ปี ${simY}`,
+          headline: headlineText,
+          probText: `ดัชนีการเงิน ${wealthPctScore}%`,
+          probBg: '#10b981',
+          points: points,
+          advice: `เน้นการออมและลงทุนในทรัพย์สินที่สอดคล้องกับธาตุให้คุณ (${favNames}) หลีกเลี่ยงการเก็งกำไรในสินทรัพย์เสี่ยงสูงโดยไม่มีแผนสำรอง`
+        };
+      }
+
+      // 4. LOVE & SPOUSE QUERY
+      if (isLoveQuery) {
+        let loveScore = harmDay ? 4.4 : clashDay ? 2.8 : 3.8;
+        const lovePct = Math.round((loveScore / 5) * 100);
+        const headlineText = `คุณ ${name} คะ สำหรับดวงความรักและคู่ครองในช่วงนี้ <strong>${harmDay ? 'มีเกณฑ์พบรัก สมหวัง หรือความสัมพันธ์พัฒนาสู่ความมั่นคงสูง' : clashDay ? 'เป็นช่วงที่ต้องใช้ความเข้าใจ ความใจเย็น และลดการใช้อารมณ์ตัดสินปัญหา' : 'ความสัมพันธ์ดำเนินไปอย่างราบรื่น อบอุ่น มีความเข้าใจที่ดีต่อกัน'} (ดัชนี ${loveScore.toFixed(1)}/5)</strong>`;
+
+        const points = [
+          {
+            title: `🌹 วังคู่ครองในดวงเดิม (เสาวัน ${p.day.stem.zh}${p.day.branch.zh}):`,
+            body: `เสาวันคุมเรือนคู่ครองและชีวิตคู่ กิ่งดินคือ <strong>${p.day.branch.zh} (${p.day.branch.zodiac.split(' ')[0]})</strong> ${chart.gender === 'female' ? 'สำหรับฝ่ายหญิงดาวคู่ครองคือดาวกวน/ซัวะ (官/殺) ซึ่งคุมเรื่องความมั่นคงและการดูแล' : 'สำหรับฝ่ายชายดาวคู่ครองคือดาวไฉ่ (財) ซึ่งคุมเรื่องความอบอุ่นและการเกื้อกูล'}`
+          },
+          {
+            title: `💫 ปฏิสัมพันธ์ปีจร ${simY} (${simStem.zh}${simBranch.zh}) ต่อความสัมพันธ์:`,
+            body: `ในปี ${simY} กิ่งดินปีจร ${simBranch.zh} ${harmDay ? 'สมพงศ์กับเรือนคู่ครองโดยตรง (合日支) ส่งผลให้คนโสดมีโอกาสเจอคนที่ถูกใจ ส่วนคนมีคู่จะได้กระชับความสัมพันธ์ให้แน่นแฟ้นยิ่งขึ้น' : clashDay ? 'มีจุดปะทะกับเรือนคู่ครอง (沖日支) ควรระวังเรื่องคำพูด ความน้อยใจ หรือความเครียดจากงานมากระทบคนรัก' : 'มีกระแสพลังงานที่สมดุลและราบรื่นดี'}`
+          },
+          {
+            title: `📅 จังหวะเวลาเบ่งบานของความรัก:`,
+            body: `ช่วงเดือนที่ความรักหวานชื่นและมีโอกาสพัฒนาดีที่สุดคือ <strong>${allMonths[1] ? allMonths[1].labelDate : 'ช่วงต้นปี'}</strong> และ <strong>${allMonths[7] ? allMonths[7].labelDate : 'ช่วงปลายปี'}</strong>`
+          }
+        ];
+
+        return {
+          title: `วิเคราะห์ความรัก คู่ครอง & ชีวิตคู่ปี ${simY}`,
+          headline: headlineText,
+          probText: `ดัชนีความรัก ${lovePct}%`,
+          probBg: '#ec4899',
+          points: points,
+          advice: `ใช้ความเห็นอกเห็นใจ และธาตุปรับดวง (${tiaoHou}) ในการรักษาอุณหภูมิความสัมพันธ์ให้สดชื่น พากันไปพักผ่อนเปลี่ยนบรรยากาศในสถานที่ธรรมชาติ`
+        };
+      }
+
+      // 5. HEALTH QUERY
+      if (isHealthQuery) {
+        const elemPcts = chart.elementPercentages;
+        const weakestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] < elemPcts[b] ? a : b);
+        const strongestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] > elemPcts[b] ? a : b);
+
+        const headlineText = `คุณ ${name} คะ สำหรับดวงสุขภาพในปี ${simY} (${simStem.zh}${simBranch.zh}): ภาพรวมร่างกายยังแข็งแรงดี แต่ควรเฝ้าระวังระบบ <strong>${ELEMENTS_META[weakestElem].organ}</strong> และการพักผ่อน`;
+
+        const points = [
+          {
+            title: `🫀 สมดุลเบญจธาตุและอวัยวะที่ต้องดูแล:`,
+            body: `ธาตุที่มีกำลังน้อยที่สุดในดวงคือ <strong>ธาตุ${ELEMENTS_META[weakestElem].th} (${elemPcts[weakestElem]}%)</strong> ซึ่งสัมพันธ์กับระบบ <strong>${ELEMENTS_META[weakestElem].organ}</strong> ควรบำรุงและหลีกเลี่ยงพฤติกรรมเสี่ยง • ส่วนธาตุที่มีกำลังสูงสุดคือ <strong>ธาตุ${ELEMENTS_META[strongestElem].th} (${elemPcts[strongestElem]}%)</strong> สัมพันธ์กับ <strong>${ELEMENTS_META[strongestElem].organ}</strong> ควรออกกำลังกายเพื่อระบายพลังงานส่วนเกิน`
+          },
+          {
+            title: `⚠️ ปฏิสัมพันธ์ปีจร ${simY} (${simStem.zh}${simBranch.zh}) ต่อสุขภาพ:`,
+            body: `ในปี ${simY} ธาตุประจำปีคือ ${simStem.element} และ ${simBranch.element} ${clashDay ? 'มีจุดปะทะกับเสาวัน (พลังกายใจ) ควรระวังเรื่องความเครียดสะสมและการนอนหลับพักผ่อนไม่เพียงพอ' : 'กระแสชี่ไหลเวียนค่อนข้างสมดุล'} ${clashYear || clashMonth ? '• ควรระวังเรื่องการเดินทางหรือความเร่งรีบในการทำกิจกรรม' : ''}`
+          },
+          {
+            title: `📅 ช่วงเดือนที่ควรดูแลตัวเองเป็นพิเศษ:`,
+            body: `ช่วงเดือนที่มีการปะทะหรือสภาพอากาศเปลี่ยนคือช่วง <strong>${allMonths[4] ? allMonths[4].labelDate : 'ช่วงกลางปี'}</strong> และ <strong>${allMonths[10] ? allMonths[10].labelDate : 'ช่วงปลายปี'}</strong>`
+          }
+        ];
+
+        return {
+          title: `วิเคราะห์สุขภาพ & สมดุลเบญจธาตุปี ${simY}`,
+          headline: headlineText,
+          probText: clashDay ? 'เฝ้าระวังสมดุล' : 'สมบูรณ์ดี',
+          probBg: '#0284c7',
+          points: points,
+          advice: `ทานอาหารที่มีคุณค่าทางโภชนาการตามธาตุให้คุณ (${favNames}) ดื่มน้ำสะอาดให้เพียงพอ และพักสายตาจากการทำงานหน้าจอดิจิทัล`
+        };
+      }
+
+      // 6. TIMING & AUSPICIOUS MONTHS QUERY
+      if (isTimingQuery) {
+        const auspiciousMonths = allMonths.filter(m => m.ratingType === 'auspicious');
+        const clashMonths = allMonths.filter(m => m.ratingType === 'clash');
+        const bestM = auspiciousMonths[0] || allMonths[0];
+        const secondBestM = auspiciousMonths[1] || allMonths[1];
+        const cautionM = clashMonths[0] || allMonths[10] || allMonths[0];
+
+        const headlineText = `คุณ ${name} คะ จังหวะเวลาที่ดีที่สุดของปี ${simY} (${simStem.zh}${simBranch.zh}) คือช่วง <strong>${bestM.labelDate}</strong> และ <strong>${secondBestM ? secondBestM.labelDate : ''}</strong> ส่วนช่วงที่ต้องรอบคอบเป็นพิเศษคือช่วง <strong>${cautionM.labelDate}</strong>`;
+
+        const points = [
+          {
+            title: '⭐ เดือนที่มีพลังมงคลและเกื้อหนุนสูงสุด (จังหวะรุก / เริ่มต้น / เซ็นสัญญา):',
+            body: auspiciousMonths.length > 0 
+              ? auspiciousMonths.map(m => `• <strong>สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}):</strong> ${m.ratingBadge} - ${m.overview.slice(0, 80)}...`).join('<br>')
+              : `• <strong>สารท ${bestM.labelDate} (${bestM.stem.zh}${bestM.branch.zh}):</strong> เหมาะแก่การสะสางงานและเตรียมความพร้อม`
+          },
+          {
+            title: '⚠️ เดือนที่มีการปะทะหรือความผันผวน (จังหวะตั้งรับ / ตรวจสอบความเรียบร้อย):',
+            body: clashMonths.length > 0
+              ? clashMonths.map(m => `• <strong>สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}):</strong> ${m.ratingBadge} - ${m.overview.slice(0, 80)}...`).join('<br>')
+              : '• ตลอดทั้งปีไม่มีเดือนที่มีการปะทะรุนแรง พลังงานหมุนเวียนค่อนข้างราบรื่น'
+          },
+          {
+            title: `🌌 ภาพรวมพลังงานตลอด 12 สารทของปี ${simY}:`,
+            body: `ปีจรส่งพลังก้านฟ้า ${simStem.zh} (${simStemGod.th}) และกิ่งดิน ${simBranch.zh} ควบคู่กับวัยจร 10 ปีช่วงอายุ ${curDaYun ? curDaYun.ageRange : '-'} (${curDaYun ? curDaYun.stem.zh + curDaYun.branch.zh : '-'}) แนะนำให้ใช้เดือนมงคลในการขับเคลื่อนเป้าหมายใหญ่`
+          }
+        ];
+
+        return {
+          title: `วิเคราะห์จังหวะเวลา & เดือนมงคลประจำปี ${simY}`,
+          headline: headlineText,
+          probText: 'ไทม์ไลน์ 12 สารท',
+          probBg: '#7c3aed',
+          points: points,
+          advice: `วางแผนเริ่มโปรเจกต์ใหม่หรือลงนามสัญญาในเดือนมงคล เช่น สารท ${bestM.labelDate} และใช้ธาตุให้คุณ (${favNames}) เสริมความมั่นใจ`
+        };
+      }
+
+      // 7. FENG SHUI & LUCKY ELEMENTS QUERY
       if (isFengShuiQuery) {
         const favDirs = favElements.map(k => ELEMENTS_META[k].direction).join(', ');
         const favColors = favElements.map(k => {
@@ -1961,34 +2168,38 @@
           return 'ฟ้า, น้ำเงิน, ดำ, กรมท่า';
         }).join(' | ');
 
+        const headlineText = `คุณ ${name} คะ ธาตุปรับสมดุลหลักของดวงชะตาคุณคือ <strong>ธาตุ${favNames}</strong> และธาตุปรับอุณหภูมิดวงคือ <strong>ธาตุ${tiaoHou}</strong>`;
+
+        const points = [
+          {
+            title: '🎨 สีมงคลเสริมบารมี & เสื้อผ้าเครื่องประดับ:',
+            body: `สีที่ช่วยเหนี่ยวนำพลังงานธาตุให้คุณคือ: <strong>${favColors}</strong> แนะนำให้สวมใส่ในวันเจรจาสำคัญหรือใช้งานเป็นโทนสีห้องทำงาน`
+          },
+          {
+            title: '🧭 ทิศมงคลเปิดรับโชคลาภ (โต๊ะทำงาน & หัวนอน):',
+            body: `ทิศที่เป็นสิริมงคลคือ <strong>ทิศ${favDirs}</strong> แนะนำให้หันหน้าโต๊ะทำงานหรือหันหัวนอนไปทางทิศดังกล่าวเพื่อรับพลังมงคล`
+          },
+          {
+            title: '⚖️ ธาตุปรับอุณหภูมิดวงชะตา (調候用神):',
+            body: `ดวงชะตานี้ได้รับพลังจากธาตุ <strong>${tiaoHou}</strong> ช่วยปรับสมดุลให้จิตใจสงบ ผ่อนคลาย และตัดสินใจได้อย่างเฉียบคม`
+          }
+        ];
+
         return {
           title: 'การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตาชีวิต',
-          headline: `ธาตุปรับสมดุลหลักของดวงชะตานี้คือ ธาตุ${favNames} และธาตุปรับดวงคือ ธาตุ${tiaoHou}`,
+          headline: headlineText,
           probText: 'เคล็ดลับเสริมพลังชี่',
           probBg: '#059669',
-          points: [
-            {
-              title: '🎨 สีมงคลเสริมบารมี & เสื้อผ้าเครื่องประดับ:',
-              body: `สีที่ช่วยเหนี่ยวนำพลังงานธาตุให้คุณคือ: ${favColors} แนะนำให้สวมใส่ในวันเจรจาสำคัญหรือใช้งานเป็นโทนสีห้องทำงาน`
-            },
-            {
-              title: '🧭 ทิศมงคลเปิดรับโชคลาภ (โต๊ะทำงาน & หัวนอน):',
-              body: `ทิศที่เป็นสิริมงคลคือ ทิศ${favDirs} แนะนำให้หันหน้าโต๊ะทำงานหรือหันหัวนอนไปทางทิศดังกล่าวเพื่อรับพลังมงคล`
-            },
-            {
-              title: '⚖️ ธาตุปรับอุณหภูมิดวงชะตา (調候用神):',
-              body: `ดวงชะตานี้ได้รับพลังจากธาตุ${tiaoHou} ช่วยปรับสมดุลให้จิตใจสงบ ผ่อนคลาย และตัดสินใจได้อย่างเฉียบคม`
-            }
-          ],
-          advice: `จัดโต๊ะทำงานให้โปร่ง โล่ง สะอาด วางของมงคลหรือต้นไม้มงคลตามธาตุให้คุณ เพื่อเปิดทางให้พลังชี่ไหลเวียนราบรื่น`
+          points: points,
+          advice: `จัดโต๊ะทำงานให้โปร่ง โล่ง สะอาด วางของมงคลหรือต้นไม้มงคลตามธาตุให้คุณ (${favNames}) เพื่อเปิดทางให้พลังชี่ไหลเวียนราบรื่น`
         };
       }
 
-      // 3. PROFILE & TALENTS QUERY
-      if (isProfileQuery && !isJobQuery && !isWealthQuery) {
+      // 8. PROFILE & TALENTS QUERY
+      if (isProfileQuery) {
         return {
           title: `วิเคราะห์แก่นแท้ดวงชะตา: ดิถี ${dm.zh} (${dm.th})`,
-          headline: `เจ้าชะตามีสถานะดิถี "${chart.strengthText}" โดดเด่นด้าน ${chart.dayMasterProfile.traits.slice(0, 80)}...`,
+          headline: `คุณ ${name} มีสถานะดิถี "${chart.strengthText}" โดดเด่นด้าน ${chart.dayMasterProfile.traits.slice(0, 80)}...`,
           probText: `ดิถี${chart.isStrong ? 'แข็ง' : 'อ่อน'}`,
           probBg: chart.isStrong ? '#059669' : '#b45309',
           points: [
@@ -2009,15 +2220,30 @@
         };
       }
 
-      // Use computeOracleVerdict as the core reasoning engine for Job, Wealth, Love, Health
-      const verdict = BaziEngine.computeOracleVerdict(chart, q, simY);
+      // 9. GENERAL / CUSTOM QUERY FALLBACK
+      const headlineText = `คุณ ${name} คะ สำหรับคำถามเรื่อง: "<strong>${q}</strong>"`;
+      const points = [
+        {
+          title: `🏛️ วิเคราะห์จากแก่นแท้ผังดวง 4 เสา (ดิถี ${dm.zh} • ${chart.strengthText}):`,
+          body: `พื้นดวงของคุณมีดิถีเป็น <strong>${dm.zh} (${dm.th})</strong> สถานะ ${chart.strengthText} ธาตุหนุน ${chart.supportingPercentage}% ธาตุต้าน ${chart.opposingPercentage}% ธาตุที่ให้คุณและปรับสมดุลชีวิตคือ <strong>ธาตุ${favNames}</strong>`
+        },
+        {
+          title: `⚡ ปฏิสัมพันธ์พลังปีจร ${simY} (${simStem.zh}${simBranch.zh}) & วัยจร 10 ปี:`,
+          body: `ในปี ${simY} ก้านฟ้าเป็น ${simStem.zh} (${simStemGod.th}) และกิ่งดินเป็น ${simBranch.zh} (${simBranch.zodiac.split(' ')[0]}) ${clashMonth ? '• มีการปะทะเสาการงาน มีการปรับเปลี่ยน' : clashDay ? '• มีการปะทะเสาวัน ควรระวังเรื่องอารมณ์' : '• กระแสพลังงานหมุนเวียนเกื้อหนุนราบรื่น'} ${curDaYun ? `• ร่วมกับวัยจรช่วงอายุ <strong>${curDaYun.ageRange} (${curDaYun.stem.zh}${curDaYun.branch.zh})</strong>` : ''}`
+        },
+        {
+          title: `📅 แนวโน้มและจังหวะเวลา:`,
+          body: `ในรอบปี ${simY} แนะนำให้เน้นการวางแผนอย่างมีสติรอบคอบ จังหวะเวลาที่ดีที่สุดคือช่วงสารทที่มีธาตุเกื้อหนุน (${favNames})`
+        }
+      ];
+
       return {
-        title: verdict.topicTitle,
-        headline: verdict.verdictMain + (verdict.verdictSub ? ' • ' + verdict.verdictSub : ''),
-        probText: verdict.probBadgeText,
-        probBg: verdict.probBadgeBg,
-        points: verdict.analysisPoints,
-        advice: verdict.advice
+        title: `คำวินิจฉัยดวงชะตาเฉพาะบุคคล: "${q.length > 25 ? q.slice(0, 25) + '...' : q}"`,
+        headline: headlineText,
+        probText: 'วิเคราะห์เจาะลึก',
+        probBg: 'linear-gradient(135deg, #7c3aed 0%, #db2777 100%)',
+        points: points,
+        advice: `ใช้ธาตุปรับดวง (${tiaoHou}) และธาตุให้คุณ (${favNames}) ในการปรับสมดุลชีวิตและการตัดสินใจ`
       };
     }
   };
@@ -2048,6 +2274,7 @@
 
     currentSubMenu: 'basic',
     askChatHistory: [],
+    currentAskChartKey: null,
 
     switchSubMenu: function (mode) {
       this.currentSubMenu = mode;
@@ -2167,6 +2394,11 @@
       }
 
       const c = this.currentChart;
+      const chartKey = `${c.name || 'noname'}_${c.birthDateString}_${c.birthTimeString}_${c.gender}`;
+      if (this.currentAskChartKey !== chartKey) {
+        this.currentAskChartKey = chartKey;
+        this.askChatHistory = [];
+      }
       const curYear = this.selectedYear || new Date().getFullYear();
       const yrSIdx = ((curYear - 4) % 10 + 10) % 10;
       const yrBIdx = ((curYear - 4) % 12 + 12) % 12;
@@ -2207,14 +2439,9 @@
 
         <div class="bazi-ask-pillars-strip">
           <div class="mini-pillar-cell">
-            <span class="mini-pillar-lbl">เสาปี (Year)</span>
-            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.year.stem.element].color};">${p.year.stem.zh}${p.year.branch.zh}</span>
-            <span class="mini-pillar-god">${p.year.tenGod.zh} (${p.year.tenGod.th.split(' ')[0]})</span>
-          </div>
-          <div class="mini-pillar-cell">
-            <span class="mini-pillar-lbl">เสาเดือน (Month)</span>
-            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.month.stem.element].color};">${p.month.stem.zh}${p.month.branch.zh}</span>
-            <span class="mini-pillar-god">${p.month.tenGod.zh} (${p.month.tenGod.th.split(' ')[0]})</span>
+            <span class="mini-pillar-lbl">เสายาม (Hour)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.hour.stem.element].color};">${p.hour.stem.zh}${p.hour.branch.zh}</span>
+            <span class="mini-pillar-god">${p.hour.tenGod ? p.hour.tenGod.zh + ' (' + p.hour.tenGod.th.split(' ')[0] + ')' : '-'}</span>
           </div>
           <div class="mini-pillar-cell active-self">
             <span class="mini-pillar-lbl">เสาวัน (Day/Self)</span>
@@ -2222,9 +2449,14 @@
             <span class="mini-pillar-god">ดิถีตัวตน</span>
           </div>
           <div class="mini-pillar-cell">
-            <span class="mini-pillar-lbl">เสายาม (Hour)</span>
-            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.hour.stem.element].color};">${p.hour.stem.zh}${p.hour.branch.zh}</span>
-            <span class="mini-pillar-god">${p.hour.tenGod.zh} (${p.hour.tenGod.th.split(' ')[0]})</span>
+            <span class="mini-pillar-lbl">เสาเดือน (Month)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.month.stem.element].color};">${p.month.stem.zh}${p.month.branch.zh}</span>
+            <span class="mini-pillar-god">${p.month.tenGod ? p.month.tenGod.zh + ' (' + p.month.tenGod.th.split(' ')[0] + ')' : '-'}</span>
+          </div>
+          <div class="mini-pillar-cell">
+            <span class="mini-pillar-lbl">เสาปี (Year)</span>
+            <span class="mini-pillar-val" style="color: ${ELEMENTS_META[p.year.stem.element].color};">${p.year.stem.zh}${p.year.branch.zh}</span>
+            <span class="mini-pillar-god">${p.year.tenGod ? p.year.tenGod.zh + ' (' + p.year.tenGod.th.split(' ')[0] + ')' : '-'}</span>
           </div>
         </div>
 
@@ -2277,25 +2509,35 @@
       const chatFeed = document.getElementById('baziAskChatFeed');
       if (!chatFeed) return;
 
+      const c = this.currentChart;
+      const ownerName = c && c.name ? c.name : 'เจ้าชะตา';
+
       chatFeed.innerHTML = (this.askChatHistory || []).map(msg => {
         if (msg.sender === 'user') {
           return `
             <div class="chat-bubble-user">
-              <div>${msg.text}</div>
-              <div style="font-size: 10.5px; opacity: 0.8; text-align: right; margin-top: 4px;">${msg.time}</div>
+              <div class="user-bubble-tag"><i class="fa-solid fa-circle-user"></i> คุณ ${ownerName} ถาม:</div>
+              <div class="user-bubble-text">${msg.text}</div>
+              <div class="user-bubble-time">${msg.time}</div>
             </div>
           `;
         } else {
           return `
             <div class="chat-bubble-bot">
+              <div class="bot-sender-badge">
+                <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
+                <span>แม่หมอปาจื่อ (BaZi Astrological Consultant)</span>
+              </div>
               ${msg.html}
-              <div style="font-size: 11px; color: #94a3b8; text-align: right; margin-top: 10px;">${msg.time}</div>
+              <div class="bot-msg-footer-time">${msg.time}</div>
             </div>
           `;
         }
       }).join('');
 
-      chatFeed.scrollTop = chatFeed.scrollHeight;
+      setTimeout(() => {
+        chatFeed.scrollTop = chatFeed.scrollHeight;
+      }, 50);
     },
 
     sendAskMessage: function () {
@@ -2332,7 +2574,16 @@
         
         let pointsHtml = '';
         if (resp.points && resp.points.length > 0) {
-          pointsHtml = resp.points.map(pt => `
+          const seen = new Set();
+          const cleanPoints = resp.points.filter(pt => {
+            if (!pt || !pt.title) return false;
+            if (seen.has(pt.title)) return false;
+            seen.add(pt.title);
+            if (pt.title.includes('กลยุทธ์') || pt.title.includes('เคล็ดลับ')) return false;
+            return true;
+          });
+
+          pointsHtml = cleanPoints.map(pt => `
             <div class="bot-point-box">
               <div class="bot-point-title">${pt.title}</div>
               <p class="bot-point-body">${pt.body}</p>
@@ -2361,7 +2612,10 @@
           time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
         });
 
-        if (sendBtn) sendBtn.disabled = false;
+        if (sendBtn) {
+          sendBtn.disabled = false;
+          sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span>ถามดวง</span>';
+        }
         this.renderAskChatMessages();
       }, 250);
     },
@@ -5760,6 +6014,8 @@
       });
 
       this.currentChart = chart;
+      this.askChatHistory = [];
+      this.currentAskChartKey = null;
 
       // Automatically sync active Da Yun with the currently selected annual year
       const curCalcYear = this.selectedYear || now.getFullYear();
@@ -5915,6 +6171,8 @@
       if (quickSel) quickSel.value = p.id;
 
       this.closeSavedModal();
+      this.askChatHistory = [];
+      this.currentAskChartKey = null;
       this.calculateFromInputs();
       this.showToast(`โหลดดวงของ "${p.name}" เรียบร้อยแล้วค่ะ`);
     },
