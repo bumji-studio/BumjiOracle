@@ -2150,58 +2150,62 @@ body {
 /* Card Shuffle Animations (Authentic Riffle Effect) */
 @keyframes cardShuffleLeft {
   0% {
-    transform: translateX(var(--card-x, 0px)) translateY(0px) rotate(0deg);
+    transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(0px) rotate(0deg);
   }
   25% {
-    transform: translateX(calc(var(--card-x, 0px) - 70px)) translateY(-20px) rotate(-14deg) scale(1.04);
+    transform: translateX(calc(-50% + var(--card-x, 0px) - 75px)) translateY(-26px) rotate(-16deg) scale(1.05);
   }
   50% {
-    transform: translateX(calc(var(--card-x, 0px) + 24px)) translateY(-10px) rotate(6deg) scale(0.97);
+    transform: translateX(calc(-50% + var(--card-x, 0px) + 32px)) translateY(-12px) rotate(8deg) scale(0.96);
     z-index: 60;
   }
   75% {
-    transform: translateX(calc(var(--card-x, 0px) - 18px)) translateY(-4px) rotate(-4deg) scale(1.01);
+    transform: translateX(calc(-50% + var(--card-x, 0px) - 16px)) translateY(-4px) rotate(-4deg) scale(1.01);
   }
   100% {
-    transform: translateX(var(--card-x, 0px)) translateY(0px) rotate(0deg) scale(1);
+    transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(0px) rotate(0deg) scale(1);
   }
 }
 
 @keyframes cardShuffleRight {
   0% {
-    transform: translateX(var(--card-x, 0px)) translateY(0px) rotate(0deg);
+    transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(0px) rotate(0deg);
   }
   25% {
-    transform: translateX(calc(var(--card-x, 0px) + 70px)) translateY(-20px) rotate(14deg) scale(1.04);
+    transform: translateX(calc(-50% + var(--card-x, 0px) + 75px)) translateY(-26px) rotate(16deg) scale(1.05);
   }
   50% {
-    transform: translateX(calc(var(--card-x, 0px) - 24px)) translateY(-10px) rotate(-6deg) scale(0.97);
+    transform: translateX(calc(-50% + var(--card-x, 0px) - 32px)) translateY(-12px) rotate(-8deg) scale(0.96);
     z-index: 60;
   }
   75% {
-    transform: translateX(calc(var(--card-x, 0px) + 18px)) translateY(-4px) rotate(4deg) scale(1.01);
+    transform: translateX(calc(-50% + var(--card-x, 0px) + 16px)) translateY(-4px) rotate(4deg) scale(1.01);
   }
   100% {
-    transform: translateX(var(--card-x, 0px)) translateY(0px) rotate(0deg) scale(1);
+    transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(0px) rotate(0deg) scale(1);
   }
+}
+
+.deck-fan-wrapper.is-shuffling .fan-card-item {
+  left: 50% !important;
+  pointer-events: none !important;
+  transition: none !important;
 }
 
 .deck-fan-wrapper.is-shuffling .fan-card-item:nth-child(odd) {
-  animation: cardShuffleLeft 0.7s cubic-bezier(0.35, 0, 0.25, 1) forwards !important;
-  pointer-events: none !important;
+  animation: cardShuffleLeft 0.75s cubic-bezier(0.34, 1.25, 0.64, 1) forwards !important;
 }
 
 .deck-fan-wrapper.is-shuffling .fan-card-item:nth-child(even) {
-  animation: cardShuffleRight 0.7s cubic-bezier(0.35, 0, 0.25, 1) forwards !important;
-  pointer-events: none !important;
+  animation: cardShuffleRight 0.75s cubic-bezier(0.34, 1.25, 0.64, 1) forwards !important;
 }
 
 .deck-fan-wrapper.is-shuffling .fan-card-item:nth-child(3n) {
-  animation-duration: 0.74s !important;
+  animation-duration: 0.8s !important;
 }
 
 .deck-fan-wrapper.is-shuffling .fan-card-item:nth-child(4n) {
-  animation-duration: 0.68s !important;
+  animation-duration: 0.72s !important;
 }
 
 /* Reveal Trigger Banner */
@@ -20943,16 +20947,16 @@ body.is-mobile .deck-fan-wrapper {
 }
 
 /* Position cards relative to horizontal center (50%) */
-.fan-card-item,
-html.is-mobile .fan-card-item,
-body.is-mobile .fan-card-item {
+.deck-fan-wrapper:not(.is-shuffling) .fan-card-item,
+html.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item,
+body.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item {
   left: 50% !important;
   transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(var(--card-y, 0px)) !important;
 }
 
-.fan-card-item:hover,
-html.is-mobile .fan-card-item:hover,
-body.is-mobile .fan-card-item:hover {
+.deck-fan-wrapper:not(.is-shuffling) .fan-card-item:hover,
+html.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item:hover,
+body.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item:hover {
   transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(calc(var(--card-y, 0px) - 18px)) scale(1.06) !important;
 }
 

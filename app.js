@@ -2670,10 +2670,82 @@ ${cardsPromptLines}
     }
   }
 
+  let isShufflingDeck = false;
+
+  function playShuffleSound() {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') ctx.resume();
+      for (let i = 0; i < 10; i++) {
+        const time = ctx.currentTime + i * 0.04;
+        const bufferSize = Math.floor(ctx.sampleRate * 0.025);
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let j = 0; j < bufferSize; j++) {
+          data[j] = (Math.random() * 2 - 1) * Math.exp(-j / (bufferSize * 0.25));
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.value = 900 + Math.random() * 500;
+        filter.Q.value = 1.8;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.06, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.025);
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+        noise.start(time);
+      }
+    } catch (e) {}
+  }
+
   function handleShuffleDeck() {
+    if (isShufflingDeck) return;
+    if (!deckFanWrapper) return;
+
+    isShufflingDeck = true;
+
+    // Reset picks and clear slots back to empty
     resetPicks();
-    renderFanDeck();
     updateSlotVisuals();
+
+    // Ensure fan cards are present and visible (remove card-picked)
+    const cards = deckFanWrapper.querySelectorAll('.fan-card-item');
+    if (!cards || cards.length === 0) {
+      renderFanDeck();
+    } else {
+      cards.forEach(c => c.classList.remove('card-picked'));
+    }
+
+    // Button icon spin & disabled state
+    const icon = shuffleDeckCardsBtn ? shuffleDeckCardsBtn.querySelector('i') : null;
+    if (icon) icon.classList.add('fa-spin');
+    if (shuffleDeckCardsBtn) shuffleDeckCardsBtn.disabled = true;
+
+    // Re-randomize active cards pool in memory
+    if (fortuneState.activeCardsPool && fortuneState.activeCardsPool.length > 0) {
+      fortuneState.activeCardsPool = [...fortuneState.activeCardsPool].sort(() => Math.random() - 0.5);
+    }
+
+    // Play subtle audio riffle
+    playShuffleSound();
+
+    // Trigger animation via CSS class
+    deckFanWrapper.classList.remove('is-shuffling');
+    void deckFanWrapper.offsetWidth; // Force reflow
+    deckFanWrapper.classList.add('is-shuffling');
+
+    setTimeout(() => {
+      deckFanWrapper.classList.remove('is-shuffling');
+      if (icon) icon.classList.remove('fa-spin');
+      if (shuffleDeckCardsBtn) shuffleDeckCardsBtn.disabled = false;
+      isShufflingDeck = false;
+      renderFanDeck();
+    }, 780);
   }
 
   if (autoDraw3CardsBtn) {
