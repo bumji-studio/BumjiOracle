@@ -3,7 +3,7 @@
  * แม่หมอติ๊ดติ๊ด (DESTINY ARCANA) - Booking & Consultation Appointment Engine
  * ระบบจองคิวดูดวงเฉพาะบุคคล & ระบบจัดการคิวและตั้งค่าวัน-เวลาสำหรับ Admin
  * 
- * กฎและการตั้งค่า (Admin ปรับแต่งได้เอง):
+ * กฎและการตั้งค่า (Admin ปรับแต่งได้เอง & บันทึกทันที Auto-Save):
  * - วันที่เปิดรับ: ค่าเริ่มต้น วันเสาร์ และ วันอาทิตย์ (Admin ปรับเป็นวันอื่นๆ ได้)
  * - เวลาทำการ: ค่าเริ่มต้น 14.00 - 20.00 น. (Admin เพิ่ม/ลบ/ปรับรอบเวลาได้)
  * - ระยะห่างระหว่างคิว: ค่าเริ่มต้น 2 ชั่วโมง (Admin ปรับได้)
@@ -54,7 +54,7 @@
     selectedTimeSlot: null,
     adminFilter: 'all', // 'all', 'pending', 'confirmed', 'cancelled'
     currentAdminTab: 'bookings', // 'bookings' or 'schedule'
-    tempDraftSettings: null, // Temporary editing copy for admin
+    tempDraftSettings: null,
     unsubscribeFirestore: null,
 
     init: function () {
@@ -88,6 +88,7 @@
       } catch (e) {
         this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
       }
+      this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
     },
 
     saveLocalSettings: function () {
@@ -150,6 +151,7 @@
               const remoteSettings = doc.data();
               if (remoteSettings && typeof remoteSettings === 'object') {
                 this.settings = { ...DEFAULT_SETTINGS, ...remoteSettings };
+                this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
                 this.saveLocalSettings();
                 this.onSettingsUpdated();
               }
@@ -181,10 +183,15 @@
       }
     },
 
-    persistSettingsRecord: async function (newSettings) {
-      this.settings = { ...this.settings, ...newSettings };
+    /**
+     * อัปเดตและบันทึกการตั้งค่าทันที (Auto-Save) เพื่อให้หน้าลูกค้าเปลี่ยนทันที
+     */
+    applyAndSaveSettings: async function (partialUpdate) {
+      this.settings = { ...this.settings, ...partialUpdate };
+      this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
       this.saveLocalSettings();
       this.onSettingsUpdated();
+      this.showAutoSaveNotice();
 
       if (typeof firebase !== 'undefined' && firebase.firestore) {
         try {
@@ -193,6 +200,20 @@
         } catch (e) {
           console.warn('Failed to save booking settings to Firestore:', e);
         }
+      }
+    },
+
+    showAutoSaveNotice: function () {
+      const badge = document.getElementById('adminAutoSaveBadge');
+      if (badge) {
+        badge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i> บันทึก & อัปเดตหน้าลูกค้าเรียบร้อยแล้ว ✨';
+        badge.classList.remove('hidden');
+        badge.style.opacity = '1';
+        setTimeout(() => {
+          if (badge) {
+            badge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i> บันทึกและเชื่อมต่อหน้าลูกค้าแล้ว';
+          }
+        }, 2500);
       }
     },
 
@@ -315,11 +336,16 @@
       const openDays = Array.isArray(this.settings.availableDays) ? this.settings.availableDays : [0, 6];
       const blockedList = Array.isArray(this.settings.blockedDates) ? this.settings.blockedDates : [];
 
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
       let guard = 0;
       while (dates.length < count && guard < 180) {
         guard++;
         const day = d.getDay();
-        const dateStr = d.toISOString().split('T')[0];
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const dayNum = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${dayNum}`;
         const isBlocked = blockedList.some(b => (b.date || b) === dateStr);
 
         if (openDays.includes(day) && !isBlocked) {
@@ -337,7 +363,7 @@
             dateLabel: thaiDateText,
             badgeLabel: dayMeta.short,
             badgeClass: dayMeta.badgeClass,
-            isToday: dateStr === now.toISOString().split('T')[0]
+            isToday: dateStr === todayStr
           });
         }
         d.setDate(d.getDate() + 1);
@@ -464,13 +490,16 @@
     // UI RENDERING: CUSTOMER BOOKING VIEW
     // ------------------------------------------------------------------------
     onTabShow: function (role = 'customer') {
+      this.loadLocalSettings();
       this.applyScheduleToHeroBanner();
+
       if (role === 'admin' || (window.AuthManager && window.AuthManager.isAdmin())) {
         this.renderAdminBookingsList();
         if (this.currentAdminTab === 'schedule') {
           this.populateAdminScheduleSettings();
         }
       }
+
       this.renderAvailableDates();
       this.renderTimeSlots();
       this.updateAdminBadge();
@@ -757,33 +786,35 @@
       }
     },
 
+    adminGoToCustomerView: function () {
+      if (window.setActiveAppMode) {
+        window.setActiveAppMode('booking');
+      }
+    },
+
     // ------------------------------------------------------------------------
-    // ADMIN SCHEDULE SETTINGS CONTROLLER (ปรับเปลี่ยนวัน-เวลารับดูดวง)
+    // ADMIN SCHEDULE SETTINGS CONTROLLER (ปรับเปลี่ยนวัน-เวลารับดูดวง & Auto-Save)
     // ------------------------------------------------------------------------
     populateAdminScheduleSettings: function () {
-      if (!this.tempDraftSettings) {
-        this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
-      }
-
       // 1. Status Toggle & Closed Notice
       const statusCheckbox = document.getElementById('adminSettingIsOpen');
       const statusText = document.getElementById('adminSettingStatusText');
       const noticeInput = document.getElementById('adminSettingClosedNotice');
       if (statusCheckbox) {
-        statusCheckbox.checked = !!this.tempDraftSettings.isOpen;
+        statusCheckbox.checked = !!this.settings.isOpen;
         if (statusText) {
-          statusText.textContent = this.tempDraftSettings.isOpen ? '🟢 กำลังเปิดรับจองคิวตามปกติ' : '🔴 ปิดรับจองชั่วคราว';
-          statusText.style.color = this.tempDraftSettings.isOpen ? '#059669' : '#dc2626';
+          statusText.textContent = this.settings.isOpen ? '🟢 กำลังเปิดรับจองคิวตามปกติ' : '🔴 ปิดรับจองชั่วคราว';
+          statusText.style.color = this.settings.isOpen ? '#059669' : '#dc2626';
         }
       }
       if (noticeInput) {
-        noticeInput.value = this.tempDraftSettings.closedNotice || '';
+        noticeInput.value = this.settings.closedNotice || '';
       }
 
       // 2. Day of Week Checkboxes
       const daysContainer = document.getElementById('adminSettingDaysContainer');
       if (daysContainer) {
-        const activeDays = this.tempDraftSettings.availableDays || [0, 6];
+        const activeDays = this.settings.availableDays || [0, 6];
         daysContainer.innerHTML = THAI_DAYS.map(day => {
           const isChecked = activeDays.includes(day.id);
           return `
@@ -800,7 +831,7 @@
       // 3. Min Gap selector
       const gapSelect = document.getElementById('adminSettingMinGap');
       if (gapSelect) {
-        gapSelect.value = String(this.tempDraftSettings.minGapMinutes || 120);
+        gapSelect.value = String(this.settings.minGapMinutes || 120);
       }
 
       // 4. Time Slots Pills
@@ -811,20 +842,14 @@
     },
 
     adminToggleStatus: function () {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
       const checkbox = document.getElementById('adminSettingIsOpen');
-      const statusText = document.getElementById('adminSettingStatusText');
-      this.tempDraftSettings.isOpen = checkbox ? checkbox.checked : !this.tempDraftSettings.isOpen;
-
-      if (statusText) {
-        statusText.textContent = this.tempDraftSettings.isOpen ? '🟢 กำลังเปิดรับจองคิวตามปกติ' : '🔴 ปิดรับจองชั่วคราว';
-        statusText.style.color = this.tempDraftSettings.isOpen ? '#059669' : '#dc2626';
-      }
+      const isOpen = checkbox ? checkbox.checked : !this.settings.isOpen;
+      this.applyAndSaveSettings({ isOpen });
+      this.populateAdminScheduleSettings();
     },
 
     adminToggleDay: function (dayId) {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
-      let days = this.tempDraftSettings.availableDays || [];
+      let days = [...(this.settings.availableDays || [0, 6])];
       if (days.includes(dayId)) {
         if (days.length <= 1) {
           alert('ต้องเลือกเปิดรับอย่างน้อย 1 วันในสัปดาห์ค่ะ');
@@ -835,28 +860,25 @@
         days.push(dayId);
         days.sort((a, b) => a - b);
       }
-      this.tempDraftSettings.availableDays = days;
+      this.applyAndSaveSettings({ availableDays: days });
       this.populateAdminScheduleSettings();
     },
 
     adminApplyPresetDays: function (preset) {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
-      if (preset === 'weekend') {
-        this.tempDraftSettings.availableDays = [0, 6]; // เสาร์-อาทิตย์
-      } else if (preset === 'all') {
-        this.tempDraftSettings.availableDays = [0, 1, 2, 3, 4, 5, 6]; // ทุกวัน
-      } else if (preset === 'weekday') {
-        this.tempDraftSettings.availableDays = [1, 2, 3, 4, 5]; // จันทร์-ศุกร์
-      } else if (preset === 'fri_sat_sun') {
-        this.tempDraftSettings.availableDays = [5, 6, 0]; // ศุกร์-เสาร์-อาทิตย์
-      }
+      let days = [0, 6];
+      if (preset === 'weekend') days = [0, 6];
+      else if (preset === 'all') days = [0, 1, 2, 3, 4, 5, 6];
+      else if (preset === 'weekday') days = [1, 2, 3, 4, 5];
+      else if (preset === 'fri_sat_sun') days = [5, 6, 0];
+
+      this.applyAndSaveSettings({ availableDays: days });
       this.populateAdminScheduleSettings();
     },
 
     renderAdminSlotsEditor: function () {
       const container = document.getElementById('adminSettingSlotsContainer');
       if (!container) return;
-      const slots = this.tempDraftSettings.timeSlots || [];
+      const slots = this.settings.timeSlots || [];
 
       if (slots.length === 0) {
         container.innerHTML = '<p class="text-sm text-slate-400 italic">ยังไม่มีรอบเวลาที่เปิดรับ กรุณากดเพิ่มรอบเวลาด้านล่างค่ะ</p>';
@@ -876,7 +898,6 @@
     },
 
     adminAddNewSlot: function () {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
       const startInput = document.getElementById('adminNewSlotStart');
       const endInput = document.getElementById('adminNewSlotEnd');
 
@@ -894,9 +915,8 @@
       }
 
       const label = `${start} - ${end} น.`;
-      const slots = this.tempDraftSettings.timeSlots || [];
+      const slots = [...(this.settings.timeSlots || DEFAULT_SETTINGS.timeSlots)];
 
-      // Check duplicates
       if (slots.some(s => s.start === start)) {
         alert('มีรอบเวลาที่เริ่มต้นในเวลานี้อยู่แล้วค่ะ');
         return;
@@ -904,44 +924,43 @@
 
       slots.push({ start, end, label });
       slots.sort((a, b) => a.start.localeCompare(b.start));
-      this.tempDraftSettings.timeSlots = slots;
-
-      this.renderAdminSlotsEditor();
+      this.applyAndSaveSettings({ timeSlots: slots });
+      this.populateAdminScheduleSettings();
     },
 
     adminRemoveSlot: function (index) {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
-      const slots = this.tempDraftSettings.timeSlots || [];
+      const slots = [...(this.settings.timeSlots || DEFAULT_SETTINGS.timeSlots)];
       if (slots.length <= 1) {
         alert('ต้องมีรอบเวลาอย่างน้อย 1 รอบค่ะ');
         return;
       }
       slots.splice(index, 1);
-      this.tempDraftSettings.timeSlots = slots;
-      this.renderAdminSlotsEditor();
+      this.applyAndSaveSettings({ timeSlots: slots });
+      this.populateAdminScheduleSettings();
     },
 
     adminApplyPresetSlots: function (preset) {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      let slots = [];
+      let minGap = this.settings.minGapMinutes || 120;
+
       if (preset === 'default_afternoon') {
-        // 14:00 - 22:00 (2 hrs each)
-        this.tempDraftSettings.timeSlots = [
+        slots = [
           { start: '14:00', end: '16:00', label: '14:00 - 16:00 น.' },
           { start: '16:00', end: '18:00', label: '16:00 - 18:00 น.' },
           { start: '18:00', end: '20:00', label: '18:00 - 20:00 น.' },
           { start: '20:00', end: '22:00', label: '20:00 - 22:00 น.' }
         ];
+        minGap = 120;
       } else if (preset === 'full_day') {
-        // 10:00 - 20:00 (2 hrs each)
-        this.tempDraftSettings.timeSlots = [
+        slots = [
           { start: '10:00', end: '12:00', label: '10:00 - 12:00 น.' },
           { start: '13:00', end: '15:00', label: '13:00 - 15:00 น.' },
           { start: '15:00', end: '17:00', label: '15:00 - 17:00 น.' },
           { start: '18:00', end: '20:00', label: '18:00 - 20:00 น.' }
         ];
+        minGap = 120;
       } else if (preset === 'one_hour_afternoon') {
-        // 14:00 - 20:00 (1 hr each)
-        this.tempDraftSettings.timeSlots = [
+        slots = [
           { start: '14:00', end: '15:00', label: '14:00 - 15:00 น.' },
           { start: '15:00', end: '16:00', label: '15:00 - 16:00 น.' },
           { start: '16:00', end: '17:00', label: '16:00 - 17:00 น.' },
@@ -949,17 +968,17 @@
           { start: '18:00', end: '19:00', label: '18:00 - 19:00 น.' },
           { start: '19:00', end: '20:00', label: '19:00 - 20:00 น.' }
         ];
-        this.tempDraftSettings.minGapMinutes = 60;
-        const gapSelect = document.getElementById('adminSettingMinGap');
-        if (gapSelect) gapSelect.value = '60';
+        minGap = 60;
       }
-      this.renderAdminSlotsEditor();
+
+      this.applyAndSaveSettings({ timeSlots: slots, minGapMinutes: minGap });
+      this.populateAdminScheduleSettings();
     },
 
     renderAdminBlockedDatesEditor: function () {
       const container = document.getElementById('adminSettingBlockedContainer');
       if (!container) return;
-      const blocked = this.tempDraftSettings.blockedDates || [];
+      const blocked = this.settings.blockedDates || [];
 
       if (blocked.length === 0) {
         container.innerHTML = '<p class="text-sm text-slate-400 italic">ยังไม่มีวันหยุดพิเศษที่ระบุไว้</p>';
@@ -967,7 +986,8 @@
       }
 
       container.innerHTML = blocked.map((b, idx) => {
-        const dateObj = new Date(b.date + 'T00:00:00');
+        const parts = (b.date || '').split('-');
+        const dateObj = parts.length === 3 ? new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])) : new Date(b.date);
         const thaiDate = dateObj.toLocaleDateString('th-TH', {
           weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
         });
@@ -986,7 +1006,6 @@
     },
 
     adminAddBlockedDate: function () {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
       const dateInput = document.getElementById('adminNewBlockedDate');
       const reasonInput = document.getElementById('adminNewBlockedReason');
 
@@ -998,7 +1017,7 @@
         return;
       }
 
-      const blocked = this.tempDraftSettings.blockedDates || [];
+      const blocked = [...(this.settings.blockedDates || [])];
       if (blocked.some(b => b.date === date)) {
         alert('วันที่นี้อยู่ในรายการงดรับคิวอยู่แล้วค่ะ');
         return;
@@ -1006,32 +1025,29 @@
 
       blocked.push({ date, reason });
       blocked.sort((a, b) => a.date.localeCompare(b.date));
-      this.tempDraftSettings.blockedDates = blocked;
 
       if (dateInput) dateInput.value = '';
       if (reasonInput) reasonInput.value = '';
 
-      this.renderAdminBlockedDatesEditor();
+      this.applyAndSaveSettings({ blockedDates: blocked });
+      this.populateAdminScheduleSettings();
     },
 
     adminRemoveBlockedDate: function (index) {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
-      const blocked = this.tempDraftSettings.blockedDates || [];
+      const blocked = [...(this.settings.blockedDates || [])];
       blocked.splice(index, 1);
-      this.tempDraftSettings.blockedDates = blocked;
-      this.renderAdminBlockedDatesEditor();
+      this.applyAndSaveSettings({ blockedDates: blocked });
+      this.populateAdminScheduleSettings();
     },
 
     adminSaveScheduleSettings: async function () {
-      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
-
       const statusCheckbox = document.getElementById('adminSettingIsOpen');
       const noticeInput = document.getElementById('adminSettingClosedNotice');
       const gapSelect = document.getElementById('adminSettingMinGap');
 
-      this.tempDraftSettings.isOpen = statusCheckbox ? statusCheckbox.checked : true;
-      this.tempDraftSettings.closedNotice = noticeInput ? noticeInput.value.trim() : '';
-      this.tempDraftSettings.minGapMinutes = gapSelect ? Number(gapSelect.value) || 120 : 120;
+      const isOpen = statusCheckbox ? statusCheckbox.checked : this.settings.isOpen;
+      const closedNotice = noticeInput ? noticeInput.value.trim() : this.settings.closedNotice;
+      const minGapMinutes = gapSelect ? Number(gapSelect.value) || 120 : (this.settings.minGapMinutes || 120);
 
       const saveBtn = document.getElementById('adminSaveSettingsBtn');
       if (saveBtn) {
@@ -1039,11 +1055,11 @@
         saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกการตั้งค่า...';
       }
 
-      await this.persistSettingsRecord(this.tempDraftSettings);
+      await this.applyAndSaveSettings({ isOpen, closedNotice, minGapMinutes });
 
       if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าวัน-เวลาเรียบร้อย!';
+        saveBtn.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-300"></i> บันทึก & อัปเดตหน้าลูกค้าเรียบร้อย!';
         setTimeout(() => {
           saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าทั้งหมด';
         }, 2500);
@@ -1057,8 +1073,7 @@
       const confirmReset = confirm('ต้องการคืนค่าเริ่มต้นทั้งหมดใช่หรือไม่?\n\n- เปิดรับเฉพาะ วันเสาร์ และ วันอาทิตย์\n- เวลา 14:00 - 22:00 น. (รอบละ 2 ชม.)\n- ระยะห่างระหว่างคิว 2 ชม.');
       if (!confirmReset) return;
 
-      this.tempDraftSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
-      this.persistSettingsRecord(this.tempDraftSettings);
+      this.applyAndSaveSettings(JSON.parse(JSON.stringify(DEFAULT_SETTINGS)));
       this.populateAdminScheduleSettings();
       alert('🔄 คืนค่าเริ่มต้นเรียบร้อยแล้วค่ะ');
     },
@@ -1265,6 +1280,33 @@
       if (modalCloseBtn) {
         modalCloseBtn.addEventListener('click', () => this.closeCustomerSuccessModal());
       }
+
+      // Min Gap selector live change
+      const gapSelect = document.getElementById('adminSettingMinGap');
+      if (gapSelect) {
+        gapSelect.addEventListener('change', () => {
+          this.applyAndSaveSettings({ minGapMinutes: Number(gapSelect.value) || 120 });
+        });
+      }
+
+      // Closed Notice blur live change
+      const noticeInput = document.getElementById('adminSettingClosedNotice');
+      if (noticeInput) {
+        noticeInput.addEventListener('blur', () => {
+          this.applyAndSaveSettings({ closedNotice: noticeInput.value.trim() });
+        });
+      }
+
+      // Multi-tab broadcast synchronization
+      window.addEventListener('storage', (e) => {
+        if (e.key === SETTINGS_STORAGE_KEY && e.newValue) {
+          try {
+            this.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(e.newValue) };
+            this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+            this.onSettingsUpdated();
+          } catch (err) {}
+        }
+      });
     }
   };
 
