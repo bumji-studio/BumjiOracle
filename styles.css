@@ -2196,8 +2196,6 @@ body {
   }
 }
 
-.deck-fan-wrapper.is-shuffling .fan-card-item:nth-child(odd) {
-  animation: cardShuffleLeft 0.7s cubic-bezier(0.35, 0, 0.25, 1) forwards !important;
 .deck-fan-wrapper.is-shuffling .fan-card-item {
   left: 50% !important;
   pointer-events: none !important;
@@ -20963,9 +20961,6 @@ body.is-mobile .deck-fan-wrapper {
 }
 
 /* Position cards relative to horizontal center (50%) */
-.fan-card-item,
-html.is-mobile .fan-card-item,
-body.is-mobile .fan-card-item {
 .deck-fan-wrapper:not(.is-shuffling) .fan-card-item,
 html.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item,
 body.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item {
@@ -20973,9 +20968,6 @@ body.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item {
   transform: translateX(calc(-50% + var(--card-x, 0px))) translateY(var(--card-y, 0px)) !important;
 }
 
-.fan-card-item:hover,
-html.is-mobile .fan-card-item:hover,
-body.is-mobile .fan-card-item:hover {
 .deck-fan-wrapper:not(.is-shuffling) .fan-card-item:hover,
 html.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item:hover,
 body.is-mobile .deck-fan-wrapper:not(.is-shuffling) .fan-card-item:hover {
