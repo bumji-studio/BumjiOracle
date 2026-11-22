@@ -31,7 +31,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_1440">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_6492">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -509,6 +509,13 @@
       </button>
       <button class="nav-tab" id="tabTongShuBtn" title="ปฏิทินและฤกษ์ยามมงคล TongShu">
         <i class="fa-solid fa-calendar-days"></i> <span>ฤกษ์ยาม TongShu</span>
+      </button>
+      <button class="nav-tab" id="tabBookingBtn" title="จองคิวดูดวงส่วนตัวกับแม่หมอติ๊ดติ๊ด">
+        <i class="fa-solid fa-calendar-check"></i> <span>จองคิวดูดวง</span>
+      </button>
+      <button class="nav-tab admin-nav-tab hidden" id="tabAdminBookingsBtn" title="จัดการคิวลูกค้า (Admin)">
+        <i class="fa-solid fa-clipboard-user"></i> <span>ลูกค้าจองดูดวง</span>
+        <span id="adminPendingCounterBadge" class="nav-counter-badge hidden">0</span>
       </button>
     </div>
 
@@ -2742,6 +2749,219 @@
     </div>
   </div>
 
+  
+  <!-- ===================================================================== -->
+  <!-- VIEW: CUSTOMER BOOKING VIEW (จองคิวดูดวงส่วนตัวกับแม่หมอติ๊ดติ๊ด) -->
+  <!-- ===================================================================== -->
+  <div id="bookingAppView" class="view-container hidden">
+    <div class="booking-app-container">
+      
+      <!-- Top Hero Header -->
+      <div class="booking-hero-banner">
+        <div class="booking-hero-badge">
+          <i class="fa-solid fa-sparkles"></i> Private Consultation Booking
+        </div>
+        <h2 class="booking-hero-title">จองคิวดูดวงเฉพาะบุคคลกับแม่หมอติ๊ดติ๊ด</h2>
+        <p class="booking-hero-subtitle">
+          เปิดรับนัดหมายเฉพาะ <strong>วันเสาร์ และ วันอาทิตย์</strong> เวลา <strong>14.00 - 20.00 น.</strong><br>
+          (คิวนัดหมายห่างกันอย่างน้อย 2 ชั่วโมง เพื่อวิเคราะห์ผังดวงและทำนายอย่างเจาะลึกเต็มที่ค่ะ ✨)
+        </p>
+      </div>
+
+      <div class="booking-main-grid">
+        <!-- Left Column: Date & Time Picker -->
+        <div class="booking-calendar-card">
+          <div class="booking-card-header">
+            <span class="step-num-badge">1</span>
+            <div>
+              <h3 class="step-card-title">เลือกวันเสาร์หรือวันอาทิตย์ที่สะดวก</h3>
+              <p class="step-card-desc">คลิกเลือกวันที่ว่างตามปฏิทินสุดสัปดาห์</p>
+            </div>
+          </div>
+
+          <!-- Weekend Dates List -->
+          <div id="bookingWeekendDatesContainer" class="booking-dates-grid">
+            <!-- Dynamic dates rendered here -->
+          </div>
+
+          <div class="booking-card-header" style="margin-top: 24px;">
+            <span class="step-num-badge">2</span>
+            <div>
+              <h3 class="step-card-title">เลือกช่วงเวลานัดหมาย (2 ชั่วโมง)</h3>
+              <p id="bookingSelectedDateNotice" class="step-card-desc">
+                กรุณาเลือกวันที่ด้านบนก่อนค่ะ
+              </p>
+            </div>
+          </div>
+
+          <!-- Time Slots List -->
+          <div id="bookingTimeSlotsContainer" class="booking-slots-grid">
+            <!-- Dynamic 2-hour slots rendered here -->
+          </div>
+
+          <!-- Chosen slot summary highlight -->
+          <div id="bookingChosenSlotSummary" class="booking-summary-box"></div>
+        </div>
+
+        <!-- Right Column: Customer Info Form -->
+        <div class="booking-form-card">
+          <div class="booking-card-header">
+            <span class="step-num-badge">3</span>
+            <div>
+              <h3 class="step-card-title">ข้อมูลสำหรับติดต่อและยืนยันคิว</h3>
+              <p class="step-card-desc">ระบบจะส่งข้อมูลหาแม่หมอ และส่งอีเมลยืนยันวันเวลากลับให้คุณค่ะ</p>
+            </div>
+          </div>
+
+          <form id="bookingCustomerForm" class="booking-form-body">
+            <div class="booking-field-group">
+              <label class="booking-label">
+                <i class="fa-solid fa-circle-user text-purple-600"></i> ชื่อ-นามสกุล หรือ ชื่อเล่น <span class="required-star">*</span>
+              </label>
+              <input type="text" id="bookingInputName" class="booking-input" placeholder="เช่น คุณบุ๋ม / มะเหมี่ยว" required>
+            </div>
+
+            <div class="booking-fields-row">
+              <div class="booking-field-group">
+                <label class="booking-label">
+                  <i class="fa-solid fa-phone text-emerald-600"></i> เบอร์โทรศัพท์ <span class="required-star">*</span>
+                </label>
+                <input type="tel" id="bookingInputPhone" class="booking-input" placeholder="08x-xxx-xxxx" required>
+              </div>
+
+              <div class="booking-field-group">
+                <label class="booking-label">
+                  <i class="fa-brands fa-line text-green-500"></i> LINE ID (ถ้ามี)
+                </label>
+                <input type="text" id="bookingInputLine" class="booking-input" placeholder="ไอดี LINE สำหรับติดต่อ">
+              </div>
+            </div>
+
+            <div class="booking-field-group">
+              <label class="booking-label">
+                <i class="fa-solid fa-envelope text-blue-600"></i> อีเมลของคุณ (สำหรับรับการยืนยันนัดหมาย) <span class="required-star">*</span>
+              </label>
+              <input type="email" id="bookingInputEmail" class="booking-input" placeholder="example@gmail.com" required>
+              <span class="booking-input-tip">💡 เมื่อแม่หมอกดตอบรับ ระบบจะส่งอีเมลยืนยันวันและเวลาไปยังอีเมลนี้ค่ะ</span>
+            </div>
+
+            <div class="booking-field-group">
+              <label class="booking-label">
+                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> บริการที่ต้องการปรึกษา
+              </label>
+              <select id="bookingSelectService" class="booking-select">
+                <option value="เปิดไพ่พยากรณ์เทพเหมียว & ทาโรต์ (Tarot Reading)">🔮 เปิดไพ่พยากรณ์เทพเหมียว & ทาโรต์ (Tarot Reading)</option>
+                <option value="วิเคราะห์ผังดวง 4 เสาชะตาปาจื่อเชิงลึก (Deep BaZi Consultation)">🏛️ วิเคราะห์ผังดวง 4 เสาชะตาปาจื่อเชิงลึก (Deep BaZi)</option>
+                <option value="ดูดวงฉีเหมินตุ้นเจี่ย & ฤกษ์ยามมงคล (Qi Men & TongShu)">🧭 ดูดวงฉีเหมินตุ้นเจี่ย & ฤกษ์ยามมงคล (Qi Men)</option>
+                <option value="ปรึกษาดวงชะตาแบบผสมผสานครบวงจร (Full Comprehensive)">✨ ปรึกษาดวงชะตาแบบผสมผสานครบวงจร (Full)</option>
+              </select>
+            </div>
+
+            <div class="booking-field-group">
+              <label class="booking-label">
+                <i class="fa-solid fa-comment-dots text-purple-600"></i> เรื่องหรือคำถามที่ต้องการถามเป็นพิเศษ (ไม่บังคับ)
+              </label>
+              <textarea id="bookingInputTopic" class="booking-textarea" rows="3" placeholder="เช่น อยากปรึกษาเรื่องการงาน เกณฑ์เปลี่ยนงาน หรือเรื่องความรักคู่ครอง..."></textarea>
+            </div>
+
+            <button type="submit" id="bookingSubmitBtn" class="booking-submit-btn">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> ยืนยันการจองคิวดูดวง
+            </button>
+            <p class="booking-guarantee-note">
+              <i class="fa-solid fa-shield-halved text-purple-600"></i> ปลอดภัยและเป็นความลับ • ไม่มีค่าใช้จ่ายแอบแฝง • ระบบแจ้งเตือนแม่หมอทันที
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- VIEW: ADMIN BOOKINGS MANAGEMENT (ลูกค้าจองดูดวง - สำหรับ Admin เท่านั้น) -->
+  <!-- ===================================================================== -->
+  <div id="adminBookingsAppView" class="view-container hidden">
+    <div class="admin-bookings-container">
+      
+      <div class="admin-bookings-header">
+        <div class="admin-header-title-row">
+          <div class="admin-title-badge">
+            <i class="fa-solid fa-crown text-amber-400"></i> Admin Management Portal
+          </div>
+          <h2 class="admin-portal-title">📋 รายการลูกค้าจองดูดวง</h2>
+          <p class="admin-portal-desc">
+            ตรวจสอบคิวนัดหมายของลูกค้า และกด <strong>"ตอบรับ"</strong> เพื่อส่งอีเมลยืนยันวันเวลานัดหมายให้ลูกค้าโดยอัตโนมัติค่ะ
+          </p>
+        </div>
+        <div class="admin-actions-bar">
+          <button type="button" class="btn-admin-refresh" onclick="window.BookingApp.renderAdminBookingsList()">
+            <i class="fa-solid fa-rotate"></i> รีเฟรชข้อมูล
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats Summary Strip -->
+      <div class="admin-stats-strip">
+        <div class="admin-stat-card card-total">
+          <span class="stat-num" id="adminStatsTotal">0</span>
+          <span class="stat-lbl"><i class="fa-solid fa-list-check"></i> คิวทั้งหมด</span>
+        </div>
+        <div class="admin-stat-card card-pending">
+          <span class="stat-num text-amber-600" id="adminStatsPending">0</span>
+          <span class="stat-lbl"><i class="fa-solid fa-hourglass-half"></i> รอการตอบรับ</span>
+        </div>
+        <div class="admin-stat-card card-confirmed">
+          <span class="stat-num text-emerald-600" id="adminStatsConfirmed">0</span>
+          <span class="stat-lbl"><i class="fa-solid fa-circle-check"></i> ตอบรับแล้ว</span>
+        </div>
+        <div class="admin-stat-card card-cancelled">
+          <span class="stat-num text-rose-500" id="adminStatsCancelled">0</span>
+          <span class="stat-lbl"><i class="fa-solid fa-circle-xmark"></i> ยกเลิก</span>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="admin-filters-bar">
+        <button type="button" class="admin-filter-btn active" data-filter="all" onclick="window.BookingApp.setAdminFilter('all')">
+          ทั้งหมด
+        </button>
+        <button type="button" class="admin-filter-btn" data-filter="pending" onclick="window.BookingApp.setAdminFilter('pending')">
+          ⏳ รอการตอบรับ
+        </button>
+        <button type="button" class="admin-filter-btn" data-filter="confirmed" onclick="window.BookingApp.setAdminFilter('confirmed')">
+          ✅ ตอบรับแล้ว
+        </button>
+        <button type="button" class="admin-filter-btn" data-filter="cancelled" onclick="window.BookingApp.setAdminFilter('cancelled')">
+          ❌ ยกเลิก
+        </button>
+      </div>
+
+      <!-- Bookings Cards Feed -->
+      <div id="adminBookingsListContainer" class="admin-bookings-feed">
+        <!-- Rendered by BookingApp.renderAdminBookingsList() -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Customer Booking Success Modal -->
+  <div id="bookingSuccessModal" class="booking-modal-overlay hidden">
+    <div class="booking-modal-card">
+      <div class="modal-success-icon">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3 class="modal-success-title">ส่งคำขอจองคิวเรียบร้อยแล้วค่ะ! ✨</h3>
+      <p class="modal-success-subtitle">
+        ระบบบันทึกคิวนัดหมายของคุณเรียบร้อยแล้ว รายละเอียดการจอง:
+      </p>
+      
+      <div id="bookingSuccessDetails"></div>
+
+      <button type="button" id="bookingSuccessCloseBtn" class="modal-success-btn">
+        <i class="fa-solid fa-check"></i> รับทราบ & ปิดหน้าต่าง
+      </button>
+    </div>
+  </div>
+
   <!-- Toast Notification for Copy / Actions -->
   <div id="socialShareToast" class="social-share-toast hidden">
     <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
@@ -2756,9 +2976,9 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_1440"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_6492"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_1440"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_6492"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -2767,23 +2987,24 @@
   <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
   <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_1440"></script>
-  <script src="app.js?v=20261115_v5_1440"></script>
+  <script src="auth.js?v=20261115_v5_6492"></script>
+  <script src="booking.js?v=20261115_v5_6492"></script>
+  <script src="app.js?v=20261115_v5_6492"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_1440"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_1440"></script>
-  <script src="bazi.js?v=20261115_v5_1440"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_6492"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_6492"></script>
+  <script src="bazi.js?v=20261115_v5_6492"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

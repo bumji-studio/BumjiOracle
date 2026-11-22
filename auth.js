@@ -22,7 +22,7 @@
   };
 
   // Main tabs requiring Admin login:
-  const LOCKED_TABS = ['personality', 'bazi', 'qimen', 'tongshu'];
+  const LOCKED_TABS = ['personality', 'bazi', 'qimen', 'tongshu', 'adminbookings'];
 
   const AuthManager = {
     currentUser: null,
@@ -275,6 +275,18 @@
           badge.className = 'nav-lock-badge locked';
         }
       });
+
+      // 3. Update Admin Bookings Nav Tab (Only visible to Admin)
+      const adminBookingsBtn = document.getElementById('tabAdminBookingsBtn');
+      if (adminBookingsBtn) {
+        if (isAdm) {
+          adminBookingsBtn.classList.remove('hidden');
+          adminBookingsBtn.style.display = 'inline-flex';
+        } else {
+          adminBookingsBtn.classList.add('hidden');
+          adminBookingsBtn.style.display = 'none';
+        }
+      }
     },
 
     notifyModeChange: function () {
@@ -287,6 +299,9 @@
       }
       if (window.QiMenApp && typeof window.QiMenApp.updateLockBadges === 'function') {
         window.QiMenApp.updateLockBadges();
+      }
+      if (window.BookingApp && typeof window.BookingApp.updateAdminBadge === 'function') {
+        window.BookingApp.updateAdminBadge();
       }
     },
 

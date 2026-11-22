@@ -870,11 +870,15 @@ function initMainApp() {
   const tabQiMenBtn = document.getElementById('tabQiMenBtn');
   const tabBaziBtn = document.getElementById('tabBaziBtn');
   const tabPersonalityBtn = document.getElementById('tabPersonalityBtn');
+  const tabBookingBtn = document.getElementById('tabBookingBtn');
+  const tabAdminBookingsBtn = document.getElementById('tabAdminBookingsBtn');
   const readingAppView = document.getElementById('readingAppView');
   const tongShuAppView = document.getElementById('tongShuAppView');
   const qiMenAppView = document.getElementById('qiMenAppView');
   const baziAppView = document.getElementById('baziAppView');
   const personalityAppView = document.getElementById('personalityAppView');
+  const bookingAppView = document.getElementById('bookingAppView');
+  const adminBookingsAppView = document.getElementById('adminBookingsAppView');
 
   // Mobile Hamburger Menu Navigation Toggle
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -1046,6 +1050,8 @@ function initMainApp() {
     if (tabQiMenBtn) tabQiMenBtn.classList.toggle('active', mode === 'qimen');
     if (tabBaziBtn) tabBaziBtn.classList.toggle('active', mode === 'bazi');
     if (tabPersonalityBtn) tabPersonalityBtn.classList.toggle('active', mode === 'personality');
+    if (tabBookingBtn) tabBookingBtn.classList.toggle('active', mode === 'booking');
+    if (tabAdminBookingsBtn) tabAdminBookingsBtn.classList.toggle('active', mode === 'adminbookings');
 
     // View containers visibility - strictly enforce 1 active view
     const views = [
@@ -1053,7 +1059,9 @@ function initMainApp() {
       { el: tongShuAppView, modeKey: 'tongshu' },
       { el: qiMenAppView, modeKey: 'qimen' },
       { el: baziAppView, modeKey: 'bazi' },
-      { el: personalityAppView, modeKey: 'personality' }
+      { el: personalityAppView, modeKey: 'personality' },
+      { el: bookingAppView, modeKey: 'booking' },
+      { el: adminBookingsAppView, modeKey: 'adminbookings' }
     ];
 
     views.forEach(v => {
@@ -1087,6 +1095,14 @@ function initMainApp() {
     // Trigger Personality live update when activated
     if (mode === 'personality' && window.PersonalityApp) {
       window.PersonalityApp.onTabShow();
+    }
+    // Trigger Customer Booking live update when activated
+    if (mode === 'booking' && window.BookingApp) {
+      window.BookingApp.onTabShow('customer');
+    }
+    // Trigger Admin Bookings Management live update when activated
+    if (mode === 'adminbookings' && window.BookingApp) {
+      window.BookingApp.onTabShow('admin');
     }
     // Trigger Reading live update when activated
     if (mode === 'reading') {
@@ -1129,6 +1145,12 @@ if (tabTongShuBtn) {
   if (tabPersonalityBtn) {
     tabPersonalityBtn.addEventListener('click', () => setActiveAppMode('personality'));
   }
+  if (tabBookingBtn) {
+    tabBookingBtn.addEventListener('click', () => setActiveAppMode('booking'));
+  }
+  if (tabAdminBookingsBtn) {
+    tabAdminBookingsBtn.addEventListener('click', () => setActiveAppMode('adminbookings'));
+  }
 
   // Aliases mapping for external direct links (e.g. ?tab=bazi or #bazi)
   const TAB_ALIASES = {
@@ -1151,7 +1173,13 @@ if (tabTongShuBtn) {
     'mbti': 'personality',
     'disc': 'personality',
     'jiazi': 'personality',
-    'archetype': 'personality'
+    'archetype': 'personality',
+    'booking': 'booking',
+    'bookings': 'booking',
+    'appointment': 'booking',
+    'queue': 'booking',
+    'adminbookings': 'adminbookings',
+    'adminbooking': 'adminbookings'
   };
 
   function parseTargetTabFromUrl() {
@@ -2711,6 +2739,7 @@ ${cardsPromptLines}
 
     // Reset picks and clear slots back to empty
     resetPicks();
+    renderFanDeck();
     updateSlotVisuals();
 
     // Ensure fan cards are present and visible (remove card-picked)

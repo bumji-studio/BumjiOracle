@@ -18,6 +18,7 @@ const nowVer = '20261115_v5_' + Date.now().toString().slice(-4);
 
 html = html.replace(/href="styles\.css\?v=[^"]*"/g, `href="styles.css?v=${nowVer}"`);
 html = html.replace(/src="auth\.js\?v=[^"]*"/g, `src="auth.js?v=${nowVer}"`);
+html = html.replace(/src="booking\.js\?v=[^"]*"/g, `src="booking.js?v=${nowVer}"`);
 html = html.replace(/src="app\.js\?v=[^"]*"/g, `src="app.js?v=${nowVer}"`);
 html = html.replace(/src="bazi\.js\?v=[^"]*"/g, `src="bazi.js?v=${nowVer}"`);
 html = html.replace(/src="data\/bazi-knowledge\/([^"]*)\?v=[^"]*"/g, `src="data/bazi-knowledge/$1?v=${nowVer}"`);
