@@ -1,12 +1,13 @@
 /**
  * ============================================================================
  * แม่หมอติ๊ดติ๊ด (DESTINY ARCANA) - Booking & Consultation Appointment Engine
- * ระบบจองคิวดูดวงเฉพาะบุคคล & ระบบจัดการคิวลูกค้าสำหรับ Admin
+ * ระบบจองคิวดูดวงเฉพาะบุคคล & ระบบจัดการคิวและตั้งค่าวัน-เวลาสำหรับ Admin
  * 
- * กฎการจอง:
- * - วันว่าง: วันเสาร์ และ วันอาทิตย์
- * - เวลาทำการ: 14.00 - 20.00 น.
- * - ระยะห่างระหว่างคิว: อย่างน้อย 2 ชั่วโมง (จองติดกันภายใน 2 ชม. ไม่ได้)
+ * กฎและการตั้งค่า (Admin ปรับแต่งได้เอง):
+ * - วันที่เปิดรับ: ค่าเริ่มต้น วันเสาร์ และ วันอาทิตย์ (Admin ปรับเป็นวันอื่นๆ ได้)
+ * - เวลาทำการ: ค่าเริ่มต้น 14.00 - 20.00 น. (Admin เพิ่ม/ลบ/ปรับรอบเวลาได้)
+ * - ระยะห่างระหว่างคิว: ค่าเริ่มต้น 2 ชั่วโมง (Admin ปรับได้)
+ * - วันหยุดพิเศษ: Admin สามารถระบุวันงดรับคิวเฉพาะกิจได้
  * - ลูกค้าจอง: ส่ง Email แจ้งเตือนไปที่ bumjaa@gmail.com
  * - Admin ตอบรับ: กดตอบรับในเมนู "ลูกค้าจองดูดวง" แล้วระบบส่ง Email ยืนยันให้ลูกค้า
  * ============================================================================
@@ -16,34 +17,85 @@
   'use strict';
 
   const STORAGE_KEY = 'maemor_tidtid_bookings';
+  const SETTINGS_STORAGE_KEY = 'maemor_tidtid_booking_settings';
   const ADMIN_EMAIL = 'bumjaa@gmail.com';
   const FIRESTORE_COLLECTION = 'bookings';
+  const SETTINGS_FIRESTORE_COLLECTION = 'booking_settings';
+  const SETTINGS_DOC_ID = 'general_config';
 
-  // Base 2-hour consultation slots
-  const BASE_TIME_SLOTS = [
-    { start: '14:00', end: '16:00', label: '14:00 - 16:00 น.' },
-    { start: '16:00', end: '18:00', label: '16:00 - 18:00 น.' },
-    { start: '18:00', end: '20:00', label: '18:00 - 20:00 น.' },
-    { start: '20:00', end: '22:00', label: '20:00 - 22:00 น.' }
+  const THAI_DAYS = [
+    { id: 0, name: 'วันอาทิตย์', short: 'อาทิตย์', badgeClass: 'badge-sun' },
+    { id: 1, name: 'วันจันทร์', short: 'จันทร์', badgeClass: 'badge-mon' },
+    { id: 2, name: 'วันอังคาร', short: 'อังคาร', badgeClass: 'badge-tue' },
+    { id: 3, name: 'วันพุธ', short: 'พุธ', badgeClass: 'badge-wed' },
+    { id: 4, name: 'วันพฤหัสบดี', short: 'พฤหัส', badgeClass: 'badge-thu' },
+    { id: 5, name: 'วันศุกร์', short: 'ศุกร์', badgeClass: 'badge-fri' },
+    { id: 6, name: 'วันเสาร์', short: 'เสาร์', badgeClass: 'badge-sat' }
   ];
+
+  const DEFAULT_SETTINGS = {
+    isOpen: true,
+    closedNotice: 'ขออภัยค่ะ ขณะนี้แม่หมอขอปิดรับคิวชั่วคราว หากเปิดรับแล้วจะแจ้งให้ทราบนะคะ ✨',
+    availableDays: [0, 6], // 0: อาทิตย์, 6: เสาร์
+    minGapMinutes: 120, // 2 ชั่วโมง
+    timeSlots: [
+      { start: '14:00', end: '16:00', label: '14:00 - 16:00 น.' },
+      { start: '16:00', end: '18:00', label: '16:00 - 18:00 น.' },
+      { start: '18:00', end: '20:00', label: '18:00 - 20:00 น.' },
+      { start: '20:00', end: '22:00', label: '20:00 - 22:00 น.' }
+    ],
+    blockedDates: [] // [{ date: 'YYYY-MM-DD', reason: 'ติดภารกิจ' }]
+  };
 
   const BookingApp = {
     bookings: [],
+    settings: JSON.parse(JSON.stringify(DEFAULT_SETTINGS)),
     selectedDate: null,
     selectedTimeSlot: null,
     adminFilter: 'all', // 'all', 'pending', 'confirmed', 'cancelled'
+    currentAdminTab: 'bookings', // 'bookings' or 'schedule'
+    tempDraftSettings: null, // Temporary editing copy for admin
     unsubscribeFirestore: null,
 
     init: function () {
+      this.loadLocalSettings();
       this.loadLocalBookings();
       this.initFirestoreSync();
       this.bindEvents();
       this.updateAdminBadge();
+      this.applyScheduleToHeroBanner();
     },
 
     // ------------------------------------------------------------------------
-    // DATA PERSISTENCE & FIRESTORE SYNC
+    // DATA PERSISTENCE & SETTINGS
     // ------------------------------------------------------------------------
+    loadLocalSettings: function () {
+      try {
+        const saved = localStorage.getItem(SETTINGS_STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          this.settings = { ...DEFAULT_SETTINGS, ...parsed };
+          if (!Array.isArray(this.settings.availableDays) || this.settings.availableDays.length === 0) {
+            this.settings.availableDays = [0, 6];
+          }
+          if (!Array.isArray(this.settings.timeSlots) || this.settings.timeSlots.length === 0) {
+            this.settings.timeSlots = DEFAULT_SETTINGS.timeSlots;
+          }
+          if (!Array.isArray(this.settings.blockedDates)) {
+            this.settings.blockedDates = [];
+          }
+        }
+      } catch (e) {
+        this.settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+      }
+    },
+
+    saveLocalSettings: function () {
+      try {
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(this.settings));
+      } catch (e) {}
+    },
+
     loadLocalBookings: function () {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -66,7 +118,8 @@
       if (typeof firebase === 'undefined' || !firebase.firestore) return;
       try {
         const db = firebase.firestore();
-        // Subscribe to real-time updates for bookings collection
+
+        // 1. Subscribe to Bookings Collection
         this.unsubscribeFirestore = db.collection(FIRESTORE_COLLECTION)
           .onSnapshot((snapshot) => {
             const remoteList = [];
@@ -75,22 +128,34 @@
             });
 
             if (remoteList.length > 0) {
-              // Merge remote with local (remote takes precedence on match)
               const mergedMap = new Map();
               this.bookings.forEach(b => mergedMap.set(b.id || b.ref, b));
               remoteList.forEach(b => mergedMap.set(b.id || b.ref, b));
               this.bookings = Array.from(mergedMap.values());
-              // Sort by date and time
               this.bookings.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
               this.saveLocalBookings();
 
-              // Refresh active views if visible
               this.renderTimeSlots();
               this.renderAdminBookingsList();
               this.updateAdminBadge();
             }
           }, (err) => {
-            console.warn('Firestore bookings snapshot error (fallback to local):', err);
+            console.warn('Firestore bookings snapshot error:', err);
+          });
+
+        // 2. Subscribe to Settings Collection (Sync Admin Settings Across Devices)
+        db.collection(SETTINGS_FIRESTORE_COLLECTION).doc(SETTINGS_DOC_ID)
+          .onSnapshot((doc) => {
+            if (doc.exists) {
+              const remoteSettings = doc.data();
+              if (remoteSettings && typeof remoteSettings === 'object') {
+                this.settings = { ...DEFAULT_SETTINGS, ...remoteSettings };
+                this.saveLocalSettings();
+                this.onSettingsUpdated();
+              }
+            }
+          }, (err) => {
+            console.warn('Firestore settings snapshot error:', err);
           });
       } catch (e) {
         console.warn('Firestore init sync error:', e);
@@ -98,7 +163,6 @@
     },
 
     persistBookingRecord: async function (booking) {
-      // 1. Save in local state
       const existingIdx = this.bookings.findIndex(b => b.id === booking.id || b.ref === booking.ref);
       if (existingIdx !== -1) {
         this.bookings[existingIdx] = booking;
@@ -107,64 +171,178 @@
       }
       this.saveLocalBookings();
 
-      // 2. Save in Firestore if online
       if (typeof firebase !== 'undefined' && firebase.firestore) {
         try {
           const db = firebase.firestore();
           await db.collection(FIRESTORE_COLLECTION).doc(booking.id).set(booking, { merge: true });
         } catch (e) {
-          console.warn('Failed to save booking to Firestore (saved locally):', e);
+          console.warn('Failed to save booking to Firestore:', e);
         }
+      }
+    },
+
+    persistSettingsRecord: async function (newSettings) {
+      this.settings = { ...this.settings, ...newSettings };
+      this.saveLocalSettings();
+      this.onSettingsUpdated();
+
+      if (typeof firebase !== 'undefined' && firebase.firestore) {
+        try {
+          const db = firebase.firestore();
+          await db.collection(SETTINGS_FIRESTORE_COLLECTION).doc(SETTINGS_DOC_ID).set(this.settings, { merge: true });
+        } catch (e) {
+          console.warn('Failed to save booking settings to Firestore:', e);
+        }
+      }
+    },
+
+    onSettingsUpdated: function () {
+      this.applyScheduleToHeroBanner();
+      this.renderAvailableDates();
+      this.renderTimeSlots();
+      if (this.currentAdminTab === 'schedule') {
+        this.populateAdminScheduleSettings();
       }
     },
 
     updateAdminBadge: function () {
       const badge = document.getElementById('adminPendingCounterBadge');
-      if (!badge) return;
+      const navPending = document.getElementById('adminNavPendingCount');
       const pendingCount = this.bookings.filter(b => b.status === 'pending').length;
-      if (pendingCount > 0) {
-        badge.textContent = String(pendingCount);
-        badge.classList.remove('hidden');
-        badge.style.display = 'inline-flex';
-      } else {
-        badge.classList.add('hidden');
-        badge.style.display = 'none';
+
+      if (badge) {
+        if (pendingCount > 0) {
+          badge.textContent = String(pendingCount);
+          badge.classList.remove('hidden');
+          badge.style.display = 'inline-flex';
+        } else {
+          badge.classList.add('hidden');
+          badge.style.display = 'none';
+        }
+      }
+
+      if (navPending) {
+        navPending.textContent = String(pendingCount);
+        navPending.style.display = pendingCount > 0 ? 'inline-block' : 'none';
       }
     },
 
     // ------------------------------------------------------------------------
-    // BUSINESS LOGIC: SATURDAY & SUNDAY ONLY + 2-HOUR GAP
+    // BUSINESS LOGIC: DYNAMIC DATES & TIME SLOTS
     // ------------------------------------------------------------------------
-    getUpcomingWeekends: function (count = 14) {
-      const weekends = [];
+    getScheduleSummary: function () {
+      const openDays = Array.isArray(this.settings.availableDays) ? this.settings.availableDays : [0, 6];
+      let daysText = '';
+      if (openDays.length === 7) {
+        daysText = 'เปิดรับทุกวัน';
+      } else if (openDays.length === 2 && openDays.includes(0) && openDays.includes(6)) {
+        daysText = 'เฉพาะวันเสาร์ และ วันอาทิตย์';
+      } else if (openDays.length === 3 && openDays.includes(5) && openDays.includes(6) && openDays.includes(0)) {
+        daysText = 'วันศุกร์, เสาร์ และ อาทิตย์';
+      } else if (openDays.length === 5 && !openDays.includes(0) && !openDays.includes(6)) {
+        daysText = 'วันจันทร์ - วันศุกร์';
+      } else {
+        daysText = openDays.map(d => THAI_DAYS.find(td => td.id === d)?.name || '').filter(Boolean).join(', ');
+      }
+
+      const slots = Array.isArray(this.settings.timeSlots) && this.settings.timeSlots.length > 0 
+        ? this.settings.timeSlots 
+        : DEFAULT_SETTINGS.timeSlots;
+      const firstSlot = slots[0];
+      const lastSlot = slots[slots.length - 1];
+      const hoursText = (firstSlot && lastSlot) ? `${firstSlot.start} - ${lastSlot.end} น.` : '14:00 - 20:00 น.';
+      const gapHours = ((this.settings.minGapMinutes || 120) / 60);
+      const gapText = gapHours >= 1 ? `${gapHours} ชั่วโมง` : `${this.settings.minGapMinutes || 120} นาที`;
+
+      return { daysText, hoursText, gapText };
+    },
+
+    applyScheduleToHeroBanner: function () {
+      const heroSubtitle = document.querySelector('.booking-hero-subtitle');
+      const step1Title = document.getElementById('bookingStep1Title');
+      const step2Title = document.getElementById('bookingStep2Title');
+      const closedNoticeBox = document.getElementById('bookingClosedNoticeBox');
+      const bookingGrid = document.querySelector('.booking-main-grid');
+
+      const summary = this.getScheduleSummary();
+
+      // Check if bookings are paused/closed
+      if (!this.settings.isOpen) {
+        if (closedNoticeBox) {
+          closedNoticeBox.classList.remove('hidden');
+          closedNoticeBox.innerHTML = `
+            <div class="booking-closed-banner">
+              <i class="fa-solid fa-circle-exclamation text-amber-300 text-2xl"></i>
+              <div>
+                <strong>แจ้งปิดรับคิวชั่วคราว</strong>
+                <p>${this.settings.closedNotice || 'ขออภัยค่ะ ขณะนี้แม่หมอขอปิดรับคิวชั่วคราว หากเปิดรับแล้วจะแจ้งให้ทราบนะคะ ✨'}</p>
+              </div>
+            </div>
+          `;
+        }
+        if (bookingGrid) {
+          bookingGrid.style.opacity = '0.5';
+          bookingGrid.style.pointerEvents = 'none';
+        }
+      } else {
+        if (closedNoticeBox) closedNoticeBox.classList.add('hidden');
+        if (bookingGrid) {
+          bookingGrid.style.opacity = '1';
+          bookingGrid.style.pointerEvents = 'auto';
+        }
+      }
+
+      if (heroSubtitle) {
+        heroSubtitle.innerHTML = `
+          เปิดรับนัดหมาย<strong>${summary.daysText}</strong> เวลา <strong>${summary.hoursText}</strong><br>
+          (คิวนัดหมายห่างกันอย่างน้อย ${summary.gapText} เพื่อวิเคราะห์ผังดวงและทำนายอย่างเจาะลึกเต็มที่ค่ะ ✨)
+        `;
+      }
+
+      if (step1Title) {
+        step1Title.textContent = `เลือกวันที่เปิดรับนัดหมาย (${summary.daysText})`;
+      }
+      if (step2Title) {
+        step2Title.textContent = `เลือกช่วงเวลานัดหมาย (เว้นระยะ ${summary.gapText})`;
+      }
+    },
+
+    getUpcomingDates: function (count = 14) {
+      const dates = [];
       const now = new Date();
-      // Start from tomorrow or today if afternoon before 18:00
       let d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      while (weekends.length < count) {
-        const day = d.getDay(); // 0 is Sunday, 6 is Saturday
-        if (day === 0 || day === 6) {
-          const dateStr = d.toISOString().split('T')[0];
-          const isSaturday = day === 6;
-          const thaiDayName = isSaturday ? 'วันเสาร์' : 'วันอาทิตย์';
+      const openDays = Array.isArray(this.settings.availableDays) ? this.settings.availableDays : [0, 6];
+      const blockedList = Array.isArray(this.settings.blockedDates) ? this.settings.blockedDates : [];
+
+      let guard = 0;
+      while (dates.length < count && guard < 180) {
+        guard++;
+        const day = d.getDay();
+        const dateStr = d.toISOString().split('T')[0];
+        const isBlocked = blockedList.some(b => (b.date || b) === dateStr);
+
+        if (openDays.includes(day) && !isBlocked) {
+          const dayMeta = THAI_DAYS.find(td => td.id === day) || { name: 'วัน', short: '', badgeClass: 'badge-sat' };
           const thaiDateText = d.toLocaleDateString('th-TH', {
             day: 'numeric',
             month: 'short',
             year: 'numeric'
           });
 
-          weekends.push({
+          dates.push({
             dateStr: dateStr,
             dayOfWeek: day,
-            dayLabel: thaiDayName,
+            dayLabel: dayMeta.name,
             dateLabel: thaiDateText,
-            badgeLabel: isSaturday ? 'เสาร์' : 'อาทิตย์',
+            badgeLabel: dayMeta.short,
+            badgeClass: dayMeta.badgeClass,
             isToday: dateStr === now.toISOString().split('T')[0]
           });
         }
         d.setDate(d.getDate() + 1);
       }
-      return weekends;
+      return dates;
     },
 
     timeToMinutes: function (timeStr) {
@@ -173,16 +351,13 @@
       return (h || 0) * 60 + (m || 0);
     },
 
-    /**
-     * ตรวจสอบความว่างของเวลา โดยอิงกฎ:
-     * "ถ้ามีคนกดจองแล้ว ระยะห่างจะอยู่ 2 ชั่วโมง คือ จองติดกันภายในเวลา 2 ชั่วโมงไม่ได้"
-     */
     checkSlotAvailability: function (dateStr, slotStartStr) {
       if (!dateStr || !slotStartStr) return { available: false, reason: 'ข้อมูลไม่ครบถ้วน' };
 
       const slotMinutes = this.timeToMinutes(slotStartStr);
+      const minGap = this.settings.minGapMinutes || 120;
 
-      // หาการจองที่ยัง Active ในวันเดียวกัน (ไม่รวมที่ยกเลิกแล้ว)
+      // Active bookings on the same date
       const activeBookings = this.bookings.filter(b => {
         return b.date === dateStr && b.status !== 'cancelled';
       });
@@ -191,11 +366,11 @@
         const bookedMinutes = this.timeToMinutes(b.time);
         const diffMinutes = Math.abs(slotMinutes - bookedMinutes);
 
-        // ระยะห่างต้อง >= 120 นาที (2 ชั่วโมง)
-        if (diffMinutes < 120) {
+        if (diffMinutes < minGap) {
+          const hoursGap = Math.round(minGap / 60);
           return {
             available: false,
-            reason: `ติดเวลาการจองของคุณ ${b.name || 'ลูกค้า'} (${b.time} น.) ห่างกันไม่ถึง 2 ชม.`
+            reason: `ติดเวลาการจองของคุณ ${b.name || 'ลูกค้า'} (${b.time} น.) ห่างกันไม่ถึง ${hoursGap} ชม.`
           };
         }
       }
@@ -204,7 +379,11 @@
     },
 
     getAvailableSlotsForDate: function (dateStr) {
-      return BASE_TIME_SLOTS.map(slot => {
+      const slots = Array.isArray(this.settings.timeSlots) && this.settings.timeSlots.length > 0
+        ? this.settings.timeSlots
+        : DEFAULT_SETTINGS.timeSlots;
+
+      return slots.map(slot => {
         const check = this.checkSlotAvailability(dateStr, slot.start);
         return {
           ...slot,
@@ -245,7 +424,7 @@
         });
         return resp.ok;
       } catch (err) {
-        console.warn('Could not send email to admin via FormSubmit:', err);
+        console.warn('Could not send booking email to admin via FormSubmit:', err);
         return false;
       }
     },
@@ -285,24 +464,33 @@
     // UI RENDERING: CUSTOMER BOOKING VIEW
     // ------------------------------------------------------------------------
     onTabShow: function (role = 'customer') {
+      this.applyScheduleToHeroBanner();
       if (role === 'admin' || (window.AuthManager && window.AuthManager.isAdmin())) {
         this.renderAdminBookingsList();
+        if (this.currentAdminTab === 'schedule') {
+          this.populateAdminScheduleSettings();
+        }
       }
-      this.renderWeekendDates();
+      this.renderAvailableDates();
       this.renderTimeSlots();
       this.updateAdminBadge();
     },
 
-    renderWeekendDates: function () {
+    renderAvailableDates: function () {
       const container = document.getElementById('bookingWeekendDatesContainer');
       if (!container) return;
 
-      const weekends = this.getUpcomingWeekends(14);
-      if (!this.selectedDate && weekends.length > 0) {
-        this.selectedDate = weekends[0].dateStr;
+      const dates = this.getUpcomingDates(14);
+      if (dates.length === 0) {
+        container.innerHTML = '<p class="booking-empty-notice">ขณะนี้ยังไม่มีรอบวันที่เปิดรับนัดหมาย กรุณาติดต่อแม่หมอโดยตรงนะคะ</p>';
+        return;
       }
 
-      container.innerHTML = weekends.map(item => {
+      if (!this.selectedDate || !dates.some(d => d.dateStr === this.selectedDate)) {
+        this.selectedDate = dates[0].dateStr;
+      }
+
+      container.innerHTML = dates.map(item => {
         const isSelected = item.dateStr === this.selectedDate;
         const availableCount = this.getAvailableSlotsForDate(item.dateStr).filter(s => s.isAvailable).length;
         const isFull = availableCount === 0;
@@ -312,7 +500,7 @@
             class="booking-date-chip ${isSelected ? 'selected' : ''} ${isFull ? 'date-full' : ''}" 
             data-date="${item.dateStr}"
             onclick="window.BookingApp.selectDate('${item.dateStr}')">
-            <span class="chip-badge ${item.dayOfWeek === 6 ? 'badge-sat' : 'badge-sun'}">${item.badgeLabel}</span>
+            <span class="chip-badge ${item.badgeClass || 'badge-sat'}">${item.badgeLabel}</span>
             <strong class="chip-date">${item.dateLabel}</strong>
             <span class="chip-status ${isFull ? 'status-full' : 'status-avail'}">
               ${isFull ? '🔒 คิวเต็ม' : `✨ ว่าง ${availableCount} คิว`}
@@ -325,7 +513,7 @@
     selectDate: function (dateStr) {
       this.selectedDate = dateStr;
       this.selectedTimeSlot = null;
-      this.renderWeekendDates();
+      this.renderAvailableDates();
       this.renderTimeSlots();
     },
 
@@ -335,14 +523,21 @@
       if (!container) return;
 
       if (!this.selectedDate) {
-        container.innerHTML = '<p class="booking-empty-notice">กรุณาเลือกวันเสาร์หรืออาทิตย์ด้านบนก่อนค่ะ</p>';
+        container.innerHTML = '<p class="booking-empty-notice">กรุณาเลือกวันที่ด้านบนก่อนค่ะ</p>';
         return;
       }
 
       const slots = this.getAvailableSlotsForDate(this.selectedDate);
-      const selObj = this.getUpcomingWeekends(30).find(w => w.dateStr === this.selectedDate);
+      const selObj = this.getUpcomingDates(30).find(w => w.dateStr === this.selectedDate);
+      const summary = this.getScheduleSummary();
+
       if (dateNotice) {
-        dateNotice.innerHTML = `<i class="fa-solid fa-calendar-day text-purple-600"></i> วันที่เลือก: <strong>${selObj ? selObj.dateLabel + ' (' + selObj.dayLabel + ')' : this.selectedDate}</strong> (เวลาทำการ 14.00 - 20.00 น.)`;
+        dateNotice.innerHTML = `<i class="fa-solid fa-calendar-day text-purple-600"></i> วันที่เลือก: <strong>${selObj ? selObj.dateLabel + ' (' + selObj.dayLabel + ')' : this.selectedDate}</strong> (เวลาทำการ ${summary.hoursText})`;
+      }
+
+      if (slots.length === 0) {
+        container.innerHTML = '<p class="booking-empty-notice">ไม่มีรอบเวลาเปิดรับในวันดังกล่าว</p>';
+        return;
       }
 
       container.innerHTML = slots.map(slot => {
@@ -367,7 +562,7 @@
               <i class="fa-solid fa-clock ${isSelected ? 'text-white' : 'text-purple-600'}"></i>
               <span class="slot-time-text">${slot.label}</span>
             </div>
-            <span class="slot-state-badge open">ว่าง (2 ชั่วโมง)</span>
+            <span class="slot-state-badge open">ว่าง (${summary.gapText})</span>
           </button>
         `;
       }).join('');
@@ -379,12 +574,12 @@
 
       const summary = document.getElementById('bookingChosenSlotSummary');
       if (summary) {
-        const selObj = this.getUpcomingWeekends(30).find(w => w.dateStr === this.selectedDate);
+        const selObj = this.getUpcomingDates(30).find(w => w.dateStr === this.selectedDate);
         summary.innerHTML = `
           <div class="booking-chosen-card">
             <i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i>
             <div>
-              <strong>วัน${selObj ? selObj.dayLabel : ''} ที่ ${selObj ? selObj.dateLabel : this.selectedDate}</strong>
+              <strong>${selObj ? selObj.dayLabel : ''} ที่ ${selObj ? selObj.dateLabel : this.selectedDate}</strong>
               <div class="text-purple-700 font-semibold">ช่วงเวลา: ${label}</div>
             </div>
           </div>
@@ -395,8 +590,13 @@
     handleCustomerFormSubmit: async function (e) {
       e.preventDefault();
 
+      if (!this.settings.isOpen) {
+        alert('ขออภัยค่ะ ขณะนี้ระบบปิดรับคิวชั่วคราว');
+        return;
+      }
+
       if (!this.selectedDate) {
-        alert('กรุณาเลือกวันเสาร์หรืออาทิตย์ที่ต้องการดูดวงก่อนค่ะ');
+        alert('กรุณาเลือกวันที่ต้องการดูดวงก่อนค่ะ');
         return;
       }
       if (!this.selectedTimeSlot) {
@@ -407,7 +607,7 @@
       // Re-verify availability
       const check = this.checkSlotAvailability(this.selectedDate, this.selectedTimeSlot.start);
       if (!check.available) {
-        alert('ขออภัยค่ะ เวลานี้เพิ่งมีผู้จองหรือติดกฎระยะห่าง 2 ชั่วโมง กรุณาเลือกช่วงเวลาอื่นนะคะ');
+        alert('ขออภัยค่ะ เวลานี้เพิ่งมีผู้จองหรือติดกฎระยะห่าง กรุณาเลือกช่วงเวลาอื่นนะคะ');
         this.renderTimeSlots();
         return;
       }
@@ -420,33 +620,34 @@
       const topic = document.getElementById('bookingInputTopic').value.trim();
 
       if (!name || !phone || !email) {
-        alert('กรุณากรอกชื่อ เบอร์โทรศัพท์ และอีเมลให้ครบถ้วนเพื่อรับการยืนยันค่ะ');
+        alert('กรุณากรอกชื่อ เบอร์โทรศัพท์ และอีเมลให้ครบถ้วนค่ะ');
         return;
       }
+
+      const selObj = this.getUpcomingDates(30).find(w => w.dateStr === this.selectedDate);
+      const dateLabel = selObj ? `${selObj.dayLabel} ที่ ${selObj.dateLabel}` : this.selectedDate;
 
       const submitBtn = document.getElementById('bookingSubmitBtn');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังส่งข้อมูลการจอง...';
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังส่งข้อมูลนัดหมาย...';
       }
 
-      const selObj = this.getUpcomingWeekends(30).find(w => w.dateStr === this.selectedDate);
-      const refId = 'BK' + Date.now().toString().slice(-6) + Math.floor(Math.random() * 90 + 10);
-
+      const bookingRef = 'MMT-' + Date.now().toString(36).toUpperCase();
       const newBooking = {
-        id: refId,
-        ref: '#' + refId,
+        id: 'book_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        ref: bookingRef,
         name: name,
         phone: phone,
         email: email,
         lineId: lineId,
         service: service,
+        topic: topic,
         date: this.selectedDate,
-        dateLabel: selObj ? `${selObj.dayLabel}ที่ ${selObj.dateLabel}` : this.selectedDate,
+        dateLabel: dateLabel,
         time: this.selectedTimeSlot.start,
         timeEnd: this.selectedTimeSlot.end,
         timeRange: this.selectedTimeSlot.label,
-        topic: topic,
         status: 'pending', // 'pending', 'confirmed', 'cancelled'
         createdAt: new Date().toISOString(),
         createdFormatted: new Date().toLocaleDateString('th-TH', {
@@ -471,7 +672,7 @@
       // 4. Reset selection and form
       document.getElementById('bookingCustomerForm').reset();
       this.selectedTimeSlot = null;
-      this.renderWeekendDates();
+      this.renderAvailableDates();
       this.renderTimeSlots();
     },
 
@@ -524,6 +725,345 @@
     },
 
     // ------------------------------------------------------------------------
+    // ADMIN SUB-TABS: BOOKINGS FEED VS SCHEDULE SETTINGS
+    // ------------------------------------------------------------------------
+    switchAdminTab: function (tabName) {
+      this.currentAdminTab = tabName;
+
+      const tabBookingsBtn = document.getElementById('adminNavTabBookings');
+      const tabScheduleBtn = document.getElementById('adminNavTabSchedule');
+      const bookingsPanel = document.getElementById('adminBookingsFeedPanel');
+      const schedulePanel = document.getElementById('adminScheduleSettingsPanel');
+
+      if (tabBookingsBtn) tabBookingsBtn.classList.toggle('active', tabName === 'bookings');
+      if (tabScheduleBtn) tabScheduleBtn.classList.toggle('active', tabName === 'schedule');
+
+      if (bookingsPanel) {
+        if (tabName === 'bookings') {
+          bookingsPanel.classList.remove('hidden');
+          this.renderAdminBookingsList();
+        } else {
+          bookingsPanel.classList.add('hidden');
+        }
+      }
+
+      if (schedulePanel) {
+        if (tabName === 'schedule') {
+          schedulePanel.classList.remove('hidden');
+          this.populateAdminScheduleSettings();
+        } else {
+          schedulePanel.classList.add('hidden');
+        }
+      }
+    },
+
+    // ------------------------------------------------------------------------
+    // ADMIN SCHEDULE SETTINGS CONTROLLER (ปรับเปลี่ยนวัน-เวลารับดูดวง)
+    // ------------------------------------------------------------------------
+    populateAdminScheduleSettings: function () {
+      if (!this.tempDraftSettings) {
+        this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      }
+
+      // 1. Status Toggle & Closed Notice
+      const statusCheckbox = document.getElementById('adminSettingIsOpen');
+      const statusText = document.getElementById('adminSettingStatusText');
+      const noticeInput = document.getElementById('adminSettingClosedNotice');
+      if (statusCheckbox) {
+        statusCheckbox.checked = !!this.tempDraftSettings.isOpen;
+        if (statusText) {
+          statusText.textContent = this.tempDraftSettings.isOpen ? '🟢 กำลังเปิดรับจองคิวตามปกติ' : '🔴 ปิดรับจองชั่วคราว';
+          statusText.style.color = this.tempDraftSettings.isOpen ? '#059669' : '#dc2626';
+        }
+      }
+      if (noticeInput) {
+        noticeInput.value = this.tempDraftSettings.closedNotice || '';
+      }
+
+      // 2. Day of Week Checkboxes
+      const daysContainer = document.getElementById('adminSettingDaysContainer');
+      if (daysContainer) {
+        const activeDays = this.tempDraftSettings.availableDays || [0, 6];
+        daysContainer.innerHTML = THAI_DAYS.map(day => {
+          const isChecked = activeDays.includes(day.id);
+          return `
+            <button type="button" 
+              class="day-toggle-chip ${isChecked ? 'active' : ''} ${day.badgeClass}" 
+              onclick="window.BookingApp.adminToggleDay(${day.id})">
+              <i class="fa-solid ${isChecked ? 'fa-circle-check text-purple-600' : 'fa-circle text-slate-300'}"></i>
+              <span>${day.name}</span>
+            </button>
+          `;
+        }).join('');
+      }
+
+      // 3. Min Gap selector
+      const gapSelect = document.getElementById('adminSettingMinGap');
+      if (gapSelect) {
+        gapSelect.value = String(this.tempDraftSettings.minGapMinutes || 120);
+      }
+
+      // 4. Time Slots Pills
+      this.renderAdminSlotsEditor();
+
+      // 5. Blocked Dates List
+      this.renderAdminBlockedDatesEditor();
+    },
+
+    adminToggleStatus: function () {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      const checkbox = document.getElementById('adminSettingIsOpen');
+      const statusText = document.getElementById('adminSettingStatusText');
+      this.tempDraftSettings.isOpen = checkbox ? checkbox.checked : !this.tempDraftSettings.isOpen;
+
+      if (statusText) {
+        statusText.textContent = this.tempDraftSettings.isOpen ? '🟢 กำลังเปิดรับจองคิวตามปกติ' : '🔴 ปิดรับจองชั่วคราว';
+        statusText.style.color = this.tempDraftSettings.isOpen ? '#059669' : '#dc2626';
+      }
+    },
+
+    adminToggleDay: function (dayId) {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      let days = this.tempDraftSettings.availableDays || [];
+      if (days.includes(dayId)) {
+        if (days.length <= 1) {
+          alert('ต้องเลือกเปิดรับอย่างน้อย 1 วันในสัปดาห์ค่ะ');
+          return;
+        }
+        days = days.filter(d => d !== dayId);
+      } else {
+        days.push(dayId);
+        days.sort((a, b) => a - b);
+      }
+      this.tempDraftSettings.availableDays = days;
+      this.populateAdminScheduleSettings();
+    },
+
+    adminApplyPresetDays: function (preset) {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      if (preset === 'weekend') {
+        this.tempDraftSettings.availableDays = [0, 6]; // เสาร์-อาทิตย์
+      } else if (preset === 'all') {
+        this.tempDraftSettings.availableDays = [0, 1, 2, 3, 4, 5, 6]; // ทุกวัน
+      } else if (preset === 'weekday') {
+        this.tempDraftSettings.availableDays = [1, 2, 3, 4, 5]; // จันทร์-ศุกร์
+      } else if (preset === 'fri_sat_sun') {
+        this.tempDraftSettings.availableDays = [5, 6, 0]; // ศุกร์-เสาร์-อาทิตย์
+      }
+      this.populateAdminScheduleSettings();
+    },
+
+    renderAdminSlotsEditor: function () {
+      const container = document.getElementById('adminSettingSlotsContainer');
+      if (!container) return;
+      const slots = this.tempDraftSettings.timeSlots || [];
+
+      if (slots.length === 0) {
+        container.innerHTML = '<p class="text-sm text-slate-400 italic">ยังไม่มีรอบเวลาที่เปิดรับ กรุณากดเพิ่มรอบเวลาด้านล่างค่ะ</p>';
+        return;
+      }
+
+      container.innerHTML = slots.map((s, idx) => {
+        return `
+          <div class="admin-slot-pill">
+            <span class="slot-pill-clock"><i class="fa-solid fa-clock text-purple-600"></i> ${s.label}</span>
+            <button type="button" class="slot-pill-delete" title="ลบรอบเวลานี้" onclick="window.BookingApp.adminRemoveSlot(${idx})">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+    },
+
+    adminAddNewSlot: function () {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      const startInput = document.getElementById('adminNewSlotStart');
+      const endInput = document.getElementById('adminNewSlotEnd');
+
+      const start = startInput ? startInput.value : '';
+      const end = endInput ? endInput.value : '';
+
+      if (!start || !end) {
+        alert('กรุณาระบุเวลาเริ่มต้นและเวลาสิ้นสุดค่ะ');
+        return;
+      }
+
+      if (start >= end) {
+        alert('เวลาเริ่มต้นต้องน้อยกว่าเวลาสิ้นสุดค่ะ');
+        return;
+      }
+
+      const label = `${start} - ${end} น.`;
+      const slots = this.tempDraftSettings.timeSlots || [];
+
+      // Check duplicates
+      if (slots.some(s => s.start === start)) {
+        alert('มีรอบเวลาที่เริ่มต้นในเวลานี้อยู่แล้วค่ะ');
+        return;
+      }
+
+      slots.push({ start, end, label });
+      slots.sort((a, b) => a.start.localeCompare(b.start));
+      this.tempDraftSettings.timeSlots = slots;
+
+      this.renderAdminSlotsEditor();
+    },
+
+    adminRemoveSlot: function (index) {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      const slots = this.tempDraftSettings.timeSlots || [];
+      if (slots.length <= 1) {
+        alert('ต้องมีรอบเวลาอย่างน้อย 1 รอบค่ะ');
+        return;
+      }
+      slots.splice(index, 1);
+      this.tempDraftSettings.timeSlots = slots;
+      this.renderAdminSlotsEditor();
+    },
+
+    adminApplyPresetSlots: function (preset) {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      if (preset === 'default_afternoon') {
+        // 14:00 - 22:00 (2 hrs each)
+        this.tempDraftSettings.timeSlots = [
+          { start: '14:00', end: '16:00', label: '14:00 - 16:00 น.' },
+          { start: '16:00', end: '18:00', label: '16:00 - 18:00 น.' },
+          { start: '18:00', end: '20:00', label: '18:00 - 20:00 น.' },
+          { start: '20:00', end: '22:00', label: '20:00 - 22:00 น.' }
+        ];
+      } else if (preset === 'full_day') {
+        // 10:00 - 20:00 (2 hrs each)
+        this.tempDraftSettings.timeSlots = [
+          { start: '10:00', end: '12:00', label: '10:00 - 12:00 น.' },
+          { start: '13:00', end: '15:00', label: '13:00 - 15:00 น.' },
+          { start: '15:00', end: '17:00', label: '15:00 - 17:00 น.' },
+          { start: '18:00', end: '20:00', label: '18:00 - 20:00 น.' }
+        ];
+      } else if (preset === 'one_hour_afternoon') {
+        // 14:00 - 20:00 (1 hr each)
+        this.tempDraftSettings.timeSlots = [
+          { start: '14:00', end: '15:00', label: '14:00 - 15:00 น.' },
+          { start: '15:00', end: '16:00', label: '15:00 - 16:00 น.' },
+          { start: '16:00', end: '17:00', label: '16:00 - 17:00 น.' },
+          { start: '17:00', end: '18:00', label: '17:00 - 18:00 น.' },
+          { start: '18:00', end: '19:00', label: '18:00 - 19:00 น.' },
+          { start: '19:00', end: '20:00', label: '19:00 - 20:00 น.' }
+        ];
+        this.tempDraftSettings.minGapMinutes = 60;
+        const gapSelect = document.getElementById('adminSettingMinGap');
+        if (gapSelect) gapSelect.value = '60';
+      }
+      this.renderAdminSlotsEditor();
+    },
+
+    renderAdminBlockedDatesEditor: function () {
+      const container = document.getElementById('adminSettingBlockedContainer');
+      if (!container) return;
+      const blocked = this.tempDraftSettings.blockedDates || [];
+
+      if (blocked.length === 0) {
+        container.innerHTML = '<p class="text-sm text-slate-400 italic">ยังไม่มีวันหยุดพิเศษที่ระบุไว้</p>';
+        return;
+      }
+
+      container.innerHTML = blocked.map((b, idx) => {
+        const dateObj = new Date(b.date + 'T00:00:00');
+        const thaiDate = dateObj.toLocaleDateString('th-TH', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
+        return `
+          <div class="admin-blocked-date-tag">
+            <div class="blocked-tag-info">
+              <span class="blocked-date-text"><i class="fa-solid fa-calendar-xmark text-rose-500"></i> ${thaiDate}</span>
+              ${b.reason ? `<span class="blocked-reason-text">(${b.reason})</span>` : ''}
+            </div>
+            <button type="button" class="slot-pill-delete" title="ลบวันหยุดนี้ (เปิดรับคิวใหม่)" onclick="window.BookingApp.adminRemoveBlockedDate(${idx})">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+    },
+
+    adminAddBlockedDate: function () {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      const dateInput = document.getElementById('adminNewBlockedDate');
+      const reasonInput = document.getElementById('adminNewBlockedReason');
+
+      const date = dateInput ? dateInput.value : '';
+      const reason = reasonInput ? reasonInput.value.trim() : '';
+
+      if (!date) {
+        alert('กรุณาเลือกวันที่ต้องการงดรับคิวค่ะ');
+        return;
+      }
+
+      const blocked = this.tempDraftSettings.blockedDates || [];
+      if (blocked.some(b => b.date === date)) {
+        alert('วันที่นี้อยู่ในรายการงดรับคิวอยู่แล้วค่ะ');
+        return;
+      }
+
+      blocked.push({ date, reason });
+      blocked.sort((a, b) => a.date.localeCompare(b.date));
+      this.tempDraftSettings.blockedDates = blocked;
+
+      if (dateInput) dateInput.value = '';
+      if (reasonInput) reasonInput.value = '';
+
+      this.renderAdminBlockedDatesEditor();
+    },
+
+    adminRemoveBlockedDate: function (index) {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+      const blocked = this.tempDraftSettings.blockedDates || [];
+      blocked.splice(index, 1);
+      this.tempDraftSettings.blockedDates = blocked;
+      this.renderAdminBlockedDatesEditor();
+    },
+
+    adminSaveScheduleSettings: async function () {
+      if (!this.tempDraftSettings) this.tempDraftSettings = JSON.parse(JSON.stringify(this.settings));
+
+      const statusCheckbox = document.getElementById('adminSettingIsOpen');
+      const noticeInput = document.getElementById('adminSettingClosedNotice');
+      const gapSelect = document.getElementById('adminSettingMinGap');
+
+      this.tempDraftSettings.isOpen = statusCheckbox ? statusCheckbox.checked : true;
+      this.tempDraftSettings.closedNotice = noticeInput ? noticeInput.value.trim() : '';
+      this.tempDraftSettings.minGapMinutes = gapSelect ? Number(gapSelect.value) || 120 : 120;
+
+      const saveBtn = document.getElementById('adminSaveSettingsBtn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึกการตั้งค่า...';
+      }
+
+      await this.persistSettingsRecord(this.tempDraftSettings);
+
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าวัน-เวลาเรียบร้อย!';
+        setTimeout(() => {
+          saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าทั้งหมด';
+        }, 2500);
+      }
+
+      alert('💾 บันทึกการตั้งค่าวันและเวลาเปิดรับดูดวงเรียบร้อยแล้วค่ะ!\nระบบได้อัปเดตหน้าจองคิวของลูกค้าให้เป็นไปตามการตั้งค่าใหม่นี้ทันทีค่ะ ✨');
+      this.populateAdminScheduleSettings();
+    },
+
+    adminResetScheduleSettings: function () {
+      const confirmReset = confirm('ต้องการคืนค่าเริ่มต้นทั้งหมดใช่หรือไม่?\n\n- เปิดรับเฉพาะ วันเสาร์ และ วันอาทิตย์\n- เวลา 14:00 - 22:00 น. (รอบละ 2 ชม.)\n- ระยะห่างระหว่างคิว 2 ชม.');
+      if (!confirmReset) return;
+
+      this.tempDraftSettings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+      this.persistSettingsRecord(this.tempDraftSettings);
+      this.populateAdminScheduleSettings();
+      alert('🔄 คืนค่าเริ่มต้นเรียบร้อยแล้วค่ะ');
+    },
+
+    // ------------------------------------------------------------------------
     // ADMIN BOOKING MANAGEMENT: "ลูกค้าจองดูดวง"
     // ------------------------------------------------------------------------
     setAdminFilter: function (filter) {
@@ -540,7 +1080,6 @@
 
       if (!listContainer) return;
 
-      // Update counters
       const total = this.bookings.length;
       const pending = this.bookings.filter(b => b.status === 'pending').length;
       const confirmed = this.bookings.filter(b => b.status === 'confirmed').length;
@@ -551,13 +1090,11 @@
       if (statsConfirmed) statsConfirmed.textContent = String(confirmed);
       if (statsCancelled) statsCancelled.textContent = String(cancelled);
 
-      // Filter list
       let filtered = [...this.bookings];
       if (this.adminFilter !== 'all') {
         filtered = filtered.filter(b => b.status === this.adminFilter);
       }
 
-      // Update filter tabs active state
       const filterBtns = document.querySelectorAll('.admin-filter-btn');
       filterBtns.forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-filter') === this.adminFilter);
@@ -598,7 +1135,6 @@
             </div>
 
             <div class="card-main-grid">
-              <!-- Customer Profile -->
               <div class="customer-info-box">
                 <h4 class="customer-name"><i class="fa-solid fa-circle-user text-purple-600"></i> คุณ ${b.name}</h4>
                 <div class="customer-contact-items">
@@ -608,7 +1144,6 @@
                 </div>
               </div>
 
-              <!-- Booking Time & Topic -->
               <div class="booking-datetime-box">
                 <div class="datetime-highlight">
                   <i class="fa-solid fa-calendar-star text-amber-500"></i>
@@ -626,7 +1161,6 @@
               </div>
             </div>
 
-            <!-- Action Buttons for Admin -->
             <div class="card-actions-bar">
               ${isPending ? `
                 <button type="button" class="btn-admin-action btn-confirm" onclick="window.BookingApp.adminConfirmBooking('${b.id || b.ref}')">
@@ -666,7 +1200,6 @@
 
       await this.persistBookingRecord(b);
 
-      // Send confirmation email to customer
       const emailSent = await this.sendConfirmationEmailToCustomer(b);
 
       alert(`✅ ตอบรับคิวดูดวงของคุณ ${b.name} สำเร็จแล้ว!\n${emailSent ? 'ระบบส่งอีเมลยืนยันไปยัง ' + b.email + ' เรียบร้อยค่ะ' : 'ส่งคำขอยืนยันไปยังอีเมลลูกค้าเรียบร้อยค่ะ'}`);
@@ -695,7 +1228,7 @@
 
       alert(`ยกเลิกคิวของคุณ ${b.name} เรียบร้อยแล้วค่ะ (ช่วงเวลานี้กลับมาว่างแล้ว)`);
       this.renderAdminBookingsList();
-      this.renderWeekendDates();
+      this.renderAvailableDates();
       this.renderTimeSlots();
       this.updateAdminBadge();
     },
@@ -704,7 +1237,6 @@
       const b = this.bookings.find(item => item.id === bookingId || item.ref === bookingId);
       if (!b) return;
 
-      // Check slot availability again
       const check = this.checkSlotAvailability(b.date, b.time);
       if (!check.available) {
         alert('ไม่สามารถนำกลับมาได้เนื่องจาก: ' + check.reason);
@@ -715,7 +1247,7 @@
       await this.persistBookingRecord(b);
       alert(`นำคิวของคุณ ${b.name} กลับมาอยู่ในสถานะ "รอตอบรับ" เรียบร้อยค่ะ`);
       this.renderAdminBookingsList();
-      this.renderWeekendDates();
+      this.renderAvailableDates();
       this.renderTimeSlots();
       this.updateAdminBadge();
     },

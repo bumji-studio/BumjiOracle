@@ -31,7 +31,7 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_1905">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_4416">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -2766,6 +2766,7 @@
           เปิดรับนัดหมายเฉพาะ <strong>วันเสาร์ และ วันอาทิตย์</strong> เวลา <strong>14.00 - 20.00 น.</strong><br>
           (คิวนัดหมายห่างกันอย่างน้อย 2 ชั่วโมง เพื่อวิเคราะห์ผังดวงและทำนายอย่างเจาะลึกเต็มที่ค่ะ ✨)
         </p>
+        <div id="bookingClosedNoticeBox" class="hidden"></div>
       </div>
 
       <div class="booking-main-grid">
@@ -2774,8 +2775,8 @@
           <div class="booking-card-header">
             <span class="step-num-badge">1</span>
             <div>
-              <h3 class="step-card-title">เลือกวันเสาร์หรือวันอาทิตย์ที่สะดวก</h3>
-              <p class="step-card-desc">คลิกเลือกวันที่ว่างตามปฏิทินสุดสัปดาห์</p>
+              <h3 class="step-card-title" id="bookingStep1Title">เลือกวันที่เปิดรับนัดหมาย</h3>
+              <p class="step-card-desc">คลิกเลือกวันที่ว่างตามปฏิทินที่เปิดรับ</p>
             </div>
           </div>
 
@@ -2787,7 +2788,7 @@
           <div class="booking-card-header" style="margin-top: 24px;">
             <span class="step-num-badge">2</span>
             <div>
-              <h3 class="step-card-title">เลือกช่วงเวลานัดหมาย (2 ชั่วโมง)</h3>
+              <h3 class="step-card-title" id="bookingStep2Title">เลือกช่วงเวลานัดหมาย</h3>
               <p id="bookingSelectedDateNotice" class="step-card-desc">
                 กรุณาเลือกวันที่ด้านบนก่อนค่ะ
               </p>
@@ -2887,57 +2888,240 @@
           <div class="admin-title-badge">
             <i class="fa-solid fa-crown text-amber-400"></i> Admin Management Portal
           </div>
-          <h2 class="admin-portal-title">📋 รายการลูกค้าจองดูดวง</h2>
+          <h2 class="admin-portal-title">🔮 ระบบจัดการคิว & วันเวลารับดูดวง</h2>
           <p class="admin-portal-desc">
-            ตรวจสอบคิวนัดหมายของลูกค้า และกด <strong>"ตอบรับ"</strong> เพื่อส่งอีเมลยืนยันวันเวลานัดหมายให้ลูกค้าโดยอัตโนมัติค่ะ
+            ตรวจสอบคิวนัดหมายของลูกค้า และปรับเปลี่ยนวัน เวลา และรอบที่เปิดรับดูดวงได้ด้วยตัวเองค่ะ
           </p>
         </div>
         <div class="admin-actions-bar">
-          <button type="button" class="btn-admin-refresh" onclick="window.BookingApp.renderAdminBookingsList()">
+          <button type="button" class="btn-admin-refresh" onclick="window.BookingApp.onTabShow('admin')">
             <i class="fa-solid fa-rotate"></i> รีเฟรชข้อมูล
           </button>
         </div>
       </div>
 
-      <!-- Stats Summary Strip -->
-      <div class="admin-stats-strip">
-        <div class="admin-stat-card card-total">
-          <span class="stat-num" id="adminStatsTotal">0</span>
-          <span class="stat-lbl"><i class="fa-solid fa-list-check"></i> คิวทั้งหมด</span>
-        </div>
-        <div class="admin-stat-card card-pending">
-          <span class="stat-num text-amber-600" id="adminStatsPending">0</span>
-          <span class="stat-lbl"><i class="fa-solid fa-hourglass-half"></i> รอการตอบรับ</span>
-        </div>
-        <div class="admin-stat-card card-confirmed">
-          <span class="stat-num text-emerald-600" id="adminStatsConfirmed">0</span>
-          <span class="stat-lbl"><i class="fa-solid fa-circle-check"></i> ตอบรับแล้ว</span>
-        </div>
-        <div class="admin-stat-card card-cancelled">
-          <span class="stat-num text-rose-500" id="adminStatsCancelled">0</span>
-          <span class="stat-lbl"><i class="fa-solid fa-circle-xmark"></i> ยกเลิก</span>
-        </div>
-      </div>
-
-      <!-- Filter Tabs -->
-      <div class="admin-filters-bar">
-        <button type="button" class="admin-filter-btn active" data-filter="all" onclick="window.BookingApp.setAdminFilter('all')">
-          ทั้งหมด
+      <!-- Admin Main Navigation Tabs -->
+      <div class="admin-main-nav-tabs">
+        <button type="button" class="admin-nav-tab active" id="adminNavTabBookings" onclick="window.BookingApp.switchAdminTab('bookings')">
+          <i class="fa-solid fa-clipboard-list"></i> รายการลูกค้าจองดูดวง
+          <span class="admin-tab-count" id="adminNavPendingCount" style="display:none;">0</span>
         </button>
-        <button type="button" class="admin-filter-btn" data-filter="pending" onclick="window.BookingApp.setAdminFilter('pending')">
-          ⏳ รอการตอบรับ
-        </button>
-        <button type="button" class="admin-filter-btn" data-filter="confirmed" onclick="window.BookingApp.setAdminFilter('confirmed')">
-          ✅ ตอบรับแล้ว
-        </button>
-        <button type="button" class="admin-filter-btn" data-filter="cancelled" onclick="window.BookingApp.setAdminFilter('cancelled')">
-          ❌ ยกเลิก
+        <button type="button" class="admin-nav-tab" id="adminNavTabSchedule" onclick="window.BookingApp.switchAdminTab('schedule')">
+          <i class="fa-solid fa-sliders"></i> ปรับเปลี่ยนวัน-เวลารับดูดวง
         </button>
       </div>
 
-      <!-- Bookings Cards Feed -->
-      <div id="adminBookingsListContainer" class="admin-bookings-feed">
-        <!-- Rendered by BookingApp.renderAdminBookingsList() -->
+      <!-- Panel 1: รายการลูกค้าจองดูดวง -->
+      <div id="adminBookingsFeedPanel" class="admin-view-panel">
+        <!-- Stats Summary Strip -->
+        <div class="admin-stats-strip">
+          <div class="admin-stat-card card-total">
+            <span class="stat-num" id="adminStatsTotal">0</span>
+            <span class="stat-lbl"><i class="fa-solid fa-list-check"></i> คิวทั้งหมด</span>
+          </div>
+          <div class="admin-stat-card card-pending">
+            <span class="stat-num text-amber-600" id="adminStatsPending">0</span>
+            <span class="stat-lbl"><i class="fa-solid fa-hourglass-half"></i> รอการตอบรับ</span>
+          </div>
+          <div class="admin-stat-card card-confirmed">
+            <span class="stat-num text-emerald-600" id="adminStatsConfirmed">0</span>
+            <span class="stat-lbl"><i class="fa-solid fa-circle-check"></i> ตอบรับแล้ว</span>
+          </div>
+          <div class="admin-stat-card card-cancelled">
+            <span class="stat-num text-rose-500" id="adminStatsCancelled">0</span>
+            <span class="stat-lbl"><i class="fa-solid fa-circle-xmark"></i> ยกเลิก</span>
+          </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="admin-filters-bar">
+          <button type="button" class="admin-filter-btn active" data-filter="all" onclick="window.BookingApp.setAdminFilter('all')">
+            ทั้งหมด
+          </button>
+          <button type="button" class="admin-filter-btn" data-filter="pending" onclick="window.BookingApp.setAdminFilter('pending')">
+            ⏳ รอการตอบรับ
+          </button>
+          <button type="button" class="admin-filter-btn" data-filter="confirmed" onclick="window.BookingApp.setAdminFilter('confirmed')">
+            ✅ ตอบรับแล้ว
+          </button>
+          <button type="button" class="admin-filter-btn" data-filter="cancelled" onclick="window.BookingApp.setAdminFilter('cancelled')">
+            ❌ ยกเลิก
+          </button>
+        </div>
+
+        <!-- Bookings Cards Feed -->
+        <div id="adminBookingsListContainer" class="admin-bookings-feed">
+          <!-- Rendered by BookingApp.renderAdminBookingsList() -->
+        </div>
+      </div>
+
+      <!-- Panel 2: ปรับเปลี่ยนวัน-เวลารับดูดวง -->
+      <div id="adminScheduleSettingsPanel" class="admin-view-panel hidden">
+        <div class="admin-settings-layout">
+          
+          <!-- Card 1: เปิด/ปิดการรับจอง & ข้อความประกาศ -->
+          <div class="admin-settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon"><i class="fa-solid fa-power-off"></i></div>
+              <div>
+                <h3 class="settings-card-title">สถานะเปิด/ปิดรับคิวดูดวง</h3>
+                <p class="settings-card-desc">เปิดให้ลูกค้าจองคิวตามปกติ หรือปิดรับจองชั่วคราวเมื่อติดภารกิจ</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="settings-switch-row">
+                <label class="toggle-switch">
+                  <input type="checkbox" id="adminSettingIsOpen" onchange="window.BookingApp.adminToggleStatus()">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span id="adminSettingStatusText" class="settings-status-badge">🟢 กำลังเปิดรับจองคิวตามปกติ</span>
+              </div>
+              <div class="settings-input-group mt-3">
+                <label class="settings-label"><i class="fa-solid fa-bullhorn text-purple-600"></i> ข้อความแจ้งเตือนเมื่อปิดรับจอง (แสดงให้ลูกค้าเห็น):</label>
+                <input type="text" id="adminSettingClosedNotice" class="settings-text-input" placeholder="เช่น ขออภัยค่ะ ขณะนี้แม่หมอขอปิดรับคิวชั่วคราว หากเปิดรับแล้วจะแจ้งให้ทราบนะคะ ✨">
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: วันในสัปดาห์ที่เปิดรับดูดวง -->
+          <div class="admin-settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon"><i class="fa-solid fa-calendar-week"></i></div>
+              <div>
+                <h3 class="settings-card-title">วันในสัปดาห์ที่เปิดรับดูดวง</h3>
+                <p class="settings-card-desc">คลิกเลือกวันที่จะให้ระบบเปิดรับคิว หรือใช้ปุ่มลัดเพื่อเลือกแบบเร็ว</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <!-- Preset Quick Buttons -->
+              <div class="settings-presets-bar">
+                <span class="preset-label"><i class="fa-solid fa-bolt text-amber-500"></i> ปุ่มลัด:</span>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('weekend')">เฉพาะเสาร์-อาทิตย์</button>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('fri_sat_sun')">ศุกร์-เสาร์-อาทิตย์</button>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('weekday')">จันทร์-ศุกร์</button>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('all')">เปิดรับทุกวัน</button>
+              </div>
+              
+              <!-- Days Toggle Container -->
+              <div id="adminSettingDaysContainer" class="days-toggle-grid mt-3">
+                <!-- Populated by populateAdminScheduleSettings() -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: กำหนดระยะห่างระหว่างคิว -->
+          <div class="admin-settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon"><i class="fa-solid fa-hourglass-start"></i></div>
+              <div>
+                <h3 class="settings-card-title">ระยะห่างขั้นต่ำระหว่างคิว (Buffer Gap)</h3>
+                <p class="settings-card-desc">ระบบจะไม่อนุญาตให้ลูกค้าจองติดกันภายในเวลานี้ เพื่อให้แม่หมอมีเวลาพักและเตรียมตัว</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <div class="settings-select-row">
+                <select id="adminSettingMinGap" class="settings-select-input">
+                  <option value="60">1 ชั่วโมง (60 นาที)</option>
+                  <option value="90">1 ชั่วโมง 30 นาที (90 นาที)</option>
+                  <option value="120" selected>2 ชั่วโมง (120 นาที) - แนะนำ ⭐</option>
+                  <option value="180">3 ชั่วโมง (180 นาที)</option>
+                </select>
+                <span class="settings-hint-text">
+                  <i class="fa-solid fa-shield-halved text-emerald-600"></i> ป้องกันการจองซ้อนทับกันโดยอัตโนมัติ
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: จัดการรอบเวลาดูดวง (Time Slots) -->
+          <div class="admin-settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon"><i class="fa-solid fa-clock"></i></div>
+              <div>
+                <h3 class="settings-card-title">จัดการรอบเวลาดูดวง</h3>
+                <p class="settings-card-desc">เลือกรอบเวลาที่เปิดรับ หรือเพิ่มรอบเวลาใหม่ได้ตามต้องการ</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <!-- Preset Slot Buttons -->
+              <div class="settings-presets-bar">
+                <span class="preset-label"><i class="fa-solid fa-bolt text-amber-500"></i> ชุดเวลาสำเร็จรูป:</span>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetSlots('default_afternoon')">รอบบ่าย-ค่ำ (14:00-22:00 น. รอบละ 2 ชม.)</button>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetSlots('full_day')">เต็มวัน (10:00-20:00 น. รอบละ 2 ชม.)</button>
+                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetSlots('one_hour_afternoon')">รอบละ 1 ชั่วโมง (14:00-20:00 น.)</button>
+              </div>
+
+              <!-- Active Slots List -->
+              <div class="active-slots-label mt-3">รอบเวลาที่เปิดรับในปัจจุบัน:</div>
+              <div id="adminSettingSlotsContainer" class="admin-slots-wrap">
+                <!-- Populated by renderAdminSlotsEditor() -->
+              </div>
+
+              <!-- Add New Slot Form -->
+              <div class="admin-add-slot-box mt-4">
+                <h4 class="add-slot-heading"><i class="fa-solid fa-circle-plus text-purple-600"></i> เพิ่มรอบเวลาใหม่:</h4>
+                <div class="add-slot-inputs-row">
+                  <div class="time-input-field">
+                    <label>เวลาเริ่มต้น:</label>
+                    <input type="time" id="adminNewSlotStart" value="10:00" class="time-picker-input">
+                  </div>
+                  <div class="time-input-field">
+                    <label>เวลาสิ้นสุด:</label>
+                    <input type="time" id="adminNewSlotEnd" value="12:00" class="time-picker-input">
+                  </div>
+                  <button type="button" class="btn-add-slot-submit" onclick="window.BookingApp.adminAddNewSlot()">
+                    <i class="fa-solid fa-plus"></i> เพิ่มรอบเวลานี้
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: วันหยุดพิเศษ / งดรับคิวเฉพาะกิจ (Blocked Dates) -->
+          <div class="admin-settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
+              <div>
+                <h3 class="settings-card-title">วันหยุดพิเศษ / งดรับคิวเฉพาะกิจ</h3>
+                <p class="settings-card-desc">ระบุวันที่ติดธุระหรือไม่สะดวกรับคิว ระบบจะปิดวันที่นั้นในปฏิทินของลูกค้าทันที</p>
+              </div>
+            </div>
+            <div class="settings-card-body">
+              <!-- Active Blocked Dates List -->
+              <div id="adminSettingBlockedContainer" class="admin-blocked-dates-wrap">
+                <!-- Populated by renderAdminBlockedDatesEditor() -->
+              </div>
+
+              <!-- Add Blocked Date Form -->
+              <div class="admin-add-blocked-box mt-3">
+                <div class="add-blocked-inputs-row">
+                  <div class="date-input-field">
+                    <label>เลือกวันที่งดรับ:</label>
+                    <input type="date" id="adminNewBlockedDate" class="date-picker-input">
+                  </div>
+                  <div class="reason-input-field">
+                    <label>เหตุผล/หมายเหตุ (ระบุหรือไม่ก็ได้):</label>
+                    <input type="text" id="adminNewBlockedReason" placeholder="เช่น ติดงานบุญ, เดินทางต่างจังหวัด" class="settings-text-input">
+                  </div>
+                  <button type="button" class="btn-add-blocked-submit" onclick="window.BookingApp.adminAddBlockedDate()">
+                    <i class="fa-solid fa-ban"></i> เพิ่มวันงดรับคิว
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: Action Save & Reset Bar -->
+          <div class="admin-settings-actions-bar">
+            <button type="button" id="adminSaveSettingsBtn" class="btn-admin-save-settings" onclick="window.BookingApp.adminSaveScheduleSettings()">
+              <i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าทั้งหมด
+            </button>
+            <button type="button" class="btn-admin-reset-settings" onclick="window.BookingApp.adminResetScheduleSettings()">
+              <i class="fa-solid fa-rotate-left"></i> คืนค่าเริ่มต้น (เสาร์-อาทิตย์ 14:00-20:00 น.)
+            </button>
+          </div>
+
+        </div>
       </div>
 
     </div>
@@ -2976,9 +3160,9 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_1905"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_4416"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_1905"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_4416"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -2987,24 +3171,24 @@
   <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
   <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_1905"></script>
-  <script src="booking.js?v=20261115_v5_1905"></script>
-  <script src="app.js?v=20261115_v5_1905"></script>
+  <script src="auth.js?v=20261115_v5_4416"></script>
+  <script src="booking.js?v=20261115_v5_4416"></script>
+  <script src="app.js?v=20261115_v5_4416"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_1905"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_1905"></script>
-  <script src="bazi.js?v=20261115_v5_1905"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_4416"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_4416"></script>
+  <script src="bazi.js?v=20261115_v5_4416"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
