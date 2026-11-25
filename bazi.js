@@ -7717,7 +7717,6 @@
       this.renderAdvanceMonthlyMasterTable(this.currentChart, y);
       this.renderSelectedMonthDetail();
     },
-
     renderSelectedMonthDetail: function () {
       if (!this.currentChart) return;
       const y = this.selectedYear || new Date().getFullYear();

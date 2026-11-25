@@ -74,6 +74,29 @@
       } catch (e) {
         this.currentUser = null;
       }
+
+      // Auto-authenticate Admin on Localhost/Dev Environment for seamless local testing
+      const isLocalDev = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+      if (!this.currentUser && isLocalDev) {
+        const localAdmin = {
+          id: 'admin_bumji',
+          uid: 'admin_bumji',
+          email: ADMIN_CONFIG.email,
+          name: ADMIN_CONFIG.name,
+          firstName: ADMIN_CONFIG.firstName,
+          lastName: ADMIN_CONFIG.lastName,
+          role: 'admin',
+          isAdmin: true,
+          birthDate: '1977-07-23',
+          birthTime: '15:45',
+          gender: 'female'
+        };
+        if (window.SecurityGuard) {
+          localAdmin._token = window.SecurityGuard.signSession(localAdmin.id, localAdmin.email);
+        }
+        this.currentUser = localAdmin;
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(localAdmin)); } catch (e) {}
+      }
     },
 
     saveSession: function (user) {

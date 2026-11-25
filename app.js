@@ -1091,6 +1091,9 @@ function initMainApp() {
     // Trigger BaZi live update when activated
     if (mode === 'bazi' && window.BaziApp) {
       window.BaziApp.onTabShow();
+      if (window.location.hash.toLowerCase().includes('advance')) {
+        window.BaziApp.switchSubMenu('advance');
+      }
     }
     // Trigger Personality live update when activated
     if (mode === 'personality' && window.PersonalityApp) {
@@ -1167,6 +1170,9 @@ if (tabTongShuBtn) {
     'qimendunjia': 'qimen',
     'dunjia': 'qimen',
     'bazi': 'bazi',
+    'baziadvance': 'bazi',
+    'advance': 'bazi',
+    'bazipro': 'bazi',
     'fourpillars': 'bazi',
     'destiny': 'bazi',
     'personality': 'personality',
