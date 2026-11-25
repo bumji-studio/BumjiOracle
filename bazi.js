@@ -5254,7 +5254,12 @@
                       ${isCurrent ? '<div class="current-period-callout">(current period)</div>' : ''}
                       <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
                       <div class="luck-cell-items-wrap">
-                        ${allStars.length > 0 ? allStars.map(s => `<div class="luck-star-item">${s},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                        ${allStars.length > 0 ? allStars.map(s => {
+          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(s) : null;
+          const sTitle = sInfo ? `${sInfo.nameThai} - ${sInfo.description}`.replace(/"/g, '&quot;') : '';
+          const sClean = s.replace(/"/g, '&quot;');
+          return `<div class="luck-star-item" data-star-text="${sClean}" title="${sTitle}">${s},</div>`;
+        }).join('') : '<div class="luck-empty-item">-</div>'}
                       </div>
                       <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
                       <div class="luck-cell-items-wrap">
@@ -5488,7 +5493,12 @@
                       ${isCurrent ? '<div class="current-period-callout">(current year)</div>' : ''}
                       <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
                       <div class="luck-cell-items-wrap">
-                        ${allStars.length > 0 ? allStars.map(s => `<div class="luck-star-item">${s},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                        ${allStars.length > 0 ? allStars.map(s => {
+          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(s) : null;
+          const sTitle = sInfo ? `${sInfo.nameThai} - ${sInfo.description}`.replace(/"/g, '&quot;') : '';
+          const sClean = s.replace(/"/g, '&quot;');
+          return `<div class="luck-star-item" data-star-text="${sClean}" title="${sTitle}">${s},</div>`;
+        }).join('') : '<div class="luck-empty-item">-</div>'}
                       </div>
                       <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
                       <div class="luck-cell-items-wrap">
@@ -5690,7 +5700,12 @@
                       ${isCurrent ? '<div class="current-period-callout">(current month)</div>' : ''}
                       <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
                       <div class="luck-cell-items-wrap">
-                        ${allStars.length > 0 ? allStars.map(s => `<div class="luck-star-item">${s},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                        ${allStars.length > 0 ? allStars.map(s => {
+          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(s) : null;
+          const sTitle = sInfo ? `${sInfo.nameThai} - ${sInfo.description}`.replace(/"/g, '&quot;') : '';
+          const sClean = s.replace(/"/g, '&quot;');
+          return `<div class="luck-star-item" data-star-text="${sClean}" title="${sTitle}">${s},</div>`;
+        }).join('') : '<div class="luck-empty-item">-</div>'}
                       </div>
                       <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
                       <div class="luck-cell-items-wrap">
@@ -5761,6 +5776,35 @@
       this.updateResultVisibility(false);
       this.switchSubMenu(this.currentSubMenu || 'basic');
       this.switchMode(this.currentMode, true);
+
+      // Auto-restore last active chart from LocalStorage if available
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qDate = urlParams.get('birthDate') || urlParams.get('bDate') || urlParams.get('date');
+        if (!qDate && !this.currentChart) {
+          const savedParamsRaw = localStorage.getItem('bazi_last_active_chart_params');
+          if (savedParamsRaw) {
+            const sp = JSON.parse(savedParamsRaw);
+            if (sp && sp.birthDate) {
+              const nameInput = document.getElementById('baziNameInput');
+              const dateInput = document.getElementById('baziDateInput');
+              const hourInput = document.getElementById('baziHourInput');
+              const genderSelect = document.getElementById('baziGenderSelect');
+              const unkCheck = document.getElementById('baziUnknownTimeCheck');
+              if (nameInput && sp.name) nameInput.value = sp.name;
+              if (dateInput) dateInput.value = sp.birthDate;
+              if (hourInput && sp.birthHour !== undefined) {
+                hourInput.value = String(sp.birthHour).padStart(2, '0') + ':' + String(sp.birthMinute || 0).padStart(2, '0');
+              }
+              if (genderSelect && sp.gender) genderSelect.value = sp.gender;
+              if (unkCheck && sp.isUnknownTime !== undefined) unkCheck.checked = sp.isUnknownTime;
+              this.syncDateInputToDropdowns();
+              this.syncTimeInputToDropdowns();
+              this.calculateFromInputs(false);
+            }
+          }
+        }
+      } catch (e) {}
 
       // If arriving with explicit parameters from another view or URL query
       try {
@@ -6978,6 +7022,16 @@
       });
 
       this.currentChart = chart;
+      try {
+        localStorage.setItem('bazi_last_active_chart_params', JSON.stringify({
+          birthDate,
+          birthHour,
+          birthMinute,
+          gender,
+          name,
+          isUnknownTime
+        }));
+      } catch (e) {}
       this.askChatHistory = [];
       this.currentAskChartKey = null;
 
@@ -9005,6 +9059,28 @@
       };
 
       const showTooltip = (item, e) => {
+        if (item.classList.contains('luck-star-item')) {
+          const starText = item.getAttribute('data-star-text') || item.textContent.trim();
+          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(starText) : null;
+          if (sInfo) {
+            tip.innerHTML = `
+              <div class="bazi-it-header">
+                <span class="bazi-it-badge" style="background: #fdf4ff; color: #a855f7; border: 1px solid #f0abfc;">
+                  ⭐ ${sInfo.type}
+                </span>
+              </div>
+              <div class="bazi-it-title"><i class="fa-solid fa-star" style="color: #eab308;"></i> ${sInfo.nameThai}</div>
+              <div class="bazi-it-pair">🔤 <strong>ชื่อจีน:</strong> ${sInfo.hanzi} (${sInfo.pinyin})</div>
+              <div class="bazi-it-section">
+                <div class="bazi-it-label" style="color: #93c5fd;">📖 ความหมายและพลังของดาว</div>
+                <div class="bazi-it-desc">${sInfo.description}</div>
+              </div>
+            `;
+            tip.classList.add('visible');
+            positionTooltip(e, item);
+            return;
+          }
+        }
         const text = item.getAttribute('data-interaction-text') || item.textContent.trim();
         const data = this.getInteractionTooltipData(text);
         if (!data) return;
@@ -9040,7 +9116,7 @@
       };
 
       document.addEventListener('mouseover', (e) => {
-        const item = e.target.closest('.interaction-item, .interaction-pill, [data-interaction-tooltip]');
+        const item = e.target.closest('.interaction-item, .interaction-pill, .luck-star-item, [data-interaction-tooltip]');
         if (item) {
           activeItem = item;
           showTooltip(item, e);
@@ -9054,14 +9130,14 @@
       });
 
       document.addEventListener('mouseout', (e) => {
-        const item = e.target.closest('.interaction-item, .interaction-pill, [data-interaction-tooltip]');
+        const item = e.target.closest('.interaction-item, .interaction-pill, .luck-star-item, [data-interaction-tooltip]');
         if (item && (!e.relatedTarget || !item.contains(e.relatedTarget))) {
           hideTooltip();
         }
       });
 
       document.addEventListener('click', (e) => {
-        const item = e.target.closest('.interaction-item, .interaction-pill, [data-interaction-tooltip]');
+        const item = e.target.closest('.interaction-item, .interaction-pill, .luck-star-item, [data-interaction-tooltip]');
         if (item) {
           activeItem = item;
           showTooltip(item, e);
