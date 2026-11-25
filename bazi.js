@@ -2467,6 +2467,7 @@
       if (this.currentChart) {
         this.renderAdvanceDaYunMasterTable(this.currentChart);
         this.renderAdvanceAnnualMasterTable(this.currentChart, this.selectedYear);
+        this.renderAdvanceMonthlyMasterTable(this.currentChart, this.selectedYear);
       }
       const btn = document.getElementById('baziDaYunOrderBtnText');
       if (btn) {
@@ -4772,6 +4773,7 @@
       this.renderBasicSpiderChart(chart);
       this.renderAdvanceDaYunMasterTable(chart);
       this.renderAdvanceAnnualMasterTable(chart, this.selectedYear);
+      this.renderAdvanceMonthlyMasterTable(chart, this.selectedYear);
       this.renderBasicFengShui(chart);
     },
 
@@ -5422,6 +5424,208 @@
         return `
                     <td class="luck-table-stars-inter">
                       ${isCurrent ? '<div class="current-period-callout">(current year)</div>' : ''}
+                      <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
+                      <div class="luck-cell-items-wrap">
+                        ${allStars.length > 0 ? allStars.map(s => `<div class="luck-star-item">${s},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                      </div>
+                      <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
+                      <div class="luck-cell-items-wrap">
+                        ${allInter.length > 0 ? allInter.map(it => `<div class="luck-inter-item">${it},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                      </div>
+                    </td>
+                  `;
+      }).join('')}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    },
+
+    renderAdvanceMonthlyMasterTable: function (chart, targetYear) {
+      const container = document.getElementById('baziAdvanceMonthlyMasterTableWrap');
+      if (!container || !chart) return;
+
+      const c = chart;
+      const y = parseInt(targetYear, 10) || this.selectedYear || new Date().getFullYear();
+      const months = BaziEngine.calculateMonthlyFortune(c, y);
+      if (!months || months.length === 0) return;
+
+      const natalCols = [
+        { ...c.pillars.hour, pillarKey: 'hour', label: 'เสายาม', palace: 'เสายาม: วังบริวาร/ลูกหลาน' },
+        { ...c.pillars.day, pillarKey: 'day', label: 'เสาวัน', palace: 'เสาวัน: วังตัวตน/คู่ครอง' },
+        { ...c.pillars.month, pillarKey: 'month', label: 'เสาเดือน', palace: 'เสาเดือน: วังการงาน/พ่อแม่' },
+        { ...c.pillars.year, pillarKey: 'year', label: 'เสาปี', palace: 'เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม' }
+      ];
+      const dayStem = c.dayMaster;
+      const dayBranch = c.pillars.day.branch;
+      const yearBranch = c.pillars.year.branch;
+      const monthBranch = c.pillars.month.branch;
+
+      // Annual Col
+      const yrSIdx = ((y - 4) % 10 + 10) % 10;
+      const yrBIdx = ((y - 4) % 12 + 12) % 12;
+      const annualCol = { stem: STEMS[yrSIdx], branch: BRANCHES[yrBIdx], label: `ปีจร ${y}` };
+
+      // Da Yun Col
+      const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = y - birthYear;
+      const curDaYun = (c.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      const luckCol = curDaYun ? { stem: curDaYun.stem, branch: curDaYun.branch, label: `วัยจร ${curDaYun.ageRange}` } : null;
+
+      const displayMonths = this.daYunOrderRTL ? [...months].reverse() : [...months];
+
+      const html = `
+        <div class="bazi-master-table-meta-bar">
+          <div class="meta-left">
+            <span class="meta-title">Monthly Luck (ดวงเดือน 12 สารท / 流月) - ปี ${y} (${annualCol.stem.zh}${annualCol.branch.zh})</span>
+            <span class="meta-subtitle">${curDaYun ? `ตรงกับวัยจร: ${curDaYun.ageRange} (${curDaYun.stem.zh}${curDaYun.branch.zh})` : ''}</span>
+          </div>
+          <div class="meta-right">
+            <span class="meta-note"><i class="fa-solid fa-circle-info"></i> คลิกที่หัวคอลัมน์เพื่อเลือกดูคำทำนายเจาะลึกประจำเดือนนั้น</span>
+          </div>
+        </div>
+        <div class="bazi-table-responsive-box">
+          <table class="bazi-master-luck-table">
+            <thead>
+              <tr>
+                <th class="row-label-col"></th>
+                ${displayMonths.map(m => {
+        const isSelected = this.selectedMonthIndex === m.index;
+        const isCurrent = !!m.isCurrent;
+        const cls = `col-luck-hdr col-month-hdr ${isCurrent ? 'current-period-hdr' : ''} ${isSelected ? 'selected-luck-hdr' : ''}`;
+        return `
+                    <th class="${cls}" data-month-index="${m.index}" onclick="window.BaziApp.selectMonth(${m.index})" title="คลิกเพื่อเลือกเดือนนี้">
+                      <div class="luck-hdr-period">เดือน ${m.monthNum}</div>
+                      <div style="font-size: 10.5px; font-weight: 500; opacity: 0.9;">${m.dates.split(' - ')[0]}</div>
+                      ${isCurrent ? '<div class="luck-hdr-cur-tag">(เดือนนี้)</div>' : ''}
+                    </th>
+                  `;
+      }).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: HS (Heavenly Stem) -->
+              <tr>
+                <td class="row-label-col">HS</td>
+                ${displayMonths.map(m => {
+        const s = m.stem;
+        const tg = this.formatLuckTenGod(m.stemGod);
+        return `
+                    <td class="elem-bg-${s.element}">
+                      <div class="bazi-luck-pinyin">${s.py}</div>
+                      <div class="bazi-luck-bigchar">${s.zh}</div>
+                      <div class="bazi-luck-elem-pol">${s.element.charAt(0).toUpperCase() + s.element.slice(1)} ${s.polarity === 'yang' ? '+' : '-'}</div>
+                      <div class="bazi-luck-tengod">${tg.en}<br>${tg.py} / ${tg.zh}</div>
+                    </td>
+                  `;
+      }).join('')}
+              </tr>
+
+              <!-- Row 2: EB (Earthly Branch) -->
+              <tr>
+                <td class="row-label-col">EB</td>
+                ${displayMonths.map(m => {
+        const b = m.branch;
+        const dh = this.getDominantHiddenStem(b.zh);
+        const bTg = this.formatLuckTenGod(getTenGod(c.dayMaster, dh));
+        const animal = b.animal || (b.zodiac ? b.zodiac.split(' ')[0] : '-');
+        return `
+                    <td class="elem-bg-${b.element}">
+                      <div class="bazi-luck-pinyin">${b.py}</div>
+                      <div class="bazi-luck-bigchar">${b.zh}</div>
+                      <div class="bazi-luck-elem-pol">${animal}</div>
+                      <div class="bazi-luck-tengod">${bTg.en}<br>${bTg.py} / ${bTg.zh}</div>
+                    </td>
+                  `;
+      }).join('')}
+              </tr>
+
+              <!-- Row 3: HHS (Hidden Heavenly Stems) -->
+              <tr>
+                <td class="row-label-col">HHS</td>
+                ${displayMonths.map(m => {
+        const b = m.branch;
+        const season = this.BRANCH_SEASONS[b.zh] || '';
+        return `
+                    <td class="bazi-hhs-cell">
+                      <div class="bazi-hhs-flex-wrap">
+                        ${b.hidden.map(h => {
+          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+          const tg = getTenGod(c.dayMaster, sObj);
+          const abbr = this.TG_ABBR[tg.zh] || 'Fr';
+          return `
+                            <div class="bazi-hhs-mini-block elem-bg-${sObj.element}" title="${sObj.py} ${sObj.zh} - ${tg.zh}">
+                              <div class="hhs-stem-py">${sObj.py}</div>
+                              <div class="hhs-stem-zh">${sObj.zh}</div>
+                              <div class="hhs-stem-tg">${abbr}</div>
+                            </div>
+                          `;
+        }).join('')}
+                      </div>
+                      ${season ? `<div class="bazi-season-tag">${season}</div>` : ''}
+                    </td>
+                  `;
+      }).join('')}
+              </tr>
+
+              <!-- Row 4: Na Yin -->
+              <tr>
+                <td class="row-label-col">Na Yin</td>
+                ${displayMonths.map(m => {
+        const ny = m.naYinDetail || this.getNaYinDetail(m.stemIdx, m.branchIdx);
+        const ne = this.NAYIN_ELEM_INFO[ny.element] || { en: ny.element, py: '', zh: '' };
+        return `
+                    <td class="elem-bg-${ny.element}">
+                      <div class="bazi-luck-nayin-text">${ne.en} / ${ne.py} / ${ne.zh}</div>
+                    </td>
+                  `;
+      }).join('')}
+              </tr>
+
+              <!-- Row 5: DM's qi phase -->
+              <tr>
+                <td class="row-label-col">DM's qi phase</td>
+                ${displayMonths.map(m => {
+        const p = this.get12LifeStage(c.dayMaster.zh, m.branch.zh);
+        return `
+                    <td class="bazi-luck-phase-cell">
+                      <div class="phase-name-en">${p.order}. ${p.en}</div>
+                      <div class="phase-name-sub">/ ${p.py} / ${p.zh}</div>
+                    </td>
+                  `;
+      }).join('')}
+              </tr>
+
+              <!-- Row 6: Symbolic stars / 神煞 & Interactions -->
+              <tr>
+                <td class="row-label-col"></td>
+                ${displayMonths.map(m => {
+        const isCurrent = !!m.isCurrent;
+        const stars = this.computeDetailedStars(
+          m.branch.zh,
+          m.stem.zh,
+          dayStem,
+          dayBranch,
+          yearBranch,
+          monthBranch
+        );
+        const allStars = [...stars.dmStars, ...stars.otherStars];
+        const mCol = { stem: m.stem, branch: m.branch, label: `เดือนที่ ${m.monthNum} (${m.branch.zh})` };
+        const inter = this.computeDetailedInteractions(
+          mCol,
+          natalCols,
+          annualCol,
+          luckCol,
+          'monthly'
+        );
+        const allInter = [...inter.primary, ...inter.secondary];
+
+        return `
+                    <td class="luck-table-stars-inter">
+                      ${isCurrent ? '<div class="current-period-callout">(current month)</div>' : ''}
                       <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
                       <div class="luck-cell-items-wrap">
                         ${allStars.length > 0 ? allStars.map(s => `<div class="luck-star-item">${s},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
@@ -6941,6 +7145,7 @@
       if (this.currentChart) {
         this.renderAdvanceDaYunMasterTable(this.currentChart);
         this.renderAdvanceAnnualMasterTable(this.currentChart, this.selectedYear);
+        this.renderAdvanceMonthlyMasterTable(this.currentChart, this.selectedYear);
       }
     },
 
@@ -6974,6 +7179,7 @@
       if (this.currentChart) {
         this.renderAdvanceDaYunMasterTable(this.currentChart);
         this.renderAdvanceAnnualMasterTable(this.currentChart, this.selectedYear);
+        this.renderAdvanceMonthlyMasterTable(this.currentChart, this.selectedYear);
       }
     },
 
@@ -6981,6 +7187,10 @@
       this.selectedMonthIndex = idx;
       document.querySelectorAll('.bazi-month-cell').forEach((el, i) => {
         el.classList.toggle('active', i === idx);
+      });
+      document.querySelectorAll('.col-month-hdr').forEach(el => {
+        const mIdx = parseInt(el.dataset.monthIndex, 10);
+        el.classList.toggle('selected-luck-hdr', mIdx === idx);
       });
       this.renderSelectedMonthDetail();
     },
@@ -7504,6 +7714,7 @@
         }).join('');
       }
 
+      this.renderAdvanceMonthlyMasterTable(this.currentChart, y);
       this.renderSelectedMonthDetail();
     },
 
