@@ -2601,12 +2601,23 @@
       return !!(window.AuthManager && window.AuthManager.isLoggedIn());
     },
 
-    currentSubMenu: 'basic',
+    currentSubMenu: (function () {
+      try {
+        const hash = (typeof window !== 'undefined' && window.location.hash) ? window.location.hash.toLowerCase() : '';
+        if (hash.includes('advance')) return 'advance';
+        return localStorage.getItem('bazi_active_submenu') || 'advance';
+      } catch (e) {
+        return 'advance';
+      }
+    })(),
     askChatHistory: [],
     currentAskChartKey: null,
 
     switchSubMenu: function (mode) {
       this.currentSubMenu = mode;
+      try {
+        localStorage.setItem('bazi_active_submenu', mode);
+      } catch (e) { }
       const isBasic = mode === 'basic';
       const isAdvance = mode === 'advance';
       const isAsk = mode === 'ask';
@@ -5835,30 +5846,14 @@
       const curUser = window.AuthManager ? window.AuthManager.currentUser : null;
       this.updateViewForAuthState(isAuth, curUser);
 
-      // Do not auto-calculate on initial load: wait for user to select or use query param
-      this.updateResultVisibility(false);
-      this.switchSubMenu(this.currentSubMenu || 'basic');
+      // Restore active chart immediately so refresh always keeps data stable
+      this.restoreActiveChart(false);
+      this.switchSubMenu(this.currentSubMenu || 'advance');
       this.switchMode(this.currentMode, true);
 
-      // If arriving with explicit parameters from another view or URL query
+      // If arriving with explicit query parameters
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const qDate = urlParams.get('birthDate') || urlParams.get('bDate') || urlParams.get('date');
-        const qTime = urlParams.get('birthTime') || urlParams.get('bTime') || urlParams.get('time');
-        const qName = urlParams.get('name') || urlParams.get('bName');
-        const qGender = urlParams.get('gender');
-        if (qDate) {
-          const nameInput = document.getElementById('baziNameInput');
-          const dateInput = document.getElementById('baziDateInput');
-          const hourInput = document.getElementById('baziHourInput');
-          const genderSelect = document.getElementById('baziGenderSelect');
-          if (nameInput && qName) nameInput.value = decodeURIComponent(qName);
-          if (dateInput) dateInput.value = qDate;
-          if (hourInput && qTime) hourInput.value = qTime;
-          if (genderSelect && qGender) genderSelect.value = qGender;
-          this.calculateFromInputs(false);
-        }
-
         const queryQ = urlParams.get('q');
         if (queryQ) {
           this.fillAndRunCustomQuery(queryQ);
@@ -6999,12 +6994,115 @@
       }
     },
 
+    restoreActiveChart: function (showToast = false) {
+      const nameInput = document.getElementById('baziNameInput');
+      const dateInput = document.getElementById('baziDateInput');
+      const hourInput = document.getElementById('baziHourInput');
+      const genderSelect = document.getElementById('baziGenderSelect');
+      const unknownCheck = document.getElementById('baziUnknownTimeCheck');
+
+      let params = null;
+
+      // 1. URL search params
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qDate = urlParams.get('birthDate') || urlParams.get('bDate') || urlParams.get('date');
+        const qTime = urlParams.get('birthTime') || urlParams.get('bTime') || urlParams.get('time');
+        const qName = urlParams.get('name') || urlParams.get('bName');
+        const qGender = urlParams.get('gender');
+        if (qDate) {
+          params = {
+            birthDate: qDate,
+            name: qName ? decodeURIComponent(qName) : 'ดวงชะตา',
+            gender: qGender || 'female'
+          };
+          if (qTime) {
+            const p = qTime.split(':');
+            params.birthHour = parseInt(p[0], 10) || 12;
+            params.birthMinute = parseInt(p[1], 10) || 0;
+          }
+        }
+      } catch (e) { }
+
+      // 2. LocalStorage active chart params
+      if (!params) {
+        try {
+          const raw = localStorage.getItem('bazi_last_active_chart_params');
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.birthDate) {
+              params = parsed;
+            }
+          }
+        } catch (e) { }
+      }
+
+      // 3. Saved profiles in local storage
+      if (!params && this.savedProfiles && this.savedProfiles.length > 0) {
+        const p = this.savedProfiles[0];
+        if (p && p.birthDate) {
+          params = {
+            birthDate: p.birthDate,
+            birthHour: p.birthHour !== undefined ? p.birthHour : 12,
+            birthMinute: p.birthMinute !== undefined ? p.birthMinute : 0,
+            gender: p.gender || 'female',
+            name: p.name || 'ลูกดวง',
+            isUnknownTime: !!p.isUnknownTime
+          };
+        }
+      }
+
+      // 4. Default baseline chart (1988-09-20 13:40 female) so screen is never blank
+      if (!params) {
+        params = {
+          birthDate: '1988-09-20',
+          birthHour: 13,
+          birthMinute: 40,
+          gender: 'female',
+          name: 'เจ้าชะตา',
+          isUnknownTime: false
+        };
+      }
+
+      // Apply params to inputs
+      if (params) {
+        if (nameInput) nameInput.value = params.name || '';
+        if (dateInput) dateInput.value = params.birthDate || '';
+        if (hourInput) {
+          const hh = String(params.birthHour !== undefined ? params.birthHour : 12).padStart(2, '0');
+          const mm = String(params.birthMinute !== undefined ? params.birthMinute : 0).padStart(2, '0');
+          hourInput.value = `${hh}:${mm}`;
+        }
+        if (genderSelect && params.gender) genderSelect.value = params.gender;
+        if (unknownCheck) unknownCheck.checked = !!params.isUnknownTime;
+
+        this.syncDateInputToDropdowns();
+        this.syncTimeInputToDropdowns();
+
+        // Calculate and render
+        this.calculateFromInputs(showToast);
+        return true;
+      }
+      return false;
+    },
+
     onTabShow: function () {
       const isAuth = !!(window.AuthManager && window.AuthManager.isLoggedIn());
       this.updateViewForAuthState(isAuth, window.AuthManager ? window.AuthManager.currentUser : null);
+
       if (!this.currentChart) {
+        this.restoreActiveChart(false);
+      }
+
+      if (this.currentChart) {
+        this.renderBasicSuite(this.currentChart);
+        this.renderAdvanceSuite(this.currentChart);
+        this.updateResultVisibility(true);
+      } else {
         this.updateResultVisibility(false);
       }
+
+      this.switchSubMenu(this.currentSubMenu || 'advance');
     },
 
     calculateFromInputs: function (showToast = false) {
