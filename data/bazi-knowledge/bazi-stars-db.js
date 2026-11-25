@@ -287,6 +287,102 @@ var BaziStarsDB = (function () {
       pinyin: 'Kong Wang',
       type: 'Void Pillar (ความว่างเปล่า)',
       description: 'เมื่อกิ่งดินใดตกคงบ้วง พลังของดาวและสิบเทพในเสานั้นจะลดลงครึ่งหนึ่งหรือกลายเป็นความว่างเปล่า หากเป็นดาวร้ายก็จะลดโทษ หากเป็นดาวดีก็จะลดคุณประโยชน์ แต่จะส่งเสริมทางด้านจิตวิญญาณ ธรรมะ และการปฏิบัติสมาธิอย่างยิ่ง'
+    },
+    '红鸾': {
+      code: 'HL',
+      nameThai: 'หงหลวน (ดาววิวาห์มงคล / เสน่ห์คู่แท้)',
+      hanzi: '红鸾',
+      pinyin: 'Hong Luan',
+      type: 'Marriage Star (ดาวแห่งความรักและการแต่งงาน)',
+      description: 'ยอดดาวแห่งความรัก เสน่ห์เมตตามหานิยม การหมั้นหมาย และการแต่งงาน นำพาความสุขสดชื่นในชีวิตคู่และมิตรภาพที่ดีเลิศ'
+    },
+    '天喜': {
+      code: 'TX',
+      nameThai: 'เทียนฮี่ (ดาวสวรรค์เปี่ยมสุข / การเฉลิมฉลอง)',
+      hanzi: '天喜',
+      pinyin: 'Tian Xi',
+      type: 'Joyous Star (ดาวแห่งความสุขและงานมงคล)',
+      description: 'ดาวแห่งความรื่นเริง ข่าวดี การตั้งครรภ์ มีบุตรหลาน หรือการประสบความสำเร็จที่นำมาซึ่งงานเลี้ยงฉลองในครอบครัว'
+    },
+    '吊客': {
+      code: 'DK',
+      nameThai: 'เตี่ยวแขะ (ดาวแขกงานศพ / ระวังงานอวมงคล)',
+      hanzi: '吊客',
+      pinyin: 'Diao Ke',
+      type: 'Warning Star (ดาวเฝ้าระวัง)',
+      description: 'ดาวที่เตือนให้ระมัดระวังการไปร่วมงานศพหรือสถานที่อวมงคล หมั่นดูแลสุขภาพของญาติผู้ใหญ่ และทำบุญอุทิศส่วนกุศลเพื่อปัดเป่าพลังงานลบ'
+    },
+    '丧门': {
+      code: 'SM',
+      nameThai: 'ซึงมึ้ง (ดาวประตูงานศพ / การพลัดพราก)',
+      hanzi: '丧门',
+      pinyin: 'Sang Men',
+      type: 'Warning Star (ดาวเฝ้าระวัง)',
+      description: 'ดาวเตือนภัยเรื่องการสูญเสียหรือเจ็บป่วยของคนใกล้ชิด ควรหลีกเลี่ยงการไปเยี่ยมนักโทษหรือโรงพยาบาลในเวลาวิกาล และควรทำทานปล่อยสัตว์'
+    },
+    '天罗': {
+      code: 'TL',
+      nameThai: 'เทียนล้อ (ตาข่ายฟ้า / พันธนาการและบททดสอบ)',
+      hanzi: '天罗',
+      pinyin: 'Tian Luo',
+      type: 'Obstacle Star (ดาวแห่งบททดสอบ)',
+      description: 'บ่งบอกถึงช่วงเวลาที่มีกรอบข้อจำกัด กฎหมาย หรือสัญญาที่ต้องรอบคอบเป็นพิเศษ ต้องรักษาความซื่อสัตย์สุจริตแล้วจะผ่านพ้นได้อย่างราบรื่น'
+    },
+    '劫煞': {
+      code: 'JS',
+      nameThai: 'เกียบซัวะ (ดาวปล้นชิง / ความเสียหายกะทันหัน)',
+      hanzi: '劫煞',
+      pinyin: 'Jie Sha',
+      type: 'Robbery Star (ดาวระวังทรัพย์สิน)',
+      description: 'ดาวเตือนภัยเรื่องการถูกโจรกรรม การหลอกลวง หรือการตัดสินใจทางการเงินที่ใจร้อน ควรวางแผนการเงินอย่างรัดกุมและหลีกเลี่ยงการเก็งกำไรที่มีความเสี่ยงสูง'
+    },
+    '天官': {
+      code: 'TG',
+      nameThai: 'เทียนกวาน (ดาวขุนนางสวรรค์ / บารมีและอำนาจ)',
+      hanzi: '天官',
+      pinyin: 'Tian Guan',
+      type: 'Official Star (ดาวเกียรติยศและตำแหน่ง)',
+      description: 'ส่งเสริมด้านตำแหน่งหน้าที่การงาน การติดต่อประสานงานกับราชการหรือองค์กรใหญ่ ได้รับความนับถือและมีชื่อเสียงเกียรติยศ'
+    },
+    '天干桃花': {
+      code: 'TGTH',
+      nameThai: 'เถาฮวาฟ้า (ดาวเสน่ห์ก้านฟ้า / เสน่ห์สังคม)',
+      hanzi: '天干桃花',
+      pinyin: 'Tian Gan Tao Hua',
+      type: 'Romance Star (ดาวเสน่ห์)',
+      description: 'มีเสน่ห์ดึงดูดใจจากการเจรจา วาจาไพเราะ เป็นที่ต้องตาต้องใจของเพศตรงข้ามในวงสังคมและการทำงาน'
+    },
+    '岁破': {
+      code: 'SP',
+      nameThai: 'ส่วยผั่ว (ดาวปะทะปีจร / การเปลี่ยนแปลงครั้งใหญ่)',
+      hanzi: '岁破',
+      pinyin: 'Sui Po',
+      type: 'Clash Star (ดาวแห่งการเปลี่ยนแปลง)',
+      description: 'เกิดจากการชงกับเสาปีเกิดหรือปีจร บ่งบอกถึงจังหวะแห่งการเปลี่ยนแปลงครั้งสำคัญ เช่น โยกย้ายที่อยู่ เปลี่ยนงาน หรือปรับปรุงสภาพแวดล้อม'
+    },
+    '天赋': {
+      code: 'TF',
+      nameThai: 'เทียนฟู่ (ดาวพรสวรรค์สวรรค์ / ความสามารถเฉพาะทาง)',
+      hanzi: '天赋',
+      pinyin: 'Tian Fu',
+      type: 'Talent Star (ดาวพรสวรรค์)',
+      description: 'มีพรสวรรค์และความเชี่ยวชาญเฉพาะทางสูง เรียนรู้ศาสตร์ยากๆ ได้อย่างรวดเร็ว โดดเด่นในสายอาชีพ'
+    },
+    '血刃': {
+      code: 'XR',
+      nameThai: 'ฮ่วยยิ่ม (ดาวมีดเลือด / ระวังของมีคม)',
+      hanzi: '血刃',
+      pinyin: 'Xue Ren',
+      type: 'Health Warning (ดาวระวังของมีคม)',
+      description: 'เตือนให้ระมัดระวังอุบัติเหตุจากของมีคม การบาดเจ็บ หรือการผ่าตัดเล็ก ควรแก้เคล็ดด้วยการตรวจสุขภาพ ทำฟัน หรือบริจาคโลหิต'
+    },
+    '勾绞': {
+      code: 'GJ',
+      nameThai: 'เกากาว (ดาวเกี่ยวรัด / ข้อพิพาทและความขัดแย้ง)',
+      hanzi: '勾绞',
+      pinyin: 'Gou Jiao',
+      type: 'Dispute Star (ดาวข้อพิพาท)',
+      description: 'เตือนเรื่องการมีปากเสียง คดีความ หรือปัญหาข้อสัญญาทางกฎหมาย ควรหลีกเลี่ยงการค้ำประกันและการมีเรื่องวิวาท'
     }
   };
 
@@ -338,8 +434,15 @@ var BaziStarsDB = (function () {
       const enMap = [
         { kw: 'academic', key: '文昌贵人' },
         { kw: 'wenxing', key: '文昌贵人' },
+        { kw: 'wenchang', key: '文昌贵人' },
         { kw: 'peach blossom', key: '咸池桃花' },
-        { kw: 'flower of romance', key: '咸池桃花' },
+        { kw: 'xianchi', key: '咸池桃花' },
+        { kw: 'flower of romance', key: '天干桃花' },
+        { kw: 'tiangantao', key: '天干桃花' },
+        { kw: 'matchmaker', key: '红鸾' },
+        { kw: 'hongluan', key: '红鸾' },
+        { kw: 'star of happiness', key: '天喜' },
+        { kw: 'tianxi', key: '天喜' },
         { kw: 'red peach', key: '红艳' },
         { kw: 'hongyan', key: '红艳' },
         { kw: 'travelling horse', key: '驿马' },
@@ -352,14 +455,19 @@ var BaziStarsDB = (function () {
         { kw: 'jiangxing', key: '将星' },
         { kw: 'death star', key: '亡神' },
         { kw: 'wangshen', key: '亡神' },
+        { kw: 'robbing star', key: '劫煞' },
+        { kw: 'jiesha', key: '劫煞' },
         { kw: 'star of arts', key: '华盖' },
         { kw: 'huagai', key: '华盖' },
         { kw: 'heavenly virtue', key: '天德贵人' },
         { kw: 'tiandeguiren', key: '天德贵人' },
+        { kw: 'tiande', key: '天德贵人' },
         { kw: 'monthly virtue', key: '月德贵人' },
         { kw: 'yuedeguiren', key: '月德贵人' },
+        { kw: 'yuede', key: '月德贵人' },
         { kw: 'nobleman', key: '天乙贵人' },
         { kw: 'tianyiguiren', key: '天乙贵人' },
+        { kw: 'heavenly noble', key: '天乙贵人' },
         { kw: 'prosperity', key: '禄神' },
         { kw: 'lushen', key: '禄神' },
         { kw: 'shiganlu', key: '禄神' },
@@ -371,12 +479,20 @@ var BaziStarsDB = (function () {
         { kw: 'xueren', key: '血刃' },
         { kw: 'funeral gate', key: '丧门' },
         { kw: 'sangmensha', key: '丧门' },
+        { kw: 'sangmen', key: '丧门' },
+        { kw: 'crying star', key: '吊客' },
+        { kw: 'diaokesha', key: '吊客' },
+        { kw: 'diaoke', key: '吊客' },
         { kw: 'forlorn', key: '寡宿' },
         { kw: 'guasu', key: '寡宿' },
         { kw: 'solitary', key: '孤辰' },
         { kw: 'guchen', key: '孤辰' },
         { kw: 'disputes', key: '勾绞' },
         { kw: 'goujiao', key: '勾绞' },
+        { kw: 'heaven net', key: '天罗' },
+        { kw: 'tianluo', key: '天罗' },
+        { kw: 'monetary losses', key: '岁破' },
+        { kw: 'suipo', key: '岁破' },
         { kw: 'backstabbing', key: '五鬼' },
         { kw: 'five ghosts', key: '五鬼' },
         { kw: 'wugui', key: '五鬼' },
@@ -393,6 +509,14 @@ var BaziStarsDB = (function () {
         { kw: 'beneficiary', key: '福星贵人' },
         { kw: 'tianchu', key: '天厨贵人' },
         { kw: 'culinary', key: '天厨贵人' },
+        { kw: 'heavenly administration', key: '天官' },
+        { kw: 'tianguan', key: '天官' },
+        { kw: 'career', key: '天赋' },
+        { kw: 'tianfu', key: '天赋' },
+        { kw: 'right measure', key: '节度' },
+        { kw: 'jiedu', key: '节度' },
+        { kw: 'mentor', key: '龙德' },
+        { kw: 'longde', key: '龙德' },
         { kw: 'kuigang', key: '魁罡' }
       ];
 

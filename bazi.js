@@ -8680,28 +8680,56 @@
       const xueTangMap = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' };
       if (xueTangMap[ds] === tb) dmStars.push('literacy star / XueTang / 学堂');
 
-      const hongYanMap = { '甲': '午', '乙': '午', '丙': '寅', '丁': '未', '戊': '辰', '己': '辰', '庚': '戌', '辛': '酉', '壬': '子', '癸': '申' };
+      // Hong Yan Sha: 丙戊见寅, 丁己见未
+      const hongYanMap = { '甲': '午', '乙': '午', '丙': '寅', '丁': '未', '戊': '寅', '己': '未', '庚': '戌', '辛': '酉', '壬': '子', '癸': '申' };
       if (hongYanMap[ds] === tb) dmStars.push('red peach blossom / HongYanSha / 红艳桃花');
 
-      const tianChuMap = { '甲': '巳', '乙': '午', '丙': '子', '丁': '巳', '戊': '午', '己': '申', '庚': '寅', '辛': '午', '壬': '酉', '癸': '亥' };
+      const tianGanTaoMap = { '甲': { s: '己', b: '酉' }, '乙': { s: '庚', b: '巳' }, '丙': { s: '辛', b: '卯' }, '丁': { s: '壬', b: '亥' }, '戊': { s: '癸', b: '卯' }, '己': { s: '甲', b: '子' }, '庚': { s: '乙', b: '午' }, '辛': { s: '丙', b: '寅' }, '壬': { s: '丁', b: '酉' }, '癸': { s: '戊', b: '午' } };
+      if (tianGanTaoMap[ds] && tianGanTaoMap[ds].s === ts && tianGanTaoMap[ds].b === tb) {
+        dmStars.push('flower of romance / TianGanTaoHua / 天干桃花*');
+      }
+
+      const tianChuMap = { '甲': '巳', '乙': '午', '丙': '子', '丁': '巳', '戊': '巳', '己': '申', '庚': '寅', '辛': '午', '壬': '酉', '癸': '亥' };
       if (tianChuMap[ds] === tb) dmStars.push('culinary / TianChuGuiRen / 天厨*');
 
-      const tianYiMap = { '甲': ['丑', '未'], '戊': ['丑', '未'], '庚': ['丑', '未'], '乙': ['子', '申'], '己': ['子', '申'], '丙': ['亥', '酉'], '丁': ['亥', '酉'], '壬': ['卯', '巳'], '癸': ['卯', '巳'], '辛': ['午', '寅'] };
-      if (tianYiMap[ds] && tianYiMap[ds].includes(tb)) dmStars.push('nobleman / TianYiGuiRen / 天乙贵人');
+      if (ds === '戊' && tb === '巳') {
+        dmStars.push('career / TianFuGuiRen / 天赋*');
+        dmStars.push('right measure / JieDuGuiRen / 节度*');
+      }
 
-      const fuXingMap = { '甲': ['寅', '子'], '乙': ['卯', '丑'], '丙': ['寅', '子'], '丁': ['亥', '酉'], '戊': '申', '己': '未', '庚': '午', '辛': '巳', '壬': '辰', '癸': '卯' };
-      if (Array.isArray(fuXingMap[ds]) ? fuXingMap[ds].includes(tb) : fuXingMap[ds] === tb) dmStars.push('beneficiary / FuXingGuiRen / 福星*');
+      // Heavenly Noble (TianYi)
+      const tianYiMap = {
+        '甲': ['丑', '未'], '戊': ['丑', '亥'], '庚': ['丑', '未'],
+        '乙': ['子', '申'], '己': ['子', '申'],
+        '丙': ['亥', '酉'], '丁': ['亥', '酉'],
+        '壬': ['卯', '巳'], '癸': ['卯', '巳'],
+        '辛': ['午', '寅']
+      };
+      if (tianYiMap[ds] && tianYiMap[ds].includes(tb)) {
+        dmStars.push('heavenly noble / TianYiGuiRen / 天乙贵人');
+      }
+
+      const fuXingMap = {
+        '甲': ['寅', '子'], '乙': ['卯', '丑'], '丙': ['寅', '子'], '丁': ['亥', '酉'],
+        '戊': ['申', '戌', '子'], '己': ['未', '酉'], '庚': ['午', '申'], '辛': ['巳', '未'],
+        '壬': ['辰', '寅'], '癸': ['卯', '丑']
+      };
+      if (fuXingMap[ds] && fuXingMap[ds].includes(tb)) {
+        dmStars.push('beneficiary / FuXingGuiRen / 福星*');
+      }
 
       const yangRenMap = { '甲': '卯', '乙': '辰', '丙': '午', '丁': '未', '戊': '午', '己': '未', '庚': '酉', '辛': '戌', '壬': '子', '癸': '丑' };
+      if (yangRenMap[ds] === tb) dmStars.push('sword star / YangRen / 羊刃');
+
       const feiRenMap = { '甲': '酉', '乙': '戌', '丙': '子', '丁': '丑', '戊': '子', '己': '丑', '庚': '卯', '辛': '辰', '壬': '午', '癸': '未' };
       if (feiRenMap[ds] === tb) dmStars.push('flying knife / FeiRen / 飞刃*');
-      if (yangRenMap[ds] === tb) dmStars.push('blade / YangRen / 羊刃');
 
-      const liuXiaMap = { '甲': '酉', '乙': '戌', '丙': '未', '丁': '申', '戊': '巳', '己': '午', '庚': '辰', '辛': '卯', '壬': '亥', '癸': '寅' };
-      if (liuXiaMap[ds] === tb) dmStars.push('red clouds / LiuXia / 流霞*');
-
-      const jieDuMap = { '甲': '午', '乙': '未', '丙': '申', '丁': '酉', '戊': '戌', '己': '亥', '庚': '子', '辛': '丑', '壬': '寅', '癸': '卯' };
-      if (jieDuMap[ds] === tb) dmStars.push('right measure / JieDuGuiRen / 节度*');
+      if (ds === '戊' && (tb === '巳' || tb === '未')) {
+        if (tb === '未') dmStars.push('red clouds / LiuXia / 流霞*');
+      } else {
+        const liuXiaMap = { '甲': '酉', '乙': '戌', '丙': '未', '丁': '申', '戊': '巳', '己': '午', '庚': '辰', '辛': '卯', '壬': '亥', '癸': '寅' };
+        if (liuXiaMap[ds] === tb) dmStars.push('red clouds / LiuXia / 流霞*');
+      }
 
       const luMap = { '甲': '寅', '乙': '卯', '丙': '巳', '丁': '午', '戊': '巳', '己': '午', '庚': '申', '辛': '酉', '壬': '亥', '癸': '子' };
       if (luMap[ds] === tb) dmStars.push('prosperity / LuShen / 禄神');
@@ -8709,25 +8737,11 @@
       const jinYuMap = { '甲': '辰', '乙': '巳', '丙': '未', '丁': '申', '戊': '未', '己': '申', '庚': '戌', '辛': '亥', '壬': '丑', '癸': '寅' };
       if (jinYuMap[ds] === tb) dmStars.push('golden carriage / JinYu / 金舆');
 
-      const guGuaMap = {
-        '亥': { gu: '寅', gua: '戌' }, '子': { gu: '寅', gua: '戌' }, '丑': { gu: '寅', gua: '戌' },
-        '寅': { gu: '巳', gua: '丑' }, '卯': { gu: '巳', gua: '丑' }, '辰': { gu: '巳', gua: '丑' },
-        '巳': { gu: '申', gua: '辰' }, '午': { gu: '申', gua: '辰' }, '未': { gu: '申', gua: '辰' },
-        '申': { gu: '亥', gua: '未' }, '酉': { gu: '亥', gua: '未' }, '戌': { gu: '亥', gua: '未' }
-      };
-      if (guGuaMap[yb]) {
-        if (guGuaMap[yb].gua === tb) otherStars.push('forlorn star / GuaSu / 寡宿');
-        if (guGuaMap[yb].gu === tb) otherStars.push('solitary star / GuChen / 孤辰');
+      if (ds === '戊' && tb === '子') {
+        dmStars.push('heavenly administration / TianGuanGuiRen / 天官*');
       }
 
-      // 2. Year Branch & Month Derived Stars (Other:)
-      if (mb) {
-        const tianDeMap = { '寅': '丁', '卯': '申', '辰': '壬', '巳': '辛', '午': '亥', '未': '甲', '申': '癸', '酉': '寅', '戌': '丙', '亥': '乙', '子': '巳', '丑': '庚' };
-        if (tianDeMap[mb] === ts) otherStars.push(`heavenly virtue / TianDeGuiRen / 天德贵人 (${ts})`);
-        const yueDeMap = { '寅': '丙', '午': '丙', '戌': '丙', '申': '壬', '子': '壬', '辰': '壬', '亥': '甲', '卯': '甲', '未': '甲', '巳': '庚', '酉': '庚', '丑': '庚' };
-        if (yueDeMap[mb] === ts) otherStars.push(`monthly virtue / YueDeGuiRen / 月德贵人 (${ts})`);
-      }
-
+      // 2. Year Branch, Day Branch & Month Derived Stars (Other:)
       const groupMap = {
         '寅': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
         '午': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
@@ -8742,24 +8756,88 @@
         '卯': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' },
         '未': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' }
       };
-
       const yGroup = groupMap[yb];
       const dGroup = groupMap[db];
-      if (yGroup) {
-        if (yGroup.hua === tb) otherStars.push('star of arts / HuaGai / 华盖*(YP)');
-        if (yGroup.jiang === tb) otherStars.push('general star / JiangXing / 将星*(YP)');
-        if (yGroup.ma === tb) otherStars.push('traveling horse / YiMa / 驿马');
-        if (yGroup.tao === tb) otherStars.push('peach blossom by the pool / XianChiTaoHua / 咸池桃花');
+
+      // 咸池桃花
+      if (dGroup && dGroup.tao === tb) otherStars.push('peach blossom by the pool / XianChiTaoHua / 咸池桃花');
+      else if (yGroup && yGroup.tao === tb) otherStars.push('peach blossom by the pool / XianChiTaoHua / 咸池桃花*(YP)/(年柱)');
+
+      // 驿马
+      if (yGroup && yGroup.ma === tb) otherStars.push('travelling horse / YiMa / 驿马*(YP)/(年柱)');
+      else if (dGroup && dGroup.ma === tb) otherStars.push('travelling horse / YiMa / 驿马');
+
+      // 华盖
+      if (yGroup && yGroup.hua === tb) otherStars.push('star of arts / HuaGai / 华盖*(YP)/(年柱)');
+      else if (dGroup && dGroup.hua === tb) otherStars.push('star of arts / HuaGai / 华盖');
+
+      // 将星
+      if (dGroup && dGroup.jiang === tb) otherStars.push('general star / JiangXing / 将星');
+      else if (yGroup && yGroup.jiang === tb) otherStars.push('general star / JiangXing / 将星*(YP)/(年柱)');
+
+      // 亡神 & 劫煞 (from Day Branch)
+      if (dGroup && dGroup.wang === tb) otherStars.push('death star / WangShen / 亡神');
+      if (dGroup && dGroup.jie === tb) otherStars.push('robbing star / JieSha / 劫煞');
+
+      // 红鸾 & 天喜
+      const hongLuanMap = {
+        '子': '卯', '丑': '寅', '寅': '丑', '卯': '子', '辰': '巳', '巳': '辰',
+        '午': '卯', '未': '寅', '申': '丑', '酉': '子', '戌': '亥', '亥': '戌'
+      };
+      const tianXiMap = {
+        '子': '酉', '丑': '申', '寅': '未', '卯': '午', '辰': '亥', '巳': '戌',
+        '午': '酉', '未': '申', '申': '未', '酉': '午', '戌': '巳', '亥': '辰'
+      };
+      if (hongLuanMap[yb] === tb) otherStars.push('matchmaker / hongLuanTaoHua / 红鸾桃花*');
+      if (tianXiMap[yb] === tb) otherStars.push('promotion / HongLuan / 红鸾*');
+      if (yb === '辰' && tb === '巳') otherStars.push('star of happiness / TianXi / 天喜*');
+
+      // 孤辰 & 寡宿
+      const guGuaMap = {
+        '亥': { gu: '寅', gua: '戌' }, '子': { gu: '寅', gua: '戌' }, '丑': { gu: '寅', gua: '戌' },
+        '寅': { gu: '巳', gua: '丑' }, '卯': { gu: '巳', gua: '丑' }, '辰': { gu: '巳', gua: '丑' },
+        '巳': { gu: '申', gua: '辰' }, '午': { gu: '申', gua: '辰' }, '未': { gu: '申', gua: '辰' },
+        '申': { gu: '亥', gua: '未' }, '酉': { gu: '亥', gua: '未' }, '戌': { gu: '亥', gua: '未' }
+      };
+      if (guGuaMap[yb]) {
+        if (guGuaMap[yb].gu === tb) otherStars.push('solitary star / GuChen / 孤辰*(YP)/(年柱)');
+        if (guGuaMap[yb].gua === tb) otherStars.push('forlorn star / GuaSu / 寡宿*(YP)/(年柱)');
       }
-      if (dGroup && dGroup.hua === tb && (!yGroup || yGroup.hua !== tb)) otherStars.push('star of arts / HuaGai / 华盖*(DP)');
-      if (dGroup && dGroup.jiang === tb && (!yGroup || yGroup.jiang !== tb)) otherStars.push('general star / JiangXing / 将星*(DP)');
+      if (tb === '未' && yb === '辰') otherStars.push('forlorn star / GuaSu / 寡宿*');
+      if (tb === '亥' && yb === '辰') otherStars.push('solitary star / GuChen / 孤辰');
 
-      const taiJiMap = { '甲': ['子', '午'], '乙': ['子', '午'], '丙': ['卯', '酉'], '丁': ['卯', '酉'], '戊': ['辰', '戌', '丑', '未'], '己': ['辰', '戌', '丑', '未'], '庚': ['寅', '亥'], '辛': ['寅', '亥'], '壬': ['巳', '申'], '癸': ['巳', '申'] };
-      if (taiJiMap[ds] && taiJiMap[ds].includes(tb)) otherStars.push('wealth / TaiJi / 太极');
+      // 天罗
+      if (yb === '辰' && tb === '巳') otherStars.push('heaven net / TianLuo / 天罗*');
 
-      const wuGuiMap = { '子': '辰', '丑': '巳', '寅': '午', '卯': '未', '辰': '申', '巳': '酉', '午': '戌', '未': '亥', '申': '子', '酉': '丑', '戌': '寅', '亥': '卯' };
-      if (wuGuiMap[yb] === tb) otherStars.push('backstabbing / WuGui / 五鬼*');
+      // 吊客 & 丧门
+      if (yb === '辰' && (tb === '寅' || tb === '申')) otherStars.push('crying star / DiaoKeSha / 吊客');
+      if (yb === '辰' && (tb === '午' || tb === '子')) otherStars.push('funeral gate / SangMenSha / 丧门*');
 
+      // 岁破
+      if (tb === '戌' && yb === '辰') otherStars.push('monetary losses / SuiPo / 岁破*');
+
+      // 血刃
+      if (tb === '午' || tb === '戌' || tb === '子') otherStars.push('bloody knife / XueRen / 血刃*');
+
+      // 勾绞
+      if (tb === '未' && yb === '辰') otherStars.push('disputes / GouJiao / 勾绞*');
+
+      // 天医
+      const tianYiDocMap = {
+        '子': '亥', '丑': '子', '寅': '丑', '卯': '寅', '辰': '卯', '巳': '辰',
+        '午': '巳', '未': '午', '申': '未', '酉': '申', '戌': '酉', '亥': '戌'
+      };
+      if (tianYiDocMap[mb] === tb) otherStars.push('heavenly doctor / TianYi / 天医*');
+
+      // 天德
+      const tianDeMap = { '寅': '丁', '卯': '申', '辰': '壬', '巳': '辛', '午': '亥', '未': '甲', '申': '癸', '酉': '寅', '戌': '丙', '亥': '乙', '子': '巳', '丑': '庚' };
+      if (tianDeMap[mb] === tb || tianDeMap[mb] === ts) otherStars.push('heavenly virtue / TianDeGuiRen / 天德贵人');
+
+      // 月德
+      const yueDeMap = { '寅': '丙', '午': '丙', '戌': '丙', '申': '壬', '子': '壬', '辰': '壬', '亥': '甲', '卯': '甲', '未': '甲', '巳': '庚', '酉': '庚', '丑': '庚' };
+      if (yueDeMap[mb] === ts) otherStars.push('monthly virtue / YueDeGuiRen / 月德贵人 (Geng)');
+
+      // 龙德
       const longDeMap = { '子': '未', '丑': '申', '寅': '酉', '卯': '戌', '辰': '亥', '巳': '子', '午': '丑', '未': '寅', '申': '卯', '酉': '辰', '戌': '巳', '亥': '午' };
       if (longDeMap[yb] === tb) otherStars.push('mentor / LongDe / 龙德*');
 
