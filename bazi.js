@@ -743,7 +743,7 @@
       const sElem = daYunPillar.stem.element;
       const bElem = daYunPillar.branch.element;
       const isFav = chart.favorableElements.includes(sElem) || chart.favorableElements.includes(bElem);
-      
+
       // Check clashes with natal branches
       const clashes = [];
       ['year', 'month', 'day', 'hour'].forEach(k => {
@@ -851,7 +851,7 @@
     calculateAnnualFortune: function (chart, targetYear) {
       if (!chart) return null;
       const y = parseInt(targetYear, 10) || new Date().getFullYear();
-      
+
       const sIdx = ((y - 4) % 10 + 10) % 10;
       const bIdx = ((y - 4) % 12 + 12) % 12;
       const stem = STEMS[sIdx];
@@ -1023,16 +1023,16 @@
         const daYunBranchZh = curDaYun.branch.zh;
 
         const stemClash = (stem.zh === '丙' && daYunStemZh === '壬') || (stem.zh === '壬' && daYunStemZh === '丙') ||
-                          (stem.zh === '甲' && daYunStemZh === '庚') || (stem.zh === '庚' && daYunStemZh === '甲') ||
-                          (stem.zh === '乙' && daYunStemZh === '辛') || (stem.zh === '辛' && daYunStemZh === '乙') ||
-                          (stem.zh === '丁' && daYunStemZh === '癸') || (stem.zh === '癸' && daYunStemZh === '丁');
+          (stem.zh === '甲' && daYunStemZh === '庚') || (stem.zh === '庚' && daYunStemZh === '甲') ||
+          (stem.zh === '乙' && daYunStemZh === '辛') || (stem.zh === '辛' && daYunStemZh === '乙') ||
+          (stem.zh === '丁' && daYunStemZh === '癸') || (stem.zh === '癸' && daYunStemZh === '丁');
 
         const branchClash = (branch.zh === '午' && daYunBranchZh === '子') || (branch.zh === '子' && daYunBranchZh === '午') ||
-                            (branch.zh === '未' && daYunBranchZh === '丑') || (branch.zh === '丑' && daYunBranchZh === '未') ||
-                            (branch.zh === '申' && daYunBranchZh === '寅') || (branch.zh === '寅' && daYunBranchZh === '申') ||
-                            (branch.zh === '酉' && daYunBranchZh === '卯') || (branch.zh === '卯' && daYunBranchZh === '酉') ||
-                            (branch.zh === '戌' && daYunBranchZh === '辰') || (branch.zh === '辰' && daYunBranchZh === '戌') ||
-                            (branch.zh === '亥' && daYunBranchZh === '巳') || (branch.zh === '巳' && daYunBranchZh === '亥');
+          (branch.zh === '未' && daYunBranchZh === '丑') || (branch.zh === '丑' && daYunBranchZh === '未') ||
+          (branch.zh === '申' && daYunBranchZh === '寅') || (branch.zh === '寅' && daYunBranchZh === '申') ||
+          (branch.zh === '酉' && daYunBranchZh === '卯') || (branch.zh === '卯' && daYunBranchZh === '酉') ||
+          (branch.zh === '戌' && daYunBranchZh === '辰') || (branch.zh === '辰' && daYunBranchZh === '戌') ||
+          (branch.zh === '亥' && daYunBranchZh === '巳') || (branch.zh === '巳' && daYunBranchZh === '亥');
 
         if (stemClash && branchClash) {
           isTianKeDiChong = true;
@@ -1290,12 +1290,12 @@
 
         // สงครามธาตุ (Elemental Conflicts)
         const isWaterFireConflict = (['子'].includes(mB) && ['午'].includes(taiSuiBranch.zh)) ||
-                                    (['午'].includes(mB) && ['子'].includes(taiSuiBranch.zh)) ||
-                                    (['water'].includes(stem.element) && ['fire'].includes(taiSuiStem.element)) ||
-                                    (['fire'].includes(stem.element) && ['water'].includes(taiSuiStem.element));
+          (['午'].includes(mB) && ['子'].includes(taiSuiBranch.zh)) ||
+          (['water'].includes(stem.element) && ['fire'].includes(taiSuiStem.element)) ||
+          (['fire'].includes(stem.element) && ['water'].includes(taiSuiStem.element));
 
         const isMetalWoodConflict = (['寅', '卯'].includes(mB) && ['申', '酉'].includes(taiSuiBranch.zh)) ||
-                                    (['申', '酉'].includes(mB) && ['寅', '卯'].includes(taiSuiBranch.zh));
+          (['申', '酉'].includes(mB) && ['寅', '卯'].includes(taiSuiBranch.zh));
 
         const isHeavyEarth = ['辰', '戌', '丑', '未'].includes(mB) && ['辰', '戌', '丑', '未'].includes(taiSuiBranch.zh);
 
@@ -2139,7 +2139,7 @@
         const points = [
           {
             title: '⭐ เดือนที่มีพลังมงคลและเกื้อหนุนสูงสุด (จังหวะรุก / เริ่มต้น / เซ็นสัญญา):',
-            body: auspiciousMonths.length > 0 
+            body: auspiciousMonths.length > 0
               ? auspiciousMonths.map(m => `• <strong>สารท ${m.labelDate} (${m.stem.zh}${m.branch.zh}):</strong> ${m.ratingBadge} - ${m.overview.slice(0, 80)}...`).join('<br>')
               : `• <strong>สารท ${bestM.labelDate} (${bestM.stem.zh}${bestM.branch.zh}):</strong> เหมาะแก่การสะสางงานและเตรียมความพร้อม`
           },
@@ -2263,7 +2263,7 @@
       let apiKey = defaultKey;
       try {
         apiKey = localStorage.getItem('thepmeow_groq_key') || window.THEP_MEOW_GROQ_KEY || defaultKey;
-      } catch (e) {}
+      } catch (e) { }
       if (!apiKey) return null;
 
       const q = (rawQuery || '').trim();
@@ -3187,7 +3187,7 @@
       if (notice) notice.classList.toggle('hidden', !isUnknown);
     },
 
-    
+
     generateDeepInsights: function (chart) {
       if (!chart || !chart.dayMaster) {
         return {
@@ -3256,7 +3256,7 @@
       if (stems.includes('乙') && stems.includes('庚')) stemCombines.push('ก้านฟ้าทำปฏิกิริยา "อิก-แก ฮะ" (乙庚合) เสริมความเด็ดขาด ความชอบธรรม และความยุติธรรม');
 
       // Top dominant Ten God
-      const sortedGods = Object.entries(tenGodCounts).sort((a,b) => b[1] - a[1]);
+      const sortedGods = Object.entries(tenGodCounts).sort((a, b) => b[1] - a[1]);
       const topGodZh = sortedGods.length > 0 ? sortedGods[0][0] : null;
       const topGodInfo = (baziTG && topGodZh) ? baziTG.getGodInfo(topGodZh) : null;
 
@@ -3362,7 +3362,7 @@
       }
 
       // 5. Health (สุขภาพและสมดุลเบญจธาตุ)
-      const maxElem = Object.entries(elemPct).sort((a,b) => b[1] - a[1])[0] || ['earth', 20];
+      const maxElem = Object.entries(elemPct).sort((a, b) => b[1] - a[1])[0] || ['earth', 20];
       const elemHealthMap = {
         fire: 'ระบบหัวใจ หลอดเลือด ความดันโลหิต สายตา อาการไมเกรน และภาวะตึงเครียดนอนไม่หลับจากความคิดที่แล่นตลอดเวลา แนะนำให้ดื่มน้ำสะอาดให้เพียงพอและฝึกสมาธิคลายเครียด',
         water: 'ระบบทางเดินปัสสาวะ ไต ระบบสืบพันธุ์ และระบบฮอร์โมนสตรี/บุรุษ ควรรักษาร่างกายให้อบอุ่นและหลีกเลี่ยงความหนาวชื้น',
@@ -3379,21 +3379,21 @@
         <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.6;">
           <div>
             <strong style="color: #b91c1c;"><i class="fa-solid fa-coins"></i> 1. จุดอ่อนการเงิน (${!isStrong ? 'เก็บเงินสดไม่อยู่ / ภาระรอบตัว' : 'ความเสี่ยงในการลงทุน'}):</strong> 
-            ${!isStrong 
-              ? `ดิถีอ่อนกำลังเผชิญภาระรอบตัวมาก เงินทองหมุนเวียนก้อนใหญ่ มีรายได้เข้ามาต่อเนื่องแต่มีเหตุให้ต้องใช้จ่ายหรือช่วยเหลือคนรอบข้าง ทำให้เก็บเงินสดติดบัญชียาก
+            ${!isStrong
+          ? `ดิถีอ่อนกำลังเผชิญภาระรอบตัวมาก เงินทองหมุนเวียนก้อนใหญ่ มีรายได้เข้ามาต่อเนื่องแต่มีเหตุให้ต้องใช้จ่ายหรือช่วยเหลือคนรอบข้าง ทำให้เก็บเงินสดติดบัญชียาก
                  <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ห้ามถือเงินสดติดบัญชีเกินจำเป็น ต้องบังคับแปลงเป็นสินทรัพย์ถาวร (ที่ดิน อสังหาริมทรัพย์ สลากออมทรัพย์ หรือทองคำแท่ง) ทันทีที่ได้กำไรมา`
-              : `มีความเชื่อมั่นในตนเองสูงและกล้าได้กล้าเสียในการลงทุน แต่ต้องระวังการตัดสินใจที่ด่วนได้หรือทุ่มหมดหน้าตักในจังหวะที่ใจร้อน
+          : `มีความเชื่อมั่นในตนเองสูงและกล้าได้กล้าเสียในการลงทุน แต่ต้องระวังการตัดสินใจที่ด่วนได้หรือทุ่มหมดหน้าตักในจังหวะที่ใจร้อน
                  <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ตั้งเกณฑ์จุดตัดขาดทุน (Stop-loss) ก่อนลงเงินก้อนใหญ่เสมอ และกระจายความเสี่ยงในสินทรัพย์มั่นคง`}
           </div>
           <div>
             <strong style="color: #b91c1c;"><i class="fa-solid fa-heart-crack"></i> 2. จุดอ่อนความรัก (${isGuanShaHunZa ? 'ดวงหญิงแกร่ง / รักซับซ้อน' : (hasStrongOutput ? 'มาตรฐานสูง / รักอิสระ' : 'การสื่อสารและเวลา')}):</strong> 
-            ${isGuanShaHunZa 
-              ? `โครงสร้าง "กัวสัวะปะปน" (官杀混杂) เป็นหญิงเก่งพึ่งพาตนเองได้สูง มีเสน่ห์ต่อเพศตรงข้าม แต่คนรักมักมีอัตตาสูงหรือชอบบงการ เมื่อ "แกร่งชนแกร่ง" จึงเกิดความอึดอัดขัดแย้งได้ง่าย ดวงนี้พึ่งพาตนเองได้ดีกว่าพึ่งพาคู่ครอง
+            ${isGuanShaHunZa
+          ? `โครงสร้าง "กัวสัวะปะปน" (官杀混杂) เป็นหญิงเก่งพึ่งพาตนเองได้สูง มีเสน่ห์ต่อเพศตรงข้าม แต่คนรักมักมีอัตตาสูงหรือชอบบงการ เมื่อ "แกร่งชนแกร่ง" จึงเกิดความอึดอัดขัดแย้งได้ง่าย ดวงนี้พึ่งพาตนเองได้ดีกว่าพึ่งพาคู่ครอง
                  <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ควรครองคู่แบบมีระยะห่างทางความคิด มีพื้นที่ส่วนตัว ไม่ก้าวก่ายงานของกันและกัน หรือแต่งงานช้าจะราบรื่นกว่า`
-              : (hasStrongOutput 
-                  ? `ดาวถ่ายเท (ปัญญาและความคิดสร้างสรรค์) มีกำลังสูง เป็นคนมีมาตรฐานและความคาดหวังในตัวคนรักค่อนข้างสูง เมื่อคนรักทำอะไรไม่ตรงใจอาจเกิดความอึดอัดหรือไม่สบอารมณ์
+          : (hasStrongOutput
+            ? `ดาวถ่ายเท (ปัญญาและความคิดสร้างสรรค์) มีกำลังสูง เป็นคนมีมาตรฐานและความคาดหวังในตัวคนรักค่อนข้างสูง เมื่อคนรักทำอะไรไม่ตรงใจอาจเกิดความอึดอัดหรือไม่สบอารมณ์
                      <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> สื่อสารความรู้สึกด้วยความนุ่มนวล ลดความคาดหวังในเรื่องเล็กๆ น้อยๆ และชื่นชมข้อดีของคนรักอย่างสม่ำเสมอ`
-                  : `การทุ่มเทเวลากับภาระหน้าที่และความรับผิดชอบอาจทำให้บรรยากาศความสัมพันธ์ตึงเครียดหรือขาดเวลาคุณภาพร่วมกัน
+            : `การทุ่มเทเวลากับภาระหน้าที่และความรับผิดชอบอาจทำให้บรรยากาศความสัมพันธ์ตึงเครียดหรือขาดเวลาคุณภาพร่วมกัน
                      <br><span style="color: #047857; font-weight: 600;">★ เคล็ดลับแก้ดวง:</span> ใช้การสื่อสารที่นุ่มนวล ชื่นชมคู่ครอง และชวนกันเดินทางท่องเที่ยวเปลี่ยนบรรยากาศเพื่อกระชับความผูกพัน`)}
           </div>
           <div>
@@ -3473,12 +3473,12 @@
                 <strong>Heavenly Stem</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีบน / กิ่งฟ้า</small>
               </td>
               ${cols.map(c => {
-                if (c.isUnknown) {
-                  return `<td><div class="basic-unknown-hour"><i class="fa-solid fa-circle-question"></i> ไม่ระบุเวลา</div></td>`;
-                }
-                const s = c.pillar.stem;
-                const meta = ELEMENTS_META[s.element];
-                return `
+        if (c.isUnknown) {
+          return `<td><div class="basic-unknown-hour"><i class="fa-solid fa-circle-question"></i> ไม่ระบุเวลา</div></td>`;
+        }
+        const s = c.pillar.stem;
+        const meta = ELEMENTS_META[s.element];
+        return `
                   <td>
                     <div class="basic-pillar-cell">
                       <span class="basic-stem-char" style="color: ${meta.color};">${s.zh}</span>
@@ -3489,7 +3489,7 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: Earth Branch (ราศีล่าง) -->
@@ -3498,12 +3498,12 @@
                 <strong>Earth Branch</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีล่าง / กิ่งดิน</small>
               </td>
               ${cols.map(c => {
-                if (c.isUnknown) {
-                  return `<td><div class="basic-unknown-hour"><i class="fa-solid fa-circle-question"></i> ไม่ระบุเวลา</div></td>`;
-                }
-                const b = c.pillar.branch;
-                const meta = ELEMENTS_META[b.element];
-                return `
+        if (c.isUnknown) {
+          return `<td><div class="basic-unknown-hour"><i class="fa-solid fa-circle-question"></i> ไม่ระบุเวลา</div></td>`;
+        }
+        const b = c.pillar.branch;
+        const meta = ELEMENTS_META[b.element];
+        return `
                   <td>
                     <div class="basic-pillar-cell">
                       <span class="basic-branch-char" style="color: ${meta.color};">${b.zh}</span>
@@ -3514,7 +3514,7 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row 3: Hidden Stem (ราศีแฝง) -->
@@ -3523,27 +3523,27 @@
                 <strong>Hidden Stem</strong><br><small style="color: #94a3b8; font-size: 11px;">ราศีแฝง / กิ่งฟ้าแฝง</small>
               </td>
               ${cols.map(c => {
-                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const b = c.pillar.branch;
-                return `
+        if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const b = c.pillar.branch;
+        return `
                   <td>
                     <div class="bazi-hhs-row">
                       ${b.hidden.map(h => {
-                        const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
-                        const tg = getTenGod(chart.dayMaster, sObj);
-                        const abbr = tgAbbrMap[tg.zh] || 'F';
-                        return `
+          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+          const tg = getTenGod(chart.dayMaster, sObj);
+          const abbr = tgAbbrMap[tg.zh] || 'F';
+          return `
                           <div class="bazi-hhs-badge stem-bg-${sObj.element}" title="${tg.th} (${sObj.zh})">
                             <span style="font-size: 10px; opacity: 0.85;">${sObj.py}</span>
                             <span style="font-size: 14px; font-weight: 800;">${sObj.zh}</span>
                             <span style="font-size: 10px; font-weight: 700;">${abbr}</span>
                           </div>
                         `;
-                      }).join('')}
+        }).join('')}
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row 4: Nayin (ธาตุนาอิม) -->
@@ -3552,11 +3552,11 @@
                 <strong>Nayin</strong><br><small style="color: #94a3b8; font-size: 11px;">ธาตุนาอิม / นัปอิม</small>
               </td>
               ${cols.map(c => {
-                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const sIdx = STEMS.findIndex(s => s.zh === c.pillar.stem.zh);
-                const bIdx = BRANCHES.findIndex(b => b.zh === c.pillar.branch.zh);
-                const ny = this.getNaYinDetail(sIdx, bIdx);
-                return `
+        if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const sIdx = STEMS.findIndex(s => s.zh === c.pillar.stem.zh);
+        const bIdx = BRANCHES.findIndex(b => b.zh === c.pillar.branch.zh);
+        const ny = this.getNaYinDetail(sIdx, bIdx);
+        return `
                   <td>
                     <div class="bazi-nayin-ribbon nayin-bg-${ny.element}" title="${ny.zh} (${ny.th})">
                       <div style="font-size: 11.5px; font-weight: 800;">${ny.en}</div>
@@ -3564,7 +3564,7 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row 5: DM Qi Phase (สภาวะชีพเทียบดิถี) -->
@@ -3573,15 +3573,15 @@
                 <strong>DM Qi Phase</strong><br><small style="color: #94a3b8; font-size: 11px;">12 วงจรชีพเทียบดิถี</small>
               </td>
               ${cols.map(c => {
-                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const p = this.get12LifeStage(chart.dayMaster.zh, c.pillar.branch.zh);
-                return `
+        if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const p = this.get12LifeStage(chart.dayMaster.zh, c.pillar.branch.zh);
+        return `
                   <td class="bazi-phase-cell" style="text-align: center;">
                     <div style="font-weight: 800; font-size: 12px; color: #1e293b;">${p.order}. ${p.en}</div>
                     <div style="font-size: 11px; color: #64748b;">${p.py} / ${p.zh} <strong style="color: #7c3aed; font-size: 12px;">${p.symbol}</strong></div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row 6: Pillar Qi Phase (สภาวะชีพประจำเสา) -->
@@ -3590,15 +3590,15 @@
                 <strong>Pillar Qi Phase</strong><br><small style="color: #94a3b8; font-size: 11px;">12 วงจรชีพประจำเสา</small>
               </td>
               ${cols.map(c => {
-                if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const p = this.get12LifeStage(c.pillar.stem.zh, c.pillar.branch.zh);
-                return `
+        if (c.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const p = this.get12LifeStage(c.pillar.stem.zh, c.pillar.branch.zh);
+        return `
                   <td class="bazi-phase-cell" style="text-align: center;">
                     <div style="font-weight: 800; font-size: 12px; color: #1e293b;">${p.order}. ${p.en}</div>
                     <div style="font-size: 11px; color: #64748b;">${p.py} / ${p.zh} <strong style="color: #7c3aed; font-size: 12px;">${p.symbol}</strong></div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
           </tbody>
         </table>
@@ -4066,12 +4066,12 @@
 
       if (p.day && p.month && p.day.branch && p.month.branch) {
         const db = p.day.branch.zh, mb = p.month.branch.zh;
-        const clashes = { '子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳' };
+        const clashes = { '子': '午', '午': '子', '丑': '未', '未': '丑', '寅': '申', '申': '寅', '卯': '酉', '酉': '卯', '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳' };
         if (clashes[db] === mb) loveScore -= 18;
       }
       if (p.day && p.hour && p.day.branch && p.hour.branch) {
         const db = p.day.branch.zh, hb = p.hour.branch.zh;
-        const clashes = { '子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳' };
+        const clashes = { '子': '午', '午': '子', '丑': '未', '未': '丑', '寅': '申', '申': '寅', '卯': '酉', '酉': '卯', '辰': '戌', '戌': '辰', '巳': '亥', '亥': '巳' };
         if (clashes[db] === hb) loveScore -= 14;
       }
 
@@ -4796,7 +4796,12 @@
       const c = chart;
       const isUnknown = !!c.isUnknownTime;
 
-      const natalCols = [c.pillars.hour, c.pillars.day, c.pillars.month, c.pillars.year];
+      const natalCols = [
+        { ...c.pillars.hour, pillarKey: 'hour', label: 'เสายาม', palace: 'เสายาม: วังบริวาร/ลูกหลาน' },
+        { ...c.pillars.day, pillarKey: 'day', label: 'เสาวัน', palace: 'เสาวัน: วังตัวตน/คู่ครอง' },
+        { ...c.pillars.month, pillarKey: 'month', label: 'เสาเดือน', palace: 'เสาเดือน: วังการงาน/พ่อแม่' },
+        { ...c.pillars.year, pillarKey: 'year', label: 'เสาปี', palace: 'เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม' }
+      ];
       const dayStem = c.dayMaster;
       const dayBranch = c.pillars.day.branch;
       const yearBranch = c.pillars.year.branch;
@@ -4833,10 +4838,10 @@
             <tr>
               <td class="row-header-col">Hour stem<br><small style="font-size:10px; color:#94a3b8;">ราศีบน / กิ่งฟ้า</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">- ไม่ระบุเวลา -</div></td>`;
-                const s = col.pillar.stem;
-                const tg = col.isDM ? { zh: '日主', py: 'Day master', en: 'Self' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', en: 'Friend' });
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">- ไม่ระบุเวลา -</div></td>`;
+        const s = col.pillar.stem;
+        const tg = col.isDM ? { zh: '日主', py: 'Day master', en: 'Self' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', en: 'Friend' });
+        return `
                   <td>
                     <div class="bazi-stem-card stem-bg-${s.element}">
                       <div class="bazi-card-pinyin">${s.py}</div>
@@ -4846,18 +4851,18 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 2. Earth Branch (ราศีล่าง) -->
             <tr>
               <td class="row-header-col">Earth Branch<br><small style="font-size:10px; color:#94a3b8;">ราศีล่าง / กิ่งดิน</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">- ไม่ระบุเวลา -</div></td>`;
-                const b = col.pillar.branch;
-                const dh = this.getDominantHiddenStem(b.zh);
-                const bTg = getTenGod(c.dayMaster, dh);
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">- ไม่ระบุเวลา -</div></td>`;
+        const b = col.pillar.branch;
+        const dh = this.getDominantHiddenStem(b.zh);
+        const bTg = getTenGod(c.dayMaster, dh);
+        return `
                   <td>
                     <div class="bazi-branch-card branch-bg-${b.element}">
                       <div class="bazi-card-pinyin">${b.py}</div>
@@ -4867,113 +4872,113 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 3. Hidden Stem (ราศีแฝง) -->
             <tr>
               <td class="row-header-col">Hidden Stem<br><small style="font-size:10px; color:#94a3b8;">ราศีแฝง / กิ่งซ่อน</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const b = col.pillar.branch;
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const b = col.pillar.branch;
+        return `
                   <td>
                     <div class="bazi-hhs-row">
                       ${b.hidden.map(h => {
-                        const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
-                        const tg = getTenGod(c.dayMaster, sObj);
-                        const abbr = tgAbbrMap[tg.zh] || 'Fr';
-                        return `
+          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+          const tg = getTenGod(c.dayMaster, sObj);
+          const abbr = tgAbbrMap[tg.zh] || 'Fr';
+          return `
                           <div class="bazi-hhs-badge stem-bg-${sObj.element}">
                             <span style="font-size: 10px;">${sObj.py}</span>
                             <span style="font-size: 13px; font-weight: 700;">${sObj.zh}</span>
                             <span style="font-size: 9.5px; opacity: 0.85;">${abbr}</span>
                           </div>
                         `;
-                      }).join('')}
+        }).join('')}
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 4. Nayin (ธาตุอิมเอี้ยง / นัปอิม) -->
             <tr>
               <td class="row-header-col">Nayin<br><small style="font-size:10px; color:#94a3b8;">นัปอิม</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
-                const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
-                const ny = this.getNaYinDetail(sIdx, bIdx);
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
+        const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
+        const ny = this.getNaYinDetail(sIdx, bIdx);
+        return `
                   <td>
                     <div class="bazi-nayin-ribbon nayin-bg-${ny.element}" title="${ny.th}">
                       ${ny.en} (${ny.th})
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 5. DM Qi (สภาวะ 12 ขั้นชีพเทียบกับดิถี) -->
             <tr>
               <td class="row-header-col">DM Qi<br><small style="font-size:10px; color:#94a3b8;">ชีพเทียบดิถี</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const p = this.get12LifeStage(c.dayMaster.zh, col.pillar.branch.zh);
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const p = this.get12LifeStage(c.dayMaster.zh, col.pillar.branch.zh);
+        return `
                   <td class="bazi-phase-cell">
                     <div><strong>${p.order}. ${p.en}</strong></div>
                     <div style="color: #64748b;">${p.py} / ${p.zh} ${p.symbol}</div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 6. Pillar Qi (สภาวะประจำเสา) -->
             <tr>
               <td class="row-header-col">Pillar Qi<br><small style="font-size:10px; color:#94a3b8;">ชีพประจำเสา</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const p = this.get12LifeStage(col.pillar.stem.zh, col.pillar.branch.zh);
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const p = this.get12LifeStage(col.pillar.stem.zh, col.pillar.branch.zh);
+        return `
                   <td class="bazi-phase-cell">
                     <div><strong>${p.order}. ${p.en}</strong></div>
                     <div style="color: #64748b;">${p.py} / ${p.zh} ${p.symbol}</div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 7. Deity (สิบเทพ) -->
             <tr>
               <td class="row-header-col">Deity<br><small style="font-size:10px; color:#94a3b8;">สิบเทพ (Ten Gods)</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const tg = col.isDM ? { zh: '日主', py: 'Day Master', th: 'ดิถีธาตุ (ตนเอง)' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', th: 'สหาย' });
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const tg = col.isDM ? { zh: '日主', py: 'Day Master', th: 'ดิถีธาตุ (ตนเอง)' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', th: 'สหาย' });
+        return `
                   <td style="text-align: center; font-size: 12px; font-weight: 700; color: #475569;">
                     <div>${tg.zh} (${tg.py})</div>
                     <div style="font-size: 11px; color: #7c3aed; font-weight: 600;">${tg.th}</div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 8. Star (เทพและดาวชะตา 神煞) -->
             <tr>
               <td class="row-header-col">Star<br><small style="font-size:10px; color:#94a3b8;">เทพและดาวชะตา</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const stars = this.computeDetailedStars(
-                  col.pillar.branch.zh,
-                  col.pillar.stem.zh,
-                  dayStem,
-                  dayBranch,
-                  yearBranch,
-                  monthBranch
-                );
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const stars = this.computeDetailedStars(
+          col.pillar.branch.zh,
+          col.pillar.stem.zh,
+          dayStem,
+          dayBranch,
+          yearBranch,
+          monthBranch
+        );
+        return `
                   <td class="bazi-stars-cell">
                     ${stars.dmStars.length > 0 ? `
                       <div style="margin-bottom: 4px;">
@@ -4988,28 +4993,28 @@
                     ${stars.dmStars.length === 0 && stars.otherStars.length === 0 ? '<span style="color: #94a3b8;">-</span>' : ''}
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- 9. Interactions (ปฏิสัมพันธ์ 刑沖合害) -->
             <tr>
               <td class="row-header-col">Interactions<br><small style="font-size:10px; color:#94a3b8;">ภาคี/ชง/เฮ้ง/ไห่</small></td>
               ${columns.map(col => {
-                if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
-                const inter = this.computeDetailedInteractions(col.pillar, natalCols, null, null, 'natal');
-                return `
+        if (col.isUnknown) return `<td><div class="basic-unknown-hour">-</div></td>`;
+        const inter = this.computeDetailedInteractions(col.pillar, natalCols, null, null, 'natal');
+        return `
                   <td class="bazi-interactions-cell">
                     ${inter.primary.length > 0 ? inter.primary.map(it => {
-                      const cls = this.getInteractionClass(it);
-                      const st = this.getInteractionStyle(it);
-                      const info = this.getInteractionTooltipData(it);
-                      const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
-                      const cleanIt = it.replace(/"/g, '&quot;');
-                      return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
-                    }).join('') : '<div style="color: #94a3b8; font-size: 11px;">- ไม่มีจุดปะทะในพื้นดวง -</div>'}
+          const cls = this.getInteractionClass(it);
+          const st = this.getInteractionStyle(it);
+          const info = this.getInteractionTooltipData(it);
+          const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+          const cleanIt = it.replace(/"/g, '&quot;');
+          return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
+        }).join('') : '<div style="color: #94a3b8; font-size: 11px;">- ไม่มีจุดปะทะในพื้นดวง -</div>'}
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
           </tbody>
         </table>
@@ -5021,7 +5026,12 @@
       if (!container || !chart || !chart.daYunPillars) return;
 
       const c = chart;
-      const natalCols = [c.pillars.hour, c.pillars.day, c.pillars.month, c.pillars.year];
+      const natalCols = [
+        { ...c.pillars.hour, pillarKey: 'hour', label: 'เสายาม', palace: 'เสายาม: วังบริวาร/ลูกหลาน' },
+        { ...c.pillars.day, pillarKey: 'day', label: 'เสาวัน', palace: 'เสาวัน: วังตัวตน/คู่ครอง' },
+        { ...c.pillars.month, pillarKey: 'month', label: 'เสาเดือน', palace: 'เสาเดือน: วังการงาน/พ่อแม่' },
+        { ...c.pillars.year, pillarKey: 'year', label: 'เสาปี', palace: 'เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม' }
+      ];
       const dayStem = c.dayMaster;
       const dayBranch = c.pillars.day.branch;
       const yearBranch = c.pillars.year.branch;
@@ -5045,16 +5055,16 @@
               <tr>
                 <th class="row-label-col"></th>
                 ${pillars.map(dy => {
-                  const isSelected = this.selectedDaYunIndex === dy.index;
-                  const isCurrent = !!dy.isCurrent;
-                  const cls = `col-luck-hdr ${isCurrent ? 'current-period-hdr' : ''} ${isSelected ? 'selected-luck-hdr' : ''}`;
-                  return `
+        const isSelected = this.selectedDaYunIndex === dy.index;
+        const isCurrent = !!dy.isCurrent;
+        const cls = `col-luck-hdr ${isCurrent ? 'current-period-hdr' : ''} ${isSelected ? 'selected-luck-hdr' : ''}`;
+        return `
                     <th class="${cls}" onclick="window.BaziApp.selectDaYun(${dy.index})" title="คลิกเพื่อเลือกวัยจรนี้">
                       <div class="luck-hdr-period">${dy.headerTitle || dy.ageRange}</div>
                       ${isCurrent ? '<div class="luck-hdr-cur-tag">(current)</div>' : ''}
                     </th>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
             </thead>
             <tbody>
@@ -5062,9 +5072,9 @@
               <tr>
                 <td class="row-label-col">HS</td>
                 ${pillars.map(dy => {
-                  const s = dy.stem;
-                  const tg = this.formatLuckTenGod(dy.tenGod);
-                  return `
+        const s = dy.stem;
+        const tg = this.formatLuckTenGod(dy.tenGod);
+        return `
                     <td class="elem-bg-${s.element}">
                       <div class="bazi-luck-pinyin">${s.py}</div>
                       <div class="bazi-luck-bigchar">${s.zh}</div>
@@ -5072,18 +5082,18 @@
                       <div class="bazi-luck-tengod">${tg.en}<br>${tg.py} / ${tg.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 2: EB (Earthly Branch) -->
               <tr>
                 <td class="row-label-col">EB</td>
                 ${pillars.map(dy => {
-                  const b = dy.branch;
-                  const dh = this.getDominantHiddenStem(b.zh);
-                  const bTg = this.formatLuckTenGod(getTenGod(c.dayMaster, dh));
-                  const animal = b.animal || (b.zodiac ? b.zodiac.split(' ')[0] : '-');
-                  return `
+        const b = dy.branch;
+        const dh = this.getDominantHiddenStem(b.zh);
+        const bTg = this.formatLuckTenGod(getTenGod(c.dayMaster, dh));
+        const animal = b.animal || (b.zodiac ? b.zodiac.split(' ')[0] : '-');
+        return `
                     <td class="elem-bg-${b.element}">
                       <div class="bazi-luck-pinyin">${b.py}</div>
                       <div class="bazi-luck-bigchar">${b.zh}</div>
@@ -5091,91 +5101,91 @@
                       <div class="bazi-luck-tengod">${bTg.en}<br>${bTg.py} / ${bTg.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 3: HHS (Hidden Heavenly Stems) -->
               <tr>
                 <td class="row-label-col">HHS</td>
                 ${pillars.map(dy => {
-                  const b = dy.branch;
-                  const season = this.BRANCH_SEASONS[b.zh] || '';
-                  return `
+        const b = dy.branch;
+        const season = this.BRANCH_SEASONS[b.zh] || '';
+        return `
                     <td class="bazi-hhs-cell">
                       <div class="bazi-hhs-flex-wrap">
                         ${b.hidden.map(h => {
-                          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
-                          const tg = getTenGod(c.dayMaster, sObj);
-                          const abbr = this.TG_ABBR[tg.zh] || 'Fr';
-                          return `
+          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+          const tg = getTenGod(c.dayMaster, sObj);
+          const abbr = this.TG_ABBR[tg.zh] || 'Fr';
+          return `
                             <div class="bazi-hhs-mini-block elem-bg-${sObj.element}" title="${sObj.py} ${sObj.zh} - ${tg.zh}">
                               <div class="hhs-stem-py">${sObj.py}</div>
                               <div class="hhs-stem-zh">${sObj.zh}</div>
                               <div class="hhs-stem-tg">${abbr}</div>
                             </div>
                           `;
-                        }).join('')}
+        }).join('')}
                       </div>
                       ${season ? `<div class="bazi-season-tag">${season}</div>` : ''}
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 4: Na Yin -->
               <tr>
                 <td class="row-label-col">Na Yin</td>
                 ${pillars.map(dy => {
-                  const sIdx = STEMS.findIndex(s => s.zh === dy.stem.zh);
-                  const bIdx = BRANCHES.findIndex(b => b.zh === dy.branch.zh);
-                  const ny = this.getNaYinDetail(sIdx, bIdx);
-                  const ne = this.NAYIN_ELEM_INFO[ny.element] || { en: ny.element, py: '', zh: '' };
-                  return `
+        const sIdx = STEMS.findIndex(s => s.zh === dy.stem.zh);
+        const bIdx = BRANCHES.findIndex(b => b.zh === dy.branch.zh);
+        const ny = this.getNaYinDetail(sIdx, bIdx);
+        const ne = this.NAYIN_ELEM_INFO[ny.element] || { en: ny.element, py: '', zh: '' };
+        return `
                     <td class="elem-bg-${ny.element}">
                       <div class="bazi-luck-nayin-text">${ne.en} / ${ne.py} / ${ne.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 5: DM's qi phase -->
               <tr>
                 <td class="row-label-col">DM's qi phase</td>
                 ${pillars.map(dy => {
-                  const p = this.get12LifeStage(c.dayMaster.zh, dy.branch.zh);
-                  return `
+        const p = this.get12LifeStage(c.dayMaster.zh, dy.branch.zh);
+        return `
                     <td class="bazi-luck-phase-cell">
                       <div class="phase-name-en">${p.order}. ${p.en}</div>
                       <div class="phase-name-sub">/ ${p.py} / ${p.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 6: Symbolic stars / 神煞 & Interactions -->
               <tr>
                 <td class="row-label-col"></td>
                 ${pillars.map(dy => {
-                  const isCurrent = !!dy.isCurrent;
-                  const stars = this.computeDetailedStars(
-                    dy.branch.zh,
-                    dy.stem.zh,
-                    dayStem,
-                    dayBranch,
-                    yearBranch,
-                    monthBranch
-                  );
-                  const allStars = [...stars.dmStars, ...stars.otherStars];
-                  const inter = this.computeDetailedInteractions(
-                    { stem: dy.stem, branch: dy.branch },
-                    natalCols,
-                    null,
-                    null,
-                    'dayun'
-                  );
-                  const allInter = [...inter.primary, ...inter.secondary];
+        const isCurrent = !!dy.isCurrent;
+        const stars = this.computeDetailedStars(
+          dy.branch.zh,
+          dy.stem.zh,
+          dayStem,
+          dayBranch,
+          yearBranch,
+          monthBranch
+        );
+        const allStars = [...stars.dmStars, ...stars.otherStars];
+        const inter = this.computeDetailedInteractions(
+          { stem: dy.stem, branch: dy.branch },
+          natalCols,
+          null,
+          null,
+          'dayun'
+        );
+        const allInter = [...inter.primary, ...inter.secondary];
 
-                  return `
+        return `
                     <td class="luck-table-stars-inter">
                       ${isCurrent ? '<div class="current-period-callout">(current period)</div>' : ''}
                       <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
@@ -5188,7 +5198,7 @@
                       </div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
             </tbody>
           </table>
@@ -5203,7 +5213,12 @@
       if (!container || !chart) return;
 
       const c = chart;
-      const natalCols = [c.pillars.hour, c.pillars.day, c.pillars.month, c.pillars.year];
+      const natalCols = [
+        { ...c.pillars.hour, pillarKey: 'hour', label: 'เสายาม', palace: 'เสายาม: วังบริวาร/ลูกหลาน' },
+        { ...c.pillars.day, pillarKey: 'day', label: 'เสาวัน', palace: 'เสาวัน: วังตัวตน/คู่ครอง' },
+        { ...c.pillars.month, pillarKey: 'month', label: 'เสาเดือน', palace: 'เสาเดือน: วังการงาน/พ่อแม่' },
+        { ...c.pillars.year, pillarKey: 'year', label: 'เสาปี', palace: 'เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม' }
+      ];
       const dayStem = c.dayMaster;
       const dayBranch = c.pillars.day.branch;
       const yearBranch = c.pillars.year.branch;
@@ -5277,15 +5292,15 @@
               <tr>
                 <th class="row-label-col"></th>
                 ${displayAnnuals.map(an => {
-                  const cls = `col-luck-hdr ${an.isCurrent ? 'current-period-hdr' : ''} ${an.isSelected ? 'selected-luck-hdr' : ''}`;
-                  return `
+        const cls = `col-luck-hdr ${an.isCurrent ? 'current-period-hdr' : ''} ${an.isSelected ? 'selected-luck-hdr' : ''}`;
+        return `
                     <th class="${cls}" onclick="window.BaziApp.selectAnnualYear(${an.year})" title="คลิกเพื่อเลือกปีนี้">
                       <div class="luck-hdr-period">${an.year}</div>
                       <div style="font-size: 11px; font-weight: 500; opacity: 0.9;">(${an.age} ปี)</div>
                       ${an.isCurrent ? '<div class="luck-hdr-cur-tag">(ปีนี้)</div>' : ''}
                     </th>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
             </thead>
             <tbody>
@@ -5293,9 +5308,9 @@
               <tr>
                 <td class="row-label-col">HS</td>
                 ${displayAnnuals.map(an => {
-                  const s = an.stem;
-                  const tg = this.formatLuckTenGod(an.tenGod);
-                  return `
+        const s = an.stem;
+        const tg = this.formatLuckTenGod(an.tenGod);
+        return `
                     <td class="elem-bg-${s.element}">
                       <div class="bazi-luck-pinyin">${s.py}</div>
                       <div class="bazi-luck-bigchar">${s.zh}</div>
@@ -5303,18 +5318,18 @@
                       <div class="bazi-luck-tengod">${tg.en}<br>${tg.py} / ${tg.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 2: EB (Earthly Branch) -->
               <tr>
                 <td class="row-label-col">EB</td>
                 ${displayAnnuals.map(an => {
-                  const b = an.branch;
-                  const dh = this.getDominantHiddenStem(b.zh);
-                  const bTg = this.formatLuckTenGod(getTenGod(c.dayMaster, dh));
-                  const animal = b.animal || (b.zodiac ? b.zodiac.split(' ')[0] : '-');
-                  return `
+        const b = an.branch;
+        const dh = this.getDominantHiddenStem(b.zh);
+        const bTg = this.formatLuckTenGod(getTenGod(c.dayMaster, dh));
+        const animal = b.animal || (b.zodiac ? b.zodiac.split(' ')[0] : '-');
+        return `
                     <td class="elem-bg-${b.element}">
                       <div class="bazi-luck-pinyin">${b.py}</div>
                       <div class="bazi-luck-bigchar">${b.zh}</div>
@@ -5322,89 +5337,89 @@
                       <div class="bazi-luck-tengod">${bTg.en}<br>${bTg.py} / ${bTg.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 3: HHS (Hidden Heavenly Stems) -->
               <tr>
                 <td class="row-label-col">HHS</td>
                 ${displayAnnuals.map(an => {
-                  const b = an.branch;
-                  const season = this.BRANCH_SEASONS[b.zh] || '';
-                  return `
+        const b = an.branch;
+        const season = this.BRANCH_SEASONS[b.zh] || '';
+        return `
                     <td class="bazi-hhs-cell">
                       <div class="bazi-hhs-flex-wrap">
                         ${b.hidden.map(h => {
-                          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
-                          const tg = getTenGod(c.dayMaster, sObj);
-                          const abbr = this.TG_ABBR[tg.zh] || 'Fr';
-                          return `
+          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+          const tg = getTenGod(c.dayMaster, sObj);
+          const abbr = this.TG_ABBR[tg.zh] || 'Fr';
+          return `
                             <div class="bazi-hhs-mini-block elem-bg-${sObj.element}" title="${sObj.py} ${sObj.zh} - ${tg.zh}">
                               <div class="hhs-stem-py">${sObj.py}</div>
                               <div class="hhs-stem-zh">${sObj.zh}</div>
                               <div class="hhs-stem-tg">${abbr}</div>
                             </div>
                           `;
-                        }).join('')}
+        }).join('')}
                       </div>
                       ${season ? `<div class="bazi-season-tag">${season}</div>` : ''}
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 4: Na Yin -->
               <tr>
                 <td class="row-label-col">Na Yin</td>
                 ${displayAnnuals.map(an => {
-                  const ny = an.naYin;
-                  const ne = this.NAYIN_ELEM_INFO[ny.element] || { en: ny.element, py: '', zh: '' };
-                  return `
+        const ny = an.naYin;
+        const ne = this.NAYIN_ELEM_INFO[ny.element] || { en: ny.element, py: '', zh: '' };
+        return `
                     <td class="elem-bg-${ny.element}">
                       <div class="bazi-luck-nayin-text">${ne.en} / ${ne.py} / ${ne.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 5: DM's qi phase -->
               <tr>
                 <td class="row-label-col">DM's qi phase</td>
                 ${displayAnnuals.map(an => {
-                  const p = this.get12LifeStage(c.dayMaster.zh, an.branch.zh);
-                  return `
+        const p = this.get12LifeStage(c.dayMaster.zh, an.branch.zh);
+        return `
                     <td class="bazi-luck-phase-cell">
                       <div class="phase-name-en">${p.order}. ${p.en}</div>
                       <div class="phase-name-sub">/ ${p.py} / ${p.zh}</div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
 
               <!-- Row 6: Symbolic stars / 神煞 & Interactions -->
               <tr>
                 <td class="row-label-col"></td>
                 ${displayAnnuals.map(an => {
-                  const isCurrent = !!an.isCurrent;
-                  const stars = this.computeDetailedStars(
-                    an.branch.zh,
-                    an.stem.zh,
-                    dayStem,
-                    dayBranch,
-                    yearBranch,
-                    monthBranch
-                  );
-                  const allStars = [...stars.dmStars, ...stars.otherStars];
-                  const inter = this.computeDetailedInteractions(
-                    { stem: an.stem, branch: an.branch },
-                    natalCols,
-                    null,
-                    luckPillar,
-                    'annual'
-                  );
-                  const allInter = [...inter.primary, ...inter.secondary];
+        const isCurrent = !!an.isCurrent;
+        const stars = this.computeDetailedStars(
+          an.branch.zh,
+          an.stem.zh,
+          dayStem,
+          dayBranch,
+          yearBranch,
+          monthBranch
+        );
+        const allStars = [...stars.dmStars, ...stars.otherStars];
+        const inter = this.computeDetailedInteractions(
+          { stem: an.stem, branch: an.branch },
+          natalCols,
+          null,
+          luckPillar,
+          'annual'
+        );
+        const allInter = [...inter.primary, ...inter.secondary];
 
-                  return `
+        return `
                     <td class="luck-table-stars-inter">
                       ${isCurrent ? '<div class="current-period-callout">(current year)</div>' : ''}
                       <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
@@ -5417,7 +5432,7 @@
                       </div>
                     </td>
                   `;
-                }).join('')}
+      }).join('')}
               </tr>
             </tbody>
           </table>
@@ -5504,7 +5519,7 @@
         if (queryQ) {
           this.fillAndRunCustomQuery(queryQ);
         }
-      } catch (e) {}
+      } catch (e) { }
     },
 
     onAuthStateChange: function (isLoggedIn, currentUser) {
@@ -5826,35 +5841,35 @@
 
           return '<div class="bazi-pillar-card" style="' + dmBorder + '">' +
             '<div class="pillar-header">' +
-              '<span class="pillar-label" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap;">' +
-                '<span>' + col.label + '</span>' + dmBadge +
-              '</span>' +
-              '<span class="pillar-role">' + col.role + '</span>' +
+            '<span class="pillar-label" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap;">' +
+            '<span>' + col.label + '</span>' + dmBadge +
+            '</span>' +
+            '<span class="pillar-role">' + col.role + '</span>' +
             '</div>' +
             '<div class="pillar-tengod">' +
-              '<span class="god-badge">' + col.p.tenGod.zh + '</span>' +
-              '<span class="god-th">' + col.p.tenGod.th + '</span>' +
+            '<span class="god-badge">' + col.p.tenGod.zh + '</span>' +
+            '<span class="god-th">' + col.p.tenGod.th + '</span>' +
             '</div>' +
             '<div class="pillar-stem" style="background: ' + sBg + '; border: 1px solid transparent; border-radius: 10px;">' +
-              '<span class="stem-zh" style="color: ' + (sMeta.color || '#64748b') + ';">' + s.zh + '</span>' +
-              '<div class="stem-info">' +
-                '<strong>' + s.py + ' (' + (s.polarity === 'yang' ? 'หยาง' : 'หยิน') + ')</strong>' +
-                '<span>' + (sMeta.th || '') + '</span>' +
-              '</div>' +
+            '<span class="stem-zh" style="color: ' + (sMeta.color || '#64748b') + ';">' + s.zh + '</span>' +
+            '<div class="stem-info">' +
+            '<strong>' + s.py + ' (' + (s.polarity === 'yang' ? 'หยาง' : 'หยิน') + ')</strong>' +
+            '<span>' + (sMeta.th || '') + '</span>' +
+            '</div>' +
             '</div>' +
             '<div class="pillar-branch" style="background: ' + bBg + '; border: 1px solid transparent; border-radius: 10px;">' +
-              '<span class="branch-zh" style="color: ' + (bMeta.color || '#64748b') + ';">' + b.zh + '</span>' +
-              '<div class="branch-info">' +
-                '<strong>' + b.py + ' • ' + b.zodiac + '</strong>' +
-                '<span>' + (bMeta.th || '') + '</span>' +
-              '</div>' +
+            '<span class="branch-zh" style="color: ' + (bMeta.color || '#64748b') + ';">' + b.zh + '</span>' +
+            '<div class="branch-info">' +
+            '<strong>' + b.py + ' • ' + b.zodiac + '</strong>' +
+            '<span>' + (bMeta.th || '') + '</span>' +
+            '</div>' +
             '</div>' +
             '<div class="pillar-nayin-section" style="margin-top: 6px;">' +
-              '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center; font-family: Prompt, var(--font-chinese, sans-serif);">' +
-                '<i class="fa-solid fa-music" style="color: #7c3aed;"></i> น้าอิม: <strong>' + col.p.naYin + '</strong>' +
-              '</div>' +
+            '<div style="font-size: 11.5px; color: #475569; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; text-align: center; font-family: Prompt, var(--font-chinese, sans-serif);">' +
+            '<i class="fa-solid fa-music" style="color: #7c3aed;"></i> น้าอิม: <strong>' + col.p.naYin + '</strong>' +
             '</div>' +
-          '</div>';
+            '</div>' +
+            '</div>';
         }).join('');
       }
 
@@ -5868,52 +5883,52 @@
         const dayBranch = dailyChart.pillars.day.branch;
 
         pillsEl.innerHTML = '<div class="daily-right-card-header">' +
-            '<i class="fa-solid fa-chart-pie" style="color: #7c3aed;"></i> ข้อมูลสรุปพลังงานประจำวัน' +
+          '<i class="fa-solid fa-chart-pie" style="color: #7c3aed;"></i> ข้อมูลสรุปพลังงานประจำวัน' +
           '</div>' +
           '<div class="daily-info-item item-dm">' +
-            '<div class="info-item-icon" style="color: #7c3aed;"><i class="fa-solid fa-dna"></i></div>' +
-            '<div class="info-item-content">' +
-              '<span class="info-item-title">ดิถีธาตุวันนี้ (Day Master)</span>' +
-              '<span class="info-item-value">' + dailyChart.dayMaster.zh + ' (' + dailyChart.dayMaster.th + ')</span>' +
-              '<span class="info-item-desc">' + dailyChart.dayMaster.desc + '</span>' +
-            '</div>' +
+          '<div class="info-item-icon" style="color: #7c3aed;"><i class="fa-solid fa-dna"></i></div>' +
+          '<div class="info-item-content">' +
+          '<span class="info-item-title">ดิถีธาตุวันนี้ (Day Master)</span>' +
+          '<span class="info-item-value">' + dailyChart.dayMaster.zh + ' (' + dailyChart.dayMaster.th + ')</span>' +
+          '<span class="info-item-desc">' + dailyChart.dayMaster.desc + '</span>' +
+          '</div>' +
           '</div>' +
           '<div class="daily-info-item item-zodiac">' +
-            '<div class="info-item-icon" style="color: #d97706;"><i class="fa-solid fa-paw"></i></div>' +
-            '<div class="info-item-content">' +
-              '<span class="info-item-title">นักษัตรประจำวัน (Day Branch)</span>' +
-              '<span class="info-item-value">' + dayBranch.zodiac + '</span>' +
-              '<span class="info-item-desc">สาขา ' + dayBranch.zh + ' (' + dayBranch.py + ') • ' + (ELEMENTS_META[dayBranch.element]?.th || '') + '</span>' +
-            '</div>' +
+          '<div class="info-item-icon" style="color: #d97706;"><i class="fa-solid fa-paw"></i></div>' +
+          '<div class="info-item-content">' +
+          '<span class="info-item-title">นักษัตรประจำวัน (Day Branch)</span>' +
+          '<span class="info-item-value">' + dayBranch.zodiac + '</span>' +
+          '<span class="info-item-desc">สาขา ' + dayBranch.zh + ' (' + dayBranch.py + ') • ' + (ELEMENTS_META[dayBranch.element]?.th || '') + '</span>' +
+          '</div>' +
           '</div>' +
           '<div class="daily-info-item item-clash">' +
-            '<div class="info-item-icon" style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
-            '<div class="info-item-content">' +
-              '<span class="info-item-title">นักษัตรปะทะ (ชงประจำวัน)</span>' +
-              '<span class="info-item-value" style="color: #be123c;">ชงกับ: ' + clashZodiac + '</span>' +
-              '<span class="info-item-desc">มีสติรอบคอบในการเจรจาและการเดินทาง</span>' +
-            '</div>' +
+          '<div class="info-item-icon" style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+          '<div class="info-item-content">' +
+          '<span class="info-item-title">นักษัตรปะทะ (ชงประจำวัน)</span>' +
+          '<span class="info-item-value" style="color: #be123c;">ชงกับ: ' + clashZodiac + '</span>' +
+          '<span class="info-item-desc">มีสติรอบคอบในการเจรจาและการเดินทาง</span>' +
+          '</div>' +
           '</div>' +
           '<div class="daily-info-item item-caishen">' +
-            '<div class="info-item-icon" style="color: #10b981;"><i class="fa-solid fa-coins"></i></div>' +
-            '<div class="info-item-content">' +
-              '<span class="info-item-title">ทิศโชคลาภ (财神)</span>' +
-              '<span class="info-item-value" style="color: #15803d;">' + caiShen + '</span>' +
-            '</div>' +
+          '<div class="info-item-icon" style="color: #10b981;"><i class="fa-solid fa-coins"></i></div>' +
+          '<div class="info-item-content">' +
+          '<span class="info-item-title">ทิศโชคลาภ (财神)</span>' +
+          '<span class="info-item-value" style="color: #15803d;">' + caiShen + '</span>' +
+          '</div>' +
           '</div>' +
           '<div class="daily-info-item item-xishen">' +
-            '<div class="info-item-icon" style="color: #ec4899;"><i class="fa-solid fa-heart"></i></div>' +
-            '<div class="info-item-content">' +
-              '<span class="info-item-title">ทิศมงคล / สุขสมหวัง (喜神)</span>' +
-              '<span class="info-item-value" style="color: #be185d;">' + xiShen + '</span>' +
-            '</div>' +
+          '<div class="info-item-icon" style="color: #ec4899;"><i class="fa-solid fa-heart"></i></div>' +
+          '<div class="info-item-content">' +
+          '<span class="info-item-title">ทิศมงคล / สุขสมหวัง (喜神)</span>' +
+          '<span class="info-item-value" style="color: #be185d;">' + xiShen + '</span>' +
+          '</div>' +
           '</div>' +
           '<div class="daily-info-item item-guishen">' +
-            '<div class="info-item-icon" style="color: #0284c7;"><i class="fa-solid fa-handshake-angle"></i></div>' +
-            '<div class="info-item-content">' +
-              '<span class="info-item-title">ทิศผู้อุปถัมภ์ / ขุนนาง (贵神)</span>' +
-              '<span class="info-item-value" style="color: #0369a1;">' + guiShen + '</span>' +
-            '</div>' +
+          '<div class="info-item-icon" style="color: #0284c7;"><i class="fa-solid fa-handshake-angle"></i></div>' +
+          '<div class="info-item-content">' +
+          '<span class="info-item-title">ทิศผู้อุปถัมภ์ / ขุนนาง (贵神)</span>' +
+          '<span class="info-item-value" style="color: #0369a1;">' + guiShen + '</span>' +
+          '</div>' +
           '</div>';
       }
 
@@ -5925,45 +5940,45 @@
 
         spotlightEl.innerHTML = '<div class="spotlight-top-bar">' +
           '<div class="spotlight-officer-main">' +
-            '<div class="spotlight-char-box">' +
-              '<span class="spotlight-char-zh">' + activeOfficer.zh + '</span>' +
-              '<span class="spotlight-char-py">' + (activeOfficer.py || '') + '</span>' +
-            '</div>' +
-            '<div class="spotlight-title-group">' +
-              '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">' +
-                '<span style="font-size: 12.5px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">' +
-                  '<i class="fa-solid fa-star"></i> ฤกษ์ประจำวันตามคัมภีร์ 12 เทพพิทักษ์ (建除十二神 - 12 Day Officers)' +
-                '</span>' +
-              '</div>' +
-              '<h2>' +
-                'วันนี้เป็นวัน: <span>' + activeOfficer.zh + '</span> ' +
-                '<span class="spotlight-officer-en-badge">' + (activeOfficer.en || '') + '</span>' +
-                '<span style="font-size: 17px; color: #475569; font-weight: 500;">— ' + activeOfficer.th + '</span>' +
-              '</h2>' +
-              '<p class="spotlight-desc">' + activeOfficer.desc + '</p>' +
-            '</div>' +
+          '<div class="spotlight-char-box">' +
+          '<span class="spotlight-char-zh">' + activeOfficer.zh + '</span>' +
+          '<span class="spotlight-char-py">' + (activeOfficer.py || '') + '</span>' +
+          '</div>' +
+          '<div class="spotlight-title-group">' +
+          '<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 2px;">' +
+          '<span style="font-size: 12.5px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">' +
+          '<i class="fa-solid fa-star"></i> ฤกษ์ประจำวันตามคัมภีร์ 12 เทพพิทักษ์ (建除十二神 - 12 Day Officers)' +
+          '</span>' +
+          '</div>' +
+          '<h2>' +
+          'วันนี้เป็นวัน: <span>' + activeOfficer.zh + '</span> ' +
+          '<span class="spotlight-officer-en-badge">' + (activeOfficer.en || '') + '</span>' +
+          '<span style="font-size: 17px; color: #475569; font-weight: 500;">— ' + activeOfficer.th + '</span>' +
+          '</h2>' +
+          '<p class="spotlight-desc">' + activeOfficer.desc + '</p>' +
+          '</div>' +
           '</div>' +
           '<div class="spotlight-ratings">' +
-            '<span class="spotlight-quality-badge ' + (activeOfficer.badgeClass || 'officer-auspicious') + '">' +
-              activeOfficer.quality +
-            '</span>' +
-            '<span style="font-size: 13px;">' + (activeOfficer.stars || '⭐⭐⭐⭐') + '</span>' +
+          '<span class="spotlight-quality-badge ' + (activeOfficer.badgeClass || 'officer-auspicious') + '">' +
+          activeOfficer.quality +
+          '</span>' +
+          '<span style="font-size: 13px;">' + (activeOfficer.stars || '⭐⭐⭐⭐') + '</span>' +
           '</div>' +
-        '</div>' +
-        '<div class="spotlight-actions-grid">' +
+          '</div>' +
+          '<div class="spotlight-actions-grid">' +
           '<div class="spotlight-action-box box-suitable">' +
-            '<div class="spotlight-action-label">' +
-              '<i class="fa-solid fa-thumbs-up"></i> กิจกรรมที่เกื้อหนุนและควรทำ (Suitable Activities)' +
-            '</div>' +
-            '<div class="spotlight-tags-wrap">' + suitTags + '</div>' +
+          '<div class="spotlight-action-label">' +
+          '<i class="fa-solid fa-thumbs-up"></i> กิจกรรมที่เกื้อหนุนและควรทำ (Suitable Activities)' +
+          '</div>' +
+          '<div class="spotlight-tags-wrap">' + suitTags + '</div>' +
           '</div>' +
           '<div class="spotlight-action-box box-taboo">' +
-            '<div class="spotlight-action-label">' +
-              '<i class="fa-solid fa-ban"></i> ข้อควรระวังหรือหลีกเลี่ยง (Taboos)' +
-            '</div>' +
-            '<div class="spotlight-tags-wrap">' + tabooTags + '</div>' +
+          '<div class="spotlight-action-label">' +
+          '<i class="fa-solid fa-ban"></i> ข้อควรระวังหรือหลีกเลี่ยง (Taboos)' +
           '</div>' +
-        '</div>';
+          '<div class="spotlight-tags-wrap">' + tabooTags + '</div>' +
+          '</div>' +
+          '</div>';
       }
 
       // 12 Officers Grid
@@ -5974,15 +5989,15 @@
           const activeCls = isActive ? 'active-today' : '';
           return '<div class="officer-mini-card ' + activeCls + '" title="' + off.desc + '">' +
             '<div class="mini-card-head">' +
-              '<div class="mini-card-zh-en">' +
-                '<span class="mini-card-zh">' + off.zh + '</span>' +
-                '<span class="mini-card-en">' + (idx + 1) + '. ' + off.en + '</span>' +
-              '</div>' +
-              '<span class="mini-card-stars">' + off.stars + '</span>' +
+            '<div class="mini-card-zh-en">' +
+            '<span class="mini-card-zh">' + off.zh + '</span>' +
+            '<span class="mini-card-en">' + (idx + 1) + '. ' + off.en + '</span>' +
+            '</div>' +
+            '<span class="mini-card-stars">' + off.stars + '</span>' +
             '</div>' +
             '<div class="mini-card-th">' + off.th + '</div>' +
             '<div class="mini-card-desc">' + off.desc + '</div>' +
-          '</div>';
+            '</div>';
         }).join('');
       }
     },
@@ -6085,7 +6100,7 @@
       }
 
       const isUnknownTime = !!(unknownCheck && unknownCheck.checked);
-      
+
       let birthHour = 12;
       let birthMinute = 0;
       if (!isUnknownTime) {
@@ -6272,7 +6287,7 @@
                 liff.sendMessages([{ type: 'text', text }]);
                 return;
               }
-            } catch (err) {}
+            } catch (err) { }
           }
           const lineUrl = 'https://line.me/R/msg/text/?' + encodeURIComponent(text);
           window.open(lineUrl, '_blank');
@@ -7083,17 +7098,17 @@
           interactionsHtml += `
             <div style="margin-bottom: 4px;">
               ${detailedInteractions.natalInteractions.map(it => {
-                const cls = this.getInteractionClass(it);
-                const st = this.getInteractionStyle(it);
-                const info = this.getInteractionTooltipData(it);
-                const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
-                const cleanIt = it.replace(/"/g, '&quot;');
-                return `
+            const cls = this.getInteractionClass(it);
+            const st = this.getInteractionStyle(it);
+            const info = this.getInteractionTooltipData(it);
+            const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+            const cleanIt = it.replace(/"/g, '&quot;');
+            return `
                   <div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">
                     • ${it}
                   </div>
                 `;
-              }).join('')}
+          }).join('')}
             </div>
           `;
         }
@@ -7102,17 +7117,17 @@
             <div style="border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">
               <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร (Luck Pillar):</span>
               ${detailedInteractions.luckInteractions.map(it => {
-                const cls = this.getInteractionClass(it);
-                const st = this.getInteractionStyle(it);
-                const info = this.getInteractionTooltipData(it);
-                const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
-                const cleanIt = it.replace(/"/g, '&quot;');
-                return `
+            const cls = this.getInteractionClass(it);
+            const st = this.getInteractionStyle(it);
+            const info = this.getInteractionTooltipData(it);
+            const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+            const cleanIt = it.replace(/"/g, '&quot;');
+            return `
                   <div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">
                     • ${it}
                   </div>
                 `;
-              }).join('')}
+          }).join('')}
             </div>
           `;
         }
@@ -7510,10 +7525,10 @@
         label: `เดือนที่ ${m.monthNum} (${m.branch.zh})`
       };
       const natalCols = [
-        this.currentChart.pillars.hour,
-        this.currentChart.pillars.day,
-        this.currentChart.pillars.month,
-        this.currentChart.pillars.year
+        { ...this.currentChart.pillars.hour, pillarKey: 'hour', label: 'เสายาม', palace: 'เสายาม: วังบริวาร/ลูกหลาน' },
+        { ...this.currentChart.pillars.day, pillarKey: 'day', label: 'เสาวัน', palace: 'เสาวัน: วังตัวตน/คู่ครอง' },
+        { ...this.currentChart.pillars.month, pillarKey: 'month', label: 'เสาเดือน', palace: 'เสาเดือน: วังการงาน/พ่อแม่' },
+        { ...this.currentChart.pillars.year, pillarKey: 'year', label: 'เสาปี', palace: 'เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม' }
       ];
 
       // Annual Col
@@ -7562,6 +7577,113 @@
         interactionsHtml = '<div style="color: #10b981; font-size: 12.5px; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> พลังงานประจำเดือนราบรื่น ไม่มีจุดปะทะรุนแรงกับพื้นดวง ปีจร หรือวัยจร</div>';
       }
 
+      // 4 Palaces Impact Breakdown for this Month
+      const palaceDefs = [
+        {
+          key: 'day',
+          name: 'เสาวัน: วังตัวตน & คู่ครอง',
+          pillar: this.currentChart.pillars.day,
+          tag: 'เสาวัน',
+          icon: 'fa-heart',
+          color: '#ec4899',
+          defaultDesc: 'พลังงานเสาวันสงบราบรื่น ไม่มีดาวปะทะหรือขัดแย้งในเดือนนี้ ความสัมพันธ์และสุขภาพกายใจดำเนินไปด้วยดี',
+          clashDesc: '⚡ มีการปะทะ (ชง) เข้าสู่วังตัวตนและคู่ครอง: อารมณ์อาจแปรปรวนง่าย ให้ใจเย็นในการสื่อสารกับคนรัก เลี่ยงการมีปากเสียง ดูแลสุขภาพและพักผ่อนให้เพียงพอ',
+          combineDesc: '💖 มีพลังสมพงษ์ (ฮะ) เข้าสู่วังคู่ครอง: ความรักราบรื่น มีเสน่ห์ เมตตามหานิยม เหมาะแก่การปรับความเข้าใจหรือเสริมสร้างความสัมพันธ์',
+          harmDesc: '⚠️ มีพลังกระทบ (ไห่/เฮ้ง/ผัวะ): ระวังความเข้าใจผิดจากคำพูดไม่ระวัง หรือความกดดันทางอารมณ์ ให้ใช้สติและความประนีประนอม'
+        },
+        {
+          key: 'month',
+          name: 'เสาเดือน: วังการงาน & พ่อแม่',
+          pillar: this.currentChart.pillars.month,
+          tag: 'เสาเดือน',
+          icon: 'fa-briefcase',
+          color: '#0284c7',
+          defaultDesc: 'พลังงานการงานและธุรกิจมั่นคง ดำเนินไปอย่างราบรื่นตามปกติ เหมาะแก่การทำงานตามแผนเดิม',
+          clashDesc: '💼 มีการปะทะ (ชง) เข้าสู่วังการงาน: มีเกณฑ์การเปลี่ยนแปลง โยกย้าย การเดินทางเรื่องงาน หรือมีภาระงานด่วนเข้ามาท้าทาย ควรตรวจตราเอกสารสัญญาอย่างรอบคอบ',
+          combineDesc: '🌟 มีพลังสมพงษ์ (ฮะ) เกื้อหนุนวังการงาน: ผู้ใหญ่และหัวหน้าให้การสนับสนุน เจรจาธุรกิจราบรื่น ได้รับความร่วมมือจากเพื่อนร่วมงาน มีโอกาสก้าวหน้า',
+          harmDesc: '⚠️ มีพลังกระทบ (ไห่/เฮ้ง/ผัวะ): ระวังเรื่องการสื่อสารในที่ทำงาน หรือความเห็นต่างกับผู้ใหญ่ ให้เน้นความรอบคอบและเอกสารที่ชัดเจน'
+        },
+        {
+          key: 'year',
+          name: 'เสาปี: วังบรรพบุรุษ & สังคม',
+          pillar: this.currentChart.pillars.year,
+          tag: 'เสาปี',
+          icon: 'fa-users',
+          color: '#10b981',
+          defaultDesc: 'สังคมภายนอกและสภาพแวดล้อมราบรื่น ปลอดโปร่ง ไม่มีเรื่องขัดแย้งในวงกว้าง',
+          clashDesc: '🌐 มีการปะทะ (ชง) เข้าสู่วังบรรพบุรุษ/สังคม: ระวังการเดินทางไกล การเปลี่ยนแปลงในวงสังคม หรือการตัดสินใจเรื่องใหญ่ในครอบครัว',
+          combineDesc: '🤝 มีพลังสมพงษ์ (ฮะ) กับสังคมภายนอก: การเข้าสังคมราบรื่น สร้างเครือข่ายคอนเนกชันใหม่ๆ ได้ดี ได้รับความนิยมชมชอบในวงกว้าง',
+          harmDesc: '⚠️ มีพลังกระทบ (ไห่/เฮ้ง/ผัวะ): ระวังความเข้าใจผิดกับคนในสังคมภายนอก หรือเรื่องจุกจิกจากคนรอบข้าง'
+        },
+        {
+          key: 'hour',
+          name: 'เสายาม: วังบริวาร & โปรเจกต์',
+          pillar: this.currentChart.pillars.hour,
+          tag: 'เสายาม',
+          icon: 'fa-seedling',
+          color: '#8b5cf6',
+          defaultDesc: 'บริวาร ลูกน้อง ลูกหลาน และงานโปรเจกต์ที่ดูแลดำเนินไปอย่างราบรื่น ไร้อุปสรรค',
+          clashDesc: '🌱 มีการปะทะ (ชง) เข้าสู่วังบริวาร/โปรเจกต์: ระวังความขัดแย้งกับผู้ใต้บังคับบัญชา หรือโปรเจกต์งานที่กำลังทำอาจต้องแก้ไขปรับแผนกะทันหัน',
+          combineDesc: '✨ มีพลังสมพงษ์ (ฮะ) สู่บริวารและโปรเจกต์: ลูกน้องบริวารให้ความร่วมมือดี งานโปรเจกต์ใหม่ๆ เริ่มเห็นผลเป็นรูปธรรมและเติบโต',
+          harmDesc: '⚠️ มีพลังกระทบ (ไห่/เฮ้ง/ผัวะ): ระวังลูกน้องบริวารทำงานผิดพลาด หรือมีความเห็นไม่ตรงกันในทีมงาน ให้ดูแลอย่างใกล้ชิด'
+        }
+      ];
+
+      const palaceCardsHtml = palaceDefs.map(pDef => {
+        const matchingInteractions = inter.primary.filter(it => it.includes(`[${pDef.tag}`));
+        const hasClash = matchingInteractions.some(it => it.includes('冲') || it.includes('Liu Chong') || it.includes('反吟') || it.includes('Fan Yin') || it.includes('Xiang Ke') || it.includes('天克'));
+        const hasCombine = matchingInteractions.some(it => it.includes('合') || it.includes('He'));
+        const hasHarm = matchingInteractions.some(it => it.includes('害') || it.includes('Hai') || it.includes('刑') || it.includes('Xing') || it.includes('破') || it.includes('Po'));
+
+        let cardClass = 'is-peaceful';
+        let pillClass = 'pill-peaceful';
+        let pillText = 'สงบ ราบรื่น';
+        let desc = pDef.defaultDesc;
+
+        if (hasClash) {
+          cardClass = 'has-clash';
+          pillClass = 'pill-clash';
+          pillText = '⚠️ ปะทะ (ชง)';
+          desc = pDef.clashDesc;
+        } else if (hasCombine) {
+          cardClass = 'has-combine';
+          pillClass = 'pill-combine';
+          pillText = '✨ สมพงษ์ (ฮะ)';
+          desc = pDef.combineDesc;
+        } else if (hasHarm) {
+          cardClass = 'has-harm';
+          pillClass = 'pill-harm';
+          pillText = '⚡ ระวังกระทบ';
+          desc = pDef.harmDesc;
+        }
+
+        const pillarStr = pDef.pillar ? `${pDef.pillar.stem.zh}${pDef.pillar.branch.zh}` : '-';
+
+        return `
+          <div class="palace-impact-card ${cardClass}">
+            <div class="palace-card-header">
+              <div class="palace-card-title">
+                <i class="fa-solid ${pDef.icon}" style="color: ${pDef.color};"></i>
+                <span>${pDef.name}</span>
+                <span class="palace-pillar-badge">${pillarStr}</span>
+              </div>
+              <span class="palace-status-pill ${pillClass}">${pillText}</span>
+            </div>
+            <div class="palace-card-desc">${desc}</div>
+            ${matchingInteractions.length > 0 ? `
+              <div class="palace-card-interactions">
+                ${matchingInteractions.map(it => {
+                  const cls = this.getInteractionClass(it);
+                  const st = this.getInteractionStyle(it);
+                  const cleanIt = it.replace(/"/g, '&quot;');
+                  return `<div class="interaction-item ${cls}" style="${st}; font-size: 10px; padding: 2px 6px;" data-interaction-text="${cleanIt}">${it}</div>`;
+                }).join('')}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
       cardEl.innerHTML = `
         <div class="month-detail-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; margin-bottom: 14px;">
           <div class="month-detail-title">
@@ -7595,6 +7717,16 @@
           </div>
           <div class="bazi-interactions-flow">
             ${interactionsHtml}
+          </div>
+
+          <!-- 4 Palaces Impacts Breakdown -->
+          <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+            <div style="font-weight: 700; color: #334155; font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-chess-rook" style="color: #7c3aed;"></i> ปฏิกิริยาธาตุกับ 4 วังชะตาในเดือนนี้ (Palace Impacts Breakdown):
+            </div>
+            <div class="palace-impact-grid">
+              ${palaceCardsHtml}
+            </div>
           </div>
         </div>
 
@@ -7761,7 +7893,7 @@
       this.currentMode = mode;
       try {
         localStorage.setItem('bazi_display_mode_v2', mode);
-      } catch (e) {}
+      } catch (e) { }
 
       const isExpert = mode === 'expert';
       const isAuth = this.isLoggedIn();
@@ -8323,11 +8455,11 @@
 
       const isStemOnly = lower.includes('stem combination') || lower.includes('wu he') || text.includes('五合');
       const isBranchOnly = lower.includes('branch conflict') || lower.includes('six combination') ||
-                           lower.includes('half triangular') || lower.includes('triangular') ||
-                           lower.includes('destruction') || lower.includes('harm') ||
-                           lower.includes('punishment') || lower.includes('penalty') ||
-                           lower.includes('zi xing') || lower.includes('liu he') || lower.includes('liu chong') ||
-                           lower.includes('liu po') || lower.includes('liu hai');
+        lower.includes('half triangular') || lower.includes('triangular') ||
+        lower.includes('destruction') || lower.includes('harm') ||
+        lower.includes('punishment') || lower.includes('penalty') ||
+        lower.includes('zi xing') || lower.includes('liu he') || lower.includes('liu chong') ||
+        lower.includes('liu po') || lower.includes('liu hai');
 
       const formatParenTokens = (str) => {
         if (!str) return '';
@@ -8696,51 +8828,72 @@
           const oS = other.stem.zh;
           const oB = other.branch.zh;
 
+          const getPalaceTag = (otherCol) => {
+            if (!otherCol) return '';
+            if (otherCol.palace) return ` [${otherCol.palace}]`;
+            if (otherCol.label) {
+              if (otherCol.label.includes('ยาม') || otherCol.label.includes('Hour')) return ' [เสายาม: วังบริวาร/ลูกหลาน]';
+              if (otherCol.label.includes('วัน') || otherCol.label.includes('Day')) return ' [เสาวัน: วังตัวตน/คู่ครอง]';
+              if (otherCol.label.includes('ปีจร')) return ' [ปีจร / Tai Sui]';
+              if (otherCol.label.includes('วัยจร')) return ' [วัยจร / Da Yun]';
+              if (otherCol.label.includes('เดือน') && !otherCol.label.includes('เดือนที่')) return ' [เสาเดือน: วังการงาน/พ่อแม่]';
+              if (otherCol.label.includes('ปี')) return ' [เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม]';
+              return ` [${otherCol.label}]`;
+            }
+            return '';
+          };
+          const pTag = getPalaceTag(other);
+
           // Heaven Earth Union (天地德合)
           if (stemCombos[tS] === oS && sixCombos[tB] === oB) {
-            listToPush.push(`Heaven Earth Union / Tian Di He / 天地德合 (${targetCol.stem.py}${targetCol.branch.py}-${other.stem.py}${other.branch.py})`);
+            listToPush.push(`Heaven Earth Union / Tian Di He / 天地德合 (${targetCol.stem.py}${targetCol.branch.py}-${other.stem.py}${other.branch.py})${pTag}`);
           }
 
           // Stem Combination (五合)
           if (stemCombos[tS] === oS) {
-            listToPush.push(`stem combination / Wu He / 五合 (${targetCol.stem.py}-${other.stem.py})`);
+            listToPush.push(`stem combination / Wu He / 五合 (${targetCol.stem.py}-${other.stem.py})${pTag}`);
           }
 
           // Fan Yin (反吟)
           if (stemClashes[tS] === oS && sixClashes[tB] === oB) {
-            listToPush.push(`Fan Yin / 反吟 (${targetCol.stem.py}${targetCol.branch.py}-${other.stem.py}${other.branch.py})`);
+            listToPush.push(`Fan Yin / 反吟 (${targetCol.stem.py}${targetCol.branch.py}-${other.stem.py}${other.branch.py})${pTag}`);
+          }
+
+          // Stem Conflict (Xiang Ke / 天克)
+          if (stemClashes[tS] === oS && sixClashes[tB] !== oB) {
+            listToPush.push(`stem conflict / Xiang Ke / 天克 (${targetCol.stem.py}-${other.stem.py})${pTag}`);
           }
 
           // Branch Conflict (Liu Chong / 冲)
           if (sixClashes[tB] === oB) {
-            listToPush.push(`branch conflict / Liu Chong / 冲 (${targetCol.branch.py}-${other.branch.py})`);
+            listToPush.push(`branch conflict / Liu Chong / 冲 (${targetCol.branch.py}-${other.branch.py})${pTag}`);
           }
 
           // Six Combination (Liu He / 六合)
           if (sixCombos[tB] === oB) {
-            listToPush.push(`six combination / Liu He / 六合 (${targetCol.branch.py}-${other.branch.py})`);
+            listToPush.push(`six combination / Liu He / 六合 (${targetCol.branch.py}-${other.branch.py})${pTag}`);
           }
 
           // Triad Half Combination (Ban San He / 半合)
           triadGroups.forEach(grp => {
             if (grp.branches.includes(tB) && grp.branches.includes(oB) && tB !== oB) {
-              listToPush.push(`half triangular combination / Ban San He / 半合 (${targetCol.branch.py}-${other.branch.py})`);
+              listToPush.push(`half triangular combination / Ban San He / 半合 (${targetCol.branch.py}-${other.branch.py})${pTag}`);
             }
           });
 
           // Destruction (Liu Po / 破)
           if (sixDestructions[tB] === oB) {
-            listToPush.push(`destruction / Liu Po / 破 (${targetCol.branch.py}-${other.branch.py})`);
+            listToPush.push(`destruction / Liu Po / 破 (${targetCol.branch.py}-${other.branch.py})${pTag}`);
           }
 
           // Harm (Liu Hai / 害)
           if (sixHarms[tB] === oB) {
-            listToPush.push(`harm / Liu Hai / 害 (${targetCol.branch.py}-${other.branch.py})`);
+            listToPush.push(`harm / Liu Hai / 害 (${targetCol.branch.py}-${other.branch.py})${pTag}`);
           }
 
           // Fu Yin (伏吟)
           if (tS === oS && tB === oB) {
-            listToPush.push(`Fu Yin (${targetCol.stem.py} ${targetCol.branch.py})`);
+            listToPush.push(`Fu Yin / 伏吟 (${targetCol.stem.py} ${targetCol.branch.py})${pTag}`);
           }
         });
       };
@@ -8754,13 +8907,19 @@
             const order = ['Wei', 'Chou', 'Xu'];
             const name = `three earths punishment / San Xing / 无恩之刑 (${order.join('-')})`;
             if (!listToPush.includes(name)) listToPush.push(name);
+          } else if (uniqueEarths.length === 2) {
+            const pyList = uniqueEarths.map(br => BRANCHES.find(x => x.zh === br)?.py || br);
+            const name = `earths punishment / San Xing / 无恩之刑 (${pyList.join('-')})`;
+            if (!listToPush.includes(name)) listToPush.push(name);
           }
         }
         // 2. Bullying punishment (寅 巳 申)
         if (['寅', '巳', '申'].includes(targetBranch)) {
           const group = fullContextBranches.filter(x => ['寅', '巳', '申'].includes(x));
-          if (Array.from(new Set(group)).length >= 2) {
-            const name = 'bullying punishment / San Xing / 持势之刑 (Yin-Si-Shen)';
+          const uniqueGroup = Array.from(new Set(group));
+          if (uniqueGroup.length >= 2) {
+            const pyList = uniqueGroup.map(br => BRANCHES.find(x => x.zh === br)?.py || br);
+            const name = `bullying punishment / San Xing / 持势之刑 (${pyList.join('-')})`;
             if (!listToPush.includes(name)) listToPush.push(name);
           }
         }
@@ -8784,6 +8943,37 @@
         }
       };
 
+      const checkSanHui = (targetBranch, fullContextBranches, listToPush) => {
+        const sanHuiGroups = [
+          { name: 'directional combination / San Hui / 三会', py: 'Yin-Mao-Chen', branches: ['寅', '卯', '辰'] },
+          { name: 'directional combination / San Hui / 三会', py: 'Si-Wu-Wei', branches: ['巳', '午', '未'] },
+          { name: 'directional combination / San Hui / 三会', py: 'Shen-You-Xu', branches: ['申', '酉', '戌'] },
+          { name: 'directional combination / San Hui / 三会', py: 'Hai-Zi-Chou', branches: ['亥', '子', '丑'] }
+        ];
+        sanHuiGroups.forEach(grp => {
+          if (grp.branches.includes(targetBranch)) {
+            const hasAll3 = grp.branches.every(br => fullContextBranches.includes(br));
+            if (hasAll3) {
+              const name = `${grp.name} (${grp.py})`;
+              if (!listToPush.includes(name)) listToPush.push(name);
+            }
+          }
+        });
+      };
+
+      const checkFullTriad = (targetBranch, fullContextBranches, listToPush) => {
+        triadGroups.forEach(grp => {
+          if (grp.branches.includes(targetBranch)) {
+            const hasAll3 = grp.branches.every(br => fullContextBranches.includes(br));
+            if (hasAll3) {
+              const pyOrder = grp.branches.map(br => BRANCHES.find(x => x.zh === br)?.py || br).join('-');
+              const name = `triangular combination / San He / 三合 (${pyOrder})`;
+              if (!listToPush.includes(name)) listToPush.push(name);
+            }
+          }
+        });
+      };
+
       const checkVoid = (targetCol, dayCol, listToPush) => {
         if (!dayCol) return;
         const dSIdx = STEMS.findIndex(x => x.zh === dayCol.stem.zh);
@@ -8802,42 +8992,64 @@
         // 1. Primary: Compare against other 3 natal pillars
         const otherNatals = allCols.filter(c => c !== col);
         comparePillars(col, otherNatals, primaryInteractions);
-        checkSanXing(b, allCols.map(c => c.branch.zh), primaryInteractions);
+        const natalBranches = allCols.map(c => c.branch.zh);
+        checkSanXing(b, natalBranches, primaryInteractions);
+        checkSanHui(b, natalBranches, primaryInteractions);
+        checkFullTriad(b, natalBranches, primaryInteractions);
         if (col !== dayCol) checkVoid(col, dayCol, primaryInteractions);
 
         // 2. Secondary: Compare against Luck Pillar
         if (luckCol) {
           secondaryHeading = 'Luck pillars / 大运:';
           comparePillars(col, [luckCol], secondaryInteractions);
-          const luckNatalBranches = [...allCols.map(c => c.branch.zh), luckCol.branch.zh];
+          const luckNatalBranches = [...natalBranches, luckCol.branch.zh];
           checkSanXing(b, luckNatalBranches, secondaryInteractions);
+          checkSanHui(b, luckNatalBranches, secondaryInteractions);
+          checkFullTriad(b, luckNatalBranches, secondaryInteractions);
         }
       } else if (colType === 'annual') {
         // 1. Primary: Compare Annual Year against all 4 natal pillars
         comparePillars(col, allCols, primaryInteractions);
-        checkSanXing(b, [...allCols.map(c => c.branch.zh), b], primaryInteractions);
+        const annualNatalBranches = [...allCols.map(c => c.branch.zh), b];
+        checkSanXing(b, annualNatalBranches, primaryInteractions);
+        checkSanHui(b, annualNatalBranches, primaryInteractions);
+        checkFullTriad(b, annualNatalBranches, primaryInteractions);
         checkVoid(col, dayCol, primaryInteractions);
 
         // 2. Secondary: Compare Annual Year against Luck Pillar
         if (luckCol) {
           secondaryHeading = 'Luck pillars / 大运:';
           comparePillars(col, [luckCol], secondaryInteractions);
+          const fullBranches = [...annualNatalBranches, luckCol.branch.zh];
+          checkSanXing(b, fullBranches, secondaryInteractions);
+          checkSanHui(b, fullBranches, secondaryInteractions);
+          checkFullTriad(b, fullBranches, secondaryInteractions);
         }
-      } else if (colType === 'luck') {
+      } else if (colType === 'luck' || colType === 'dayun') {
         // 1. Primary: Compare Luck Pillar against all 4 natal pillars
         comparePillars(col, allCols, primaryInteractions);
-        checkSanXing(b, [...allCols.map(c => c.branch.zh), b], primaryInteractions);
+        const luckNatalBranches = [...allCols.map(c => c.branch.zh), b];
+        checkSanXing(b, luckNatalBranches, primaryInteractions);
+        checkSanHui(b, luckNatalBranches, primaryInteractions);
+        checkFullTriad(b, luckNatalBranches, primaryInteractions);
         checkVoid(col, dayCol, primaryInteractions);
 
         // 2. Secondary: Compare Luck Pillar against Annual Year
         if (annualCol) {
           secondaryHeading = 'Annual year / 流年:';
           comparePillars(col, [annualCol], secondaryInteractions);
+          const fullBranches = [...luckNatalBranches, annualCol.branch.zh];
+          checkSanXing(b, fullBranches, secondaryInteractions);
+          checkSanHui(b, fullBranches, secondaryInteractions);
+          checkFullTriad(b, fullBranches, secondaryInteractions);
         }
       } else if (colType === 'monthly') {
         // 1. Primary: Compare Monthly Pillar against all 4 natal pillars
         comparePillars(col, allCols, primaryInteractions);
-        checkSanXing(b, [...allCols.map(c => c.branch.zh), b], primaryInteractions);
+        const monthNatalBranches = [...allCols.map(c => c.branch.zh), b];
+        checkSanXing(b, monthNatalBranches, primaryInteractions);
+        checkSanHui(b, monthNatalBranches, primaryInteractions);
+        checkFullTriad(b, monthNatalBranches, primaryInteractions);
         checkVoid(col, dayCol, primaryInteractions);
 
         // 2. Secondary: Compare Monthly Pillar against Annual Year & Luck Pillar
@@ -8846,23 +9058,12 @@
         if (luckCol) comparePillars(col, [luckCol], secondaryInteractions);
 
         // Comprehensive Triads & San Xing across full context (Month + Natal + Annual + Luck)
-        const fullContextBranches = [...allCols.map(c => c.branch.zh), b];
+        const fullContextBranches = [...monthNatalBranches];
         if (annualCol) fullContextBranches.push(annualCol.branch.zh);
         if (luckCol) fullContextBranches.push(luckCol.branch.zh);
         checkSanXing(b, fullContextBranches, secondaryInteractions);
-
-        // Check full Triad (三合) across Month + Natal + Annual + Luck
-        triadGroups.forEach(grp => {
-          if (grp.branches.includes(b)) {
-            const hasAll3 = grp.branches.every(br => fullContextBranches.includes(br));
-            if (hasAll3) {
-              const name = `triangular combination / San He / 三合 (${grp.name} - ${grp.branches.join('-')})`;
-              if (!secondaryInteractions.includes(name) && !primaryInteractions.includes(name)) {
-                secondaryInteractions.push(name);
-              }
-            }
-          }
-        });
+        checkSanHui(b, fullContextBranches, secondaryInteractions);
+        checkFullTriad(b, fullContextBranches, secondaryInteractions);
       }
 
       const cleanList = (list) => Array.from(new Set(list));
@@ -8918,7 +9119,12 @@
         label: `วัยจร ${curDaYun.ageFrom}-${curDaYun.ageTo} ปี`
       };
 
-      const natalCols = [c.pillars.hour, c.pillars.day, c.pillars.month, c.pillars.year];
+      const natalCols = [
+        { ...c.pillars.hour, pillarKey: 'hour', label: 'เสายาม', palace: 'เสายาม: วังบริวาร/ลูกหลาน' },
+        { ...c.pillars.day, pillarKey: 'day', label: 'เสาวัน', palace: 'เสาวัน: วังตัวตน/คู่ครอง' },
+        { ...c.pillars.month, pillarKey: 'month', label: 'เสาเดือน', palace: 'เสาเดือน: วังการงาน/พ่อแม่' },
+        { ...c.pillars.year, pillarKey: 'year', label: 'เสาปี', palace: 'เสาปี: วังบรรพบุรุษ/สิ่งแวดล้อม' }
+      ];
       const dayStem = c.dayMaster;
       const dayBranch = c.pillars.day.branch;
       const yearBranch = c.pillars.year.branch;
@@ -8957,9 +9163,9 @@
             <tr>
               <td class="row-header-col">HS<br><small style="font-size:10px; color:#94a3b8;">กิ่งฟ้า</small></td>
               ${columns.map(col => {
-                const s = col.pillar.stem;
-                const tg = col.isDM ? { zh: '日主', py: 'Day master', en: 'Self' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', en: 'Friend' });
-                return `
+        const s = col.pillar.stem;
+        const tg = col.isDM ? { zh: '日主', py: 'Day master', en: 'Self' } : (col.pillar.tenGod || { zh: '比肩', py: 'Friend', en: 'Friend' });
+        return `
                   <td>
                     <div class="bazi-stem-card stem-bg-${s.element}">
                       <div class="bazi-card-pinyin">${s.py}</div>
@@ -8969,17 +9175,17 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: EB (Earthly Branches) -->
             <tr>
               <td class="row-header-col">EB<br><small style="font-size:10px; color:#94a3b8;">ก้านดิน</small></td>
               ${columns.map(col => {
-                const b = col.pillar.branch;
-                const dh = this.getDominantHiddenStem(b.zh);
-                const bTg = col.isDM ? getTenGod(c.dayMaster, dh) : getTenGod(c.dayMaster, dh);
-                return `
+        const b = col.pillar.branch;
+        const dh = this.getDominantHiddenStem(b.zh);
+        const bTg = col.isDM ? getTenGod(c.dayMaster, dh) : getTenGod(c.dayMaster, dh);
+        return `
                   <td>
                     <div class="bazi-branch-card branch-bg-${b.element}">
                       <div class="bazi-card-pinyin">${b.py}</div>
@@ -8989,125 +9195,125 @@
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: HHS (Hidden Heavenly Stems) -->
             <tr>
               <td class="row-header-col">HHS<br><small style="font-size:10px; color:#94a3b8;">กิ่งฟ้าแฝง</small></td>
               ${columns.map(col => {
-                const b = col.pillar.branch;
-                return `
+        const b = col.pillar.branch;
+        return `
                   <td>
                     <div class="bazi-hhs-row">
                       ${b.hidden.map(h => {
-                        const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
-                        const tg = getTenGod(c.dayMaster, sObj);
-                        const abbr = tgAbbrMap[tg.zh] || 'Fr';
-                        return `
+          const sObj = STEMS.find(s => s.zh === h.stem) || STEMS[0];
+          const tg = getTenGod(c.dayMaster, sObj);
+          const abbr = tgAbbrMap[tg.zh] || 'Fr';
+          return `
                           <div class="bazi-hhs-badge stem-bg-${sObj.element}">
                             <span style="font-size: 10px;">${sObj.py}</span>
                             <span style="font-size: 13px; font-weight: 700;">${sObj.zh}</span>
                             <span style="font-size: 9.5px; opacity: 0.85;">${abbr}</span>
                           </div>
                         `;
-                      }).join('')}
+        }).join('')}
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: Na Yin (ธาตุกำเนิดนัปอิม) -->
             <tr>
               <td class="row-header-col">Na Yin<br><small style="font-size:10px; color:#94a3b8;">นัปอิม</small></td>
               ${columns.map(col => {
-                const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
-                const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
-                const ny = this.getNaYinDetail(sIdx, bIdx);
-                return `
+        const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
+        const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
+        const ny = this.getNaYinDetail(sIdx, bIdx);
+        return `
                   <td>
                     <div class="bazi-nayin-ribbon nayin-bg-${ny.element}" title="${ny.th}">
                       ${ny.en}
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: DHHS (Dominant Hidden Stem) -->
             <tr>
               <td class="row-header-col">DHHS<br><small style="font-size:10px; color:#94a3b8;">ธาตุหลัก</small></td>
               ${columns.map(col => {
-                const dh = this.getDominantHiddenStem(col.pillar.branch.zh);
-                return `
+        const dh = this.getDominantHiddenStem(col.pillar.branch.zh);
+        return `
                   <td style="text-align: center;">
                     <div class="bazi-dhhs-bar stem-bg-${dh.element}">
                       ${dh.py} (${dh.zh})
                     </div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: DM's qi phase -->
             <tr>
               <td class="row-header-col">DM's qi<br>phase</td>
               ${columns.map(col => {
-                const p = this.get12LifeStage(c.dayMaster.zh, col.pillar.branch.zh);
-                return `
+        const p = this.get12LifeStage(c.dayMaster.zh, col.pillar.branch.zh);
+        return `
                   <td class="bazi-phase-cell">
                     <div><strong>${p.order}. ${p.en}</strong></div>
                     <div style="color: #64748b;">/ ${p.py} / ${p.zh} ${p.symbol}</div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: Pillar's qi phase -->
             <tr>
               <td class="row-header-col">Pillar's<br>qi phase</td>
               ${columns.map(col => {
-                const p = this.get12LifeStage(col.pillar.stem.zh, col.pillar.branch.zh);
-                return `
+        const p = this.get12LifeStage(col.pillar.stem.zh, col.pillar.branch.zh);
+        return `
                   <td class="bazi-phase-cell">
                     <div><strong>${p.order}. ${p.en}</strong></div>
                     <div style="color: #64748b;">/ ${p.py} / ${p.zh} ${p.symbol}</div>
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: Void branch -->
             <tr>
               <td class="row-header-col">Void<br>branch</td>
               ${columns.map(col => {
-                const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
-                const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
-                const kw = this.getKongWang(sIdx, bIdx);
-                const isDPVoid = col.isNatal && !col.isDM && c.pillars.day && (this.getKongWang(STEMS.findIndex(s => s.zh === c.pillars.day.stem.zh), BRANCHES.findIndex(b => b.zh === c.pillars.day.branch.zh))[0].includes(col.pillar.branch.py));
-                return `
+        const sIdx = STEMS.findIndex(s => s.zh === col.pillar.stem.zh);
+        const bIdx = BRANCHES.findIndex(b => b.zh === col.pillar.branch.zh);
+        const kw = this.getKongWang(sIdx, bIdx);
+        const isDPVoid = col.isNatal && !col.isDM && c.pillars.day && (this.getKongWang(STEMS.findIndex(s => s.zh === c.pillars.day.stem.zh), BRANCHES.findIndex(b => b.zh === c.pillars.day.branch.zh))[0].includes(col.pillar.branch.py));
+        return `
                   <td class="bazi-phase-cell">
                     <div>${kw[0]}</div>
                     ${isDPVoid ? '<div style="color: #dc2626; font-weight: 600; font-size: 10px;">★ ติดวันว่าง (Day Void)</div>' : ''}
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: Symbolic Stars / 神煞 -->
             <tr>
               <td class="row-header-col">Symbolic<br>stars /<br>神煞</td>
               ${columns.map(col => {
-                const stars = this.computeDetailedStars(
-                  col.pillar.branch.zh,
-                  col.pillar.stem.zh,
-                  dayStem,
-                  dayBranch,
-                  yearBranch,
-                  monthBranch
-                );
-                return `
+        const stars = this.computeDetailedStars(
+          col.pillar.branch.zh,
+          col.pillar.stem.zh,
+          dayStem,
+          dayBranch,
+          yearBranch,
+          monthBranch
+        );
+        return `
                   <td class="bazi-stars-cell">
                     <div style="font-weight: 700; color: #475569; margin-bottom: 2px;">Symbolic stars / 神煞:</div>
                     ${stars.dmStars.length > 0 ? `
@@ -9123,41 +9329,41 @@
                     ${stars.dmStars.length === 0 && stars.otherStars.length === 0 ? '<span style="color: #94a3b8;">-</span>' : ''}
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
 
             <!-- Row: Interactions -->
             <tr>
               <td class="row-header-col">Inter-<br>actions</td>
               ${columns.map(col => {
-                const colType = col.isLuck ? 'luck' : (col.isAnnual ? 'annual' : 'natal');
-                const inter = this.computeDetailedInteractions(col.pillar, natalCols, annualPillar, luckPillar, colType);
-                return `
+        const colType = col.isLuck ? 'luck' : (col.isAnnual ? 'annual' : 'natal');
+        const inter = this.computeDetailedInteractions(col.pillar, natalCols, annualPillar, luckPillar, colType);
+        return `
                   <td class="bazi-interactions-cell">
                     <div style="font-weight: 700; color: #475569; margin-bottom: 4px;">Interactions:</div>
                     ${inter.primary.length > 0 ? inter.primary.map(it => {
-                      const cls = this.getInteractionClass(it);
-                      const st = this.getInteractionStyle(it);
-                      const info = this.getInteractionTooltipData(it);
-                      const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
-                      const cleanIt = it.replace(/"/g, '&quot;');
-                      return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
-                    }).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
+          const cls = this.getInteractionClass(it);
+          const st = this.getInteractionStyle(it);
+          const info = this.getInteractionTooltipData(it);
+          const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+          const cleanIt = it.replace(/"/g, '&quot;');
+          return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
+        }).join('') : '<div style="color: #94a3b8; font-size: 10.5px;">- ไม่มีจุดปะทะในดวงเดิม -</div>'}
 
                     ${inter.secondary.length > 0 ? `
                       <div class="luck-heading">${inter.secondaryHeading}</div>
                       ${inter.secondary.map(it => {
-                        const cls = this.getInteractionClass(it);
-                        const st = this.getInteractionStyle(it);
-                        const info = this.getInteractionTooltipData(it);
-                        const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
-                        const cleanIt = it.replace(/"/g, '&quot;');
-                        return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
-                      }).join('')}
+          const cls = this.getInteractionClass(it);
+          const st = this.getInteractionStyle(it);
+          const info = this.getInteractionTooltipData(it);
+          const titleAttr = info ? `${info.title} - ${info.meaning}`.replace(/"/g, '&quot;') : '';
+          const cleanIt = it.replace(/"/g, '&quot;');
+          return `<div class="interaction-item ${cls}" style="${st}" data-interaction-text="${cleanIt}" title="${titleAttr}">${it}</div>`;
+        }).join('')}
                     ` : ''}
                   </td>
                 `;
-              }).join('')}
+      }).join('')}
             </tr>
           </tbody>
         </table>
@@ -9195,20 +9401,20 @@
             </thead>
             <tbody>
               ${pKeys.map(k => {
-                const p = c.pillars[k];
-                const stars = p.stars;
-                const starsHtml = stars.length > 0
-                  ? stars.map(s => `<div style="margin-bottom: 4px;"><strong style="color: #7c3aed;">★ ${s.name}</strong>: <span style="color: #475569;">${s.desc}</span></div>`).join('')
-                  : '<span class="text-muted" style="color: #94a3b8;">- ราบรื่น ไม่มีดาวอิทธิพลรุนแรง -</span>';
+          const p = c.pillars[k];
+          const stars = p.stars;
+          const starsHtml = stars.length > 0
+            ? stars.map(s => `<div style="margin-bottom: 4px;"><strong style="color: #7c3aed;">★ ${s.name}</strong>: <span style="color: #475569;">${s.desc}</span></div>`).join('')
+            : '<span class="text-muted" style="color: #94a3b8;">- ราบรื่น ไม่มีดาวอิทธิพลรุนแรง -</span>';
 
-                return `
+          return `
                   <tr>
                     <td><strong>${pNames[k]}</strong></td>
                     <td><strong style="color: ${ELEMENTS_META[p.branch.element].color}; font-size: 16px;">${p.branch.zh}</strong> (${p.branch.py} • ${p.branch.zodiac})</td>
                     <td>${starsHtml}</td>
                   </tr>
                 `;
-              }).join('')}
+        }).join('')}
             </tbody>
           </table>
         `;
@@ -9534,19 +9740,19 @@
       }
 
       // 1. ตรวจสอบความชัดเจนของคำถาม (ถ้าคำถามไม่ชัดเจน ไม่สามารถวิเคราะห์ได้ ให้ถามกลับ)
-        const hasCareer = /งาน|เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|เลื่อนตำแหน่ง|ตกงาน|สิ้นปี|ปลายปี|บริษัท|สอบ|ราชการ|ทำงาน|อาชีพ|ธุรกิจ|ค้าขาย|กิจการ|career|job|ย้าย|ตำแหน่ง/.test(q);
-        const hasWealth = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|กำไร|ขาดทุน|บ้าน|รถ|ทอง|wealth|money|รายได้|การเงิน|ค้าขาย/.test(q);
-        const hasLove = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|ชู้|ครอบครัว|love|marry|คนรัก|เนื้อคู่|ความรัก/.test(q);
-        const hasHealth = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|นอน|เครียด|หมอ|health|sick|ปอด|ตับ|ร่างกาย/.test(q);
-        const hasTimingOrDestiny = /(20\d\d|25\d\d|ปีนี้|ปีหน้า|ปีที่แล้ว|ชะตา|ดวง|เคราะห์|เกณฑ์|อนาคต|วาสนา|destiny|ภาพรวม)/.test(q);
+      const hasCareer = /งาน|เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|เลื่อนตำแหน่ง|ตกงาน|สิ้นปี|ปลายปี|บริษัท|สอบ|ราชการ|ทำงาน|อาชีพ|ธุรกิจ|ค้าขาย|กิจการ|career|job|ย้าย|ตำแหน่ง/.test(q);
+      const hasWealth = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|กำไร|ขาดทุน|บ้าน|รถ|ทอง|wealth|money|รายได้|การเงิน|ค้าขาย/.test(q);
+      const hasLove = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|ชู้|ครอบครัว|love|marry|คนรัก|เนื้อคู่|ความรัก/.test(q);
+      const hasHealth = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|นอน|เครียด|หมอ|health|sick|ปอด|ตับ|ร่างกาย/.test(q);
+      const hasTimingOrDestiny = /(20\d\d|25\d\d|ปีนี้|ปีหน้า|ปีที่แล้ว|ชะตา|ดวง|เคราะห์|เกณฑ์|อนาคต|วาสนา|destiny|ภาพรวม)/.test(q);
 
-        const isUnclear = rawQ.length < 2
-          || /^[\d\s.,!?@#$%^&*()_+\-=\[\]{};':"\\|<>\/]+$/.test(rawQ)
-          || /^(55+|ฮ่า+|555|abc|test|ทดสอบ|อะไร|ยังไง|ดีไหม|ดูดวง|หมอดู|ก|ข|ค|ไก่|hello|hi|สวัสดี)$/i.test(rawQ)
-          || (!hasCareer && !hasWealth && !hasLove && !hasHealth && !hasTimingOrDestiny);
+      const isUnclear = rawQ.length < 2
+        || /^[\d\s.,!?@#$%^&*()_+\-=\[\]{};':"\\|<>\/]+$/.test(rawQ)
+        || /^(55+|ฮ่า+|555|abc|test|ทดสอบ|อะไร|ยังไง|ดีไหม|ดูดวง|หมอดู|ก|ข|ค|ไก่|hello|hi|สวัสดี)$/i.test(rawQ)
+        || (!hasCareer && !hasWealth && !hasLove && !hasHealth && !hasTimingOrDestiny);
 
-        if (isUnclear) {
-          resultBox.innerHTML = `
+      if (isUnclear) {
+        resultBox.innerHTML = `
             <div class="expert-result-header" style="border-bottom: 1px solid rgba(245, 158, 11, 0.25);">
               <div class="expert-result-title" style="color: #b45309;">
                 <i class="fa-solid fa-circle-question" style="color: #f59e0b;"></i> คำถามยังไม่ชัดเจนเพียงพอสำหรับการคำนวณปาจื่อ
@@ -9573,123 +9779,123 @@
               </div>
             </div>
           `;
-          return;
-        }
+        return;
+      }
 
-        // 2. ตรวจสอบปีเป้าหมายจากข้อความคำถาม
-        let simY = this.selectedYear || new Date().getFullYear() || 2026;
-        const beMatch = q.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
-        const ceMatch = q.match(/(?:ปี\s*)?(20\d{2})/);
-        if (ceMatch) {
-          simY = parseInt(ceMatch[1], 10);
-        } else if (beMatch) {
-          simY = parseInt(beMatch[1], 10) - 543;
-        } else if (q.includes('ปีหน้า')) {
-          simY = (new Date().getFullYear() || 2026) + 1;
-        } else if (q.includes('ปีที่แล้ว')) {
-          simY = (new Date().getFullYear() || 2026) - 1;
-        }
+      // 2. ตรวจสอบปีเป้าหมายจากข้อความคำถาม
+      let simY = this.selectedYear || new Date().getFullYear() || 2026;
+      const beMatch = q.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
+      const ceMatch = q.match(/(?:ปี\s*)?(20\d{2})/);
+      if (ceMatch) {
+        simY = parseInt(ceMatch[1], 10);
+      } else if (beMatch) {
+        simY = parseInt(beMatch[1], 10) - 543;
+      } else if (q.includes('ปีหน้า')) {
+        simY = (new Date().getFullYear() || 2026) + 1;
+      } else if (q.includes('ปีที่แล้ว')) {
+        simY = (new Date().getFullYear() || 2026) - 1;
+      }
 
-        // คำนวณหลักปีจรเป้าหมาย (Tai Sui)
-        const sIdx = ((simY - 4) % 10 + 10) % 10;
-        const bIdx = ((simY - 4) % 12 + 12) % 12;
-        const simStem = STEMS[sIdx];
-        const simBranch = BRANCHES[bIdx];
-        const simStemGod = getTenGod(c.dayMaster, simStem);
-        const simBranchMainStem = STEMS.find(s => s.zh === simBranch.hidden[0].stem) || simStem;
-        const simBranchGod = getTenGod(c.dayMaster, simBranchMainStem);
-        const simNaYin = getNaYin(sIdx, bIdx);
+      // คำนวณหลักปีจรเป้าหมาย (Tai Sui)
+      const sIdx = ((simY - 4) % 10 + 10) % 10;
+      const bIdx = ((simY - 4) % 12 + 12) % 12;
+      const simStem = STEMS[sIdx];
+      const simBranch = BRANCHES[bIdx];
+      const simStemGod = getTenGod(c.dayMaster, simStem);
+      const simBranchMainStem = STEMS.find(s => s.zh === simBranch.hidden[0].stem) || simStem;
+      const simBranchGod = getTenGod(c.dayMaster, simBranchMainStem);
+      const simNaYin = getNaYin(sIdx, bIdx);
 
-        // คำนวณวัยจรเป้าหมาย (Active Da Yun for simY)
-        const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
-        const ageInYear = simY - birthYear;
-        let curDaYun = (c.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
-        if (!curDaYun && c.daYunPillars && c.daYunPillars.length > 0) {
-          if (ageInYear < c.daYunPillars[0].ageFrom) {
-            curDaYun = {
-              ageRange: `0 - ${c.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์ก่อนเข้าวัยจร)`,
-              stem: c.pillars.month.stem,
-              branch: c.pillars.month.branch,
-              tenGod: c.pillars.month.tenGod,
-              naYin: c.pillars.month.naYin
-            };
-          } else {
-            curDaYun = c.daYunPillars[c.daYunPillars.length - 1];
-          }
-        }
-
-        // คำนวณการปะทะ / สมพงศ์ ระหว่างปีจรกับพื้นดวง 4 เสา
-        const clashMonth = checkBranchClash(simBranch.zh, c.pillars.month.branch.zh);
-        const clashDay = checkBranchClash(simBranch.zh, c.pillars.day.branch.zh);
-        const clashYear = checkBranchClash(simBranch.zh, c.pillars.year.branch.zh);
-        const clashHour = checkBranchClash(simBranch.zh, c.pillars.hour.branch.zh);
-
-        const harmMonth = checkBranchHarmony(simBranch.zh, c.pillars.month.branch.zh);
-        const harmDay = checkBranchHarmony(simBranch.zh, c.pillars.day.branch.zh);
-        const harmYear = checkBranchHarmony(simBranch.zh, c.pillars.year.branch.zh);
-        const harmHour = checkBranchHarmony(simBranch.zh, c.pillars.hour.branch.zh);
-
-        const dyClash = curDaYun ? checkBranchClash(simBranch.zh, curDaYun.branch.zh) : null;
-        const dyHarm = curDaYun ? checkBranchHarmony(simBranch.zh, curDaYun.branch.zh) : null;
-
-        // คำนวณดาวจรและดาวในผัง
-        const monthHasYiMa = (c.pillars.month.stars || []).some(s => s.name.includes('驛馬'));
-        const dayHasYiMa = (c.pillars.day.stars || []).some(s => s.name.includes('驛馬'));
-        const yiMaMap = {
-          '申': '寅', '子': '寅', '辰': '寅',
-          '寅': '申', '午': '申', '戌': '申',
-          '巳': '亥', '酉': '亥', '丑': '亥',
-          '亥': '巳', '卯': '巳', '未': '巳'
-        };
-        const isYearYiMa = (yiMaMap[c.pillars.year.branch.zh] === simBranch.zh || yiMaMap[c.pillars.day.branch.zh] === simBranch.zh);
-        const monthHasTianYi = (c.pillars.month.stars || []).some(s => s.name.includes('天乙'));
-        const dayHasWenChang = (c.pillars.day.stars || []).some(s => s.name.includes('文昌'));
-        const dayHasTaoHua = (c.pillars.day.stars || []).some(s => s.name.includes('桃花'));
-
-        // คำนวณ 12 สารทของปีเป้าหมายจริง
-        const allMonths = BaziEngine.calculateMonthlyFortune(c, simY);
-        let selectedMonths = [];
-        let timelineLabel = '';
-        if (q.includes('สิ้นปี') || q.includes('ปลายปี')) {
-          selectedMonths = allMonths.slice(8, 12);
-          timelineLabel = `ไทม์ไลน์สารท 4 เดือนปลายปี ${simY} (เจาะลึกจุดเปลี่ยนสำคัญ)`;
-        } else if (q.includes('ต้นปี')) {
-          selectedMonths = allMonths.slice(0, 4);
-          timelineLabel = `ไทม์ไลน์สารท 4 เดือนต้นปี ${simY} (จังหวะการเริ่มต้น)`;
-        } else if (q.includes('กลางปี')) {
-          selectedMonths = allMonths.slice(4, 8);
-          timelineLabel = `ไทม์ไลน์สารท 4 เดือนกลางปี ${simY} (จังหวะขับเคลื่อน)`;
+      // คำนวณวัยจรเป้าหมาย (Active Da Yun for simY)
+      const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
+      const ageInYear = simY - birthYear;
+      let curDaYun = (c.daYunPillars || []).find(d => ageInYear >= d.ageFrom && ageInYear <= d.ageTo);
+      if (!curDaYun && c.daYunPillars && c.daYunPillars.length > 0) {
+        if (ageInYear < c.daYunPillars[0].ageFrom) {
+          curDaYun = {
+            ageRange: `0 - ${c.daYunPillars[0].ageFrom - 1} ปี (วัยเยาว์ก่อนเข้าวัยจร)`,
+            stem: c.pillars.month.stem,
+            branch: c.pillars.month.branch,
+            tenGod: c.pillars.month.tenGod,
+            naYin: c.pillars.month.naYin
+          };
         } else {
-          selectedMonths = [allMonths[0], allMonths[3], allMonths[7], allMonths[10]].filter(Boolean);
-          if (selectedMonths.length < 4) selectedMonths = allMonths.slice(0, 4);
-          timelineLabel = `ไทม์ไลน์สารท 4 ไตรมาสหลักของปี ${simY}`;
+          curDaYun = c.daYunPillars[c.daYunPillars.length - 1];
         }
+      }
 
-        let topicTitle = '';
-        let verdictBanner = '';
-        let topicAnalysis = '';
+      // คำนวณการปะทะ / สมพงศ์ ระหว่างปีจรกับพื้นดวง 4 เสา
+      const clashMonth = checkBranchClash(simBranch.zh, c.pillars.month.branch.zh);
+      const clashDay = checkBranchClash(simBranch.zh, c.pillars.day.branch.zh);
+      const clashYear = checkBranchClash(simBranch.zh, c.pillars.year.branch.zh);
+      const clashHour = checkBranchClash(simBranch.zh, c.pillars.hour.branch.zh);
 
-        // แยกประเภทประเด็นคำถาม
-        const isJobChangeQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|ย้ายหน้าที่|ย้ายสายงาน/.test(q) || (/งาน/.test(q) && /สิ้นปี|ปลายปี|เปลี่ยน|ย้าย/.test(q));
-        const isWealthQuery = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|ทอง|ค้าขาย|กำไร/.test(q);
-        const isLoveQuery = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|คู่ครอง|เนื้อคู่/.test(q);
-        const isHealthQuery = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|ปอด|ตับ|เครียด/.test(q);
+      const harmMonth = checkBranchHarmony(simBranch.zh, c.pillars.month.branch.zh);
+      const harmDay = checkBranchHarmony(simBranch.zh, c.pillars.day.branch.zh);
+      const harmYear = checkBranchHarmony(simBranch.zh, c.pillars.year.branch.zh);
+      const harmHour = checkBranchHarmony(simBranch.zh, c.pillars.hour.branch.zh);
 
-        if (isJobChangeQuery) {
-          // --- หมวดเปลี่ยนงาน / โยกย้าย ---
-          let prob = 48;
-          if (clashMonth) prob += 24;
-          if (monthHasYiMa || isYearYiMa) prob += 16;
-          if (simStemGod.zh === '傷官' || simStemGod.zh === '七殺') prob += 14;
-          if (harmMonth) prob += 10;
-          if (dyClash) prob += 10;
-          if (checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)) prob += 8;
-          prob = Math.min(94, Math.max(32, prob));
+      const dyClash = curDaYun ? checkBranchClash(simBranch.zh, curDaYun.branch.zh) : null;
+      const dyHarm = curDaYun ? checkBranchHarmony(simBranch.zh, curDaYun.branch.zh) : null;
 
-          const peakMonth = selectedMonths.find(m => m.ratingType === 'clash') || selectedMonths[2] || selectedMonths[0];
-          topicTitle = `คำนวณปาจื่อเจาะลึก: เกณฑ์การเปลี่ยนงาน & โยกย้ายหน้าที่ช่วง${q.includes('สิ้นปี') ? 'สิ้นปี ' : ''}${simY}`;
+      // คำนวณดาวจรและดาวในผัง
+      const monthHasYiMa = (c.pillars.month.stars || []).some(s => s.name.includes('驛馬'));
+      const dayHasYiMa = (c.pillars.day.stars || []).some(s => s.name.includes('驛馬'));
+      const yiMaMap = {
+        '申': '寅', '子': '寅', '辰': '寅',
+        '寅': '申', '午': '申', '戌': '申',
+        '巳': '亥', '酉': '亥', '丑': '亥',
+        '亥': '巳', '卯': '巳', '未': '巳'
+      };
+      const isYearYiMa = (yiMaMap[c.pillars.year.branch.zh] === simBranch.zh || yiMaMap[c.pillars.day.branch.zh] === simBranch.zh);
+      const monthHasTianYi = (c.pillars.month.stars || []).some(s => s.name.includes('天乙'));
+      const dayHasWenChang = (c.pillars.day.stars || []).some(s => s.name.includes('文昌'));
+      const dayHasTaoHua = (c.pillars.day.stars || []).some(s => s.name.includes('桃花'));
 
-          verdictBanner = `
+      // คำนวณ 12 สารทของปีเป้าหมายจริง
+      const allMonths = BaziEngine.calculateMonthlyFortune(c, simY);
+      let selectedMonths = [];
+      let timelineLabel = '';
+      if (q.includes('สิ้นปี') || q.includes('ปลายปี')) {
+        selectedMonths = allMonths.slice(8, 12);
+        timelineLabel = `ไทม์ไลน์สารท 4 เดือนปลายปี ${simY} (เจาะลึกจุดเปลี่ยนสำคัญ)`;
+      } else if (q.includes('ต้นปี')) {
+        selectedMonths = allMonths.slice(0, 4);
+        timelineLabel = `ไทม์ไลน์สารท 4 เดือนต้นปี ${simY} (จังหวะการเริ่มต้น)`;
+      } else if (q.includes('กลางปี')) {
+        selectedMonths = allMonths.slice(4, 8);
+        timelineLabel = `ไทม์ไลน์สารท 4 เดือนกลางปี ${simY} (จังหวะขับเคลื่อน)`;
+      } else {
+        selectedMonths = [allMonths[0], allMonths[3], allMonths[7], allMonths[10]].filter(Boolean);
+        if (selectedMonths.length < 4) selectedMonths = allMonths.slice(0, 4);
+        timelineLabel = `ไทม์ไลน์สารท 4 ไตรมาสหลักของปี ${simY}`;
+      }
+
+      let topicTitle = '';
+      let verdictBanner = '';
+      let topicAnalysis = '';
+
+      // แยกประเภทประเด็นคำถาม
+      const isJobChangeQuery = /เปลี่ยนงาน|ย้ายงาน|ลาออก|โยกย้าย|ย้ายหน้าที่|ย้ายสายงาน/.test(q) || (/งาน/.test(q) && /สิ้นปี|ปลายปี|เปลี่ยน|ย้าย/.test(q));
+      const isWealthQuery = /เงิน|รวย|ทรัพย์|โชค|ลาภ|หนี้|ลงทุน|หุ้น|คริปโต|ทอง|ค้าขาย|กำไร/.test(q);
+      const isLoveQuery = /รัก|แฟน|คู่|แต่งงาน|หมั้น|เลิก|หย่า|โสด|คนคุย|คู่ครอง|เนื้อคู่/.test(q);
+      const isHealthQuery = /สุขภาพ|ป่วย|โรค|ผ่าตัด|เลือด|สายตา|กระเพาะ|ไต|หัวใจ|ปอด|ตับ|เครียด/.test(q);
+
+      if (isJobChangeQuery) {
+        // --- หมวดเปลี่ยนงาน / โยกย้าย ---
+        let prob = 48;
+        if (clashMonth) prob += 24;
+        if (monthHasYiMa || isYearYiMa) prob += 16;
+        if (simStemGod.zh === '傷官' || simStemGod.zh === '七殺') prob += 14;
+        if (harmMonth) prob += 10;
+        if (dyClash) prob += 10;
+        if (checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)) prob += 8;
+        prob = Math.min(94, Math.max(32, prob));
+
+        const peakMonth = selectedMonths.find(m => m.ratingType === 'clash') || selectedMonths[2] || selectedMonths[0];
+        topicTitle = `คำนวณปาจื่อเจาะลึก: เกณฑ์การเปลี่ยนงาน & โยกย้ายหน้าที่ช่วง${q.includes('สิ้นปี') ? 'สิ้นปี ' : ''}${simY}`;
+
+        verdictBanner = `
             <div class="expert-verdict-banner">
               <div class="verdict-left">
                 <div class="verdict-icon">🐎</div>
@@ -9702,11 +9908,11 @@
             </div>
           `;
 
-          const natalClashText = checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)
-            ? `• <strong>จุดปะทะในดวงเดิม (${c.pillars.year.branch.zh} 沖 ${c.pillars.month.branch.zh}):</strong> เสาปีปะทะเสาเดือน บ่งชี้ว่าสภาพแวดล้อมการทำงานมักมีการปรับเปลี่ยนเพื่อเติบโตสู่ระดับที่สูงขึ้นเสมอ`
-            : `• <strong>โครงสร้างเสาเดิม:</strong> เสาเดือนเป็น ${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} มีความมั่นคงในบทบาทเดิม แต่พร้อมขยับขยายเมื่อมีพลังกระตุ้นจากปีจร`;
+        const natalClashText = checkBranchClash(c.pillars.year.branch.zh, c.pillars.month.branch.zh)
+          ? `• <strong>จุดปะทะในดวงเดิม (${c.pillars.year.branch.zh} 沖 ${c.pillars.month.branch.zh}):</strong> เสาปีปะทะเสาเดือน บ่งชี้ว่าสภาพแวดล้อมการทำงานมักมีการปรับเปลี่ยนเพื่อเติบโตสู่ระดับที่สูงขึ้นเสมอ`
+          : `• <strong>โครงสร้างเสาเดิม:</strong> เสาเดือนเป็น ${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} มีความมั่นคงในบทบาทเดิม แต่พร้อมขยับขยายเมื่อมีพลังกระตุ้นจากปีจร`;
 
-          topicAnalysis = `
+        topicAnalysis = `
             <div class="expert-point-card">
               <strong>🐎 1. สัญญาณการโยกย้ายในผัง 4 เสาเดิม (Natal Mobility Indicators):</strong>
               <p>• <strong>เสาเดือน (${c.pillars.month.stem.zh}${c.pillars.month.branch.zh} / กุมภพการงาน):</strong> ${monthHasYiMa ? `มีดาว <strong>驛馬 (ม้าสวรรค์)</strong> สถิตอยู่ในกิ่งดิน <strong>${c.pillars.month.branch.zh} (${c.pillars.month.branch.zodiac.split(' ')[0]})</strong> ซึ่งเป็นดาวแห่งการเดินทางไกล การโยกย้ายตำแหน่ง และความคล่องตัวสูง` : `กิ่งดิน ${c.pillars.month.branch.zh} (${c.pillars.month.branch.zodiac.split(' ')[0]}) เป็นฐานการทำงานหลัก มีสิบเทพเป็น ${c.pillars.month.tenGod.zh} (${c.pillars.month.tenGod.th})`}<br>
@@ -9740,23 +9946,23 @@
               2. <strong>ข้อควรระวัง:</strong> อย่าเพิ่งยื่นใบลาออกด้วยอารมณ์ก่อนมีหนังสือสัญญาตอบรับที่แน่นอน โดยเฉพาะช่วงเดือนที่มีจุดปะทะ ควรเตรียมเอกสารให้พร้อมล่วงหน้า 1-2 เดือน</p>
             </div>
           `;
-        } else if (isWealthQuery) {
-          // --- หมวดการเงิน / โชคลาภ / ลงทุน ---
-          const dmElem = c.dayMaster.element;
-          const wealthElem = ELEMENTS_META[dmElem].controls;
-          const wealthMeta = ELEMENTS_META[wealthElem];
-          const wealthPct = c.elementPercentages[wealthElem] || 0;
-          const outputElem = ELEMENTS_META[dmElem].generates;
-          const outputMeta = ELEMENTS_META[outputElem];
+      } else if (isWealthQuery) {
+        // --- หมวดการเงิน / โชคลาภ / ลงทุน ---
+        const dmElem = c.dayMaster.element;
+        const wealthElem = ELEMENTS_META[dmElem].controls;
+        const wealthMeta = ELEMENTS_META[wealthElem];
+        const wealthPct = c.elementPercentages[wealthElem] || 0;
+        const outputElem = ELEMENTS_META[dmElem].generates;
+        const outputMeta = ELEMENTS_META[outputElem];
 
-          let wealthScore = 3.8;
-          if (c.favorableElements.includes(simStem.element) || c.favorableElements.includes(simBranch.element)) wealthScore += 0.6;
-          if (simStemGod.zh === '正財' || simStemGod.zh === '偏財' || simStemGod.zh === '食神') wealthScore += 0.5;
-          if (clashDay || clashMonth) wealthScore -= 0.4;
-          wealthScore = Math.min(4.9, Math.max(2.5, wealthScore));
+        let wealthScore = 3.8;
+        if (c.favorableElements.includes(simStem.element) || c.favorableElements.includes(simBranch.element)) wealthScore += 0.6;
+        if (simStemGod.zh === '正財' || simStemGod.zh === '偏財' || simStemGod.zh === '食神') wealthScore += 0.5;
+        if (clashDay || clashMonth) wealthScore -= 0.4;
+        wealthScore = Math.min(4.9, Math.max(2.5, wealthScore));
 
-          topicTitle = `คำนวณปาจื่อเจาะลึก: ฐานการเงิน โชคลาภ & การบริหารทรัพย์ปี ${simY}`;
-          verdictBanner = `
+        topicTitle = `คำนวณปาจื่อเจาะลึก: ฐานการเงิน โชคลาภ & การบริหารทรัพย์ปี ${simY}`;
+        verdictBanner = `
             <div class="expert-verdict-banner">
               <div class="verdict-left">
                 <div class="verdict-icon">💰</div>
@@ -9769,7 +9975,7 @@
             </div>
           `;
 
-          topicAnalysis = `
+        topicAnalysis = `
             <div class="expert-point-card">
               <strong>💎 1. ศักยภาพการสร้างความมั่งคั่งในดวงเดิม:</strong>
               <p>ดวงนี้มีพลังธาตุโชคลาภ (${wealthMeta.th}) คิดเป็นสัดส่วน <strong>${wealthPct}%</strong> และพลังธาตุผลิตทรัพย์ (${outputMeta.th}) คิดเป็นสัดส่วน <strong>${c.elementPercentages[outputElem] || 0}%</strong> บ่งบอกว่าเป็นคนมีสายตาเฉียบแหลมในการหาโอกาสทางธุรกิจ และมีความสามารถเฉพาะตัวที่เปลี่ยนเป็นมูลค่าได้ดี</p>
@@ -9800,14 +10006,14 @@
               <p>แนะนำให้ใช้ธาตุปรับดวง <strong>${ELEMENTS_META[c.tiaoHou.element].th}</strong> เพื่อควบคุมสมดุลความโลภและการตัดสินใจ เปลี่ยนเงินสดเป็นสินทรัพย์ถาวร หรือออมในกองทุนมั่นคงเพื่อป้องกันเงินรั่วไหล</p>
             </div>
           `;
-        } else if (isLoveQuery) {
-          // --- หมวดความรัก / คู่ครอง ---
-          const spouseBranch = c.pillars.day.branch;
-          let loveText = harmDay ? 'มีเกณฑ์พบรัก สมหวัง หรือความสัมพันธ์พัฒนาสู่ความมั่นคงสูง' : clashDay ? 'ต้องระวังความใจร้อน ความขัดแย้ง และอารมณ์เปราะบาง' : 'ความสัมพันธ์ดำเนินไปอย่างราบรื่น อบอุ่น';
-          let loveBadge = harmDay ? 'สมพงศ์ส่งเสริม' : clashDay ? 'เฝ้าระวังอารมณ์' : 'ราบรื่นมั่นคง';
+      } else if (isLoveQuery) {
+        // --- หมวดความรัก / คู่ครอง ---
+        const spouseBranch = c.pillars.day.branch;
+        let loveText = harmDay ? 'มีเกณฑ์พบรัก สมหวัง หรือความสัมพันธ์พัฒนาสู่ความมั่นคงสูง' : clashDay ? 'ต้องระวังความใจร้อน ความขัดแย้ง และอารมณ์เปราะบาง' : 'ความสัมพันธ์ดำเนินไปอย่างราบรื่น อบอุ่น';
+        let loveBadge = harmDay ? 'สมพงศ์ส่งเสริม' : clashDay ? 'เฝ้าระวังอารมณ์' : 'ราบรื่นมั่นคง';
 
-          topicTitle = `คำนวณปาจื่อเจาะลึก: ความรัก คู่ครอง & ชีวิตคู่ปี ${simY}`;
-          verdictBanner = `
+        topicTitle = `คำนวณปาจื่อเจาะลึก: ความรัก คู่ครอง & ชีวิตคู่ปี ${simY}`;
+        verdictBanner = `
             <div class="expert-verdict-banner">
               <div class="verdict-left">
                 <div class="verdict-icon">💖</div>
@@ -9820,7 +10026,7 @@
             </div>
           `;
 
-          topicAnalysis = `
+        topicAnalysis = `
             <div class="expert-point-card">
               <strong>❤️ 1. สภาพเรือนคู่ครองในดวงเดิม:</strong>
               <p>เสาวัน <strong>${c.pillars.day.stem.zh}${c.pillars.day.branch.zh}</strong> ฐานที่นั่งของคู่ครองเป็น <strong>${spouseBranch.zh} (${spouseBranch.zodiac.split(' ')[0]})</strong> คู่ครองมักเป็นคนฉลาด คล่องแคล่ว มีบทบาทช่วยสนับสนุนทั้งเรื่องส่วนตัวและหน้าที่การงาน</p>
@@ -9843,14 +10049,14 @@
               </div>
             </div>
           `;
-        } else if (isHealthQuery) {
-          // --- หมวดสุขภาพ / เบญจธาตุ ---
-          const elemPcts = c.elementPercentages;
-          const weakestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] < elemPcts[b] ? a : b);
-          const strongestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] > elemPcts[b] ? a : b);
+      } else if (isHealthQuery) {
+        // --- หมวดสุขภาพ / เบญจธาตุ ---
+        const elemPcts = c.elementPercentages;
+        const weakestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] < elemPcts[b] ? a : b);
+        const strongestElem = Object.keys(elemPcts).reduce((a, b) => elemPcts[a] > elemPcts[b] ? a : b);
 
-          topicTitle = `คำนวณปาจื่อเจาะลึก: สมดุลเบญจธาตุ & สุขภาพตามแพทย์จีนปี ${simY}`;
-          verdictBanner = `
+        topicTitle = `คำนวณปาจื่อเจาะลึก: สมดุลเบญจธาตุ & สุขภาพตามแพทย์จีนปี ${simY}`;
+        verdictBanner = `
             <div class="expert-verdict-banner">
               <div class="verdict-left">
                 <div class="verdict-icon">🩺</div>
@@ -9863,7 +10069,7 @@
             </div>
           `;
 
-          topicAnalysis = `
+        topicAnalysis = `
             <div class="expert-point-card">
               <strong>🫀 1. อวัยวะที่ต้องดูแลตามหลักเบญจธาตุแพทย์จีน:</strong>
               <p>• <strong>ระบบ${ELEMENTS_META[weakestElem].organ} (${ELEMENTS_META[weakestElem].th}):</strong> เนื่องจากมีสัดส่วนเพียง ${elemPcts[weakestElem]}% จึงควรบำรุงและหลีกเลี่ยงพฤติกรรมเสี่ยงที่กระทบอวัยวะนี้<br>
@@ -9875,10 +10081,10 @@
               <p>ในปี ${simY} ธาตุของปีจรคือ ${simStem.element} และ ${simBranch.element} ${clashDay ? '<span style="color: #ef4444; font-weight: 700;">มีจุดปะทะกับเสาวัน (สุขภาพกายใจ) ควรเน้นการนอนหลับให้เพียงพอและงดทำงานหามรุ่งหามค่ำ</span>' : 'ช่วยปรับกระแสชี่ให้หมุนเวียนราบรื่น'}</p>
             </div>
           `;
-        } else {
-          // --- หมวดทั่วไป / ภาพรวมดวงชะตาปีเป้าหมาย ---
-          topicTitle = rawQ ? `ผลการคำนวณวิเคราะห์เจาะลึก: "${rawQ}" (ปี ${simY})` : `ผลการคำนวณจำลองปีจร ${simY} (${simStem.zh}${simBranch.zh})`;
-          verdictBanner = `
+      } else {
+        // --- หมวดทั่วไป / ภาพรวมดวงชะตาปีเป้าหมาย ---
+        topicTitle = rawQ ? `ผลการคำนวณวิเคราะห์เจาะลึก: "${rawQ}" (ปี ${simY})` : `ผลการคำนวณจำลองปีจร ${simY} (${simStem.zh}${simBranch.zh})`;
+        verdictBanner = `
             <div class="expert-verdict-banner">
               <div class="verdict-left">
                 <div class="verdict-icon">🔮</div>
@@ -9891,7 +10097,7 @@
             </div>
           `;
 
-          topicAnalysis = `
+        topicAnalysis = `
             <div class="expert-point-card">
               <strong>🌌 1. การปฏิสัมพันธ์ฟ้าดินในรอบปี ${simY}:</strong>
               <p>ในปี ${simY} พลังก้านฟ้าเป็น ${simStem.zh} (${simStemGod.th}) ส่งผลต่อมุมมอง ความคิด และการตัดสินใจ ขณะที่กิ่งดิน ${simBranch.zh} มีปฏิสัมพันธ์กับดวงชะตาเดิม ${clashMonth ? '<span style="color: #ef4444; font-weight: 700;">(ปะทะเสาการงาน มีการปรับเปลี่ยน)</span>' : clashDay ? '<span style="color: #ef4444; font-weight: 700;">(ปะทะเสาวัน เฝ้าระวังอารมณ์)</span>' : '<span style="color: #10b981; font-weight: 700;">(มีพลังส่งเสริมเกื้อหนุนอย่างราบรื่น)</span>'}</p>
@@ -9914,9 +10120,9 @@
               <p>เน้นการใช้ธาตุปรับดวง <strong>${ELEMENTS_META[c.tiaoHou.element].th}</strong> ควบคู่กับธาตุส่งเสริม <strong>${c.favorableElements.map(k => ELEMENTS_META[k].th).join(', ')}</strong> เพื่อสร้างสมดุลและดึงศักยภาพสูงสุดของเจ้าชะตาออกมาใช้ในทุกมิติ</p>
             </div>
           `;
-        }
+      }
 
-        resultBox.innerHTML = `
+      resultBox.innerHTML = `
           <div class="expert-result-header">
             <div class="expert-result-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i> ${topicTitle}</div>
             <span class="expert-result-tag">ปีที่คำนวณ: ${simY} (${simStem.zh}${simBranch.zh})</span>
@@ -9927,8 +10133,8 @@
           </div>
         `;
 
-        // Smooth scroll to the result
-        resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      // Smooth scroll to the result
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   };
 

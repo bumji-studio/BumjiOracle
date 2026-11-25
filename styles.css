@@ -25068,4 +25068,115 @@ img {
   font-size: 10px;
 }
 
+/* Palace Impact Grid for Monthly/Annual Fortune Breakdown */
+.palace-impact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.palace-impact-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.palace-impact-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.palace-impact-card.has-clash {
+  border-left: 4px solid #ef4444;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.palace-impact-card.has-combine {
+  border-left: 4px solid #10b981;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.palace-impact-card.has-harm {
+  border-left: 4px solid #f97316;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+}
+
+.palace-impact-card.is-peaceful {
+  border-left: 4px solid #94a3b8;
+}
+
+.palace-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.palace-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.palace-pillar-badge {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  background: #f1f5f9;
+  padding: 2px 7px;
+  border-radius: 6px;
+  color: #334155;
+}
+
+.palace-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.palace-status-pill.pill-clash {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.palace-status-pill.pill-combine {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.palace-status-pill.pill-harm {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.palace-status-pill.pill-peaceful {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.palace-card-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.palace-card-interactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+
 
