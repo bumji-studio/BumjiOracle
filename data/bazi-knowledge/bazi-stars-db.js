@@ -294,11 +294,114 @@ var BaziStarsDB = (function () {
     getStarDetails: function (rawText) {
       if (!rawText) return null;
       const clean = String(rawText).trim();
-      for (const [key, item] of Object.entries(SHEN_SHA_CATALOG)) {
-        if (clean.includes(key) || clean.includes(item.hanzi) || clean.includes(item.pinyin) || clean.includes(item.code)) {
+      const lower = clean.toLowerCase();
+      const cleanHanzi = clean.replace(/[^\u4e00-\u9fa5]/g, '');
+      const cleanAlpha = lower.replace(/[^a-z]/g, '');
+
+      // 1. Direct match or clean contains key/hanzi or key/hanzi contains cleanHanzi (if cleanHanzi has at least 2 chars)
+      // Sort keys by length descending to match specific multi-character stars first (e.g. 红艳 before 桃花)
+      const sortedKeys = Object.keys(SHEN_SHA_CATALOG).sort((a, b) => b.length - a.length);
+
+      for (const key of sortedKeys) {
+        const item = SHEN_SHA_CATALOG[key];
+        const strippedKey = key.replace(/(贵人|星|煞)$/, '');
+        const strippedHanzi = (item.hanzi || '').replace(/(贵人|星|煞)$/, '');
+
+        if (clean.includes(key) || clean.includes(item.hanzi)) {
+          return item;
+        }
+        if (strippedKey.length >= 2 && clean.includes(strippedKey)) {
+          return item;
+        }
+        if (strippedHanzi.length >= 2 && clean.includes(strippedHanzi)) {
+          return item;
+        }
+        if (cleanHanzi.length >= 2 && (key.includes(cleanHanzi) || item.hanzi.includes(cleanHanzi))) {
           return item;
         }
       }
+
+      // 2. Pinyin match (e.g. 'wenchang' -> 'wenchangguiren')
+      for (const key of sortedKeys) {
+        const item = SHEN_SHA_CATALOG[key];
+        const pinyinAlpha = (item.pinyin || '').toLowerCase().replace(/[^a-z]/g, '');
+        if (pinyinAlpha && cleanAlpha.includes(pinyinAlpha)) {
+          return item;
+        }
+        const strippedPinyin = pinyinAlpha.replace(/(guiren|xing|sha)$/, '');
+        if (strippedPinyin.length >= 4 && cleanAlpha.includes(strippedPinyin)) {
+          return item;
+        }
+      }
+
+      // 3. English keywords mapping
+      const enMap = [
+        { kw: 'academic', key: '文昌贵人' },
+        { kw: 'wenxing', key: '文昌贵人' },
+        { kw: 'peach blossom', key: '咸池桃花' },
+        { kw: 'flower of romance', key: '咸池桃花' },
+        { kw: 'red peach', key: '红艳' },
+        { kw: 'hongyan', key: '红艳' },
+        { kw: 'travelling horse', key: '驿马' },
+        { kw: 'traveling horse', key: '驿马' },
+        { kw: 'yima', key: '驿马' },
+        { kw: 'blade', key: '羊刃' },
+        { kw: 'sword star', key: '羊刃' },
+        { kw: 'yangren', key: '羊刃' },
+        { kw: 'general star', key: '将星' },
+        { kw: 'jiangxing', key: '将星' },
+        { kw: 'death star', key: '亡神' },
+        { kw: 'wangshen', key: '亡神' },
+        { kw: 'star of arts', key: '华盖' },
+        { kw: 'huagai', key: '华盖' },
+        { kw: 'heavenly virtue', key: '天德贵人' },
+        { kw: 'tiandeguiren', key: '天德贵人' },
+        { kw: 'monthly virtue', key: '月德贵人' },
+        { kw: 'yuedeguiren', key: '月德贵人' },
+        { kw: 'nobleman', key: '天乙贵人' },
+        { kw: 'tianyiguiren', key: '天乙贵人' },
+        { kw: 'prosperity', key: '禄神' },
+        { kw: 'lushen', key: '禄神' },
+        { kw: 'shiganlu', key: '禄神' },
+        { kw: 'golden carriage', key: '金舆' },
+        { kw: 'jinyu', key: '金舆' },
+        { kw: 'flying knife', key: '飞刃' },
+        { kw: 'feiren', key: '飞刃' },
+        { kw: 'bloody knife', key: '血刃' },
+        { kw: 'xueren', key: '血刃' },
+        { kw: 'funeral gate', key: '丧门' },
+        { kw: 'sangmensha', key: '丧门' },
+        { kw: 'forlorn', key: '寡宿' },
+        { kw: 'guasu', key: '寡宿' },
+        { kw: 'solitary', key: '孤辰' },
+        { kw: 'guchen', key: '孤辰' },
+        { kw: 'disputes', key: '勾绞' },
+        { kw: 'goujiao', key: '勾绞' },
+        { kw: 'backstabbing', key: '五鬼' },
+        { kw: 'five ghosts', key: '五鬼' },
+        { kw: 'wugui', key: '五鬼' },
+        { kw: 'heaven void', key: '空亡' },
+        { kw: 'kong wang', key: '空亡' },
+        { kw: 'literacy star', key: '学堂' },
+        { kw: 'xuetang', key: '学堂' },
+        { kw: 'red clouds', key: '流霞' },
+        { kw: 'liuxia', key: '流霞' },
+        { kw: 'heavenly doctor', key: '天医' },
+        { kw: 'tianyi', key: '天医' },
+        { kw: 'taiji', key: '太极贵人' },
+        { kw: 'fuxing', key: '福星贵人' },
+        { kw: 'beneficiary', key: '福星贵人' },
+        { kw: 'tianchu', key: '天厨贵人' },
+        { kw: 'culinary', key: '天厨贵人' },
+        { kw: 'kuigang', key: '魁罡' }
+      ];
+
+      for (const m of enMap) {
+        if (lower.includes(m.kw)) {
+          if (SHEN_SHA_CATALOG[m.key]) return SHEN_SHA_CATALOG[m.key];
+        }
+      }
+
       return null;
     },
 

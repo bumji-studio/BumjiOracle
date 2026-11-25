@@ -5249,21 +5249,42 @@
         );
         const allInter = [...inter.primary, ...inter.secondary];
 
+        const starItemsHtml = allStars.length > 0
+          ? allStars.map(s => {
+              const cleanS = s.replace(/"/g, '&quot;');
+              return `<div class="luck-star-item" data-star-text="${cleanS}">${s}</div>`;
+            }).join('')
+          : '<div class="luck-empty-item">-</div>';
+
+        const interItemsHtml = allInter.length > 0
+          ? allInter.map(it => {
+              const cls = this.getInteractionClass(it);
+              const st = this.getInteractionStyle(it);
+              const cleanIt = it.replace(/"/g, '&quot;');
+              return `<div class="luck-inter-item ${cls}" style="${st}" data-interaction-text="${cleanIt}">${it}</div>`;
+            }).join('')
+          : '<div class="luck-empty-item">-</div>';
+
         return `
                     <td class="luck-table-stars-inter">
                       ${isCurrent ? '<div class="current-period-callout">(current period)</div>' : ''}
-                      <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
-                      <div class="luck-cell-items-wrap">
-                        ${allStars.length > 0 ? allStars.map(s => {
-          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(s) : null;
-          const sTitle = sInfo ? `${sInfo.nameThai} - ${sInfo.description}`.replace(/"/g, '&quot;') : '';
-          const sClean = s.replace(/"/g, '&quot;');
-          return `<div class="luck-star-item" data-star-text="${sClean}" title="${sTitle}">${s},</div>`;
-        }).join('') : '<div class="luck-empty-item">-</div>'}
+                      <div class="luck-section-box star-section-box">
+                        <div class="luck-section-hdr star-section-hdr">
+                          <i class="fa-solid fa-star"></i>
+                          <span>Symbolic stars / 神煞:</span>
+                        </div>
+                        <div class="luck-cell-items-wrap">
+                          ${starItemsHtml}
+                        </div>
                       </div>
-                      <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
-                      <div class="luck-cell-items-wrap">
-                        ${allInter.length > 0 ? allInter.map(it => `<div class="luck-inter-item">${it},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                      <div class="luck-section-box inter-section-box">
+                        <div class="luck-section-hdr inter-section-hdr">
+                          <i class="fa-solid fa-bolt"></i>
+                          <span>Interactions:</span>
+                        </div>
+                        <div class="luck-cell-items-wrap">
+                          ${interItemsHtml}
+                        </div>
                       </div>
                     </td>
                   `;
@@ -5488,21 +5509,42 @@
         );
         const allInter = [...inter.primary, ...inter.secondary];
 
+        const starItemsHtml = allStars.length > 0
+          ? allStars.map(s => {
+              const cleanS = s.replace(/"/g, '&quot;');
+              return `<div class="luck-star-item" data-star-text="${cleanS}">${s}</div>`;
+            }).join('')
+          : '<div class="luck-empty-item">-</div>';
+
+        const interItemsHtml = allInter.length > 0
+          ? allInter.map(it => {
+              const cls = this.getInteractionClass(it);
+              const st = this.getInteractionStyle(it);
+              const cleanIt = it.replace(/"/g, '&quot;');
+              return `<div class="luck-inter-item ${cls}" style="${st}" data-interaction-text="${cleanIt}">${it}</div>`;
+            }).join('')
+          : '<div class="luck-empty-item">-</div>';
+
         return `
                     <td class="luck-table-stars-inter">
                       ${isCurrent ? '<div class="current-period-callout">(current year)</div>' : ''}
-                      <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
-                      <div class="luck-cell-items-wrap">
-                        ${allStars.length > 0 ? allStars.map(s => {
-          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(s) : null;
-          const sTitle = sInfo ? `${sInfo.nameThai} - ${sInfo.description}`.replace(/"/g, '&quot;') : '';
-          const sClean = s.replace(/"/g, '&quot;');
-          return `<div class="luck-star-item" data-star-text="${sClean}" title="${sTitle}">${s},</div>`;
-        }).join('') : '<div class="luck-empty-item">-</div>'}
+                      <div class="luck-section-box star-section-box">
+                        <div class="luck-section-hdr star-section-hdr">
+                          <i class="fa-solid fa-star"></i>
+                          <span>Symbolic stars / 神煞:</span>
+                        </div>
+                        <div class="luck-cell-items-wrap">
+                          ${starItemsHtml}
+                        </div>
                       </div>
-                      <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
-                      <div class="luck-cell-items-wrap">
-                        ${allInter.length > 0 ? allInter.map(it => `<div class="luck-inter-item">${it},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                      <div class="luck-section-box inter-section-box">
+                        <div class="luck-section-hdr inter-section-hdr">
+                          <i class="fa-solid fa-bolt"></i>
+                          <span>Interactions:</span>
+                        </div>
+                        <div class="luck-cell-items-wrap">
+                          ${interItemsHtml}
+                        </div>
                       </div>
                     </td>
                   `;
@@ -5695,21 +5737,42 @@
         );
         const allInter = [...inter.primary, ...inter.secondary];
 
+        const starItemsHtml = allStars.length > 0
+          ? allStars.map(s => {
+              const cleanS = s.replace(/"/g, '&quot;');
+              return `<div class="luck-star-item" data-star-text="${cleanS}">${s}</div>`;
+            }).join('')
+          : '<div class="luck-empty-item">-</div>';
+
+        const interItemsHtml = allInter.length > 0
+          ? allInter.map(it => {
+              const cls = this.getInteractionClass(it);
+              const st = this.getInteractionStyle(it);
+              const cleanIt = it.replace(/"/g, '&quot;');
+              return `<div class="luck-inter-item ${cls}" style="${st}" data-interaction-text="${cleanIt}">${it}</div>`;
+            }).join('')
+          : '<div class="luck-empty-item">-</div>';
+
         return `
                     <td class="luck-table-stars-inter">
                       ${isCurrent ? '<div class="current-period-callout">(current month)</div>' : ''}
-                      <div class="luck-cell-section-hdr"><strong>Symbolic stars / 神煞:</strong></div>
-                      <div class="luck-cell-items-wrap">
-                        ${allStars.length > 0 ? allStars.map(s => {
-          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(s) : null;
-          const sTitle = sInfo ? `${sInfo.nameThai} - ${sInfo.description}`.replace(/"/g, '&quot;') : '';
-          const sClean = s.replace(/"/g, '&quot;');
-          return `<div class="luck-star-item" data-star-text="${sClean}" title="${sTitle}">${s},</div>`;
-        }).join('') : '<div class="luck-empty-item">-</div>'}
+                      <div class="luck-section-box star-section-box">
+                        <div class="luck-section-hdr star-section-hdr">
+                          <i class="fa-solid fa-star"></i>
+                          <span>Symbolic stars / 神煞:</span>
+                        </div>
+                        <div class="luck-cell-items-wrap">
+                          ${starItemsHtml}
+                        </div>
                       </div>
-                      <div class="luck-cell-section-hdr" style="margin-top: 8px;"><strong>Interactions:</strong></div>
-                      <div class="luck-cell-items-wrap">
-                        ${allInter.length > 0 ? allInter.map(it => `<div class="luck-inter-item">${it},</div>`).join('') : '<div class="luck-empty-item">-</div>'}
+                      <div class="luck-section-box inter-section-box">
+                        <div class="luck-section-hdr inter-section-hdr">
+                          <i class="fa-solid fa-bolt"></i>
+                          <span>Interactions:</span>
+                        </div>
+                        <div class="luck-cell-items-wrap">
+                          ${interItemsHtml}
+                        </div>
                       </div>
                     </td>
                   `;
@@ -5776,35 +5839,6 @@
       this.updateResultVisibility(false);
       this.switchSubMenu(this.currentSubMenu || 'basic');
       this.switchMode(this.currentMode, true);
-
-      // Auto-restore last active chart from LocalStorage if available
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const qDate = urlParams.get('birthDate') || urlParams.get('bDate') || urlParams.get('date');
-        if (!qDate && !this.currentChart) {
-          const savedParamsRaw = localStorage.getItem('bazi_last_active_chart_params');
-          if (savedParamsRaw) {
-            const sp = JSON.parse(savedParamsRaw);
-            if (sp && sp.birthDate) {
-              const nameInput = document.getElementById('baziNameInput');
-              const dateInput = document.getElementById('baziDateInput');
-              const hourInput = document.getElementById('baziHourInput');
-              const genderSelect = document.getElementById('baziGenderSelect');
-              const unkCheck = document.getElementById('baziUnknownTimeCheck');
-              if (nameInput && sp.name) nameInput.value = sp.name;
-              if (dateInput) dateInput.value = sp.birthDate;
-              if (hourInput && sp.birthHour !== undefined) {
-                hourInput.value = String(sp.birthHour).padStart(2, '0') + ':' + String(sp.birthMinute || 0).padStart(2, '0');
-              }
-              if (genderSelect && sp.gender) genderSelect.value = sp.gender;
-              if (unkCheck && sp.isUnknownTime !== undefined) unkCheck.checked = sp.isUnknownTime;
-              this.syncDateInputToDropdowns();
-              this.syncTimeInputToDropdowns();
-              this.calculateFromInputs(false);
-            }
-          }
-        }
-      } catch (e) {}
 
       // If arriving with explicit parameters from another view or URL query
       try {
@@ -9038,7 +9072,7 @@
       const positionTooltip = (e, item) => {
         if (!tip || !tip.classList.contains('visible')) return;
         const tipRect = tip.getBoundingClientRect();
-        const tipWidth = tipRect.width || 320;
+        const tipWidth = tipRect.width || 340;
         const tipHeight = tipRect.height || 220;
 
         let x = e.clientX + 16;
@@ -9059,31 +9093,91 @@
       };
 
       const showTooltip = (item, e) => {
-        if (item.classList.contains('luck-star-item')) {
-          const starText = item.getAttribute('data-star-text') || item.textContent.trim();
-          const sInfo = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function') ? window.BaziStarsDB.getStarDetails(starText) : null;
-          if (sInfo) {
+        const isStar = item.classList.contains('luck-star-item') || item.hasAttribute('data-star-text');
+
+        if (isStar) {
+          const rawText = item.getAttribute('data-star-text') || item.textContent.trim().replace(/,$/, '');
+          const star = (window.BaziStarsDB && typeof window.BaziStarsDB.getStarDetails === 'function')
+            ? window.BaziStarsDB.getStarDetails(rawText)
+            : null;
+
+          if (star) {
+            let manifestHtml = '';
+            if (star.manifestation) {
+              const entries = Object.entries(star.manifestation);
+              if (entries.length > 0) {
+                const labels = {
+                  career: '💼 การงานและอำนาจ',
+                  wealth: '💰 การเงินและโชคลาภ',
+                  relationship: '❤️ ความรักและคู่ครอง',
+                  marriage: '💍 คู่ครองและการสมรส',
+                  health: '🏥 สุขภาพและความปลอดภัย',
+                  education: '🎓 การศึกษาและสติปัญญา',
+                  temper: '⚡ อารมณ์และบุคลิกภาพ',
+                  traits: '🌟 อุปนิสัยและบุคลิก',
+                  caution: '⚠️ ข้อควรระวัง'
+                };
+                manifestHtml = entries.map(([k, val]) => `
+                  <div class="bazi-it-section" style="margin-top: 6px;">
+                    <div class="bazi-it-label" style="color: #cbd5e1; font-size: 11px; font-weight: 600;">${labels[k] || k}</div>
+                    <div class="bazi-it-desc" style="font-size: 11px; line-height: 1.4; color: #f1f5f9;">${val}</div>
+                  </div>
+                `).join('');
+              }
+            }
+
             tip.innerHTML = `
               <div class="bazi-it-header">
-                <span class="bazi-it-badge" style="background: #fdf4ff; color: #a855f7; border: 1px solid #f0abfc;">
-                  ⭐ ${sInfo.type}
+                <span class="bazi-it-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5);">
+                  ⭐ ${star.type || 'Symbolic Star (神煞)'}
+                </span>
+                ${star.code ? `<span style="font-size: 10px; color: #94a3b8; font-family: monospace;">${star.code}</span>` : ''}
+              </div>
+              <div class="bazi-it-title" style="color: #fef08a; font-size: 13.5px; font-weight: 700; margin-bottom: 6px;">
+                ${star.nameThai || star.hanzi}
+                <span style="font-size: 11px; font-weight: normal; color: #cbd5e1; margin-left: 4px;">(${star.hanzi} / ${star.pinyin})</span>
+              </div>
+              <div class="bazi-it-section">
+                <div class="bazi-it-label" style="color: #fde047; font-size: 11px; font-weight: 700;">📖 ความหมายและพลังของดาว</div>
+                <div class="bazi-it-desc" style="font-size: 11.5px; line-height: 1.45; color: #f8fafc;">${star.description}</div>
+              </div>
+              ${manifestHtml}
+            `;
+          } else {
+            // General Star Fallback
+            tip.innerHTML = `
+              <div class="bazi-it-header">
+                <span class="bazi-it-badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5);">
+                  ⭐ ดาวมงคล / Shen Sha (神煞)
                 </span>
               </div>
-              <div class="bazi-it-title"><i class="fa-solid fa-star" style="color: #eab308;"></i> ${sInfo.nameThai}</div>
-              <div class="bazi-it-pair">🔤 <strong>ชื่อจีน:</strong> ${sInfo.hanzi} (${sInfo.pinyin})</div>
+              <div class="bazi-it-title" style="color: #fef08a; font-size: 13px; font-weight: 700;">${rawText}</div>
               <div class="bazi-it-section">
-                <div class="bazi-it-label" style="color: #93c5fd;">📖 ความหมายและพลังของดาว</div>
-                <div class="bazi-it-desc">${sInfo.description}</div>
+                <div class="bazi-it-label" style="color: #fde047; font-size: 11px; font-weight: 700;">📖 อิทธิพลของดาว</div>
+                <div class="bazi-it-desc" style="font-size: 11.5px; line-height: 1.4; color: #f8fafc;">สถิตในดวงชะตา บ่งชี้ถึงพลังงานพิเศษ จิตวิญญาณ วาสนา หรือโอกาสตามหลักโป๊ยหยี่สี่เถียว</div>
               </div>
             `;
-            tip.classList.add('visible');
-            positionTooltip(e, item);
-            return;
           }
+
+          tip.classList.add('visible');
+          positionTooltip(e, item);
+          return;
         }
-        const text = item.getAttribute('data-interaction-text') || item.textContent.trim();
-        const data = this.getInteractionTooltipData(text);
-        if (!data) return;
+
+        // Interaction Item
+        const text = item.getAttribute('data-interaction-text') || item.textContent.trim().replace(/,$/, '');
+        let data = this.getInteractionTooltipData(text);
+        if (!data) {
+          data = {
+            badge: '⚡ ธาตุสัมพันธ์ / Interaction',
+            badgeBg: '#6366f1',
+            title: text,
+            pair: '',
+            meaning: 'ปฏิกิริยาระหว่างกิ่งฟ้า/กิ่งดินในเสาดวงชะตา ส่งผลต่อการเปลี่ยนแปลงของพลังงานธาตุ',
+            effect: 'มีผลต่อเหตุการณ์ วาสนา และปฏิสัมพันธ์กับสิ่งแวดล้อมในช่วงเวลาดังกล่าว',
+            advice: 'สังเกตและปรับตัวตามพลังงานเพื่อสร้างความกลมกลืนและสมดุลให้กับชีวิต'
+          };
+        }
 
         tip.innerHTML = `
           <div class="bazi-it-header">
@@ -9115,8 +9209,10 @@
         activeItem = null;
       };
 
+      const selector = '.interaction-item, .interaction-pill, .luck-inter-item, .luck-star-item, [data-interaction-tooltip], [data-star-text], [data-interaction-text]';
+
       document.addEventListener('mouseover', (e) => {
-        const item = e.target.closest('.interaction-item, .interaction-pill, .luck-star-item, [data-interaction-tooltip]');
+        const item = e.target.closest(selector);
         if (item) {
           activeItem = item;
           showTooltip(item, e);
@@ -9130,14 +9226,14 @@
       });
 
       document.addEventListener('mouseout', (e) => {
-        const item = e.target.closest('.interaction-item, .interaction-pill, .luck-star-item, [data-interaction-tooltip]');
+        const item = e.target.closest(selector);
         if (item && (!e.relatedTarget || !item.contains(e.relatedTarget))) {
           hideTooltip();
         }
       });
 
       document.addEventListener('click', (e) => {
-        const item = e.target.closest('.interaction-item, .interaction-pill, .luck-star-item, [data-interaction-tooltip]');
+        const item = e.target.closest(selector);
         if (item) {
           activeItem = item;
           showTooltip(item, e);
