@@ -589,8 +589,58 @@
       const daYunPillars = [];
       const currentYear = new Date().getFullYear();
       const currentAge = currentYear - year;
-      const startAge = 4;
 
+      // Calculate startAge and firstLPDate accurately from Solar Jie (節氣)
+      // Standard rule: 3 days = 1 year, 1 day = 4 months, 1 hour = 10 days
+      const jieDays = [6, 4, 6, 5, 6, 6, 7, 8, 8, 8, 7, 7];
+      const curJie = new Date(year, month, jieDays[month], 12, 0, 0);
+      let prevJie, nextJie;
+      if (date >= curJie) {
+        prevJie = curJie;
+        const nextM = (month + 1) % 12;
+        const nextY = month === 11 ? year + 1 : year;
+        nextJie = new Date(nextY, nextM, jieDays[nextM], 12, 0, 0);
+      } else {
+        nextJie = curJie;
+        const prevM = (month + 11) % 12;
+        const prevY = month === 0 ? year - 1 : year;
+        prevJie = new Date(prevY, prevM, jieDays[prevM], 12, 0, 0);
+      }
+
+      const targetJie = isForward ? nextJie : prevJie;
+      const diffMs = Math.abs(date - targetJie);
+      const jieDiffDays = diffMs / 86400000;
+      const startYears = Math.floor(jieDiffDays / 3);
+      const remDays = jieDiffDays - (startYears * 3);
+      const startMonths = Math.floor(remDays * 4);
+      const startDays = Math.round((remDays * 4 - startMonths) * 30);
+      const startAge = Math.max(1, startYears + (startMonths >= 6 ? 1 : 0));
+      const firstLPTimestamp = date.getTime() + (startYears * 365.25 + startMonths * 30.4375 + startDays) * 86400000;
+      const firstLPDateObj = new Date(firstLPTimestamp);
+      const firstLPDate = `${firstLPDateObj.getFullYear()}-${String(firstLPDateObj.getMonth() + 1).padStart(2, '0')}-${String(firstLPDateObj.getDate()).padStart(2, '0')}`;
+
+      // Column 0: Birth Pillar / วัยแรกเกิดก่อนเข้าวัยจร (童限 / 幼年)
+      // Starting from birth month and birth year, governed by the Month Pillar (月柱)
+      const startMonthStr = String(month + 1).padStart(2, '0');
+      const birthPillar = {
+        index: 0,
+        order: 0,
+        isBirthPillar: true,
+        ageRange: `0 - ${startAge - 1} ปี (แรกเกิด)`,
+        ageFrom: 0,
+        ageTo: startAge - 1,
+        yearFrom: year,
+        yearTo: year + startAge - 1,
+        headerTitle: `${startMonthStr}/${year}+`,
+        stem: monthStem,
+        branch: monthBranch,
+        tenGod: getTenGod(dayStem, monthStem),
+        naYin: getNaYin(mStemIdx, mBranchIdx),
+        isCurrent: currentAge < startAge
+      };
+      daYunPillars.push(birthPillar);
+
+      // Columns 1 to 10: 10-Year Luck Pillars (大運)
       for (let i = 1; i <= 10; i++) {
         const offset = isForward ? i : -i;
         const dyStemIdx = (mStemIdx + offset + 100) % 10;
@@ -602,12 +652,13 @@
         const yearFrom = year + ageFrom;
         const yearTo = yearFrom + 9;
         const isCurrent = currentAge >= ageFrom && currentAge <= ageTo;
-        const startMonthStr = String(month + 1).padStart(2, '0');
-        const headerTitle = `${startMonthStr}/${yearFrom}+ (${ageFrom})`;
+        const lpMonthStr = String(firstLPDateObj.getMonth() + 1).padStart(2, '0');
+        const headerTitle = `${lpMonthStr}/${yearFrom}+ (${ageFrom})`;
 
         daYunPillars.push({
-          index: i - 1,
+          index: i,
           order: i,
+          isBirthPillar: false,
           ageRange: `${ageFrom} - ${ageTo} ปี`,
           ageFrom,
           ageTo,
@@ -730,7 +781,7 @@
         favorableElements,
         avoidElements,
         tiaoHou,
-        firstLPDate: `${year + startAge}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        firstLPDate,
         daYunPillars,
         dayMasterProfile
       };
@@ -739,6 +790,17 @@
     // 9. Detailed Da Yun (10-Year Luck Pillar) Interpretation
     calculateDaYunInterpretation: function (chart, daYunPillar) {
       if (!chart || !daYunPillar) return null;
+      if (daYunPillar.isBirthPillar) {
+        return {
+          isFavorable: true,
+          favorabilityText: 'ช่วงวัยแรกเกิด (童限 / 幼年)',
+          theme: 'ช่วงวัยแรกเกิดถึงก่อนเข้าสู่วัยจรแรกตามหลักปาจื้อ พลังงานชีวิตถูกกำกับดูแลโดยเสาเดือนเกิดและครอบครัว',
+          career: 'วัยแห่งการเจริญเติบโต การเรียนรู้ขั้นพื้นฐาน และพัฒนาการทางสติปัญญา',
+          wealth: 'ความอุดมสมบูรณ์ขึ้นอยู่กับสภาพแวดล้อมและพ่อแม่เป็นผู้ส่งเสียดูแล',
+          love: 'ความรัก ความอบอุ่น และความผูกพันในครอบครัว',
+          warning: 'ดูแลสุขภาพ ภูมิคุ้มกัน และโภชนาการในวัยเด็กอย่างใกล้ชิด'
+        };
+      }
       const tg = daYunPillar.tenGod;
       const sElem = daYunPillar.stem.element;
       const bElem = daYunPillar.branch.element;
@@ -7113,6 +7175,8 @@
           badgeHtml = `<span class="active-year-dayun-tag"><i class="fa-solid fa-clock"></i> คุมปี ${curCalcYear}</span>`;
         } else if (dy.isCurrent) {
           badgeHtml = `<span class="current-tag">วัยจรปัจจุบัน</span>`;
+        } else if (dy.isBirthPillar) {
+          badgeHtml = `<span class="current-tag" style="background: #e0e7ff; color: #4338ca;">แรกเกิด</span>`;
         }
 
         return `
