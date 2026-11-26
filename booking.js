@@ -687,6 +687,11 @@
       // 1. Persist booking
       await this.persistBookingRecord(newBooking);
 
+      // Track booking conversion in GA4 & Firestore
+      if (typeof window.trackAppEvent === 'function') {
+        window.trackAppEvent('submit_booking', 'booking', newBooking.service);
+      }
+
       // 2. Dispatch email notification to admin (bumjaa@gmail.com)
       this.sendEmailToAdminOnNewBooking(newBooking);
 
@@ -1104,6 +1109,11 @@
       if (statsPending) statsPending.textContent = String(pending);
       if (statsConfirmed) statsConfirmed.textContent = String(confirmed);
       if (statsCancelled) statsCancelled.textContent = String(cancelled);
+
+      // Refresh real-time web traffic stats
+      if (window.VisitorStats && typeof window.VisitorStats.updateAdminUI === 'function') {
+        window.VisitorStats.updateAdminUI();
+      }
 
       let filtered = [...this.bookings];
       if (this.adminFilter !== 'all') {

@@ -1436,6 +1436,9 @@ if (tabTongShuBtn) {
       } else {
         readingStep3.classList.add('hidden');
         readingStep4.classList.remove('hidden');
+        if (typeof window.trackAppEvent === 'function') {
+          window.trackAppEvent('tarot_reading_completed', 'tarot', fortuneState.readingMode || 'reading');
+        }
       }
     }
     const readingAppView = document.getElementById('readingAppView') || document.querySelector('.main-card-layout');

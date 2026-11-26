@@ -21,17 +21,23 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
+  <!-- Google Analytics 4 (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-37KGY925HC"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-37KGY925HC', {
+      send_page_view: true
+    });
+  </script>
+
   <!-- Security & Anti-Scraping Meta Tags -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   
-  <!-- Security & Anti-Scraping Meta Tags -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_4220">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_8721">
   
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
@@ -2733,7 +2739,33 @@
 
       <!-- Panel 1: รายการลูกค้าจองดูดวง -->
       <div id="adminBookingsFeedPanel" class="admin-view-panel">
-        <!-- Stats Summary Strip -->
+        <!-- Web Visitor Traffic Stats Strip (สถิติคนเข้าชมเว็บไซต์) -->
+        <div style="margin-bottom: 14px; background: linear-gradient(135deg, rgba(239, 246, 255, 0.9) 0%, rgba(240, 253, 250, 0.9) 100%); border: 1px solid rgba(186, 230, 253, 0.8); border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 13px; font-weight: 700; color: #0369a1;"><i class="fa-solid fa-chart-line"></i> สถิติคนเข้าชมเว็บไซต์ (Real-Time Visitor Stats)</span>
+            <span style="font-size: 11px; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 20px;"><i class="fa-solid fa-signal"></i> เชื่อมต่อ Google Analytics & Firestore</span>
+          </div>
+          <div class="admin-stats-strip" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 0;">
+            <div class="admin-stat-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid #e0f2fe;">
+              <span class="stat-num text-blue-600" id="adminVisitorToday">0</span>
+              <span class="stat-lbl"><i class="fa-solid fa-user-check" style="color: #0284c7;"></i> คนเข้าชมวันนี้</span>
+            </div>
+            <div class="admin-stat-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid #e0f2fe;">
+              <span class="stat-num text-indigo-600" id="adminViewsToday">0</span>
+              <span class="stat-lbl"><i class="fa-solid fa-eye" style="color: #6366f1;"></i> เปิดดูวันนี้</span>
+            </div>
+            <div class="admin-stat-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid #e0f2fe;">
+              <span class="stat-num text-teal-600" id="adminVisitorTotal">0</span>
+              <span class="stat-lbl"><i class="fa-solid fa-users" style="color: #0d9488;"></i> ผู้เข้าชมสะสม</span>
+            </div>
+            <div class="admin-stat-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid #e0f2fe;">
+              <span class="stat-num text-violet-600" id="adminViewsTotal">0</span>
+              <span class="stat-lbl"><i class="fa-solid fa-chart-pie" style="color: #8b5cf6;"></i> ยอดวิวสะสม</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Summary Strip (คิวดูดวง) -->
         <div class="admin-stats-strip">
           <div class="admin-stat-card card-total">
             <span class="stat-num" id="adminStatsTotal">0</span>
@@ -2990,35 +3022,37 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_4220"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_8721"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_4220"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_8721"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <script src="firebase-config.js?v=20261012_maemortidtid_live"></script>
+  <!-- Visitor Traffic & Statistics Engine (GA4 + Firestore Real-time Stats) -->
+  <script src="visitor-stats.js?v=20261126_v1"></script>
   <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
   <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_4220"></script>
-  <script src="booking.js?v=20261115_v5_4220"></script>
-  <script src="app.js?v=20261115_v5_4220"></script>
+  <script src="auth.js?v=20261115_v5_8721"></script>
+  <script src="booking.js?v=20261115_v5_8721"></script>
+  <script src="app.js?v=20261115_v5_8721"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_4220"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_4220"></script>
-  <script src="bazi.js?v=20261115_v5_4220"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_8721"></script>
+  <script src="bazi.js?v=20261115_v5_8721"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>

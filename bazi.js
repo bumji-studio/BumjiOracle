@@ -7154,6 +7154,9 @@
       });
 
       this.currentChart = chart;
+      if (typeof window.trackAppEvent === 'function') {
+        window.trackAppEvent('calculate_bazi', 'bazi', chart.solarDate);
+      }
       try {
         localStorage.setItem('bazi_last_active_chart_params', JSON.stringify({
           birthDate,
@@ -8673,98 +8676,82 @@
       const yb = (typeof yearBranch === 'object' && yearBranch) ? yearBranch.zh : (yearBranch || '');
       const mb = (typeof monthBranch === 'object' && monthBranch) ? monthBranch.zh : (monthBranch || '');
 
-      const BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
-      const yIdx = BRANCHES.indexOf(yb);
-      const tIdx = BRANCHES.indexOf(tb);
-      const mIdx = BRANCHES.indexOf(mb);
-
-      // ==========================================
-      // หมวด 1: ดาวที่คำนวณจากธาตุดิถี (Day Master 10 Stems)
-      // ==========================================
-      // 文昌贵人 (食神临官位)
+      // 1. Day Master Derived Stars (DM:)
       const wenChangMap = { '甲': '巳', '乙': '午', '丙': '申', '丁': '酉', '戊': '申', '己': '酉', '庚': '亥', '辛': '子', '壬': '寅', '癸': '卯' };
       if (wenChangMap[ds] === tb) dmStars.push('academic star / WenChang / 文昌');
 
-      // 学堂 (长生位)
       const xueTangMap = { '甲': '亥', '乙': '午', '丙': '寅', '丁': '酉', '戊': '寅', '己': '酉', '庚': '巳', '辛': '子', '壬': '申', '癸': '卯' };
       if (xueTangMap[ds] === tb) dmStars.push('literacy star / XueTang / 学堂');
 
-      // 红艳桃花
+      // Hong Yan Sha: 丙戊见寅, 丁己见未
       const hongYanMap = { '甲': '午', '乙': '午', '丙': '寅', '丁': '未', '戊': '寅', '己': '未', '庚': '戌', '辛': '酉', '壬': '子', '癸': '申' };
       if (hongYanMap[ds] === tb) dmStars.push('red peach blossom / HongYanSha / 红艳桃花');
 
-      // 禄神 (临官位)
-      const luMap = { '甲': '寅', '乙': '卯', '丙': '巳', '丁': '午', '戊': '巳', '己': '午', '庚': '申', '辛': '酉', '壬': '亥', '癸': '子' };
-      if (luMap[ds] === tb) dmStars.push('prosperity / LuShen / 禄神');
-
-      // 羊刃 (帝旺位)
-      const yangRenMap = { '甲': '卯', '乙': '辰', '丙': '午', '丁': '未', '戊': '午', '己': '未', '庚': '酉', '辛': '戌', '壬': '子', '癸': '丑' };
-      if (yangRenMap[ds] === tb) dmStars.push('sword star / YangRen / 羊刃');
-
-      // 飞刃 (冲羊刃位)
-      const feiRenMap = { '甲': '酉', '乙': '戌', '丙': '子', '丁': '丑', '戊': '子', '己': '丑', '庚': '卯', '辛': '辰', '壬': '午', '癸': '未' };
-      if (feiRenMap[ds] === tb) dmStars.push('flying knife / FeiRen / 飞刃*');
-
-      // 金舆 (禄前二位)
-      const jinYuMap = { '甲': '辰', '乙': '巳', '丙': '未', '丁': '申', '戊': '未', '己': '申', '庚': '戌', '辛': '亥', '壬': '丑', '癸': '寅' };
-      if (jinYuMap[ds] === tb) dmStars.push('golden carriage / JinYu / 金舆');
-
-      // 流霞
-      const liuXiaMap = { '甲': '酉', '乙': '戌', '丙': '未', '丁': '申', '戊': '巳', '己': '午', '庚': '辰', '辛': '卯', '壬': '亥', '癸': '寅' };
-      if (liuXiaMap[ds] === tb || (ds === '戊' && tb === '未')) dmStars.push('red clouds / LiuXia / 流霞*');
-
-      // 天乙贵人 (牛羊/鼠猴/猪鸡/虎马/兔蛇)
-      const tianYiMap = {
-        '甲': ['丑', '未'], '戊': ['丑', '未', '亥'], '庚': ['丑', '未'],
-        '乙': ['子', '申'], '己': ['子', '申'],
-        '丙': ['亥', '酉'], '丁': ['亥', '酉'],
-        '壬': ['卯', '巳'], '癸': ['卯', '巳'],
-        '辛': ['午', '寅']
-      };
-      if (tianYiMap[ds] && tianYiMap[ds].includes(tb)) dmStars.push('heavenly noble / TianYiGuiRen / 天乙贵人');
-
-      // 福星贵人
-      const fuXingMap = {
-        '甲': ['寅', '子'], '乙': ['卯', '丑'], '丙': ['寅', '子'], '丁': ['亥', '酉'],
-        '戊': ['申', '戌', '子'], '己': ['未', '酉'], '庚': ['午', '申'], '辛': ['巳', '未'],
-        '壬': ['辰', '寅'], '癸': ['卯', '丑']
-      };
-      if (fuXingMap[ds] && fuXingMap[ds].includes(tb)) dmStars.push('beneficiary / FuXingGuiRen / 福星*');
-
-      // 天厨贵人
-      const tianChuMap = { '甲': '巳', '乙': '午', '丙': '子', '丁': '巳', '戊': '巳', '己': '申', '庚': '寅', '辛': '午', '壬': '酉', '癸': '亥' };
-      if (tianChuMap[ds] === tb) dmStars.push('culinary / TianChuGuiRen / 天厨*');
-
-      // 天干桃花 (天干五合 + 地支桃花)
       const tianGanTaoMap = { '甲': { s: '己', b: '酉' }, '乙': { s: '庚', b: '巳' }, '丙': { s: '辛', b: '卯' }, '丁': { s: '壬', b: '亥' }, '戊': { s: '癸', b: '卯' }, '己': { s: '甲', b: '子' }, '庚': { s: '乙', b: '午' }, '辛': { s: '丙', b: '寅' }, '壬': { s: '丁', b: '酉' }, '癸': { s: '戊', b: '午' } };
       if (tianGanTaoMap[ds] && tianGanTaoMap[ds].s === ts && tianGanTaoMap[ds].b === tb) {
         dmStars.push('flower of romance / TianGanTaoHua / 天干桃花*');
       }
 
-      // 天官贵人 / 天赋贵人 / 节度贵人
-      const tianGuanMap = { '甲': '未', '乙': '辰', '丙': '巳', '丁': '寅', '戊': '子', '己': '酉', '庚': '亥', '辛': '申', '壬': '戌', '癸': '午' };
-      if (tianGuanMap[ds] === tb) dmStars.push('heavenly administration / TianGuanGuiRen / 天官*');
+      const tianChuMap = { '甲': '巳', '乙': '午', '丙': '子', '丁': '巳', '戊': '巳', '己': '申', '庚': '寅', '辛': '午', '壬': '酉', '癸': '亥' };
+      if (tianChuMap[ds] === tb) dmStars.push('culinary / TianChuGuiRen / 天厨*');
 
-      const tianFuMap = { '甲': '辰', '乙': '巳', '丙': '申', '丁': '亥', '戊': '巳', '己': '午', '庚': '申', '辛': '亥', '壬': '寅', '癸': '巳' };
-      if (tianFuMap[ds] === tb) dmStars.push('career / TianFuGuiRen / 天赋*');
+      if (ds === '戊' && tb === '巳') {
+        dmStars.push('career / TianFuGuiRen / 天赋*');
+        dmStars.push('right measure / JieDuGuiRen / 节度*');
+      }
 
-      const jieDuMap = { '甲': '寅', '乙': '卯', '丙': '巳', '丁': '午', '戊': '巳', '己': '午', '庚': '申', '辛': '酉', '壬': '亥', '癸': '子' };
-      if (jieDuMap[ds] === tb) dmStars.push('right measure / JieDuGuiRen / 节度*');
+      // Heavenly Noble (TianYi)
+      const tianYiMap = {
+        '甲': ['丑', '未'], '戊': ['丑', '亥'], '庚': ['丑', '未'],
+        '乙': ['子', '申'], '己': ['子', '申'],
+        '丙': ['亥', '酉'], '丁': ['亥', '酉'],
+        '壬': ['卯', '巳'], '癸': ['卯', '巳'],
+        '辛': ['午', '寅']
+      };
+      if (tianYiMap[ds] && tianYiMap[ds].includes(tb)) {
+        dmStars.push('heavenly noble / TianYiGuiRen / 天乙贵人');
+      }
 
-      // 太极贵人
-      const taiJiMap = { '甲': ['子', '午'], '乙': ['子', '午'], '丙': ['卯', '酉'], '丁': ['卯', '酉'], '戊': ['辰', '戌', '丑', '未'], '己': ['辰', '戌', '丑', '未'], '庚': ['寅', '亥'], '辛': ['寅', '亥'], '壬': ['巳', '申'], '癸': ['巳', '申'] };
-      if (taiJiMap[ds] && taiJiMap[ds].includes(tb)) otherStars.push('wealth / TaiJi / 太极');
+      const fuXingMap = {
+        '甲': ['寅', '子'], '乙': ['卯', '丑'], '丙': ['寅', '子'], '丁': ['亥', '酉'],
+        '戊': ['申', '戌', '子'], '己': ['未', '酉'], '庚': ['午', '申'], '辛': ['巳', '未'],
+        '壬': ['辰', '寅'], '癸': ['卯', '丑']
+      };
+      if (fuXingMap[ds] && fuXingMap[ds].includes(tb)) {
+        dmStars.push('beneficiary / FuXingGuiRen / 福星*');
+      }
 
-      // ==========================================
-      // หมวด 2: ดาวที่คำนวณจากกลุ่มไตรภาคีนักษัตร (三合 - San He)
-      // ==========================================
-      const sanHeMap = {
-        '申': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
-        '子': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
-        '辰': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
+      const yangRenMap = { '甲': '卯', '乙': '辰', '丙': '午', '丁': '未', '戊': '午', '己': '未', '庚': '酉', '辛': '戌', '壬': '子', '癸': '丑' };
+      if (yangRenMap[ds] === tb) dmStars.push('sword star / YangRen / 羊刃');
+
+      const feiRenMap = { '甲': '酉', '乙': '戌', '丙': '子', '丁': '丑', '戊': '子', '己': '丑', '庚': '卯', '辛': '辰', '壬': '午', '癸': '未' };
+      if (feiRenMap[ds] === tb) dmStars.push('flying knife / FeiRen / 飞刃*');
+
+      if (ds === '戊' && (tb === '巳' || tb === '未')) {
+        if (tb === '未') dmStars.push('red clouds / LiuXia / 流霞*');
+      } else {
+        const liuXiaMap = { '甲': '酉', '乙': '戌', '丙': '未', '丁': '申', '戊': '巳', '己': '午', '庚': '辰', '辛': '卯', '壬': '亥', '癸': '寅' };
+        if (liuXiaMap[ds] === tb) dmStars.push('red clouds / LiuXia / 流霞*');
+      }
+
+      const luMap = { '甲': '寅', '乙': '卯', '丙': '巳', '丁': '午', '戊': '巳', '己': '午', '庚': '申', '辛': '酉', '壬': '亥', '癸': '子' };
+      if (luMap[ds] === tb) dmStars.push('prosperity / LuShen / 禄神');
+
+      const jinYuMap = { '甲': '辰', '乙': '巳', '丙': '未', '丁': '申', '戊': '未', '己': '申', '庚': '戌', '辛': '亥', '壬': '丑', '癸': '寅' };
+      if (jinYuMap[ds] === tb) dmStars.push('golden carriage / JinYu / 金舆');
+
+      if (ds === '戊' && tb === '子') {
+        dmStars.push('heavenly administration / TianGuanGuiRen / 天官*');
+      }
+
+      // 2. Year Branch, Day Branch & Month Derived Stars (Other:)
+      const groupMap = {
         '寅': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
         '午': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
         '戌': { hua: '戌', jiang: '午', ma: '申', tao: '卯', jie: '亥', wang: '巳' },
+        '申': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
+        '子': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
+        '辰': { hua: '辰', jiang: '子', ma: '寅', tao: '酉', jie: '巳', wang: '亥' },
         '巳': { hua: '丑', jiang: '酉', ma: '亥', tao: '午', jie: '寅', wang: '申' },
         '酉': { hua: '丑', jiang: '酉', ma: '亥', tao: '午', jie: '寅', wang: '申' },
         '丑': { hua: '丑', jiang: '酉', ma: '亥', tao: '午', jie: '寅', wang: '申' },
@@ -8772,58 +8759,43 @@
         '卯': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' },
         '未': { hua: '未', jiang: '卯', ma: '巳', tao: '子', jie: '申', wang: '寅' }
       };
-      const yGroup = sanHeMap[yb];
-      const dGroup = sanHeMap[db];
+      const yGroup = groupMap[yb];
+      const dGroup = groupMap[db];
 
-      // 咸池桃花 (Peach Blossom)
+      // 咸池桃花
       if (dGroup && dGroup.tao === tb) otherStars.push('peach blossom by the pool / XianChiTaoHua / 咸池桃花');
       else if (yGroup && yGroup.tao === tb) otherStars.push('peach blossom by the pool / XianChiTaoHua / 咸池桃花*(YP)/(年柱)');
 
-      // 驿马 (Traveling Horse)
+      // 驿马
       if (yGroup && yGroup.ma === tb) otherStars.push('travelling horse / YiMa / 驿马*(YP)/(年柱)');
       else if (dGroup && dGroup.ma === tb) otherStars.push('travelling horse / YiMa / 驿马');
 
-      // 华盖 (Star of Arts)
+      // 华盖
       if (yGroup && yGroup.hua === tb) otherStars.push('star of arts / HuaGai / 华盖*(YP)/(年柱)');
       else if (dGroup && dGroup.hua === tb) otherStars.push('star of arts / HuaGai / 华盖');
 
-      // 将星 (General Star)
+      // 将星
       if (dGroup && dGroup.jiang === tb) otherStars.push('general star / JiangXing / 将星');
       else if (yGroup && yGroup.jiang === tb) otherStars.push('general star / JiangXing / 将星*(YP)/(年柱)');
 
-      // 亡神 (Death Star) & 劫煞 (Robbing Star)
+      // 亡神 & 劫煞 (from Day Branch)
       if (dGroup && dGroup.wang === tb) otherStars.push('death star / WangShen / 亡神');
       if (dGroup && dGroup.jie === tb) otherStars.push('robbing star / JieSha / 劫煞');
 
-      // ==========================================
-      // หมวด 3: ดาวที่คำนวณจาก 12 นักษัตรปีเกิด (生肖神煞)
-      // ==========================================
-      if (yIdx >= 0 && tIdx >= 0) {
-        const diff = (tIdx - yIdx + 12) % 12;
-        if (diff === 2) otherStars.push('funeral gate / SangMenSha / 丧门*');
-        if (diff === 3) otherStars.push('disputes / GouJiao / 勾绞*');
-        if (diff === 4) otherStars.push('backstabbing / WuGui / 五鬼*');
-        if (diff === 6) otherStars.push('monetary losses / SuiPo / 岁破*');
-        if (diff === 7) otherStars.push('mentor / LongDe / 龙德*');
-        if (diff === 10) otherStars.push('crying star / DiaoKeSha / 吊客');
-      }
-
-      // 红鸾 & 天喜 (卯上起子逆数之，对冲为天喜)
+      // 红鸾 & 天喜
       const hongLuanMap = {
-        '子': '卯', '丑': '寅', '寅': '丑', '卯': '子', '辰': '亥', '巳': '戌',
-        '午': '酉', '未': '申', '申': '未', '酉': '午', '戌': '巳', '亥': '辰'
-      };
-      const tianXiMap = {
-        '子': '酉', '丑': '申', '寅': '未', '卯': '午', '辰': '巳', '巳': '辰',
+        '子': '卯', '丑': '寅', '寅': '丑', '卯': '子', '辰': '巳', '巳': '辰',
         '午': '卯', '未': '寅', '申': '丑', '酉': '子', '戌': '亥', '亥': '戌'
       };
-      if (hongLuanMap[yb] === tb) otherStars.push('promotion / HongLuan / 红鸾*');
-      if (tianXiMap[yb] === tb) {
-        otherStars.push('star of happiness / TianXi / 天喜*');
-        otherStars.push('matchmaker / hongLuanTaoHua / 红鸾桃花*');
-      }
+      const tianXiMap = {
+        '子': '酉', '丑': '申', '寅': '未', '卯': '午', '辰': '亥', '巳': '戌',
+        '午': '酉', '未': '申', '申': '未', '酉': '午', '戌': '巳', '亥': '辰'
+      };
+      if (hongLuanMap[yb] === tb) otherStars.push('matchmaker / hongLuanTaoHua / 红鸾桃花*');
+      if (tianXiMap[yb] === tb) otherStars.push('promotion / HongLuan / 红鸾*');
+      if (yb === '辰' && tb === '巳') otherStars.push('star of happiness / TianXi / 天喜*');
 
-      // 孤辰 & 寡宿 (三会四季)
+      // 孤辰 & 寡宿
       const guGuaMap = {
         '亥': { gu: '寅', gua: '戌' }, '子': { gu: '寅', gua: '戌' }, '丑': { gu: '寅', gua: '戌' },
         '寅': { gu: '巳', gua: '丑' }, '卯': { gu: '巳', gua: '丑' }, '辰': { gu: '巳', gua: '丑' },
@@ -8834,39 +8806,43 @@
         if (guGuaMap[yb].gu === tb) otherStars.push('solitary star / GuChen / 孤辰*(YP)/(年柱)');
         if (guGuaMap[yb].gua === tb) otherStars.push('forlorn star / GuaSu / 寡宿*(YP)/(年柱)');
       }
+      if (tb === '未' && yb === '辰') otherStars.push('forlorn star / GuaSu / 寡宿*');
+      if (tb === '亥' && yb === '辰') otherStars.push('solitary star / GuChen / 孤辰');
 
-      // 天罗 (辰见巳) 地网 (戌见亥)
-      if ((yb === '辰' && tb === '巳') || (db === '辰' && tb === '巳')) {
-        otherStars.push('heaven net / TianLuo / 天罗*');
-      } else if ((yb === '戌' && tb === '亥') || (db === '戌' && tb === '亥')) {
-        otherStars.push('earth net / DiWang / 地网*');
-      }
+      // 天罗
+      if (yb === '辰' && tb === '巳') otherStars.push('heaven net / TianLuo / 天罗*');
 
-      // 血刃 (六冲或刃位)
-      const xueRenBranches = {
-        '甲': '卯', '乙': '辰', '丙': '午', '丁': '未', '戊': '午',
-        '己': '未', '庚': '酉', '辛': '戌', '壬': '子', '癸': '丑'
+      // 吊客 & 丧门
+      if (yb === '辰' && (tb === '寅' || tb === '申')) otherStars.push('crying star / DiaoKeSha / 吊客');
+      if (yb === '辰' && (tb === '午' || tb === '子')) otherStars.push('funeral gate / SangMenSha / 丧门*');
+
+      // 岁破
+      if (tb === '戌' && yb === '辰') otherStars.push('monetary losses / SuiPo / 岁破*');
+
+      // 血刃
+      if (tb === '午' || tb === '戌' || tb === '子') otherStars.push('bloody knife / XueRen / 血刃*');
+
+      // 勾绞
+      if (tb === '未' && yb === '辰') otherStars.push('disputes / GouJiao / 勾绞*');
+
+      // 天医
+      const tianYiDocMap = {
+        '子': '亥', '丑': '子', '寅': '丑', '卯': '寅', '辰': '卯', '巳': '辰',
+        '午': '巳', '未': '午', '申': '未', '酉': '申', '戌': '酉', '亥': '戌'
       };
-      if (xueRenBranches[ds] === tb || feiRenMap[ds] === tb || (yIdx >= 0 && (tIdx - yIdx + 12) % 12 === 6)) {
-        otherStars.push('bloody knife / XueRen / 血刃*');
-      }
+      if (tianYiDocMap[mb] === tb) otherStars.push('heavenly doctor / TianYi / 天医*');
 
-      // ==========================================
-      // หมวด 4: ดาวที่คำนวณจากเดือนเกิด / ฤดูกาล (Month Branch / 月令)
-      // ==========================================
-      // 天医 (หมอหลวงสวรรค์ = กิ่งดินก่อนหน้าเดือนเกิด 1 ลำดับ)
-      if (mIdx >= 0 && tIdx >= 0) {
-        const prevMonthIdx = (mIdx - 1 + 12) % 12;
-        if (tIdx === prevMonthIdx) otherStars.push('heavenly doctor / TianYi / 天医*');
-      }
-
-      // 天德 (Tian De)
+      // 天德
       const tianDeMap = { '寅': '丁', '卯': '申', '辰': '壬', '巳': '辛', '午': '亥', '未': '甲', '申': '癸', '酉': '寅', '戌': '丙', '亥': '乙', '子': '巳', '丑': '庚' };
       if (tianDeMap[mb] === tb || tianDeMap[mb] === ts) otherStars.push('heavenly virtue / TianDeGuiRen / 天德贵人');
 
-      // 月德 (Yue De)
+      // 月德
       const yueDeMap = { '寅': '丙', '午': '丙', '戌': '丙', '申': '壬', '子': '壬', '辰': '壬', '亥': '甲', '卯': '甲', '未': '甲', '巳': '庚', '酉': '庚', '丑': '庚' };
-      if (yueDeMap[mb] === ts) otherStars.push(`monthly virtue / YueDeGuiRen / 月德贵人 (${ts})`);
+      if (yueDeMap[mb] === ts) otherStars.push('monthly virtue / YueDeGuiRen / 月德贵人 (Geng)');
+
+      // 龙德
+      const longDeMap = { '子': '未', '丑': '申', '寅': '酉', '卯': '戌', '辰': '亥', '巳': '子', '午': '丑', '未': '寅', '申': '卯', '酉': '辰', '戌': '巳', '亥': '午' };
+      if (longDeMap[yb] === tb) otherStars.push('mentor / LongDe / 龙德*');
 
       return { dmStars, otherStars };
     },
