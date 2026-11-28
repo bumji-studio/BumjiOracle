@@ -2501,16 +2501,17 @@
 - เทพและดาวชะตา (神煞): ${g.activeStars.slice(0, 5).join(', ') || 'ไม่มีดาววิกฤต'}
 
 คำสั่งสำคัญในการตอบ (โหมดซินแส / Master Co-Pilot):
-เขียนตอบด้วยภาษาโหราศาสตร์จีนที่เฉียบคม เป็นระบบ มีชั้นเชิงทางวิชาการ แบ่งเนื้อหาเป็น 4 ประเด็นชัดเจน:
-1. 🏛️ การวินิจฉัยโครงสร้างดวง & ปัญจธาตุ: อธิบายดิถี, 得时/得令, 得地/通根, โครงสร้างดวง (从格 / 专旺格 / 化气格 / 正格) และความสมดุล
-2. ⚡ วิเคราะห์ 5 Structures & 10 Profiles: สรุปความโดดเด่นของโครงสร้างหลัก (Main Structure) และ Profile แกนนำต่อคำถาม
-3. 🔮 พลวัตฟ้า-ดินในวัยจร & ปีจร: เจาะลึกปฏิสัมพันธ์ 刑沖合害, 12 สภาวะชี่ และดาวเทพลักษณ์ที่กระทบกับคำถาม
-4. 🎯 สรุปข้อสังเกตและแนวทางฟันธงสำหรับซินแส: สรุปหัวใจสำคัญ คำแนะนำเชิงกลยุทธ์ และจังหวะที่ซินแสควรบอกลูกดวง
+เขียนตอบด้วยภาษาโหราศาสตร์จีนที่เฉียบคม เป็นระบบ มีชั้นเชิงทางวิชาการ โดยใช้โครงสร้าง Markdown แบ่งเป็น 4 ประเด็นชัดเจน:
+## 🏛️ 1. การวินิจฉัยโครงสร้างดวง & ปัญจธาตุ
+- อธิบายดิถี, 得时/得令, 得地/通根, โครงสร้างดวง (从格 / 专旺格 / 化气格 / 正格) และความสมดุล
+## ⚡ 2. วิเคราะห์ 5 Structures & 10 Profiles
+- สรุปความโดดเด่นของโครงสร้างหลัก (Main Structure) และ Profile แกนนำต่อคำถาม
+## 🔮 3. พลวัตฟ้า-ดินในวัยจร & ปีจร
+- เจาะลึกปฏิสัมพันธ์ 刑沖合害, 12 สภาวะชี่ และดาวเทพลักษณ์ที่กระทบกับคำถาม
+## 🎯 4. สรุปข้อสังเกตและแนวทางฟันธงสำหรับซินแส
+- สรุปหัวใจสำคัญ คำแนะนำเชิงกลยุทธ์ และจังหวะที่ซินแสควรบอกลูกดวง
 
-ตอบเป็น JSON รูปแบบนี้เท่านั้น:
-{
-  "reply_text": "เนื้อหาข้อความการวิเคราะห์ภาษาไทยทั้งหมด..."
-}
+คำสั่งการส่งข้อมูล: เขียนตอบเป็นข้อความ Markdown ภาษาไทยโดยตรง ห้ามใส่ JSON (ห้ามมี { "reply_text": ... }) และห้ามครอบด้วย Code Block ใดๆ ทั้งสิ้น ให้เขียนข้อความตอบทันที
 `;
 
       const promptClient = `
@@ -2534,10 +2535,7 @@
 - ย่อหน้าที่ 3: ชี้จังหวะเวลา โอกาส หรือช่วงเดือน/สารทที่ส่งพลังดีในปี ${g.simY}
 - ย่อหน้าที่ 4: คำแนะนำจากใจแม่หมอ และวิธีเสริมดวง/การปฏิบัติตัวตามธาตุให้คุณ (${favNames}) ปิดท้ายด้วยความปรารถนาดี
 
-ตอบเป็น JSON รูปแบบนี้เท่านั้น:
-{
-  "reply_text": "เนื้อหาข้อความแชทภาษาไทยทั้งหมด 3-4 ย่อหน้า..."
-}
+คำสั่งการส่งข้อมูล: เขียนตอบเป็นข้อความแชทภาษาไทยโดยตรง ห้ามใส่ JSON และห้ามครอบด้วย Code Block ใดๆ ทั้งสิ้น
 `;
 
       const prompt = isSinsei ? promptSinsei : promptClient;
@@ -2554,39 +2552,47 @@
             body: JSON.stringify({
               model: m,
               messages: [
-                { role: 'system', content: isSinsei ? 'You are an authoritative Senior BaZi Metaphysics Master Assistant outputting valid Thai JSON.' : 'You are an expert BaZi astrologer who outputs valid Thai JSON only.' },
+                { role: 'system', content: isSinsei ? 'You are an authoritative Senior BaZi Metaphysics Master Assistant. Reply with directly formatted Thai Markdown without JSON wrapper.' : 'You are an expert BaZi astrologer. Reply with warm, natural Thai chat text without JSON wrapper.' },
                 { role: 'user', content: prompt }
               ],
-              temperature: isSinsei ? 0.5 : 0.65,
-              max_tokens: 2200
+              temperature: isSinsei ? 0.45 : 0.65,
+              max_tokens: 2500
             })
           });
           if (!res.ok) continue;
           const data = await res.json();
-          const raw = data.choices?.[0]?.message?.content || '{}';
-          const clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```json|```/g, '').trim();
+          const raw = data.choices?.[0]?.message?.content || '';
+          let clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+          clean = clean.replace(/^```(?:json|markdown|text)?\s*/i, '').replace(/\s*```$/i, '').trim();
 
           let replyText = '';
-          try {
-            const match = clean.match(/\{[\s\S]*\}/);
-            const json = JSON.parse(match ? match[0] : clean);
-            if (json && json.reply_text) {
-              replyText = json.reply_text;
-            } else if (json && json.direct_answer) {
-              const parts = [json.direct_answer];
-              if (json.analysis_items && json.analysis_items.length > 0) {
-                parts.push(json.analysis_items.map(it => `• **${it.title || ''}**: ${it.detail || ''}`).join('\n\n'));
+          let s = clean;
+
+          // 1. Unpack JSON wrapper if model returned JSON
+          if (s.startsWith('{') || s.includes('"reply_text"')) {
+            try {
+              const parsed = JSON.parse(s);
+              if (parsed.reply_text) s = parsed.reply_text;
+              else if (parsed.direct_answer) s = parsed.direct_answer;
+            } catch (e) {
+              const mMatch = s.match(/"reply_text"\s*:\s*"([\s\S]*?)"\s*\}?$/);
+              if (mMatch && mMatch[1]) {
+                s = mMatch[1];
+              } else {
+                s = s.replace(/^\s*\{\s*"reply_text"\s*:\s*"?/, '').replace(/"?\s*\}\s*$/, '');
               }
-              if (json.advice) parts.push(`💡 **คำแนะนำเสริมดวงจากแม่หมอ**: ${json.advice}`);
-              replyText = parts.join('\n\n');
-            }
-          } catch (e) {
-            if (clean && clean.length > 30) {
-              replyText = clean;
             }
           }
 
-          if (replyText) {
+          // 2. Unescape escaped characters like literal \n, \r, \t, \"
+          s = s.replace(/\\r\\n/g, '\n')
+               .replace(/\\n/g, '\n')
+               .replace(/\\t/g, ' ')
+               .replace(/\\"/g, '"');
+
+          replyText = s.trim();
+
+          if (replyText && replyText.length > 20) {
             return {
               chatText: replyText,
               mode: mode
@@ -3087,29 +3093,107 @@
 
     formatChatBody: function (text) {
       if (!text) return '';
-      // If text is already wrapped in <p> tags
-      if (text.trim().startsWith('<p>') || text.includes('<div class="chat-')) {
-        return text;
-      }
       let str = text.trim();
-      // Safe HTML escaping
+
+      // 1. Unpack JSON wrapper if accidentally stored as JSON string
+      if (str.startsWith('{') || str.includes('"reply_text"')) {
+        try {
+          const parsed = JSON.parse(str);
+          if (parsed.reply_text) str = parsed.reply_text;
+          else if (parsed.direct_answer) str = parsed.direct_answer;
+        } catch (e) {
+          const m = str.match(/"reply_text"\s*:\s*"([\s\S]*?)"\s*\}?$/);
+          if (m && m[1]) {
+            str = m[1];
+          } else {
+            str = str.replace(/^\s*\{\s*"reply_text"\s*:\s*"?/, '').replace(/"?\s*\}\s*$/, '');
+          }
+        }
+      }
+
+      // 2. Unescape escaped characters like literal \n, \r, \t, \"
+      str = str.replace(/\\r\\n/g, '\n')
+               .replace(/\\n/g, '\n')
+               .replace(/\\t/g, ' ')
+               .replace(/\\"/g, '"');
+
+      // If already formatted HTML
+      if (str.startsWith('<div class="sinsei-') || str.startsWith('<div class="chat-')) {
+        return str;
+      }
+
+      // 3. Safe HTML escaping
       str = this.escapeHtml(str);
-      // Markdown bold **word** -> <strong>word</strong>
+
+      // 4. Markdown Bold and Italic
       str = str.replace(/\*\*(.+?)\*\*/g, function (_, m) {
         return '<strong>' + m + '</strong>';
       });
-      // Markdown italic *word* -> <em>word</em>
       str = str.replace(/\*(.+?)\*/g, function (_, m) {
         return '<em>' + m + '</em>';
       });
-      // Split into paragraphs by double newline
-      const paragraphs = str.split(/\n\s*\n/).filter(function (p) { return p.trim().length > 0; });
-      if (paragraphs.length <= 1) {
-        return '<p>' + str.replace(/\n/g, '<br>') + '</p>';
+
+      // 5. Parse Headings, Bullet Lists, and Numbered Items
+      const lines = str.split(/\n/);
+      const formattedHtml = [];
+      let inList = false;
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) {
+          if (inList) {
+            formattedHtml.push('</ul>');
+            inList = false;
+          }
+          continue;
+        }
+
+        // Check for Markdown Headings: #, ##, ###
+        const hMatch = line.match(/^#{1,3}\s*(.+)/);
+        if (hMatch) {
+          if (inList) {
+            formattedHtml.push('</ul>');
+            inList = false;
+          }
+          formattedHtml.push(`<div class="sinsei-chat-heading"><i class="fa-solid fa-sparkles"></i> ${hMatch[1]}</div>`);
+          continue;
+        }
+
+        // Check for bullet lists: - or • or *
+        const bulletMatch = line.match(/^[-•*]\s*(.+)/);
+        if (bulletMatch) {
+          if (!inList) {
+            formattedHtml.push('<ul class="sinsei-chat-list">');
+            inList = true;
+          }
+          formattedHtml.push(`<li>${bulletMatch[1]}</li>`);
+          continue;
+        }
+
+        // Check for numbered items: 1. 2.
+        const numMatch = line.match(/^(\d+)\.\s*(.+)/);
+        if (numMatch && (line.length < 90 || line.includes(':') || line.includes('：') || line.includes('–') || line.includes('-'))) {
+          if (inList) {
+            formattedHtml.push('</ul>');
+            inList = false;
+          }
+          formattedHtml.push(`<div class="sinsei-chat-num-item"><span class="sinsei-num-badge">${numMatch[1]}</span><div class="sinsei-num-content">${numMatch[2]}</div></div>`);
+          continue;
+        }
+
+        // Normal paragraph
+        if (inList) {
+          formattedHtml.push('</ul>');
+          inList = false;
+        }
+        formattedHtml.push(`<p class="sinsei-chat-p">${line}</p>`);
       }
-      return paragraphs.map(function (p) {
-        return '<p>' + p.trim().replace(/\n/g, '<br>') + '</p>';
-      }).join('');
+
+      if (inList) {
+        formattedHtml.push('</ul>');
+      }
+
+      return formattedHtml.join('');
     },
 
     renderAskChatMessages: function () {
