@@ -1,31 +1,35 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>แม่หมอติ๊ดติ๊ด - ดูดวงไพ่เทพเหมียว (สไตล์โมเดิร์นฮีลใจ)</title>
-  
+
   <!-- Google Fonts for premium Thai, English & Simplified Chinese typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Kanit:wght@400;500;600;700;800&family=Mitr:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Kanit:wght@400;500;600;700;800&family=Mitr:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap"
+    rel="stylesheet">
+
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+
   <!-- html2canvas for fortune card sharing -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  
+
   <!-- Cache control for mobile / LINE in-app browser -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  
+
   <!-- Google Analytics 4 (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-37KGY925HC"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-37KGY925HC', {
       send_page_view: true
@@ -36,18 +40,27 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
-  
-  <link rel="stylesheet" href="styles.css?v=20261115_v5_8721">
-  
+
+  <!-- Security & Anti-Scraping Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_8106">
+
+  <link rel="stylesheet" href="styles.css?v=20261115_v5_8106">
+
   <!-- Strict Mobile Fit Shield (Zero Horizontal Overflow Guarantee) -->
   <style id="strict-mobile-fit">
     @media (max-width: 767px) {
-      html, body {
+
+      html,
+      body {
         width: 100% !important;
         max-width: 100vw !important;
         overflow-x: hidden !important;
         box-sizing: border-box !important;
       }
+
       .view-container.hidden,
       #readingAppView.hidden,
       #tongShuAppView.hidden,
@@ -78,6 +91,7 @@
         box-sizing: border-box !important;
         padding: 10px 8px 60px 8px !important;
       }
+
       .reading-app-container {
         display: flex !important;
         flex-direction: column !important;
@@ -90,6 +104,7 @@
         overflow-x: hidden !important;
         box-sizing: border-box !important;
       }
+
       .reading-step-card {
         width: 100% !important;
         max-width: 100% !important;
@@ -100,6 +115,7 @@
         border-radius: 16px !important;
         overflow-x: hidden !important;
       }
+
       .step-header-with-back {
         width: 100% !important;
         max-width: 100% !important;
@@ -109,24 +125,28 @@
         align-items: flex-start !important;
         gap: 8px !important;
       }
+
       .step-title-group {
         width: 100% !important;
         max-width: 100% !important;
         min-width: 0 !important;
         box-sizing: border-box !important;
       }
+
       .step-title-group .step-title {
         font-size: 17px !important;
         line-height: 1.35 !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
       }
+
       .step-title-group .step-desc {
         font-size: 11.5px !important;
         line-height: 1.45 !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
       }
+
       .pick-slots-container:not(.slots-choice-fork):not(.slots-count-1) {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -138,6 +158,7 @@
         padding: 0 !important;
         box-sizing: border-box !important;
       }
+
       .pick-target-slot {
         min-width: 0 !important;
         width: 100% !important;
@@ -147,6 +168,7 @@
         box-sizing: border-box !important;
         overflow: hidden !important;
       }
+
       .slot-pos-badge {
         font-size: 10px !important;
         gap: 2px !important;
@@ -157,11 +179,13 @@
         white-space: nowrap !important;
         text-align: center !important;
       }
+
       .slot-pos-badge .badge-num {
         width: 18px !important;
         height: 18px !important;
         font-size: 9.5px !important;
       }
+
       .slot-card-holder {
         width: 100% !important;
         max-width: 96px !important;
@@ -172,17 +196,21 @@
         margin: 0 auto 2px auto !important;
         box-sizing: border-box !important;
       }
+
       .slot-placeholder {
         padding: 2px !important;
         gap: 2px !important;
       }
+
       .slot-placeholder i {
         font-size: 16px !important;
       }
+
       .slot-placeholder span {
         font-size: 8.5px !important;
         white-space: nowrap !important;
       }
+
       .pick-controls-bar {
         padding: 8px 6px !important;
         margin-bottom: 12px !important;
@@ -190,10 +218,12 @@
         max-width: 100% !important;
         box-sizing: border-box !important;
       }
+
       .pick-current-instruction {
         font-size: 12px !important;
         word-break: break-word !important;
       }
+
       .pick-quick-actions {
         display: grid !important;
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -202,6 +232,7 @@
         max-width: 100% !important;
         box-sizing: border-box !important;
       }
+
       .pick-quick-actions #autoDraw3CardsBtn {
         grid-column: 1 / -1 !important;
         padding: 10px 8px !important;
@@ -209,6 +240,7 @@
         width: 100% !important;
         box-sizing: border-box !important;
       }
+
       .pick-quick-actions .btn-secondary-sm:not(#autoDraw3CardsBtn) {
         padding: 8px 4px !important;
         font-size: 11px !important;
@@ -229,6 +261,7 @@
         box-sizing: border-box !important;
         padding: 8px 6px 60px 6px !important;
       }
+
       .qimen-app-container {
         display: flex !important;
         flex-direction: column !important;
@@ -241,6 +274,7 @@
         box-sizing: border-box !important;
         overflow-x: hidden !important;
       }
+
       .qm-toolbar-card {
         flex-direction: column !important;
         align-items: stretch !important;
@@ -249,6 +283,7 @@
         width: 100% !important;
         box-sizing: border-box !important;
       }
+
       .qm-toolbar-left {
         display: grid !important;
         grid-template-columns: 1fr 1fr !important;
@@ -256,21 +291,25 @@
         width: 100% !important;
         box-sizing: border-box !important;
       }
+
       .qm-btn-realtime {
         grid-column: 1 / -1 !important;
         width: 100% !important;
         padding: 8px 10px !important;
       }
+
       .qm-picker-box {
         width: 100% !important;
         box-sizing: border-box !important;
         padding: 4px 6px !important;
       }
+
       .qm-picker-box input,
       .qm-picker-box select {
         width: 100% !important;
         font-size: 11.5px !important;
       }
+
       .qm-upper-section,
       .qm-main-section {
         display: flex !important;
@@ -281,6 +320,7 @@
         gap: 10px !important;
         box-sizing: border-box !important;
       }
+
       .qm-bazi-box,
       .qm-meta-box {
         width: 100% !important;
@@ -290,47 +330,58 @@
         border-radius: 8px !important;
         overflow-x: hidden !important;
       }
+
       .qm-bazi-table {
         width: 100% !important;
         max-width: 100% !important;
         table-layout: fixed !important;
         border-collapse: collapse !important;
       }
+
       .qm-bazi-table th {
         padding: 4px 1px !important;
         font-size: 11px !important;
       }
+
       .qm-bazi-date-row td {
         padding: 3px 1px !important;
         font-size: 10.5px !important;
       }
+
       .qm-bazi-stem-row td,
       .qm-bazi-branch-row td {
         padding: 3px 1px !important;
       }
+
       .qm-bazi-char {
         font-size: 20px !important;
         line-height: 1.1 !important;
       }
+
       .qm-bazi-py {
         font-size: 10px !important;
       }
+
       .qm-bazi-en {
         font-size: 8.5px !important;
       }
+
       .qm-bazi-animal {
         font-size: 9.5px !important;
       }
+
       .qm-info-table,
       .qm-sub-info-table {
         width: 100% !important;
         font-size: 11px !important;
       }
+
       .qm-info-table td,
       .qm-sub-info-table td,
       .qm-sub-info-table th {
         padding: 3px 4px !important;
       }
+
       .qm-chart-card {
         padding: 4px !important;
         border-radius: 8px !important;
@@ -340,6 +391,7 @@
         box-sizing: border-box !important;
         overflow: hidden !important;
       }
+
       .qm-int-matrix {
         display: grid !important;
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -351,6 +403,7 @@
         box-sizing: border-box !important;
         border-width: 1.5px !important;
       }
+
       .qm-int-cell {
         min-height: 108px !important;
         padding: 2px 2px !important;
@@ -360,21 +413,26 @@
         box-sizing: border-box !important;
         overflow: hidden !important;
       }
+
       .qm-cell-header-bar {
         padding: 1px 2px !important;
         font-size: 9px !important;
         margin: -2px -2px 2px -2px !important;
       }
-      .qm-badge-kong, .qm-badge-horse {
+
+      .qm-badge-kong,
+      .qm-badge-horse {
         font-size: 8px !important;
         padding: 0 2px !important;
       }
+
       .qm-int-row.top-row {
         gap: 1px !important;
         justify-content: space-between !important;
         width: 100% !important;
         min-width: 0 !important;
       }
+
       .qm-elem-stem,
       .qm-elem-star,
       .qm-elem-deity,
@@ -382,28 +440,36 @@
         min-width: 0 !important;
         flex-shrink: 1 !important;
       }
+
       .qm-char-big {
         font-size: 14px !important;
         line-height: 1 !important;
       }
+
       .qm-char-big .extra {
         font-size: 9px !important;
       }
+
       .qm-char-med {
         font-size: 11px !important;
         line-height: 1 !important;
       }
+
       .qm-char-med .extra {
         font-size: 8.5px !important;
       }
+
       .qm-corner-num {
         font-size: 10px !important;
         line-height: 1 !important;
       }
-      .qm-py-sm, .qm-py-xs {
+
+      .qm-py-sm,
+      .qm-py-xs {
         font-size: 7.5px !important;
         line-height: 1 !important;
       }
+
       .qm-en-xs {
         font-size: 7px !important;
         line-height: 1 !important;
@@ -412,6 +478,7 @@
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
       }
+
       .qm-int-row.mid-row {
         min-height: 20px !important;
         margin: 1px 0 !important;
@@ -419,10 +486,12 @@
         min-width: 0 !important;
         justify-content: space-between !important;
       }
+
       .qm-hex-line {
         font-size: 8px !important;
         line-height: 1 !important;
       }
+
       .qm-hex-name {
         font-size: 6.5px !important;
         line-height: 1 !important;
@@ -431,25 +500,30 @@
         text-overflow: ellipsis !important;
         white-space: nowrap !important;
       }
+
       .qm-envoy-pill {
         font-size: 7px !important;
         padding: 0 1px !important;
       }
+
       .qm-formation-text {
         font-size: 7.5px !important;
         line-height: 1 !important;
         display: block !important;
       }
+
       .qm-int-row.bot-row {
         gap: 1px !important;
         align-items: flex-end !important;
         width: 100% !important;
         min-width: 0 !important;
       }
+
       .qm-char-door {
         font-size: 13px !important;
         line-height: 1 !important;
       }
+
       .qm-elem-constellation {
         font-size: 7px !important;
         line-height: 1 !important;
@@ -457,12 +531,15 @@
         text-align: right !important;
         overflow: hidden !important;
       }
+
       .qm-c-stem {
         font-size: 16px !important;
       }
+
       .qm-c-py {
         font-size: 8px !important;
       }
+
       .qm-chart-footer {
         font-size: 9px !important;
         flex-direction: column !important;
@@ -470,24 +547,27 @@
         gap: 2px !important;
         padding-top: 3px !important;
       }
+
       .qm-sidebar-section {
         width: 100% !important;
         max-width: 100% !important;
       }
+
       .qm-detail-grid {
         grid-template-columns: 1fr !important;
       }
     }
   </style>
-  
+
   <!-- html2pdf.js for exporting HTML to high-quality protected PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  
+
   <!-- pdf.js for importing/parsing local PDFs in browser -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <!-- LINE LIFF SDK -->
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
+
 <body>
 
   <!-- App Header -->
@@ -501,7 +581,8 @@
     </div>
     <!-- Mode Navigation Tabs -->
     <div class="header-nav-tabs" id="headerNavTabs">
-      <button class="nav-tab active" id="tabReadingBtn" title="ถามแม่หมอติ๊ดติ๊ด &amp; ทำนายไพ่เทพเหมียว (Oracle Q&amp;A)">
+      <button class="nav-tab active" id="tabReadingBtn"
+        title="ถามแม่หมอติ๊ดติ๊ด &amp; ทำนายไพ่เทพเหมียว (Oracle Q&amp;A)">
         <i class="fa-solid fa-wand-magic-sparkles"></i> <span>เปิดไพ่พยากรณ์</span>
       </button>
       <button class="nav-tab" id="tabPersonalityBtn" title="ทายนิสัยฉบับน้องเหมียวตามหลักแม่หมอติ๊ดติ๊ด">
@@ -536,7 +617,8 @@
         <span id="headerAuthAvatar"><i class="fa-solid fa-circle-user"></i></span>
         <span id="authBtnLabel">เข้าสู่ระบบ Admin</span>
       </button>
-      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูนำทาง" aria-expanded="false" title="เมนูหลัก">
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="เปิดเมนูนำทาง" aria-expanded="false"
+        title="เมนูหลัก">
         <i class="fa-solid fa-bars"></i>
       </button>
     </div>
@@ -545,7 +627,7 @@
   <!-- Mobile Menu Backdrop -->
   <div id="mobileMenuBackdrop" class="mobile-menu-backdrop"></div>
 
-    <!-- VIEW: BAZI APP VIEW (Four Pillars of Destiny / 八字命理) -->
+  <!-- VIEW: BAZI APP VIEW (Four Pillars of Destiny / 八字命理) -->
   <div id="baziAppView" class="view-container hidden">
     <div class="bazi-app-container">
 
@@ -553,21 +635,23 @@
       <!-- TOP SUB-MENU BAR: 1. Basic | 2. Advance -->
       <!-- ======================================================= -->
       <nav class="bazi-sub-nav-bar" id="baziSubNavBar" aria-label="เมนูย่อยผังดวงปาจื่อ">
-        <button type="button" class="bazi-sub-nav-btn active" id="baziSubTabBasic" onclick="window.BaziApp.switchSubMenu('basic')">
+        <button type="button" class="bazi-sub-nav-btn active" id="baziSubTabBasic"
+          onclick="window.BaziApp.switchSubMenu('basic')">
           <i class="fa-solid fa-user-check"></i>
           <span class="sub-nav-label-wrap">
             <span class="sub-nav-title">1. Basic</span>
             <span class="sub-nav-desc">ผังดวง 4 เสา &amp; สรุปภาพรวมชีวิต</span>
           </span>
         </button>
-        <button type="button" class="bazi-sub-nav-btn" id="baziSubTabAdvance" onclick="window.BaziApp.switchSubMenu('advance')">
+        <button type="button" class="bazi-sub-nav-btn" id="baziSubTabAdvance"
+          onclick="window.BaziApp.switchSubMenu('advance')">
           <i class="fa-solid fa-graduation-cap"></i>
           <span class="sub-nav-label-wrap">
             <span class="sub-nav-title">2. Advance</span>
             <span class="sub-nav-desc">วิเคราะห์ 4 เสาเจาะลึก • วัยจร • รายเดือน</span>
           </span>
         </button>
-      <button type="button" class="bazi-sub-nav-btn" id="baziSubTabAsk" onclick="window.BaziApp.switchSubMenu('ask')">
+        <button type="button" class="bazi-sub-nav-btn" id="baziSubTabAsk" onclick="window.BaziApp.switchSubMenu('ask')">
           <i class="fa-solid fa-comments"></i>
           <span class="sub-nav-label-wrap">
             <span class="sub-nav-title">3. ถามดวง</span>
@@ -601,7 +685,8 @@
             <!-- 1. ชื่อ -->
             <div class="bazi-form-field field-name">
               <label for="baziNameInput"><i class="fa-solid fa-user"></i> 1. ชื่อ / คำเรียกแทน:</label>
-              <input type="text" id="baziNameInput" class="bazi-control" value="" placeholder="พิมพ์ชื่อ หรือ ฉายา (เว้นว่างได้)">
+              <input type="text" id="baziNameInput" class="bazi-control" value=""
+                placeholder="พิมพ์ชื่อ หรือ ฉายา (เว้นว่างได้)">
             </div>
 
             <!-- 2. เพศ -->
@@ -617,11 +702,13 @@
             <div class="bazi-form-field field-birthdate">
               <label><i class="fa-solid fa-calendar-day"></i> 3. วันเดือนปีเกิด (พิมพ์ หรือ เลือกจากรายการ):</label>
               <div class="bazi-dual-date-row">
-                <input type="date" id="baziDateInput" class="bazi-control bazi-date-picker" title="พิมพ์หรือเลือกจากปฏิทิน">
+                <input type="date" id="baziDateInput" class="bazi-control bazi-date-picker"
+                  title="พิมพ์หรือเลือกจากปฏิทิน">
                 <div class="bazi-dropdowns-row">
                   <select id="baziBirthDay" class="bazi-control select-day" aria-label="เลือกวันเกิด (1-31)"></select>
                   <select id="baziBirthMonth" class="bazi-control select-month" aria-label="เลือกเดือนเกิด"></select>
-                  <select id="baziBirthYear" class="bazi-control select-year" aria-label="เลือกปีเกิด (พ.ศ. / ค.ศ.)"></select>
+                  <select id="baziBirthYear" class="bazi-control select-year"
+                    aria-label="เลือกปีเกิด (พ.ศ. / ค.ศ.)"></select>
                 </div>
               </div>
             </div>
@@ -629,14 +716,17 @@
             <!-- 4. เวลาเกิด (พิมพ์ + Dropdown ชั่วโมง นาที + ติ๊กไม่รู้เวลา) -->
             <div class="bazi-form-field field-birthtime" id="baziTimeFieldGroup">
               <div class="bazi-time-label-row">
-                <label for="baziHourInput"><i class="fa-solid fa-clock"></i> 4. เวลาเกิด (พิมพ์ หรือ เลือกจากรายการ):</label>
-                <label class="bazi-unknown-toggle" id="baziUnknownTimeWrap" title="ติ๊กเมื่อไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
+                <label for="baziHourInput"><i class="fa-solid fa-clock"></i> 4. เวลาเกิด (พิมพ์ หรือ
+                  เลือกจากรายการ):</label>
+                <label class="bazi-unknown-toggle" id="baziUnknownTimeWrap"
+                  title="ติ๊กเมื่อไม่ทราบเวลาเกิด ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)">
                   <input type="checkbox" id="baziUnknownTimeCheck">
                   <span>ไม่รู้เวลาเกิด</span>
                 </label>
               </div>
               <div class="bazi-dual-time-row" id="baziTimeControlsWrap">
-                <input type="time" id="baziHourInput" class="bazi-control bazi-time-picker" value="12:00" title="พิมพ์เวลาเกิด">
+                <input type="time" id="baziHourInput" class="bazi-control bazi-time-picker" value="12:00"
+                  title="พิมพ์เวลาเกิด">
                 <div class="bazi-time-dropdowns-row">
                   <select id="baziBirthHour" class="bazi-control select-hour" aria-label="เลือกชั่วโมงเกิด"></select>
                   <span class="time-sep">:</span>
@@ -644,20 +734,24 @@
                 </div>
               </div>
               <div id="baziUnknownTimeNotice" class="bazi-unknown-notice hidden">
-                <i class="fa-solid fa-circle-info"></i> ไม่ระบุเวลาเกิด: ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน) และดิถีธาตุ
+                <i class="fa-solid fa-circle-info"></i> ไม่ระบุเวลาเกิด: ระบบจะคำนวณตาม 3 เสาหลัก (ปี-เดือน-วัน)
+                และดิถีธาตุ
               </div>
             </div>
           </div>
 
           <!-- Buttons Row: คำนวณ, บันทึก, หน้ารวมดวง -->
           <div class="bazi-action-row">
-            <button type="button" class="bazi-btn-primary" id="baziCalcBtn" onclick="window.BaziApp.calculateFromInputs(true)">
+            <button type="button" class="bazi-btn-primary" id="baziCalcBtn"
+              onclick="window.BaziApp.calculateFromInputs(true)">
               <i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา
             </button>
-            <button type="button" class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()" title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
+            <button type="button" class="bazi-btn-save" id="baziSaveBtn" onclick="window.BaziApp.saveCurrentProfile()"
+              title="บันทึกข้อมูลดวงนี้ลงในเครื่อง">
               <i class="fa-solid fa-bookmark"></i> บันทึกดวงนี้
             </button>
-            <button type="button" class="bazi-btn-saved-list" id="baziOpenSavedModalBtn" onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
+            <button type="button" class="bazi-btn-saved-list" id="baziOpenSavedModalBtn"
+              onclick="window.BaziApp.openSavedModal()" title="ดูและเลือกดวงที่เคยบันทึกไว้">
               <i class="fa-solid fa-folder-open"></i> หน้ารวมดวงที่บันทึก (<span id="baziSavedCount">0</span>)
             </button>
           </div>
@@ -670,7 +764,10 @@
               <i class="fa-solid fa-compass-drafting"></i>
             </div>
             <h3>เริ่มต้นคำนวณผังดวงจีนปาจื่อ (BaZi 八字)</h3>
-            <p>กรุณาระบุ <strong>วัน เดือน ปีเกิด</strong> และ <strong>เวลาเกิด</strong> ของท่านในแบบฟอร์มด้านบน<br>จากนั้นกดปุ่ม <span class="calc-btn-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา</span> เพื่อแสดงผลลัพธ์ผัง 4 เสาฟ้าดินและบทวิเคราะห์ชีวิตค่ะ</p>
+            <p>กรุณาระบุ <strong>วัน เดือน ปีเกิด</strong> และ <strong>เวลาเกิด</strong>
+              ของท่านในแบบฟอร์มด้านบน<br>จากนั้นกดปุ่ม <span class="calc-btn-badge"><i
+                  class="fa-solid fa-wand-magic-sparkles"></i> คำนวณผังชะตา</span> เพื่อแสดงผลลัพธ์ผัง 4
+              เสาฟ้าดินและบทวิเคราะห์ชีวิตค่ะ</p>
           </div>
         </div>
 
@@ -690,7 +787,8 @@
                     <span class="bazi-section-title-text">ตาราง 4 เสาชะตาฟ้าดิน</span>
                     <span class="bazi-section-en-badge">(Four Pillars Matrix)</span>
                   </div>
-                  <p class="bazi-section-desc-text">ผังกำเนิด 4 เสา (ยาม-วัน-เดือน-ปี) ราศีบน กิ่งดิน และกราฟสมดุลเบญจธาตุ</p>
+                  <p class="bazi-section-desc-text">ผังกำเนิด 4 เสา (ยาม-วัน-เดือน-ปี) ราศีบน กิ่งดิน
+                    และกราฟสมดุลเบญจธาตุ</p>
                 </div>
               </div>
               <button type="button" class="bazi-btn-go-advance" onclick="window.BaziApp.goToAdvance()">
@@ -727,7 +825,8 @@
                     <span class="bazi-section-title-text">ประเมินภาพรวมชีวิต</span>
                     <span class="bazi-section-en-badge">(5 มิติชีวิตพื้นดวง)</span>
                   </div>
-                  <p class="bazi-section-desc-text">วิเคราะห์ศักยภาพ 5 มิติ: ภาพรวมชีวิต, การเงิน, การงาน, ความสัมพันธ์, และสุขภาพ</p>
+                  <p class="bazi-section-desc-text">วิเคราะห์ศักยภาพ 5 มิติ: ภาพรวมชีวิต, การเงิน, การงาน, ความสัมพันธ์,
+                    และสุขภาพ</p>
                 </div>
               </div>
               <span class="bazi-mode-tag">5 มิติชีวิต</span>
@@ -756,7 +855,8 @@
                     <span class="bazi-section-title-text">ภาพรวมคำทำนายและกลยุทธ์ชีวิต</span>
                     <span class="bazi-section-en-badge">(Strategic Life Guidance)</span>
                   </div>
-                  <p class="bazi-section-desc-text">เจาะลึก 6 มิติ: บุคลิกภาพตัวตน, การงานอาชีพ, โชคลาภการเงิน, ความรัก, สุขภาพ, และจุดอ่อน</p>
+                  <p class="bazi-section-desc-text">เจาะลึก 6 มิติ: บุคลิกภาพตัวตน, การงานอาชีพ, โชคลาภการเงิน, ความรัก,
+                    สุขภาพ, และจุดอ่อน</p>
                 </div>
               </div>
             </div>
@@ -817,7 +917,8 @@
               </div>
 
               <!-- Weaknesses & Blindspots -->
-              <div class="bazi-insight-card bazi-card-weakness" style="border: 1.5px solid #fecaca; background: #fffafa;">
+              <div class="bazi-insight-card bazi-card-weakness"
+                style="border: 1.5px solid #fecaca; background: #fffafa;">
                 <div class="insight-header">
                   <div class="insight-icon" style="background: rgba(239, 68, 68, 0.12); color: #dc2626;">
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -863,7 +964,8 @@
                   <div class="bazi-section-title-row">
                     <span class="bazi-section-num-pill amber">ส่วนที่ 5</span>
                     <span class="bazi-section-title-text">วิเคราะห์ปีจร ปัจจุบัน</span>
-                    <span class="bazi-section-en-badge">(Current Annual Pillar: <span id="baziBasicAnnualYearTitle">2026</span>)</span>
+                    <span class="bazi-section-en-badge">(Current Annual Pillar: <span
+                        id="baziBasicAnnualYearTitle">2026</span>)</span>
                   </div>
                   <p class="bazi-section-desc-text">สรุปพลังงานปีจร กราฟเรดาร์ 5 มิติประจำปี และบทวิเคราะห์ประจำปี</p>
                 </div>
@@ -875,13 +977,17 @@
             <div id="baziBasicAnnualBanner" class="bazi-annual-banner"></div>
 
             <!-- กราฟแมงมุม ภาพรวมปีนี้ (คำนวณตามวัยจรและปีจร) -->
-            <div class="bazi-annual-radar-card" style="margin-top: 16px; background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%); border: 1.5px solid #fde68a; border-radius: 14px; padding: 16px;">
-              <div class="annual-radar-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px dashed #fcd34d; flex-wrap: wrap; gap: 8px;">
-                <div style="font-weight: 700; color: #78350f; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+            <div class="bazi-annual-radar-card"
+              style="margin-top: 16px; background: linear-gradient(135deg, #fffbeb 0%, #fefce8 100%); border: 1.5px solid #fde68a; border-radius: 14px; padding: 16px;">
+              <div class="annual-radar-header"
+                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px dashed #fcd34d; flex-wrap: wrap; gap: 8px;">
+                <div
+                  style="font-weight: 700; color: #78350f; font-size: 15px; display: flex; align-items: center; gap: 8px;">
                   <i class="fa-solid fa-chart-pie" style="color: #d97706;"></i>
                   <span>ประเมินภาพรวมปีนี้ (5 มิติชะตาประจำปี <span id="baziAnnualRadarYearLabel">2026</span>)</span>
                 </div>
-                <span id="baziAnnualRadarDaYunLabel" style="color: #6d28d9; font-weight: 700; background: #faf5ff; border: 1px solid #d8b4fe; padding: 3px 10px; border-radius: 8px; font-size: 11.5px;">
+                <span id="baziAnnualRadarDaYunLabel"
+                  style="color: #6d28d9; font-weight: 700; background: #faf5ff; border: 1px solid #d8b4fe; padding: 3px 10px; border-radius: 8px; font-size: 11.5px;">
                   คำนวณตามวัยจร 10 ปี
                 </span>
               </div>
@@ -911,7 +1017,8 @@
                     <span class="bazi-section-title-text">การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา</span>
                     <span class="bazi-section-en-badge">(Feng Shui &amp; Remedies)</span>
                   </div>
-                  <p class="bazi-section-desc-text">สีมงคลประจำตัว, ทิศมงคลเปิดรับโชคลาภ, และธาตุปรับสมดุลชะตาชีวิต (喜用神)</p>
+                  <p class="bazi-section-desc-text">สีมงคลประจำตัว, ทิศมงคลเปิดรับโชคลาภ, และธาตุปรับสมดุลชะตาชีวิต
+                    (喜用神)</p>
                 </div>
               </div>
             </div>
@@ -935,7 +1042,8 @@
               <i class="fa-solid fa-graduation-cap" style="color: #7c3aed;"></i>
               <strong>ตั้งผังดวงชะตา (Advance Calculator)</strong>
             </div>
-            <button type="button" class="bazi-btn-toggle-inputs hidden" id="baziAdvanceToggleFormBtn" onclick="window.BaziApp.toggleAdvanceInputForm()">
+            <button type="button" class="bazi-btn-toggle-inputs hidden" id="baziAdvanceToggleFormBtn"
+              onclick="window.BaziApp.toggleAdvanceInputForm()">
               <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูลวันเกิด
             </button>
           </div>
@@ -960,7 +1068,8 @@
                     <span class="bazi-section-title-text">ตาราง 4 เสาชะตาฉบับเจาะลึก</span>
                     <span class="bazi-section-en-badge">(Four Pillars Master Matrix)</span>
                   </div>
-                  <p class="bazi-section-desc-text">แจกแจง 9 มิติวิชาการ: ราศีบน, กิ่งดิน, กิ่งแฝง, นัยอิม, DM Qi, Pillar Qi, สิบเทพ, ดาวชะตา, และปฏิสัมพันธ์</p>
+                  <p class="bazi-section-desc-text">แจกแจง 9 มิติวิชาการ: ราศีบน, กิ่งดิน, กิ่งแฝง, นัยอิม, DM Qi,
+                    Pillar Qi, สิบเทพ, ดาวชะตา, และปฏิสัมพันธ์</p>
                 </div>
               </div>
               <span class="bazi-mode-tag advance-tag"><i class="fa-solid fa-gem"></i> Advance Master Matrix</span>
@@ -993,7 +1102,8 @@
                     <span class="bazi-section-title-text">ประเมินภาพรวมชีวิต</span>
                     <span class="bazi-section-en-badge">(5 มิติชีวิตพื้นดวง - Life Radar)</span>
                   </div>
-                  <p class="bazi-section-desc-text">วิเคราะห์ศักยภาพ 5 มิติ: ภาพรวมชีวิต, การเงิน, การงาน, ความสัมพันธ์, และสุขภาพ พร้อมเกณฑ์คะแนน</p>
+                  <p class="bazi-section-desc-text">วิเคราะห์ศักยภาพ 5 มิติ: ภาพรวมชีวิต, การเงิน, การงาน, ความสัมพันธ์,
+                    และสุขภาพ พร้อมเกณฑ์คะแนน</p>
                 </div>
               </div>
               <span class="bazi-mode-tag advance-tag"><i class="fa-solid fa-gem"></i> Advance Life Radar</span>
@@ -1022,11 +1132,13 @@
                     <span class="bazi-section-title-text">ตารางวัยจร 10 ปีฉบับเจาะลึก</span>
                     <span class="bazi-section-en-badge">(10-Year Luck Master Matrix)</span>
                   </div>
-                  <p class="bazi-section-desc-text">ผังวัยจร 10 เสาตลอดช่วงชีวิต แสดงราศีบน, กิ่งดิน, กิ่งแฝง, นัยอิม, สภาวะชี่ (12 Chang Sheng), เทพและดาวชะตา (神煞), และปฏิสัมพันธ์ฟ้าดิน (刑沖合害破)</p>
+                  <p class="bazi-section-desc-text">ผังวัยจร 10 เสาตลอดช่วงชีวิต แสดงราศีบน, กิ่งดิน, กิ่งแฝง, นัยอิม,
+                    สภาวะชี่ (12 Chang Sheng), เทพและดาวชะตา (神煞), และปฏิสัมพันธ์ฟ้าดิน (刑沖合害破)</p>
                 </div>
               </div>
               <div class="bazi-dayun-nav-controls">
-                <button type="button" class="btn-toggle-matrix-order" onclick="window.BaziApp.toggleDaYunOrder()" title="สลับเรียงคอลัมน์ ซ้าย ⇄ ขวา">
+                <button type="button" class="btn-toggle-matrix-order" onclick="window.BaziApp.toggleDaYunOrder()"
+                  title="สลับเรียงคอลัมน์ ซ้าย ⇄ ขวา">
                   <i class="fa-solid fa-right-left"></i> <span id="baziDaYunOrderBtnText">สลับลำดับ ซ้าย ⇄ ขวา</span>
                 </button>
               </div>
@@ -1051,23 +1163,28 @@
                     <span class="bazi-section-title-text">ตารางปีจรฉบับเจาะลึก 10 ปี</span>
                     <span class="bazi-section-en-badge">(Annual Luck Master Matrix - 流年)</span>
                   </div>
-                  <p class="bazi-section-desc-text">ผังปีจร 10 ปีต่อเนื่อง แสดงราศีบน, กิ่งดิน, กิ่งแฝง, นัยอิม, สภาวะชี่, เทพและดาวชะตา (神煞), และปฏิสัมพันธ์ฟ้าดิน (刑沖合害破) เทียบกับ 4 เสากำเนิดและวัยจร</p>
+                  <p class="bazi-section-desc-text">ผังปีจร 10 ปีต่อเนื่อง แสดงราศีบน, กิ่งดิน, กิ่งแฝง, นัยอิม,
+                    สภาวะชี่, เทพและดาวชะตา (神煞), และปฏิสัมพันธ์ฟ้าดิน (刑沖合害破) เทียบกับ 4 เสากำเนิดและวัยจร</p>
                 </div>
               </div>
               <div class="bazi-annual-controls-right">
                 <div class="bazi-year-nav-btns">
-                  <button type="button" class="bazi-nav-btn" onclick="window.BaziApp.shiftAnnualRange(-10)" title="10 ปีก่อนหน้า">
+                  <button type="button" class="bazi-nav-btn" onclick="window.BaziApp.shiftAnnualRange(-10)"
+                    title="10 ปีก่อนหน้า">
                     <i class="fa-solid fa-angles-left"></i> 10 ปีก่อน
                   </button>
-                  <button type="button" class="bazi-nav-btn btn-current-year" onclick="window.BaziApp.resetAnnualToCurrentYear()" title="ปีปัจจุบัน">
+                  <button type="button" class="bazi-nav-btn btn-current-year"
+                    onclick="window.BaziApp.resetAnnualToCurrentYear()" title="ปีปัจจุบัน">
                     <i class="fa-solid fa-clock"></i> ปีปัจจุบัน
                   </button>
-                  <button type="button" class="bazi-nav-btn" onclick="window.BaziApp.shiftAnnualRange(10)" title="10 ปีถัดไป">
+                  <button type="button" class="bazi-nav-btn" onclick="window.BaziApp.shiftAnnualRange(10)"
+                    title="10 ปีถัดไป">
                     10 ปีถัดไป <i class="fa-solid fa-angles-right"></i>
                   </button>
                 </div>
                 <div class="bazi-year-dropdown-wrap">
-                  <select id="baziAdvanceAnnualYearSelect" class="bazi-year-select" onchange="window.BaziApp.selectAnnualYear(parseInt(this.value, 10))"></select>
+                  <select id="baziAdvanceAnnualYearSelect" class="bazi-year-select"
+                    onchange="window.BaziApp.selectAnnualYear(parseInt(this.value, 10))"></select>
                 </div>
               </div>
             </div>
@@ -1089,18 +1206,24 @@
                   <div class="bazi-section-title-row">
                     <span class="bazi-section-num-pill blue">ส่วนที่ 6</span>
                     <span class="bazi-section-title-text">ตารางเดือน 12 สารท</span>
-                    <span class="bazi-section-en-badge">(流月 - Solar Monthly Fortune ปี <span id="baziMonthYearLabel">2026</span>)</span>
+                    <span class="bazi-section-en-badge">(流月 - Solar Monthly Fortune ปี <span
+                        id="baziMonthYearLabel">2026</span>)</span>
                   </div>
-                  <p class="bazi-section-desc-text">คลิกเลือกดูได้ทีละเดือน ตรวจจับปฏิสัมพันธ์ประจำเดือนในดวง พร้อมเจาะลึก 5 มิติชีวิตประจำเดือน</p>
+                  <p class="bazi-section-desc-text">คลิกเลือกดูได้ทีละเดือน ตรวจจับปฏิสัมพันธ์ประจำเดือนในดวง
+                    พร้อมเจาะลึก 5 มิติชีวิตประจำเดือน</p>
                 </div>
               </div>
               <div class="bazi-annual-controls-right">
                 <div class="bazi-year-chips" id="baziYearChips">
-                  <button class="bazi-year-chip" data-year="2025" onclick="window.BaziApp.selectAnnualYear(2025)">2025 (มะเส็ง)</button>
-                  <button class="bazi-year-chip active" data-year="2026" onclick="window.BaziApp.selectAnnualYear(2026)">2026 (มะเมีย)</button>
-                  <button class="bazi-year-chip" data-year="2027" onclick="window.BaziApp.selectAnnualYear(2027)">2027 (มะแม)</button>
+                  <button class="bazi-year-chip" data-year="2025" onclick="window.BaziApp.selectAnnualYear(2025)">2025
+                    (มะเส็ง)</button>
+                  <button class="bazi-year-chip active" data-year="2026"
+                    onclick="window.BaziApp.selectAnnualYear(2026)">2026 (มะเมีย)</button>
+                  <button class="bazi-year-chip" data-year="2027" onclick="window.BaziApp.selectAnnualYear(2027)">2027
+                    (มะแม)</button>
                 </div>
-                <select id="baziAnnualYearSelect" class="bazi-year-select" onchange="window.BaziApp.selectAnnualYear(parseInt(this.value, 10))"></select>
+                <select id="baziAnnualYearSelect" class="bazi-year-select"
+                  onchange="window.BaziApp.selectAnnualYear(parseInt(this.value, 10))"></select>
               </div>
             </div>
 
@@ -1126,7 +1249,8 @@
                     <span class="bazi-section-title-text">การปรับฮวงจุ้ยและสิ่งมงคลเสริมชะตา</span>
                     <span class="bazi-section-en-badge">(Feng Shui &amp; Remedies)</span>
                   </div>
-                  <p class="bazi-section-desc-text">สีมงคลเสริมบารมี ทิศเปิดรับโชคลาภ และธาตุปรับสมดุลชะตาชีวิต (喜用神)</p>
+                  <p class="bazi-section-desc-text">สีมงคลเสริมบารมี ทิศเปิดรับโชคลาภ และธาตุปรับสมดุลชะตาชีวิต (喜用神)
+                  </p>
                 </div>
               </div>
               <span class="bazi-mode-tag advance-tag"><i class="fa-solid fa-gem"></i> Advance Remedies</span>
@@ -1137,88 +1261,98 @@
           </section>
 
           <!-- DESK VIEW (หน้าโต๊ะหมอดู: 4 หัวข้อวิชาการเจาะลึก) -->
-      <div id="baziDeskPageView" class="bazi-desk-page-view hidden">
-        <!-- Desk Header Card -->
-        <div class="bazi-desk-header-card">
-          <div class="desk-header-left">
-            <div class="desk-badge"><i class="fa-solid fa-graduation-cap"></i> Astrologer's Workspace</div>
-            <h2 class="desk-title"><i class="fa-solid fa-compass-drafting"></i> โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ</h2>
-            <p class="desk-subtitle" id="baziDeskCurrentChartSubtitle">ชุดเครื่องมือเจาะลึก 4 หัวข้อวิชาการโหราศาสตร์จีน 4 เสา (BaZi Academic Reference & Calculation Engine)</p>
-          </div>
-          <div class="desk-header-right">
-            <button type="button" class="bazi-btn-back-chart" onclick="window.BaziApp.setExpertSubView('chart')">
-              <i class="fa-solid fa-arrow-left"></i> กลับไปผังดวงปาจื่อ 6 เสา
-            </button>
-          </div>
-        </div>
-
-        <!-- 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ (Interactive Astrologer Assistant) -->
-        <div class="bazi-section-card bazi-expert-card" style="margin-bottom: 16px;">
-          <div class="bazi-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <div>
-              <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ
+          <div id="baziDeskPageView" class="bazi-desk-page-view hidden">
+            <!-- Desk Header Card -->
+            <div class="bazi-desk-header-card">
+              <div class="desk-header-left">
+                <div class="desk-badge"><i class="fa-solid fa-graduation-cap"></i> Astrologer's Workspace</div>
+                <h2 class="desk-title"><i class="fa-solid fa-compass-drafting"></i> โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ
+                  & ข้อมูลทางวิชาการ</h2>
+                <p class="desk-subtitle" id="baziDeskCurrentChartSubtitle">ชุดเครื่องมือเจาะลึก 4
+                  หัวข้อวิชาการโหราศาสตร์จีน 4 เสา (BaZi Academic Reference & Calculation Engine)</p>
+              </div>
+              <div class="desk-header-right">
+                <button type="button" class="bazi-btn-back-chart" onclick="window.BaziApp.setExpertSubView('chart')">
+                  <i class="fa-solid fa-arrow-left"></i> กลับไปผังดวงปาจื่อ 6 เสา
+                </button>
+              </div>
             </div>
-            <span class="expert-badge" style="background: rgba(2, 132, 199, 0.1); color: #0284c7; border-color: rgba(2, 132, 199, 0.2);"><i class="fa-solid fa-book-bookmark"></i> Reference Toolkit</span>
-          </div>
-          <p style="color: #64748b; font-size: 13px; margin-top: -6px; margin-bottom: 14px;">
-            เลือกหัวข้อวิเคราะห์เจาะลึกด้านล่างเพื่อตรวจสอบหลักวิชาการโหราศาสตร์จีน 4 เสา
-          </p>
 
-          <!-- Quick Query Buttons for Expert (Chips 1-6) -->
-          <div class="expert-query-chips">
-            <button class="expert-chip active" id="btnQueryGeju" onclick="window.BaziApp.runExpertQuery('geju')">
-              <i class="fa-solid fa-landmark"></i> 1. วิเคราะห์โครงสร้างเก๋อ (格局)
-            </button>
-            <button class="expert-chip" id="btnQueryTiaohou" onclick="window.BaziApp.runExpertQuery('tiaohou')">
-              <i class="fa-solid fa-temperature-half"></i> 2. หลักการเตี้ยวโฮ่ว & วั่งซ่วย (調候&旺衰)
-            </button>
-            <button class="expert-chip" id="btnQueryInteractions" onclick="window.BaziApp.runExpertQuery('interactions')">
-              <i class="fa-solid fa-bolt"></i> 3. ตรวจจุดปะทะ/ฮะ/ซิ้ง/ไฮ่ (刑沖合害)
-            </button>
-            <button class="expert-chip" id="btnQueryShensha" onclick="window.BaziApp.runExpertQuery('shensha')">
-              <i class="fa-solid fa-star"></i> 4. รวมดาวเทพและดาวเคราะห์ (神煞大全)
-            </button>
-            <button class="expert-chip" id="btnQueryDayunYear" onclick="window.BaziApp.runExpertQuery('dayun_year')">
-              <i class="fa-solid fa-timeline"></i> 5. เจาะลึกวัยจรปัจจุบัน & ปีจร 2026
-            </button>
-            <button class="expert-chip" id="btnQueryHuasha" onclick="window.BaziApp.runExpertQuery('huasha')">
-              <i class="fa-solid fa-shield-halved"></i> 6. หลักการแก้ดวง & พลิกวิกฤต (化煞指南)
-            </button>
-          </div>
+            <!-- 1. โต๊ะทำงานหมอดู: ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ (Interactive Astrologer Assistant) -->
+            <div class="bazi-section-card bazi-expert-card" style="margin-bottom: 16px;">
+              <div class="bazi-card-title"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div>
+                  <i class="fa-solid fa-compass-drafting" style="color: #7c3aed;"></i> 1. โต๊ะทำงานหมอดู:
+                  ปรึกษาหลักการปาจื่อ & ข้อมูลทางวิชาการ
+                </div>
+                <span class="expert-badge"
+                  style="background: rgba(2, 132, 199, 0.1); color: #0284c7; border-color: rgba(2, 132, 199, 0.2);"><i
+                    class="fa-solid fa-book-bookmark"></i> Reference Toolkit</span>
+              </div>
+              <p style="color: #64748b; font-size: 13px; margin-top: -6px; margin-bottom: 14px;">
+                เลือกหัวข้อวิเคราะห์เจาะลึกด้านล่างเพื่อตรวจสอบหลักวิชาการโหราศาสตร์จีน 4 เสา
+              </p>
 
-          <!-- Result box for 6 Principles -->
-          <div id="baziExpertPrinciplesResult" class="expert-result-box" style="margin-top: 14px;">
-            <!-- Dynamically populated from runExpertQuery -->
-          </div>
-        </div>
+              <!-- Quick Query Buttons for Expert (Chips 1-6) -->
+              <div class="expert-query-chips">
+                <button class="expert-chip active" id="btnQueryGeju" onclick="window.BaziApp.runExpertQuery('geju')">
+                  <i class="fa-solid fa-landmark"></i> 1. วิเคราะห์โครงสร้างเก๋อ (格局)
+                </button>
+                <button class="expert-chip" id="btnQueryTiaohou" onclick="window.BaziApp.runExpertQuery('tiaohou')">
+                  <i class="fa-solid fa-temperature-half"></i> 2. หลักการเตี้ยวโฮ่ว & วั่งซ่วย (調候&旺衰)
+                </button>
+                <button class="expert-chip" id="btnQueryInteractions"
+                  onclick="window.BaziApp.runExpertQuery('interactions')">
+                  <i class="fa-solid fa-bolt"></i> 3. ตรวจจุดปะทะ/ฮะ/ซิ้ง/ไฮ่ (刑沖合害)
+                </button>
+                <button class="expert-chip" id="btnQueryShensha" onclick="window.BaziApp.runExpertQuery('shensha')">
+                  <i class="fa-solid fa-star"></i> 4. รวมดาวเทพและดาวเคราะห์ (神煞大全)
+                </button>
+                <button class="expert-chip" id="btnQueryDayunYear"
+                  onclick="window.BaziApp.runExpertQuery('dayun_year')">
+                  <i class="fa-solid fa-timeline"></i> 5. เจาะลึกวัยจรปัจจุบัน & ปีจร 2026
+                </button>
+                <button class="expert-chip" id="btnQueryHuasha" onclick="window.BaziApp.runExpertQuery('huasha')">
+                  <i class="fa-solid fa-shield-halved"></i> 6. หลักการแก้ดวง & พลิกวิกฤต (化煞指南)
+                </button>
+              </div>
 
-        <!-- 2 & 3. Dual Expert Cards: Shen Sha Matrix + Clash/Harmony Matrix -->
-        <div class="bazi-dual-section" style="margin-bottom: 16px;">
-          <!-- Card A: ตารางเทพและดาวชะตา 4 เสา (Four Pillars Shen Sha Matrix) -->
-          <div class="bazi-section-card">
-            <div class="bazi-card-title">
-              <i class="fa-solid fa-star" style="color: #f59e0b;"></i> 2. ตารางแจกแจงเทพและดาวชะตา 4 เสา (神煞星盤)
+              <!-- Result box for 6 Principles -->
+              <div id="baziExpertPrinciplesResult" class="expert-result-box" style="margin-top: 14px;">
+                <!-- Dynamically populated from runExpertQuery -->
+              </div>
             </div>
-            <div id="baziExpertShenShaTable" class="expert-table-wrap"></div>
-          </div>
 
-          <!-- Card B: ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (Clash, Harmony, Punishment, Harm) -->
-          <div class="bazi-section-card">
-            <div class="bazi-card-title">
-              <i class="fa-solid fa-arrows-split-up-and-left" style="color: #ef4444;"></i> 3. ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (刑沖合害)
+            <!-- 2 & 3. Dual Expert Cards: Shen Sha Matrix + Clash/Harmony Matrix -->
+            <div class="bazi-dual-section" style="margin-bottom: 16px;">
+              <!-- Card A: ตารางเทพและดาวชะตา 4 เสา (Four Pillars Shen Sha Matrix) -->
+              <div class="bazi-section-card">
+                <div class="bazi-card-title">
+                  <i class="fa-solid fa-star" style="color: #f59e0b;"></i> 2. ตารางแจกแจงเทพและดาวชะตา 4 เสา (神煞星盤)
+                </div>
+                <div id="baziExpertShenShaTable" class="expert-table-wrap"></div>
+              </div>
+
+              <!-- Card B: ปฏิสัมพันธ์ฟ้าดิน 4 เสา & วัยจร (Clash, Harmony, Punishment, Harm) -->
+              <div class="bazi-section-card">
+                <div class="bazi-card-title">
+                  <i class="fa-solid fa-arrows-split-up-and-left" style="color: #ef4444;"></i> 3. ปฏิสัมพันธ์ฟ้าดิน 4
+                  เสา & วัยจร (刑沖合害)
+                </div>
+                <div id="baziExpertInteractionsList" class="expert-interactions-wrap"></div>
+              </div>
             </div>
-            <div id="baziExpertInteractionsList" class="expert-interactions-wrap"></div>
-          </div>
-        </div>
 
-        <!-- 4. Mathematical & Theoretical Calculation Breakdown -->
-        <div class="bazi-section-card" style="margin-bottom: 16px;">
-          <div class="bazi-card-title">
-            <i class="fa-solid fa-calculator" style="color: #0284c7;"></i> 4. แจกแจงสูตรและวิธีการคำนวณทางคณิตศาสตร์ (Calculation Breakdown)
+            <!-- 4. Mathematical & Theoretical Calculation Breakdown -->
+            <div class="bazi-section-card" style="margin-bottom: 16px;">
+              <div class="bazi-card-title">
+                <i class="fa-solid fa-calculator" style="color: #0284c7;"></i> 4. แจกแจงสูตรและวิธีการคำนวณทางคณิตศาสตร์
+                (Calculation Breakdown)
+              </div>
+              <div id="baziExpertFormulaBreakdown" class="expert-formula-grid"></div>
+            </div>
           </div>
-          <div id="baziExpertFormulaBreakdown" class="expert-formula-grid"></div>
-        </div>
-      </div>
 
         </div> <!-- END baziAdvanceResults -->
       </div> <!-- END baziSubViewAdvance -->
@@ -1279,9 +1413,12 @@
 
           <!-- Quick Context Meta Bar -->
           <div class="bazi-ask-context-bar" id="baziAskContextBar">
-            <span class="context-item"><i class="fa-solid fa-timeline" style="color: #6366f1;"></i> <strong>วัยจรปัจจุบัน:</strong> <span id="baziAskCurDaYunText">-</span></span>
-            <span class="context-item"><i class="fa-solid fa-calendar-star" style="color: #ea580c;"></i> <strong>ปีจรปัจจุบัน:</strong> <span id="baziAskCurAnnualText">-</span></span>
-            <span class="context-item"><i class="fa-solid fa-wand-magic-sparkles" style="color: #10b981;"></i> <strong>ธาตุให้คุณ (喜用神):</strong> <span id="baziAskFavElementsText">-</span></span>
+            <span class="context-item"><i class="fa-solid fa-timeline" style="color: #6366f1;"></i>
+              <strong>วัยจรปัจจุบัน:</strong> <span id="baziAskCurDaYunText">-</span></span>
+            <span class="context-item"><i class="fa-solid fa-calendar-star" style="color: #ea580c;"></i>
+              <strong>ปีจรปัจจุบัน:</strong> <span id="baziAskCurAnnualText">-</span></span>
+            <span class="context-item"><i class="fa-solid fa-wand-magic-sparkles" style="color: #10b981;"></i>
+              <strong>ธาตุให้คุณ (喜用神):</strong> <span id="baziAskFavElementsText">-</span></span>
           </div>
         </section>
 
@@ -1298,25 +1435,42 @@
                   <span class="bazi-section-title-text">สนทนาถามดวงชะตาเจาะลึก</span>
                   <span class="bazi-section-en-badge">(Deep BaZi Consultation &amp; Q&amp;A)</span>
                 </div>
-                <p class="bazi-section-desc-text">ถามตอบเจาะลึกทุกมิติชีวิต การงาน การเงิน ความรัก สุขภาพ วิเคราะห์เชื่อมโยงผัง 4 เสา วัยจร ปีจร และ 12 สารท</p>
+                <p class="bazi-section-desc-text">ถามตอบเจาะลึกทุกมิติชีวิต การงาน การเงิน ความรัก สุขภาพ
+                  วิเคราะห์เชื่อมโยงผัง 4 เสา วัยจร ปีจร และ 12 สารท</p>
               </div>
             </div>
-            <button type="button" class="bazi-btn-clear-chat" onclick="window.BaziApp.clearAskChat()" title="ล้างประวัติการสนทนาและเริ่มถามใหม่">
+            <button type="button" class="bazi-btn-clear-chat" onclick="window.BaziApp.clearAskChat()"
+              title="ล้างประวัติการสนทนาและเริ่มถามใหม่">
               <i class="fa-solid fa-rotate-left"></i> ล้างการสนทนา
             </button>
           </div>
 
           <!-- Quick Suggestion Chips -->
           <div class="bazi-ask-chips-container">
-            <span class="bazi-ask-chips-label"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> คำถามยอดนิยม:</span>
+            <span class="bazi-ask-chips-label"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>
+              คำถามยอดนิยม:</span>
             <div class="bazi-ask-chips-scroll" id="baziAskChipsScroll">
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่ไหม?')">💼 มีเกณฑ์เปลี่ยนงานปีนี้ไหม?</button>
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('การเงินและโชคลาภปีนี้เป็นอย่างไร มีเกณฑ์เงินก้อนไหม?')">💰 การเงินและโชคลาภปีนี้?</button>
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ความรักคู่ครองและคนรักช่วงนี้มีเกณฑ์เป็นอย่างไร?')">❤️ ความรักคู่ครองช่วงนี้?</button>
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สุขภาพและจุดอ่อนที่ต้องระวังเป็นพิเศษคือเรื่องอะไร?')">🏥 สุขภาพและข้อควรระวัง?</button>
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ช่วงเดือนไหนของปีนี้ที่ดีที่สุดในการเริ่มโปรเจกต์หรือเจรจา?')">📅 เดือนไหนดีที่สุดของปีนี้?</button>
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('อาชีพและทิศทางธุรกิจที่ถูกโฉลกกับดวงชะตานี้คืออะไร?')">🌟 อาชีพที่ถูกโฉลกกับดวง?</button>
-              <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สีมงคลและทิศมงคลที่ช่วยเปิดโชคลาภเสริมดวงชะตามีอะไรบ้าง?')">🧭 สีและทิศมงคลเสริมชะตา?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('ปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่ไหม?')">💼
+                มีเกณฑ์เปลี่ยนงานปีนี้ไหม?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('การเงินและโชคลาภปีนี้เป็นอย่างไร มีเกณฑ์เงินก้อนไหม?')">💰
+                การเงินและโชคลาภปีนี้?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('ความรักคู่ครองและคนรักช่วงนี้มีเกณฑ์เป็นอย่างไร?')">❤️
+                ความรักคู่ครองช่วงนี้?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('สุขภาพและจุดอ่อนที่ต้องระวังเป็นพิเศษคือเรื่องอะไร?')">🏥
+                สุขภาพและข้อควรระวัง?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('ช่วงเดือนไหนของปีนี้ที่ดีที่สุดในการเริ่มโปรเจกต์หรือเจรจา?')">📅
+                เดือนไหนดีที่สุดของปีนี้?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('อาชีพและทิศทางธุรกิจที่ถูกโฉลกกับดวงชะตานี้คืออะไร?')">🌟
+                อาชีพที่ถูกโฉลกกับดวง?</button>
+              <button type="button" class="bazi-ask-chip"
+                onclick="window.BaziApp.askQuickQuestion('สีมงคลและทิศมงคลที่ช่วยเปิดโชคลาภเสริมดวงชะตามีอะไรบ้าง?')">🧭
+                สีและทิศมงคลเสริมชะตา?</button>
             </div>
           </div>
 
@@ -1328,14 +1482,18 @@
           <!-- Chat Input Bar -->
           <div class="bazi-chat-input-bar">
             <div class="bazi-chat-input-inner">
-              <textarea id="baziAskInput" class="bazi-chat-textarea" rows="2" placeholder="พิมพ์คำถามที่ต้องการถามดวงชะตานี้ เช่น สิ้นปีนี้มีเกณฑ์เปลี่ยนงานไหม? หรือปี 2026 นี้ควรระวังเรื่องอะไรมากที่สุด?..." onkeydown="window.BaziApp.handleAskKeydown(event)"></textarea>
-              <button type="button" class="bazi-chat-send-btn" id="baziAskSendBtn" onclick="window.BaziApp.sendAskMessage()">
+              <textarea id="baziAskInput" class="bazi-chat-textarea" rows="2"
+                placeholder="พิมพ์คำถามที่ต้องการถามดวงชะตานี้ เช่น สิ้นปีนี้มีเกณฑ์เปลี่ยนงานไหม? หรือปี 2026 นี้ควรระวังเรื่องอะไรมากที่สุด?..."
+                onkeydown="window.BaziApp.handleAskKeydown(event)"></textarea>
+              <button type="button" class="bazi-chat-send-btn" id="baziAskSendBtn"
+                onclick="window.BaziApp.sendAskMessage()">
                 <i class="fa-solid fa-paper-plane"></i>
                 <span>ถามดวง</span>
               </button>
             </div>
             <div class="bazi-chat-input-hint">
-              <i class="fa-solid fa-circle-info"></i> กด <strong>Enter</strong> เพื่อส่งคำถาม (หรือ Shift+Enter เพื่อขึ้นบรรทัดใหม่)
+              <i class="fa-solid fa-circle-info"></i> กด <strong>Enter</strong> เพื่อส่งคำถาม (หรือ Shift+Enter
+              เพื่อขึ้นบรรทัดใหม่)
             </div>
           </div>
         </section>
@@ -1358,7 +1516,8 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i> ศาสตร์ไพ่เทพเหมียว (92 ใบ)
           </div>
           <h2 class="oracle-portal-title">เลือกรูปแบบการเปิดไพ่</h2>
-          <p class="oracle-portal-desc">ตั้งจิตอธิษฐานนิ่งๆ เลือกหัวข้อการทำนายที่ท่านต้องการเพื่อรับคำพยากรณ์และพลังบวกค่ะ</p>
+          <p class="oracle-portal-desc">ตั้งจิตอธิษฐานนิ่งๆ
+            เลือกหัวข้อการทำนายที่ท่านต้องการเพื่อรับคำพยากรณ์และพลังบวกค่ะ</p>
         </div>
 
         <div class="oracle-portal-buttons-grid">
@@ -1448,224 +1607,239 @@
             </button>
           </nav>
         </div>
-      
-      <!-- STEPPER PROGRESS BAR (HIDDEN AS REQUESTED) -->
-      <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง" style="display: none !important;">
-        <div class="stepper-track" style="display: none !important;">
-          <div class="stepper-fill" id="stepperFill" style="display: none !important;"></div>
-        </div>
-        <div class="stepper-step active" id="stepIndicator1" data-step="1" style="display: none !important;"></div>
-        <div class="stepper-step" id="stepIndicator2" data-step="2" style="display: none !important;"></div>
-      </nav>
 
-      <!-- PINNED CONTEXT BAR (Hidden in 2-step single screen) -->
-      <div id="pinnedContextBar" class="pinned-context-bar hidden" style="display: none !important;">
-        <div class="context-item context-question">
-          <i class="fa-solid fa-circle-question icon-gold"></i>
-          <div class="context-text">
-            <span class="context-label">คำถามของคุณ:</span>
-            <strong id="pinnedQuestionText" class="context-val">-</strong>
+        <!-- STEPPER PROGRESS BAR (HIDDEN AS REQUESTED) -->
+        <nav class="reading-stepper" aria-label="ขั้นตอนการดูดวง" style="display: none !important;">
+          <div class="stepper-track" style="display: none !important;">
+            <div class="stepper-fill" id="stepperFill" style="display: none !important;"></div>
           </div>
-        </div>
-        <div class="context-item context-deck hidden" id="pinnedDeckItem">
-          <i class="fa-solid fa-cat icon-gold"></i>
-          <div class="context-text">
-            <span class="context-label">สำรับไพ่:</span>
-            <strong id="pinnedDeckText" class="context-val">ไพ่เทพเหมียว (92 ใบ)</strong>
-          </div>
-        </div>
-        <button class="btn btn-secondary-sm" id="editQuestionQuickBtn" title="แก้ไขคำถาม">
-          <i class="fa-solid fa-pen"></i> แก้ไขคำถาม
-        </button>
-      </div>
+          <div class="stepper-step active" id="stepIndicator1" data-step="1" style="display: none !important;"></div>
+          <div class="stepper-step" id="stepIndicator2" data-step="2" style="display: none !important;"></div>
+        </nav>
 
-      <!-- LEGACY PLACEHOLDERS TO PREVENT SCRIPT NULL ERRORS -->
-      <div id="readingStep1" class="hidden" style="display: none !important;"></div>
-      <div id="readingStep2" class="hidden" style="display: none !important;"></div>
-
-      <!-- ============================================================ -->
-      <!-- MAIN SCREEN (STEP 1): QUESTION INPUT & PICK 3 CARDS -->
-      <!-- ============================================================ -->
-      <section id="readingStep3" class="reading-step-card animate-fade-in">
-        <!-- Mode 1: Daily Oracle Intro Card (Visible in Daily mode) -->
-        <div id="dailyIntroCard" class="daily-oracle-intro-card">
-          <div class="daily-oracle-icon-wrap">
-            <i class="fa-solid fa-sun"></i>
-          </div>
-          <div class="daily-oracle-text">
-            <h3 class="daily-oracle-title">☀️ เปิดไพ่ประจำวัน (Daily Healing &amp; Encouragement)</h3>
-            <p class="daily-oracle-desc">ตั้งจิตอธิษฐานนิ่งๆ สูดลมหายใจลึกๆ แล้วเลือกไพ่ 1 ใบ เพื่อรับพลังบวก ข้อคิดเตือนใจ และกำลังใจดีๆ ประจำวันนี้ค่ะ</p>
-          </div>
-        </div>
-
-        
-        <!-- Integrated Question Input Card at the Top -->
-        <div class="question-integrated-box hidden" id="questionIntegratedBox">
-          <div class="question-textarea-container">
-            <textarea id="userQuestionInput" class="question-textarea" rows="2" placeholder="พิมพ์คำถามที่อยากรู้ เช่น ทิศทางการงาน โปรเจกต์ หรือการสัมภาษณ์งานรอบนี้ จะปังไหม?..."></textarea>
-            <div class="textarea-actions">
-              <button class="btn-clear-text" id="clearQuestionBtn" type="button" title="ล้างข้อความ">
-                <i class="fa-solid fa-xmark"></i> ล้าง
-              </button>
+        <!-- PINNED CONTEXT BAR (Hidden in 2-step single screen) -->
+        <div id="pinnedContextBar" class="pinned-context-bar hidden" style="display: none !important;">
+          <div class="context-item context-question">
+            <i class="fa-solid fa-circle-question icon-gold"></i>
+            <div class="context-text">
+              <span class="context-label">คำถามของคุณ:</span>
+              <strong id="pinnedQuestionText" class="context-val">-</strong>
             </div>
           </div>
-
-          <!-- Popular Question Chips (คำถามยอดนิยม แตะเพื่อใส่คำถามทันที) -->
-          <div class="oracle-chips-row">
-            <span class="chips-label"><i class="fa-solid fa-fire" style="color: #f59e0b;"></i> คำถามยอดนิยม:</span>
-            <button type="button" class="oracle-chip-btn" data-q="สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่">
-              💼 สิ้นปีนี้มีเกณฑ์เปลี่ยนงานไหม
-            </button>
-            <button type="button" class="oracle-chip-btn" data-q="ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร มีโอกาสได้เงินก้อนไหม">
-              💰 การเงินและโชคลาภปีนี้
-            </button>
-            <button type="button" class="oracle-chip-btn" data-q="จังหวะความรักและคนรู้ใจช่วงนี้เป็นอย่างไร">
-              ❤️ จังหวะความรักและคนรู้ใจ
-            </button>
-            <button type="button" class="oracle-chip-btn" data-q="สุขภาพและสมดุลเบญจธาตุที่ต้องระวังปีนี้">
-              🌿 สุขภาพและเบญจธาตุที่ต้องระวัง
-            </button>
-            <button type="button" class="oracle-chip-btn" data-q="โปรเจกต์และการลงทุนรอบนี้จะราบรื่นไหม">
-              🎯 โปรเจกต์รอบนี้จะสำเร็จไหม
-            </button>
-          </div>
-
-          <!-- Smart Pattern Recommendation Box (Hidden from UI, runs silently in background) -->
-          <div id="smartPatternBox" class="smart-pattern-box hidden" style="display: none !important;">
-            <div class="smart-pattern-header">
-              <span class="smart-pattern-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> แม่หมอวิเคราะห์คำถามและเลือกรูปแบบ 3 ใบให้:</span>
-            </div>
-            <div class="smart-pattern-body">
-              <strong id="smartPatternTitle" class="smart-pattern-title">แบบที่ 2: สถานการณ์ - อุปสรรค - ทางออก</strong>
-              <p id="smartPatternDesc" class="smart-pattern-desc">ใช้เมื่อผู้ถามต้องการเข้าใจปัญหาและหาทางจัดการ เหมาะกับเรื่องงาน ความสัมพันธ์ และการตัดสินใจ</p>
+          <div class="context-item context-deck hidden" id="pinnedDeckItem">
+            <i class="fa-solid fa-cat icon-gold"></i>
+            <div class="context-text">
+              <span class="context-label">สำรับไพ่:</span>
+              <strong id="pinnedDeckText" class="context-val">ไพ่เทพเหมียว (92 ใบ)</strong>
             </div>
           </div>
-        </div>
-
-        <span id="step2HeaderTitle" class="hidden" style="display: none !important;"></span>
-
-        <!-- Pick Controls Bar (Top) -->
-        <div class="pick-controls-bar">
-          <div class="pick-current-instruction hidden" id="pickCurrentInstruction" style="display: none !important;">
-            <span>คลิกเลือกไพ่</span>
-          </div>
-
-          <div class="pick-quick-actions">
-            <button class="btn btn-secondary-sm" id="shuffleDeckCardsBtn" title="สับไพ่">
-              <i class="fa-solid fa-arrows-rotate"></i> สับไพ่
-            </button>
-            <button class="btn btn-primary-sm-action" id="autoDraw3CardsBtn" title="สุ่มไพ่">
-              <i class="fa-solid fa-bolt-lightning"></i> <span id="autoDrawCardsBtnText">สุ่มไพ่</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Interactive Deck Card Fan (Top) -->
-        <div class="deck-fan-stage">
-          <div class="deck-fan-instruction" style="position: absolute !important; top: 12px !important; left: 0 !important; right: 0 !important; width: 100% !important; text-align: center !important; z-index: 20 !important; pointer-events: none !important;">
-            <span class="deck-fan-instruction-text" style="font-family: 'Prompt', sans-serif !important; font-size: 15px !important; font-weight: 700 !important; color: #dc2626 !important; letter-spacing: 0.5px !important; display: inline-flex !important; align-items: center !important; gap: 6px !important; background: rgba(254, 242, 242, 0.95) !important; padding: 4px 16px !important; border-radius: 20px !important; border: 1px solid rgba(254, 202, 202, 0.8) !important; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08) !important;">
-              เลือกไพ่ตรงบริเวณนี้
-            </span>
-          </div>
-          <div class="deck-fan-wrapper" id="deckFanWrapper">
-            <!-- Dynamically populated with cards in JS -->
-          </div>
-        </div>
-
-        <!-- Target Slots Row (Placed below deck) -->
-        <div class="pick-slots-container" id="pickSlotsContainer">
-          <!-- Dynamically populated according to active spread (3 or 5 slots) -->
-        </div>
-
-        <!-- Reveal Divination Trigger Banner (Shows when cards are picked) -->
-        <div id="revealTriggerBanner" class="reveal-trigger-banner hidden animate-bounce-soft">
-          <div class="banner-content">
-            <i class="fa-solid fa-wand-magic-sparkles banner-icon"></i>
-            <div>
-              <h3 id="revealBannerTitle">เลือกไพ่ครบ 3 ใบเรียบร้อยแล้ว!</h3>
-              <p>ตั้งจิตส่งพลังถึงไพ่ แล้วกดคลิกอ่านผลทำนายเพื่อเปิดดูรูปหน้าไพ่และคำพยากรณ์</p>
-            </div>
-          </div>
-          <button class="btn btn-primary btn-xl pulse-glow" id="revealDivinationBtn">
-            <i class="fa-solid fa-star"></i> อ่านผลทำนาย (Reveal Oracle) ✨
-          </button>
-        </div>
-      </section>
-
-      <!-- ============================================================ -->
-      <!-- STEP 4: DIVINATION RESULTS & SYNTHESIS -->
-      <!-- ============================================================ -->
-      <section id="readingStep4" class="reading-step-card hidden animate-fade-in">
-        
-        <!-- Result Header Toolbar -->
-        <div class="result-header-toolbar">
-          <div class="toolbar-left">
-            <button class="btn btn-secondary-sm" id="newReadingBtn" title="เริ่มตั้งคำถามใหม่เพื่อดูดวงรอบใหม่">
-              <i class="fa-solid fa-rotate-left"></i> ถามคำถามใหม่
-            </button>
-            <button class="btn btn-secondary-sm" id="redrawCurrentCardsBtn" title="สุ่มเปิดไพ่ใหม่อีกครั้งสำหรับคำถามนี้">
-              <i class="fa-solid fa-arrows-rotate"></i> สุ่มเปิดไพ่ใหม่
-            </button>
-            <button class="btn btn-secondary-sm" id="portalNavReturnBtn" title="กลับไปหน้าเลือกเมนู 3 รูปแบบ" onclick="window.showOracleMenuPortal()">
-              <i class="fa-solid fa-compass"></i> เลือกเมนูอื่น
-            </button>
-          </div>
-        </div>
-
-        <!-- Question Summary Banner -->
-        <div class="result-question-banner" id="resultQuestionBanner">
-          <div class="banner-badge-group">
-            <span class="badge-deck" id="resultDeckBadge">ไพ่เทพเหมียว</span>
-            <span class="badge-spread" id="resultSpreadBadge" style="display: none !important;"></span>
-            <span class="badge-date" id="resultDateBadge">วันนี้</span>
-          </div>
-          <h2 class="result-question-title" id="resultQuestionTitle">คำถาม: ...</h2>
-        </div>
-
-        <!-- 3 Cards Visual Board -->
-        <div class="result-cards-board" id="resultCardsBoard">
-          <!-- Dynamically filled with 3 revealed cards in JS -->
-        </div>
-
-        <!-- Holistic Synthesis Section -->
-        <div class="result-synthesis-container" id="resultSynthesisContainer">
-          <!-- Dynamically filled with deep synthesis in JS -->
-        </div>
-
-        <!-- Bottom Share Section (หลังจบคำทำนาย) -->
-        <div class="result-share-bottom-card" id="resultShareBottomCard">
-          <div class="share-bottom-inner">
-            <h3 class="share-bottom-heading">
-              แชร์คำทำนายนี้ให้เพื่อนๆกัน
-            </h3>
-            <div class="share-bottom-buttons-group" role="group" aria-label="แชร์คำทำนายนี้ให้เพื่อนๆ">
-              <button type="button" class="btn-share-bottom btn-direct-fb" id="shareFbBottomBtn" title="แชร์ลง Facebook">
-                <i class="fa-brands fa-facebook-f"></i>
-                <span class="share-btn-text">FB</span>
-              </button>
-              <button type="button" class="btn-share-bottom btn-direct-ig" id="shareIgBottomBtn" title="แชร์ลง Instagram">
-                <i class="fa-brands fa-instagram"></i>
-                <span class="share-btn-text">IG</span>
-              </button>
-              <button type="button" class="btn-share-bottom btn-direct-line" id="shareLineBottomBtn" title="แชร์เข้า LINE">
-                <i class="fa-brands fa-line"></i>
-                <span class="share-btn-text">Line</span>
-              </button>
-              <button type="button" class="btn-share-bottom btn-direct-link" id="shareLinkBottomBtn" title="คัดลอกลิงก์คำทำนายนี้">
-                <i class="fa-solid fa-link"></i>
-                <span class="share-btn-text" id="shareLinkBtnText">Link</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div style="text-align: center; margin: 24px auto 10px auto;">
-          <button type="button" class="btn btn-secondary" onclick="window.showOracleMenuPortal()" style="border-radius: 25px; padding: 12px 32px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> เลือกรูปแบบการเปิดไพ่อื่น
+          <button class="btn btn-secondary-sm" id="editQuestionQuickBtn" title="แก้ไขคำถาม">
+            <i class="fa-solid fa-pen"></i> แก้ไขคำถาม
           </button>
         </div>
 
-      </section>
+        <!-- LEGACY PLACEHOLDERS TO PREVENT SCRIPT NULL ERRORS -->
+        <div id="readingStep1" class="hidden" style="display: none !important;"></div>
+        <div id="readingStep2" class="hidden" style="display: none !important;"></div>
+
+        <!-- ============================================================ -->
+        <!-- MAIN SCREEN (STEP 1): QUESTION INPUT & PICK 3 CARDS -->
+        <!-- ============================================================ -->
+        <section id="readingStep3" class="reading-step-card animate-fade-in">
+          <!-- Mode 1: Daily Oracle Intro Card (Visible in Daily mode) -->
+          <div id="dailyIntroCard" class="daily-oracle-intro-card">
+            <div class="daily-oracle-icon-wrap">
+              <i class="fa-solid fa-sun"></i>
+            </div>
+            <div class="daily-oracle-text">
+              <h3 class="daily-oracle-title">☀️ เปิดไพ่ประจำวัน (Daily Healing &amp; Encouragement)</h3>
+              <p class="daily-oracle-desc">ตั้งจิตอธิษฐานนิ่งๆ สูดลมหายใจลึกๆ แล้วเลือกไพ่ 1 ใบ เพื่อรับพลังบวก
+                ข้อคิดเตือนใจ และกำลังใจดีๆ ประจำวันนี้ค่ะ</p>
+            </div>
+          </div>
+
+
+          <!-- Integrated Question Input Card at the Top -->
+          <div class="question-integrated-box hidden" id="questionIntegratedBox">
+            <div class="question-textarea-container">
+              <textarea id="userQuestionInput" class="question-textarea" rows="2"
+                placeholder="พิมพ์คำถามที่อยากรู้ เช่น ทิศทางการงาน โปรเจกต์ หรือการสัมภาษณ์งานรอบนี้ จะปังไหม?..."></textarea>
+              <div class="textarea-actions">
+                <button class="btn-clear-text" id="clearQuestionBtn" type="button" title="ล้างข้อความ">
+                  <i class="fa-solid fa-xmark"></i> ล้าง
+                </button>
+              </div>
+            </div>
+
+            <!-- Popular Question Chips (คำถามยอดนิยม แตะเพื่อใส่คำถามทันที) -->
+            <div class="oracle-chips-row">
+              <span class="chips-label"><i class="fa-solid fa-fire" style="color: #f59e0b;"></i> คำถามยอดนิยม:</span>
+              <button type="button" class="oracle-chip-btn" data-q="สิ้นปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหรือไม่">
+                💼 สิ้นปีนี้มีเกณฑ์เปลี่ยนงานไหม
+              </button>
+              <button type="button" class="oracle-chip-btn"
+                data-q="ปีนี้มีเกณฑ์การเงินและโชคลาภอย่างไร มีโอกาสได้เงินก้อนไหม">
+                💰 การเงินและโชคลาภปีนี้
+              </button>
+              <button type="button" class="oracle-chip-btn" data-q="จังหวะความรักและคนรู้ใจช่วงนี้เป็นอย่างไร">
+                ❤️ จังหวะความรักและคนรู้ใจ
+              </button>
+              <button type="button" class="oracle-chip-btn" data-q="สุขภาพและสมดุลเบญจธาตุที่ต้องระวังปีนี้">
+                🌿 สุขภาพและเบญจธาตุที่ต้องระวัง
+              </button>
+              <button type="button" class="oracle-chip-btn" data-q="โปรเจกต์และการลงทุนรอบนี้จะราบรื่นไหม">
+                🎯 โปรเจกต์รอบนี้จะสำเร็จไหม
+              </button>
+            </div>
+
+            <!-- Smart Pattern Recommendation Box (Hidden from UI, runs silently in background) -->
+            <div id="smartPatternBox" class="smart-pattern-box hidden" style="display: none !important;">
+              <div class="smart-pattern-header">
+                <span class="smart-pattern-tag"><i class="fa-solid fa-wand-magic-sparkles"></i>
+                  แม่หมอวิเคราะห์คำถามและเลือกรูปแบบ 3 ใบให้:</span>
+              </div>
+              <div class="smart-pattern-body">
+                <strong id="smartPatternTitle" class="smart-pattern-title">แบบที่ 2: สถานการณ์ - อุปสรรค -
+                  ทางออก</strong>
+                <p id="smartPatternDesc" class="smart-pattern-desc">ใช้เมื่อผู้ถามต้องการเข้าใจปัญหาและหาทางจัดการ
+                  เหมาะกับเรื่องงาน ความสัมพันธ์ และการตัดสินใจ</p>
+              </div>
+            </div>
+          </div>
+
+          <span id="step2HeaderTitle" class="hidden" style="display: none !important;"></span>
+
+          <!-- Pick Controls Bar (Top) -->
+          <div class="pick-controls-bar">
+            <div class="pick-current-instruction hidden" id="pickCurrentInstruction" style="display: none !important;">
+              <span>คลิกเลือกไพ่</span>
+            </div>
+
+            <div class="pick-quick-actions">
+              <button class="btn btn-secondary-sm" id="shuffleDeckCardsBtn" title="สับไพ่">
+                <i class="fa-solid fa-arrows-rotate"></i> สับไพ่
+              </button>
+              <button class="btn btn-primary-sm-action" id="autoDraw3CardsBtn" title="สุ่มไพ่">
+                <i class="fa-solid fa-bolt-lightning"></i> <span id="autoDrawCardsBtnText">สุ่มไพ่</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive Deck Card Fan (Top) -->
+          <div class="deck-fan-stage">
+            <div class="deck-fan-instruction"
+              style="position: absolute !important; top: 12px !important; left: 0 !important; right: 0 !important; width: 100% !important; text-align: center !important; z-index: 20 !important; pointer-events: none !important;">
+              <span class="deck-fan-instruction-text"
+                style="font-family: 'Prompt', sans-serif !important; font-size: 15px !important; font-weight: 700 !important; color: #dc2626 !important; letter-spacing: 0.5px !important; display: inline-flex !important; align-items: center !important; gap: 6px !important; background: rgba(254, 242, 242, 0.95) !important; padding: 4px 16px !important; border-radius: 20px !important; border: 1px solid rgba(254, 202, 202, 0.8) !important; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08) !important;">
+                เลือกไพ่ตรงบริเวณนี้
+              </span>
+            </div>
+            <div class="deck-fan-wrapper" id="deckFanWrapper">
+              <!-- Dynamically populated with cards in JS -->
+            </div>
+          </div>
+
+          <!-- Target Slots Row (Placed below deck) -->
+          <div class="pick-slots-container" id="pickSlotsContainer">
+            <!-- Dynamically populated according to active spread (3 or 5 slots) -->
+          </div>
+
+          <!-- Reveal Divination Trigger Banner (Shows when cards are picked) -->
+          <div id="revealTriggerBanner" class="reveal-trigger-banner hidden animate-bounce-soft">
+            <div class="banner-content">
+              <i class="fa-solid fa-wand-magic-sparkles banner-icon"></i>
+              <div>
+                <h3 id="revealBannerTitle">เลือกไพ่ครบ 3 ใบเรียบร้อยแล้ว!</h3>
+                <p>ตั้งจิตส่งพลังถึงไพ่ แล้วกดคลิกอ่านผลทำนายเพื่อเปิดดูรูปหน้าไพ่และคำพยากรณ์</p>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-xl pulse-glow" id="revealDivinationBtn">
+              <i class="fa-solid fa-star"></i> อ่านผลทำนาย (Reveal Oracle) ✨
+            </button>
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- STEP 4: DIVINATION RESULTS & SYNTHESIS -->
+        <!-- ============================================================ -->
+        <section id="readingStep4" class="reading-step-card hidden animate-fade-in">
+
+          <!-- Result Header Toolbar -->
+          <div class="result-header-toolbar">
+            <div class="toolbar-left">
+              <button class="btn btn-secondary-sm" id="newReadingBtn" title="เริ่มตั้งคำถามใหม่เพื่อดูดวงรอบใหม่">
+                <i class="fa-solid fa-rotate-left"></i> ถามคำถามใหม่
+              </button>
+              <button class="btn btn-secondary-sm" id="redrawCurrentCardsBtn"
+                title="สุ่มเปิดไพ่ใหม่อีกครั้งสำหรับคำถามนี้">
+                <i class="fa-solid fa-arrows-rotate"></i> สุ่มเปิดไพ่ใหม่
+              </button>
+              <button class="btn btn-secondary-sm" id="portalNavReturnBtn" title="กลับไปหน้าเลือกเมนู 3 รูปแบบ"
+                onclick="window.showOracleMenuPortal()">
+                <i class="fa-solid fa-compass"></i> เลือกเมนูอื่น
+              </button>
+            </div>
+          </div>
+
+          <!-- Question Summary Banner -->
+          <div class="result-question-banner" id="resultQuestionBanner">
+            <div class="banner-badge-group">
+              <span class="badge-deck" id="resultDeckBadge">ไพ่เทพเหมียว</span>
+              <span class="badge-spread" id="resultSpreadBadge" style="display: none !important;"></span>
+              <span class="badge-date" id="resultDateBadge">วันนี้</span>
+            </div>
+            <h2 class="result-question-title" id="resultQuestionTitle">คำถาม: ...</h2>
+          </div>
+
+          <!-- 3 Cards Visual Board -->
+          <div class="result-cards-board" id="resultCardsBoard">
+            <!-- Dynamically filled with 3 revealed cards in JS -->
+          </div>
+
+          <!-- Holistic Synthesis Section -->
+          <div class="result-synthesis-container" id="resultSynthesisContainer">
+            <!-- Dynamically filled with deep synthesis in JS -->
+          </div>
+
+          <!-- Bottom Share Section (หลังจบคำทำนาย) -->
+          <div class="result-share-bottom-card" id="resultShareBottomCard">
+            <div class="share-bottom-inner">
+              <h3 class="share-bottom-heading">
+                แชร์คำทำนายนี้ให้เพื่อนๆกัน
+              </h3>
+              <div class="share-bottom-buttons-group" role="group" aria-label="แชร์คำทำนายนี้ให้เพื่อนๆ">
+                <button type="button" class="btn-share-bottom btn-direct-fb" id="shareFbBottomBtn"
+                  title="แชร์ลง Facebook">
+                  <i class="fa-brands fa-facebook-f"></i>
+                  <span class="share-btn-text">FB</span>
+                </button>
+                <button type="button" class="btn-share-bottom btn-direct-ig" id="shareIgBottomBtn"
+                  title="แชร์ลง Instagram">
+                  <i class="fa-brands fa-instagram"></i>
+                  <span class="share-btn-text">IG</span>
+                </button>
+                <button type="button" class="btn-share-bottom btn-direct-line" id="shareLineBottomBtn"
+                  title="แชร์เข้า LINE">
+                  <i class="fa-brands fa-line"></i>
+                  <span class="share-btn-text">Line</span>
+                </button>
+                <button type="button" class="btn-share-bottom btn-direct-link" id="shareLinkBottomBtn"
+                  title="คัดลอกลิงก์คำทำนายนี้">
+                  <i class="fa-solid fa-link"></i>
+                  <span class="share-btn-text" id="shareLinkBtnText">Link</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin: 24px auto 10px auto;">
+            <button type="button" class="btn btn-secondary" onclick="window.showOracleMenuPortal()"
+              style="border-radius: 25px; padding: 12px 32px; font-weight: 700; font-size: 15px; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.15);">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> เลือกรูปแบบการเปิดไพ่อื่น
+            </button>
+          </div>
+
+        </section>
 
       </div> <!-- END oracleReadingFlow -->
 
@@ -1677,28 +1851,33 @@
   <!-- ============================================================ -->
   <div id="tongShuAppView" class="view-container hidden">
     <div class="tongshu-app-container">
-      
+
       <!-- Top Control Toolbar -->
       <!-- MODE SWITCHER (Basic vs Expert) - Basic shows Today's Hourly Auspicious Times -->
       <section class="bazi-mode-switcher-bar" id="tsModeSwitcherBar" style="margin-bottom: 14px;">
         <div class="bazi-mode-toggle-group">
-          <button type="button" class="bazi-mode-btn active" id="tsModeBasicBtn" onclick="window.TongShuApp.switchMode('basic')">
+          <button type="button" class="bazi-mode-btn active" id="tsModeBasicBtn"
+            onclick="window.TongShuApp.switchMode('basic')">
             <i class="fa-solid fa-clock"></i> <strong>โหมด Basic</strong>
             <span class="mode-sub">ฤกษ์ยามวันนี้ • รายชั่วโมง (12 ชั่วยาม)</span>
           </button>
-          <button type="button" class="bazi-mode-btn" id="tsModeExpertBtn" onclick="window.TongShuApp.switchMode('expert')">
-            <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong> <span class="qm-lock-badge" id="tsExpertLockBadge" style="margin-left: 6px;"><i class="fa-solid fa-lock"></i> สมาชิก</span>
+          <button type="button" class="bazi-mode-btn" id="tsModeExpertBtn"
+            onclick="window.TongShuApp.switchMode('expert')">
+            <i class="fa-solid fa-graduation-cap"></i> <strong>โหมด Expert</strong> <span class="qm-lock-badge"
+              id="tsExpertLockBadge" style="margin-left: 6px;"><i class="fa-solid fa-lock"></i> สมาชิก</span>
             <span class="mode-sub">ปฏิทินฤกษ์ยามเต็มรูปแบบ &amp; ค้นหาฤกษ์มงคล</span>
           </button>
         </div>
         <div class="bazi-mode-hint-box" id="tsModeHintBox">
           <div id="tsModeBasicInfo" class="mode-banner-content">
             <i class="fa-solid fa-circle-info" style="color: #0284c7;"></i>
-            <span><strong>โหมด Basic (ฤกษ์ยามวันนี้):</strong> แสดงตารางฤกษ์ยามมงคลประจำวันนี้เท่านั้น ในระดับรายชั่วโมง (12 ชั่วยาม / ตลอด 24 ชม.) พร้อมไฮไลต์ยามปัจจุบันแบบเรียลไทม์</span>
+            <span><strong>โหมด Basic (ฤกษ์ยามวันนี้):</strong> แสดงตารางฤกษ์ยามมงคลประจำวันนี้เท่านั้น ในระดับรายชั่วโมง
+              (12 ชั่วยาม / ตลอด 24 ชม.) พร้อมไฮไลต์ยามปัจจุบันแบบเรียลไทม์</span>
           </div>
           <div id="tsModeExpertInfo" class="mode-banner-content hidden">
             <i class="fa-solid fa-wand-magic-sparkles" style="color: #7c3aed;"></i>
-            <span><strong>โหมด Expert:</strong> เปิดเครื่องมือปฏิทินฤกษ์ยามจีน TongShu เต็มรูปแบบ เลือกดูย้อนหลัง-ล่วงหน้า กิจกรรมควรทำ/ควรเว้น ทิศเทพโชคลาภ ค้นหาฤกษ์มงคล 35 วัน และปฏิทินรายเดือน</span>
+            <span><strong>โหมด Expert:</strong> เปิดเครื่องมือปฏิทินฤกษ์ยามจีน TongShu เต็มรูปแบบ
+              เลือกดูย้อนหลัง-ล่วงหน้า กิจกรรมควรทำ/ควรเว้น ทิศเทพโชคลาภ ค้นหาฤกษ์มงคล 35 วัน และปฏิทินรายเดือน</span>
           </div>
         </div>
       </section>
@@ -1751,31 +1930,35 @@
       <!-- SUB-VIEW 1: DAILY ALMANAC DETAILED VIEW -->
       <!-- ============================================================ -->
       <div id="tsSubViewAlmanac" class="ts-subview-section">
-        
+
         <!-- Hero Section: Daily Auspicious Overview -->
         <div class="ts-hero-card" id="tsHeroCard" style="display: none;">
           <div class="ts-hero-inner">
             <div class="ts-hero-badge-group">
-              <span class="ts-badge-pill gold" id="tsHeroScoreBadge"><i class="fa-solid fa-star"></i> ความมงคล 88%</span>
+              <span class="ts-badge-pill gold" id="tsHeroScoreBadge"><i class="fa-solid fa-star"></i> ความมงคล
+                88%</span>
               <span class="ts-badge-pill violet" id="tsHeroSolarTermBadge">สารท 寒露 (หานลู่)</span>
               <span class="ts-badge-pill amber" id="tsHeroNaYinBadge">ธาตุสถิต: 沙中土</span>
             </div>
 
             <h2 class="ts-hero-date-gregorian" id="tsHeroDateGregorian">วันเสาร์ที่ 10 ตุลาคม พ.ศ. 2569</h2>
             <div class="ts-hero-date-lunar" id="tsHeroDateLunar">农历九月初一 (วันชิวอิก 初一 - ขึ้น 1 ค่ำ)</div>
-            
+
             <div class="ts-hero-ganzhi-banner">
               <div class="ts-ganzhi-box" id="tsHeroDayGanZhi">
                 วัน <strong>丁巳</strong> (ติง • มะเส็งไฟ)
               </div>
               <div class="ts-hero-status-wrap">
-                <span id="tsHeroStatusTitle" class="ts-status-title gold">วันหวงเต้าจี๋ยื่อ (黄道吉日 - วันดาวทองมหามงคล)</span>
+                <span id="tsHeroStatusTitle" class="ts-status-title gold">วันหวงเต้าจี๋ยื่อ (黄道吉日 -
+                  วันดาวทองมหามงคล)</span>
               </div>
             </div>
 
             <div class="ts-hero-cosmic-strip">
-              <span class="ts-cosmic-item" id="tsHeroOfficerBadge"><i class="fa-solid fa-shield-halved"></i> 12 เทพผู้พิทักษ์: 危 (เวย)</span>
-              <span class="ts-cosmic-item" id="tsHeroMansionBadge"><i class="fa-solid fa-certificate"></i> 28 ดาวฤกษ์: 柳 (ละมั่งดิน)</span>
+              <span class="ts-cosmic-item" id="tsHeroOfficerBadge"><i class="fa-solid fa-shield-halved"></i> 12
+                เทพผู้พิทักษ์: 危 (เวย)</span>
+              <span class="ts-cosmic-item" id="tsHeroMansionBadge"><i class="fa-solid fa-certificate"></i> 28 ดาวฤกษ์: 柳
+                (ละมั่งดิน)</span>
             </div>
 
             <p class="ts-hero-summary" id="tsHeroOfficerSummary">
@@ -1858,7 +2041,8 @@
         <div class="ts-section-card">
           <div class="ts-section-header">
             <div>
-              <h3 id="tsHourlySectionTitle"><i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามมงคลวันนี้ รายชั่วโมง (12 ชั่วยาม • 时辰吉凶)</h3>
+              <h3 id="tsHourlySectionTitle"><i class="fa-solid fa-clock-rotate-left"></i> ฤกษ์ยามมงคลวันนี้ รายชั่วโมง
+                (12 ชั่วยาม • 时辰吉凶)</h3>
               <p>คำนวณตามหลัก 6 ดาวมงคล (หวงเต้า) และ 6 ดาวร้าย (เฮยเต้า) ตลอด 24 ชั่วโมง</p>
             </div>
             <div class="ts-clock-badge-group">
@@ -1878,18 +2062,18 @@
             <div class="ts-deity-visual">
               <img id="tsDeityCardImage" src="CardImage/Major2.png" alt="Deity Card" class="ts-deity-img">
             </div>
-            
+
             <div class="ts-deity-details">
               <div class="ts-deity-badge-row">
                 <span class="ts-badge-pill gold"><i class="fa-solid fa-shield-cat"></i> เทพผู้พิทักษ์ประจำวัน</span>
                 <span class="ts-badge-pill cyan" id="tsDeityCardElement">ธาตุน้ำ (Water)</span>
               </div>
-              
+
               <h2 class="ts-deity-name" id="tsDeityCardName">พระแม่จิ่วเทียนเสวียนหนี่ว์ (九天玄女)</h2>
               <blockquote class="ts-deity-quote" id="tsDeityCardQuote">
                 “ผู้ที่รู้จักรอด้วยปัญญา ย่อมมองเห็นความจริงแห่งฟ้าดิน”
               </blockquote>
-              
+
               <div class="ts-deity-advice-box">
                 <h4><i class="fa-solid fa-sparkles"></i> สาส์นคำสอนและข้อคิดเสริมบารมี:</h4>
                 <p id="tsDeityCardAdvice">ทำจิตใจให้ผ่องใส เปิดรับโอกาสใหม่ๆ ด้วยความรอบคอบและสติปัญญา</p>
@@ -1928,7 +2112,7 @@
           <div class="ts-finder-filter-card">
             <h3><i class="fa-solid fa-crosshairs"></i> เลือกวัตถุประสงค์เพื่อคำนวณหาฤกษ์มงคล</h3>
             <p>ระบบจะสแกนปฏิทินจีน 35 วันข้างหน้า และเลือกเฟ้นวันที่เกื้อหนุนตามหลักวิชาการโหราศาสตร์จีน</p>
-            
+
             <div class="ts-purpose-pills-row">
               <button class="ts-purpose-pill active" data-purpose="opening">
                 <i class="fa-solid fa-store"></i> เปิดร้าน / เปิดธุรกิจ
@@ -1964,10 +2148,12 @@
         <div class="ts-calendar-card">
           <div class="ts-cal-controls-row">
             <div class="ts-cal-nav-buttons">
-              <button class="ts-btn ts-btn-nav" id="tsCalPrevMonthBtn"><i class="fa-solid fa-chevron-left"></i> เดือนก่อน</button>
-              <button class="ts-btn ts-btn-nav" id="tsCalNextMonthBtn">เดือนถัดไป <i class="fa-solid fa-chevron-right"></i></button>
+              <button class="ts-btn ts-btn-nav" id="tsCalPrevMonthBtn"><i class="fa-solid fa-chevron-left"></i>
+                เดือนก่อน</button>
+              <button class="ts-btn ts-btn-nav" id="tsCalNextMonthBtn">เดือนถัดไป <i
+                  class="fa-solid fa-chevron-right"></i></button>
             </div>
-            
+
             <div class="ts-cal-selects-group">
               <select id="tsCalMonthSelect" class="ts-select">
                 <option value="1">มกราคม (Jan)</option>
@@ -2011,31 +2197,35 @@
   <!-- ========================================================================== -->
   <div id="qiMenAppView" class="view-container hidden">
     <div class="qimen-app-container">
-      
+
       <!-- 0. Top Operational Mode Navigation (3 Tiers) -->
       <div class="qm-top-nav-bar" id="qmTopNavBar">
         <!-- Tier 1: Real-Time Hour Chart (Guest & Member) -->
-        <button type="button" class="qm-nav-pill active" id="qmNavRealtime" title="ผังฉีเหมิน Real Time ยามปัจจุบันล้วนๆ (ไม่นำ Profile มาประกอบ)">
+        <button type="button" class="qm-nav-pill active" id="qmNavRealtime"
+          title="ผังฉีเหมิน Real Time ยามปัจจุบันล้วนๆ (ไม่นำ Profile มาประกอบ)">
           <i class="fa-solid fa-clock-rotate-left"></i>
           <span>1. ผังปัจจุบัน (Real-Time)</span>
         </button>
 
         <!-- Tier 2: Central 4-Level Chart Calculator (Member Locked) -->
-        <button type="button" class="qm-nav-pill" id="qmNavCalculator" title="เครื่องมือคำนวณผังฉีเหมิน 4 ระดับ (Hour / Day / Month / Year)">
+        <button type="button" class="qm-nav-pill" id="qmNavCalculator"
+          title="เครื่องมือคำนวณผังฉีเหมิน 4 ระดับ (Hour / Day / Month / Year)">
           <i class="fa-solid fa-calculator"></i>
           <span>2. เครื่องมือคำนวณ 4 ผัง</span>
           <span class="qm-lock-badge" id="qmCalcLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
         </button>
 
         <!-- Tier 3: Profile Destiny & Daily Formations (Member Locked) -->
-        <button type="button" class="qm-nav-pill" id="qmNavDestiny" title="ผังชะตากำเนิดเจ้าของ Profile &amp; โครงสร้างวันนี้ที่ Match กับดวงคุณ">
+        <button type="button" class="qm-nav-pill" id="qmNavDestiny"
+          title="ผังชะตากำเนิดเจ้าของ Profile &amp; โครงสร้างวันนี้ที่ Match กับดวงคุณ">
           <i class="fa-solid fa-crown"></i>
           <span>3. ผังชะตาของฉัน &amp; Formations</span>
           <span class="qm-lock-badge" id="qmDestinyLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
         </button>
 
         <!-- Tier 4: Qi Men Question Divination / Forecasting (Member Locked) -->
-        <button type="button" class="qm-nav-pill" id="qmNavAsk" title="ตั้งจิตถามคำถามฉีเหมิน (Qi Men Forecasting • 奇门预测)">
+        <button type="button" class="qm-nav-pill" id="qmNavAsk"
+          title="ตั้งจิตถามคำถามฉีเหมิน (Qi Men Forecasting • 奇门预测)">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
           <span>4. ถามฉีเหมิน</span>
           <span class="qm-lock-badge" id="qmAskLockBadge"><i class="fa-solid fa-lock"></i> สมาชิก</span>
@@ -2151,7 +2341,8 @@
               </div>
               <div>
                 <h3>ถามฉีเหมินพยากรณ์ (Qi Men Forecasting • 奇门预测)</h3>
-                <p>เลือกวันเดือนปีและเวลาจากแถบด้านบน พิมพ์คำถามที่ต้องการรู้ แล้วกดผูกผังเพื่อวิเคราะห์วังตัวคุณ (日干) เทียบกับวังเรื่องที่ถาม (用神)</p>
+                <p>เลือกวันเดือนปีและเวลาจากแถบด้านบน พิมพ์คำถามที่ต้องการรู้ แล้วกดผูกผังเพื่อวิเคราะห์วังตัวคุณ (日干)
+                  เทียบกับวังเรื่องที่ถาม (用神)</p>
               </div>
             </div>
             <button type="button" class="qm-btn-now-quick" id="qmAskUseNowBtn" title="ตั้งเป็นวันและเวลาปัจจุบันทันที">
@@ -2161,11 +2352,14 @@
 
           <div class="qm-ask-controls-row">
             <div class="qm-ask-topic-box">
-              <label for="qmAskTopicSelect"><i class="fa-solid fa-crosshairs" style="color: #7c3aed;"></i> หมวดคำถาม / ตัวแทนเรื่องที่ถาม (用神 Yong Shen):</label>
+              <label for="qmAskTopicSelect"><i class="fa-solid fa-crosshairs" style="color: #7c3aed;"></i> หมวดคำถาม /
+                ตัวแทนเรื่องที่ถาม (用神 Yong Shen):</label>
               <select id="qmAskTopicSelect" class="qm-ask-select">
                 <option value="auto" selected>✨ วิเคราะห์หมวดหมู่และเลือกตัวแทนเรื่อง (用神) อัตโนมัติจากคำถาม</option>
-                <option value="career">💼 งานประจำที่กำลังทำอยู่ / การงาน / สมัครงาน / เลื่อนตำแหน่ง (ดูประตูเปิด Open Door 开门)</option>
-                <option value="business">🏪 ธุรกิจ / กิจการส่วนตัว / การค้าขาย / เปิดร้าน (ดูประตูเกิด Life Door 生门)</option>
+                <option value="career">💼 งานประจำที่กำลังทำอยู่ / การงาน / สมัครงาน / เลื่อนตำแหน่ง (ดูประตูเปิด Open
+                  Door 开门)</option>
+                <option value="business">🏪 ธุรกิจ / กิจการส่วนตัว / การค้าขาย / เปิดร้าน (ดูประตูเกิด Life Door 生门)
+                </option>
                 <option value="wealth">💰 การเงิน / โชคลาภ / ทุนทรัพย์ / หนี้สิน (ดูประตูเกิด 生门 • ก้านอู้ 戊)</option>
                 <option value="love">❤️ ความรัก / คู่ครอง / หุ้นส่วน / การเจรจา (เทพหกประสาน 六合 • ก้าน 庚/乙)</option>
                 <option value="exam">📄 สัญญา / เอกสาร / การสอบ / ชื่อเสียง (ประตูทัศนา 景门 • ดาวบัณฑิต 天辅)</option>
@@ -2176,7 +2370,8 @@
           </div>
 
           <div class="qm-ask-input-wrap">
-            <textarea id="qmAskQuestionInput" class="qm-ask-textarea" rows="2" placeholder="พิมพ์คำถามที่ต้องการถามฉีเหมิน เช่น สัมภาษณ์งานที่ใหม่จะผ่านไหม? ดีลธุรกิจรอบนี้จะได้กำไรไหม? เขาคิดอย่างไรกับเรา?..."></textarea>
+            <textarea id="qmAskQuestionInput" class="qm-ask-textarea" rows="2"
+              placeholder="พิมพ์คำถามที่ต้องการถามฉีเหมิน เช่น สัมภาษณ์งานที่ใหม่จะผ่านไหม? ดีลธุรกิจรอบนี้จะได้กำไรไหม? เขาคิดอย่างไรกับเรา?..."></textarea>
             <button type="button" class="qm-ask-clear-btn" id="qmAskClearBtn" title="ล้างคำถาม">
               <i class="fa-solid fa-xmark"></i> ล้าง
             </button>
@@ -2184,11 +2379,17 @@
 
           <div class="qm-ask-chips-row">
             <span class="qm-chips-lbl"><i class="fa-solid fa-fire" style="color: #f59e0b;"></i> ตัวอย่างคำถาม:</span>
-            <button type="button" class="qm-ask-chip" data-q="งานหรือโปรเจกต์ที่กำลังติดต่ออยู่จะสำเร็จราบรื่นไหม">💼 โปรเจกต์ที่ติดต่อจะสำเร็จไหม</button>
-            <button type="button" class="qm-ask-chip" data-q="การลงทุนหรือค้าขายรอบนี้จะได้กำไรคุ้มค่าไหม">💰 การลงทุนรอบนี้จะได้กำไรไหม</button>
-            <button type="button" class="qm-ask-chip" data-q="ความสัมพันธ์กับคนคุยหรือคนรักช่วงนี้มีแนวโน้มเป็นอย่างไร">❤️ แนวโน้มความรักความสัมพันธ์</button>
-            <button type="button" class="qm-ask-chip" data-q="การเซ็นสัญญาหรือยื่นเอกสารสำคัญครั้งนี้จะผ่านไหม">📄 การเซ็นสัญญา/เอกสารจะผ่านไหม</button>
-            <button type="button" class="qm-ask-chip" data-q="สิ่งที่ตั้งใจทำอยู่ในตอนนี้จะมีอุปสรรคอะไรและควรแก้เกมอย่างไร">🧭 สิ่งที่ตั้งใจทำควรแก้เกมอย่างไร</button>
+            <button type="button" class="qm-ask-chip" data-q="งานหรือโปรเจกต์ที่กำลังติดต่ออยู่จะสำเร็จราบรื่นไหม">💼
+              โปรเจกต์ที่ติดต่อจะสำเร็จไหม</button>
+            <button type="button" class="qm-ask-chip" data-q="การลงทุนหรือค้าขายรอบนี้จะได้กำไรคุ้มค่าไหม">💰
+              การลงทุนรอบนี้จะได้กำไรไหม</button>
+            <button type="button" class="qm-ask-chip"
+              data-q="ความสัมพันธ์กับคนคุยหรือคนรักช่วงนี้มีแนวโน้มเป็นอย่างไร">❤️ แนวโน้มความรักความสัมพันธ์</button>
+            <button type="button" class="qm-ask-chip" data-q="การเซ็นสัญญาหรือยื่นเอกสารสำคัญครั้งนี้จะผ่านไหม">📄
+              การเซ็นสัญญา/เอกสารจะผ่านไหม</button>
+            <button type="button" class="qm-ask-chip"
+              data-q="สิ่งที่ตั้งใจทำอยู่ในตอนนี้จะมีอุปสรรคอะไรและควรแก้เกมอย่างไร">🧭
+              สิ่งที่ตั้งใจทำควรแก้เกมอย่างไร</button>
           </div>
 
           <div class="qm-ask-actions-row">
@@ -2222,7 +2423,8 @@
 
           <div class="qm-chart-footer">
             <span>Calendar (Place of use) - Time Zone: Asia/Bangkok (UTC+7) • Longitude: 100.5°</span>
-            <span class="qm-conv-tag">This chart is plotted by using: <strong>Convention 2 • 置闰法 (Zhirun Method)</strong></span>
+            <span class="qm-conv-tag">This chart is plotted by using: <strong>Convention 2 • 置闰法 (Zhirun
+                Method)</strong></span>
           </div>
         </div>
 
@@ -2249,7 +2451,7 @@
   <!-- VIEW 5: PERSONALITY & 60 JIA ZI ARCHETYPES (EASTERN MBTI / DISC) -->
   <div id="personalityAppView" class="view-container hidden">
     <div class="personality-app-container">
-      
+
       <!-- HERO HEADER -->
       <header class="personality-page-header">
         <div class="personality-header-badge">
@@ -2259,7 +2461,8 @@
           ทายนิสัย <span class="gradient-text">ฉบับน้องเหมียว</span>
         </h1>
         <p class="personality-page-subtitle">
-          คุณเป็นน้องเหมียวชนิดไหน? คำนวณจากวันเดือนปีเวลาเกิด • กราฟใยแมงมุม 5 Structures • วิเคราะห์ % 10 Profiles • Mapping แมวประจำตัวตนสไตล์แม่หมอติ๊ดติ๊ด
+          คุณเป็นน้องเหมียวชนิดไหน? คำนวณจากวันเดือนปีเวลาเกิด • กราฟใยแมงมุม 5 Structures • วิเคราะห์ % 10 Profiles •
+          Mapping แมวประจำตัวตนสไตล์แม่หมอติ๊ดติ๊ด
         </p>
       </header>
 
@@ -2271,12 +2474,14 @@
               <i class="fa-solid fa-sparkles" style="color: #ec4899;"></i>
               <span>ระบุข้อมูลวันเกิดเพื่อถอดรหัสตัวตน</span>
             </div>
-            <button type="button" class="btn-use-my-profile" id="personalityUseMyProfileBtn" title="ดึงข้อมูลวันเกิดจากโปรไฟล์สมาชิก">
+            <button type="button" class="btn-use-my-profile" id="personalityUseMyProfileBtn"
+              title="ดึงข้อมูลวันเกิดจากโปรไฟล์สมาชิก">
               <i class="fa-solid fa-user-check"></i> ใช้วันเกิดของฉัน
             </button>
           </div>
 
-          <form id="personalityForm" class="personality-form" onsubmit="event.preventDefault(); window.PersonalityApp && window.PersonalityApp.calculateFromInputs();">
+          <form id="personalityForm" class="personality-form"
+            onsubmit="event.preventDefault(); window.PersonalityApp && window.PersonalityApp.calculateFromInputs();">
             <div class="p-form-grid">
               <div class="p-field">
                 <label for="personalityName"><i class="fa-solid fa-user"></i> ชื่อ / ฉายา</label>
@@ -2284,13 +2489,17 @@
               </div>
 
               <div class="p-field date-field-wrapper">
-                <label for="personalityBirthDate"><i class="fa-solid fa-calendar-day"></i> วันเดือนปีเกิด (ค.ศ.) *</label>
+                <label for="personalityBirthDate"><i class="fa-solid fa-calendar-day"></i> วันเดือนปีเกิด (ค.ศ.)
+                  *</label>
                 <div class="p-date-input-group">
-                  <input type="text" id="personalityBirthDate" placeholder="YYYY-MM-DD เช่น 1977-07-23" inputmode="numeric" autocomplete="bday" required>
-                  <button type="button" class="btn-picker-trigger" id="personalityDatePickerBtn" title="เปิดปฏิทินเลือกวันเดือนปีเกิด">
+                  <input type="text" id="personalityBirthDate" placeholder="YYYY-MM-DD เช่น 1977-07-23"
+                    inputmode="numeric" autocomplete="bday" required>
+                  <button type="button" class="btn-picker-trigger" id="personalityDatePickerBtn"
+                    title="เปิดปฏิทินเลือกวันเดือนปีเกิด">
                     <i class="fa-solid fa-calendar-days"></i>
                   </button>
-                  <input type="date" id="personalityHiddenDatePicker" class="hidden-native-picker" tabindex="-1" aria-hidden="true">
+                  <input type="date" id="personalityHiddenDatePicker" class="hidden-native-picker" tabindex="-1"
+                    aria-hidden="true">
                 </div>
               </div>
 
@@ -2436,10 +2645,11 @@
   <div class="modal-overlay hidden" id="cardSelectModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังสำรับ "ไพ่เทพเหมียว" (92 ใบ) - เลือกตำแหน่ง: <span id="modalPositionName">ตำแหน่ง 1</span></h3>
+        <h3><i class="fa-solid fa-magnifying-glass"></i> คลังสำรับ "ไพ่เทพเหมียว" (92 ใบ) - เลือกตำแหน่ง: <span
+            id="modalPositionName">ตำแหน่ง 1</span></h3>
         <button class="modal-close" id="closeCardModalBtn">&times;</button>
       </div>
-      
+
       <!-- Filter Bar: Five Elements & Arcana for ไพ่เทพเหมียว -->
       <div class="modal-filter-tabs" id="modalFilterTabs">
         <button class="modal-tab active" data-filter="all">ทั้งหมด (92 ใบ)</button>
@@ -2453,7 +2663,8 @@
 
       <div class="modal-search-bar">
         <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="modalCardSearchInput" placeholder="พิมพ์เลขไพ่ (1-92) หรือ ค้นหาชื่อไพ่ / ธาตุ / คำสำคัญ...">
+        <input type="text" id="modalCardSearchInput"
+          placeholder="พิมพ์เลขไพ่ (1-92) หรือ ค้นหาชื่อไพ่ / ธาตุ / คำสำคัญ...">
       </div>
       <div class="modal-cards-grid" id="modalCardsGrid">
         <!-- Dynamically rendered card list for picking -->
@@ -2465,10 +2676,11 @@
   <div class="modal-overlay hidden" id="baziSavedModal">
     <div class="modal-card bazi-modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-folder-bookmark" style="color: #7c3aed;"></i> จัดการรายชื่อลูกดวงที่บันทึกไว้ (Saved Client Profiles)</h3>
+        <h3><i class="fa-solid fa-folder-bookmark" style="color: #7c3aed;"></i> จัดการรายชื่อลูกดวงที่บันทึกไว้ (Saved
+          Client Profiles)</h3>
         <button class="modal-close" id="baziCloseSavedModalBtn">&times;</button>
       </div>
-      
+
       <div class="bazi-saved-modal-body">
         <div class="modal-search-bar" style="margin-bottom: 14px;">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -2486,19 +2698,23 @@
   <div class="progress-overlay" id="progressOverlay">
     <div class="progress-card">
       <h3 id="progressTitle">กำลังจัดเตรียมไฟล์ PDF...</h3>
-      <p id="progressSubtitle">กรุณาอย่าปิดหน้านี้ ระบบกำลังสแกนและล็อกรหัสความปลอดภัยของหน้ากระดาษ A4 ทั้ง 94 หน้าเพื่อป้องกันการคัดลอก</p>
-      
+      <p id="progressSubtitle">กรุณาอย่าปิดหน้านี้ ระบบกำลังสแกนและล็อกรหัสความปลอดภัยของหน้ากระดาษ A4 ทั้ง 94
+        หน้าเพื่อป้องกันการคัดลอก</p>
+
       <div class="progress-bar-container">
         <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
       </div>
-      
+
       <div class="progress-stats">
         <span id="progressPercent">0%</span>
         <span id="progressPageCount">0 / 94 หน้า</span>
       </div>
 
       <div class="rendering-tips">
-        <p><i class="fa-solid fa-shield-halved"></i> <strong>ระบบรักษาความปลอดภัย:</strong> ข้อความทั้งหมดในคู่มือจะถูกแปลงให้อยู่ในรูปแบบ Raster Image ความละเอียดสูง เพื่อให้เปิดดูและสั่งพิมพ์งานได้คมชัดที่สุด แต่จะไม่สามารถลากคลุมเพื่อก๊อปปี้คัดลอกข้อความไปใช้งานต่อได้โดยง่าย</p>
+        <p><i class="fa-solid fa-shield-halved"></i> <strong>ระบบรักษาความปลอดภัย:</strong>
+          ข้อความทั้งหมดในคู่มือจะถูกแปลงให้อยู่ในรูปแบบ Raster Image ความละเอียดสูง
+          เพื่อให้เปิดดูและสั่งพิมพ์งานได้คมชัดที่สุด
+          แต่จะไม่สามารถลากคลุมเพื่อก๊อปปี้คัดลอกข้อความไปใช้งานต่อได้โดยง่าย</p>
       </div>
     </div>
   </div>
@@ -2575,13 +2791,13 @@
     </div>
   </div>
 
-  
+
   <!-- ===================================================================== -->
   <!-- VIEW: CUSTOMER BOOKING VIEW (จองคิวดูดวงส่วนตัวกับแม่หมอติ๊ดติ๊ด) -->
   <!-- ===================================================================== -->
   <div id="bookingAppView" class="view-container hidden">
     <div class="booking-app-container">
-      
+
       <!-- Top Hero Header -->
       <div class="booking-hero-banner">
         <div class="booking-hero-badge">
@@ -2643,9 +2859,11 @@
           <form id="bookingCustomerForm" class="booking-form-body">
             <div class="booking-field-group">
               <label class="booking-label">
-                <i class="fa-solid fa-circle-user text-purple-600"></i> ชื่อ-นามสกุล หรือ ชื่อเล่น <span class="required-star">*</span>
+                <i class="fa-solid fa-circle-user text-purple-600"></i> ชื่อ-นามสกุล หรือ ชื่อเล่น <span
+                  class="required-star">*</span>
               </label>
-              <input type="text" id="bookingInputName" class="booking-input" placeholder="เช่น คุณบุ๋ม / มะเหมี่ยว" required>
+              <input type="text" id="bookingInputName" class="booking-input" placeholder="เช่น คุณบุ๋ม / มะเหมี่ยว"
+                required>
             </div>
 
             <div class="booking-fields-row">
@@ -2666,10 +2884,12 @@
 
             <div class="booking-field-group">
               <label class="booking-label">
-                <i class="fa-solid fa-envelope text-blue-600"></i> อีเมลของคุณ (สำหรับรับการยืนยันนัดหมาย) <span class="required-star">*</span>
+                <i class="fa-solid fa-envelope text-blue-600"></i> อีเมลของคุณ (สำหรับรับการยืนยันนัดหมาย) <span
+                  class="required-star">*</span>
               </label>
               <input type="email" id="bookingInputEmail" class="booking-input" placeholder="example@gmail.com" required>
-              <span class="booking-input-tip">💡 เมื่อแม่หมอกดตอบรับ ระบบจะส่งอีเมลยืนยันวันและเวลาไปยังอีเมลนี้ค่ะ</span>
+              <span class="booking-input-tip">💡 เมื่อแม่หมอกดตอบรับ
+                ระบบจะส่งอีเมลยืนยันวันและเวลาไปยังอีเมลนี้ค่ะ</span>
             </div>
 
             <div class="booking-field-group">
@@ -2677,25 +2897,32 @@
                 <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i> บริการที่ต้องการปรึกษา
               </label>
               <select id="bookingSelectService" class="booking-select">
-                <option value="เปิดไพ่พยากรณ์เทพเหมียว & ทาโรต์ (Tarot Reading)">🔮 เปิดไพ่พยากรณ์เทพเหมียว & ทาโรต์ (Tarot Reading)</option>
-                <option value="วิเคราะห์ผังดวง 4 เสาชะตาปาจื่อเชิงลึก (Deep BaZi Consultation)">🏛️ วิเคราะห์ผังดวง 4 เสาชะตาปาจื่อเชิงลึก (Deep BaZi)</option>
-                <option value="ดูดวงฉีเหมินตุ้นเจี่ย & ฤกษ์ยามมงคล (Qi Men & TongShu)">🧭 ดูดวงฉีเหมินตุ้นเจี่ย & ฤกษ์ยามมงคล (Qi Men)</option>
-                <option value="ปรึกษาดวงชะตาแบบผสมผสานครบวงจร (Full Comprehensive)">✨ ปรึกษาดวงชะตาแบบผสมผสานครบวงจร (Full)</option>
+                <option value="เปิดไพ่พยากรณ์เทพเหมียว & ทาโรต์ (Tarot Reading)">🔮 เปิดไพ่พยากรณ์เทพเหมียว & ทาโรต์
+                  (Tarot Reading)</option>
+                <option value="วิเคราะห์ผังดวง 4 เสาชะตาปาจื่อเชิงลึก (Deep BaZi Consultation)">🏛️ วิเคราะห์ผังดวง 4
+                  เสาชะตาปาจื่อเชิงลึก (Deep BaZi)</option>
+                <option value="ดูดวงฉีเหมินตุ้นเจี่ย & ฤกษ์ยามมงคล (Qi Men & TongShu)">🧭 ดูดวงฉีเหมินตุ้นเจี่ย &
+                  ฤกษ์ยามมงคล (Qi Men)</option>
+                <option value="ปรึกษาดวงชะตาแบบผสมผสานครบวงจร (Full Comprehensive)">✨ ปรึกษาดวงชะตาแบบผสมผสานครบวงจร
+                  (Full)</option>
               </select>
             </div>
 
             <div class="booking-field-group">
               <label class="booking-label">
-                <i class="fa-solid fa-comment-dots text-purple-600"></i> เรื่องหรือคำถามที่ต้องการถามเป็นพิเศษ (ไม่บังคับ)
+                <i class="fa-solid fa-comment-dots text-purple-600"></i> เรื่องหรือคำถามที่ต้องการถามเป็นพิเศษ
+                (ไม่บังคับ)
               </label>
-              <textarea id="bookingInputTopic" class="booking-textarea" rows="3" placeholder="เช่น อยากปรึกษาเรื่องการงาน เกณฑ์เปลี่ยนงาน หรือเรื่องความรักคู่ครอง..."></textarea>
+              <textarea id="bookingInputTopic" class="booking-textarea" rows="3"
+                placeholder="เช่น อยากปรึกษาเรื่องการงาน เกณฑ์เปลี่ยนงาน หรือเรื่องความรักคู่ครอง..."></textarea>
             </div>
 
             <button type="submit" id="bookingSubmitBtn" class="booking-submit-btn">
               <i class="fa-solid fa-wand-magic-sparkles"></i> ยืนยันการจองคิวดูดวง
             </button>
             <p class="booking-guarantee-note">
-              <i class="fa-solid fa-shield-halved text-purple-600"></i> ปลอดภัยและเป็นความลับ • ไม่มีค่าใช้จ่ายแอบแฝง • ระบบแจ้งเตือนแม่หมอทันที
+              <i class="fa-solid fa-shield-halved text-purple-600"></i> ปลอดภัยและเป็นความลับ • ไม่มีค่าใช้จ่ายแอบแฝง •
+              ระบบแจ้งเตือนแม่หมอทันที
             </p>
           </form>
         </div>
@@ -2708,7 +2935,7 @@
   <!-- ===================================================================== -->
   <div id="adminBookingsAppView" class="view-container hidden">
     <div class="admin-bookings-container">
-      
+
       <div class="admin-bookings-header">
         <div class="admin-header-title-row">
           <div class="admin-title-badge">
@@ -2728,27 +2955,35 @@
 
       <!-- Admin Main Navigation Tabs -->
       <div class="admin-main-nav-tabs">
-        <button type="button" class="admin-nav-tab active" id="adminNavTabBookings" onclick="window.BookingApp.switchAdminTab('bookings')">
+        <button type="button" class="admin-nav-tab active" id="adminNavTabBookings"
+          onclick="window.BookingApp.switchAdminTab('bookings')">
           <i class="fa-solid fa-clipboard-list"></i> รายการลูกค้าจองดูดวง
           <span class="admin-tab-count" id="adminNavPendingCount" style="display:none;">0</span>
         </button>
-        <button type="button" class="admin-nav-tab" id="adminNavTabSchedule" onclick="window.BookingApp.switchAdminTab('schedule')">
+        <button type="button" class="admin-nav-tab" id="adminNavTabSchedule"
+          onclick="window.BookingApp.switchAdminTab('schedule')">
           <i class="fa-solid fa-sliders"></i> ปรับเปลี่ยนวัน-เวลารับดูดวง
         </button>
       </div>
 
       <!-- Panel 1: รายการลูกค้าจองดูดวง -->
       <div id="adminBookingsFeedPanel" class="admin-view-panel">
+        <!-- Stats Summary Strip -->
         <!-- Web Visitor Traffic Stats Strip (สถิติคนเข้าชมเว็บไซต์) -->
-        <div style="margin-bottom: 14px; background: linear-gradient(135deg, rgba(239, 246, 255, 0.9) 0%, rgba(240, 253, 250, 0.9) 100%); border: 1px solid rgba(186, 230, 253, 0.8); border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        <div
+          style="margin-bottom: 14px; background: linear-gradient(135deg, rgba(239, 246, 255, 0.9) 0%, rgba(240, 253, 250, 0.9) 100%); border: 1px solid rgba(186, 230, 253, 0.8); border-radius: 12px; padding: 12px 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <span style="font-size: 13px; font-weight: 700; color: #0369a1;"><i class="fa-solid fa-chart-line"></i> สถิติคนเข้าชมเว็บไซต์ (Real-Time Visitor Stats)</span>
-            <span style="font-size: 11px; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 20px;"><i class="fa-solid fa-signal"></i> เชื่อมต่อ Google Analytics & Firestore</span>
+            <span style="font-size: 13px; font-weight: 700; color: #0369a1;"><i class="fa-solid fa-chart-line"></i>
+              สถิติคนเข้าชมเว็บไซต์ (Real-Time Visitor Stats)</span>
+            <span
+              style="font-size: 11px; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 20px;"><i
+                class="fa-solid fa-signal"></i> เชื่อมต่อ Google Analytics & Firestore</span>
           </div>
           <div class="admin-stats-strip" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 0;">
             <div class="admin-stat-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid #e0f2fe;">
               <span class="stat-num text-blue-600" id="adminVisitorToday">0</span>
-              <span class="stat-lbl"><i class="fa-solid fa-user-check" style="color: #0284c7;"></i> คนเข้าชมวันนี้</span>
+              <span class="stat-lbl"><i class="fa-solid fa-user-check" style="color: #0284c7;"></i>
+                คนเข้าชมวันนี้</span>
             </div>
             <div class="admin-stat-card" style="background: rgba(255, 255, 255, 0.95); border: 1px solid #e0f2fe;">
               <span class="stat-num text-indigo-600" id="adminViewsToday">0</span>
@@ -2787,16 +3022,20 @@
 
         <!-- Filter Tabs -->
         <div class="admin-filters-bar">
-          <button type="button" class="admin-filter-btn active" data-filter="all" onclick="window.BookingApp.setAdminFilter('all')">
+          <button type="button" class="admin-filter-btn active" data-filter="all"
+            onclick="window.BookingApp.setAdminFilter('all')">
             ทั้งหมด
           </button>
-          <button type="button" class="admin-filter-btn" data-filter="pending" onclick="window.BookingApp.setAdminFilter('pending')">
+          <button type="button" class="admin-filter-btn" data-filter="pending"
+            onclick="window.BookingApp.setAdminFilter('pending')">
             ⏳ รอการตอบรับ
           </button>
-          <button type="button" class="admin-filter-btn" data-filter="confirmed" onclick="window.BookingApp.setAdminFilter('confirmed')">
+          <button type="button" class="admin-filter-btn" data-filter="confirmed"
+            onclick="window.BookingApp.setAdminFilter('confirmed')">
             ✅ ตอบรับแล้ว
           </button>
-          <button type="button" class="admin-filter-btn" data-filter="cancelled" onclick="window.BookingApp.setAdminFilter('cancelled')">
+          <button type="button" class="admin-filter-btn" data-filter="cancelled"
+            onclick="window.BookingApp.setAdminFilter('cancelled')">
             ❌ ยกเลิก
           </button>
         </div>
@@ -2810,7 +3049,7 @@
       <!-- Panel 2: ปรับเปลี่ยนวัน-เวลารับดูดวง -->
       <div id="adminScheduleSettingsPanel" class="admin-view-panel hidden">
         <div class="admin-settings-layout">
-          
+
           <!-- Top Quick Actions & Live Link -->
           <div class="admin-settings-top-actions">
             <button type="button" class="btn-preview-customer-view" onclick="window.BookingApp.adminGoToCustomerView()">
@@ -2839,8 +3078,10 @@
                 <span id="adminSettingStatusText" class="settings-status-badge">🟢 กำลังเปิดรับจองคิวตามปกติ</span>
               </div>
               <div class="settings-input-group mt-3">
-                <label class="settings-label"><i class="fa-solid fa-bullhorn text-purple-600"></i> ข้อความแจ้งเตือนเมื่อปิดรับจอง (แสดงให้ลูกค้าเห็น):</label>
-                <input type="text" id="adminSettingClosedNotice" class="settings-text-input" placeholder="เช่น ขออภัยค่ะ ขณะนี้แม่หมอขอปิดรับคิวชั่วคราว หากเปิดรับแล้วจะแจ้งให้ทราบนะคะ ✨">
+                <label class="settings-label"><i class="fa-solid fa-bullhorn text-purple-600"></i>
+                  ข้อความแจ้งเตือนเมื่อปิดรับจอง (แสดงให้ลูกค้าเห็น):</label>
+                <input type="text" id="adminSettingClosedNotice" class="settings-text-input"
+                  placeholder="เช่น ขออภัยค่ะ ขณะนี้แม่หมอขอปิดรับคิวชั่วคราว หากเปิดรับแล้วจะแจ้งให้ทราบนะคะ ✨">
               </div>
             </div>
           </div>
@@ -2858,12 +3099,16 @@
               <!-- Preset Quick Buttons -->
               <div class="settings-presets-bar">
                 <span class="preset-label"><i class="fa-solid fa-bolt text-amber-500"></i> ปุ่มลัด:</span>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('weekend')">เฉพาะเสาร์-อาทิตย์</button>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('fri_sat_sun')">ศุกร์-เสาร์-อาทิตย์</button>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('weekday')">จันทร์-ศุกร์</button>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetDays('all')">เปิดรับทุกวัน</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetDays('weekend')">เฉพาะเสาร์-อาทิตย์</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetDays('fri_sat_sun')">ศุกร์-เสาร์-อาทิตย์</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetDays('weekday')">จันทร์-ศุกร์</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetDays('all')">เปิดรับทุกวัน</button>
               </div>
-              
+
               <!-- Days Toggle Container -->
               <div id="adminSettingDaysContainer" class="days-toggle-grid mt-3">
                 <!-- Populated by populateAdminScheduleSettings() -->
@@ -2877,7 +3122,8 @@
               <div class="settings-card-icon"><i class="fa-solid fa-hourglass-start"></i></div>
               <div>
                 <h3 class="settings-card-title">ระยะห่างขั้นต่ำระหว่างคิว (Buffer Gap)</h3>
-                <p class="settings-card-desc">ระบบจะไม่อนุญาตให้ลูกค้าจองติดกันภายในเวลานี้ เพื่อให้แม่หมอมีเวลาพักและเตรียมตัว</p>
+                <p class="settings-card-desc">ระบบจะไม่อนุญาตให้ลูกค้าจองติดกันภายในเวลานี้
+                  เพื่อให้แม่หมอมีเวลาพักและเตรียมตัว</p>
               </div>
             </div>
             <div class="settings-card-body">
@@ -2908,9 +3154,15 @@
               <!-- Preset Slot Buttons -->
               <div class="settings-presets-bar">
                 <span class="preset-label"><i class="fa-solid fa-bolt text-amber-500"></i> ชุดเวลาสำเร็จรูป:</span>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetSlots('default_afternoon')">รอบบ่าย-ค่ำ (14:00-22:00 น. รอบละ 2 ชม.)</button>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetSlots('full_day')">เต็มวัน (10:00-20:00 น. รอบละ 2 ชม.)</button>
-                <button type="button" class="btn-preset-chip" onclick="window.BookingApp.adminApplyPresetSlots('one_hour_afternoon')">รอบละ 1 ชั่วโมง (14:00-20:00 น.)</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetSlots('default_afternoon')">รอบบ่าย-ค่ำ (14:00-22:00 น.
+                  รอบละ 2 ชม.)</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetSlots('full_day')">เต็มวัน (10:00-20:00 น. รอบละ 2
+                  ชม.)</button>
+                <button type="button" class="btn-preset-chip"
+                  onclick="window.BookingApp.adminApplyPresetSlots('one_hour_afternoon')">รอบละ 1 ชั่วโมง (14:00-20:00
+                  น.)</button>
               </div>
 
               <!-- Active Slots List -->
@@ -2921,7 +3173,8 @@
 
               <!-- Add New Slot Form -->
               <div class="admin-add-slot-box mt-4">
-                <h4 class="add-slot-heading"><i class="fa-solid fa-circle-plus text-purple-600"></i> เพิ่มรอบเวลาใหม่:</h4>
+                <h4 class="add-slot-heading"><i class="fa-solid fa-circle-plus text-purple-600"></i> เพิ่มรอบเวลาใหม่:
+                </h4>
                 <div class="add-slot-inputs-row">
                   <div class="time-input-field">
                     <label>เวลาเริ่มต้น:</label>
@@ -2945,7 +3198,8 @@
               <div class="settings-card-icon"><i class="fa-solid fa-calendar-xmark"></i></div>
               <div>
                 <h3 class="settings-card-title">วันหยุดพิเศษ / งดรับคิวเฉพาะกิจ</h3>
-                <p class="settings-card-desc">ระบุวันที่ติดธุระหรือไม่สะดวกรับคิว ระบบจะปิดวันที่นั้นในปฏิทินของลูกค้าทันที</p>
+                <p class="settings-card-desc">ระบุวันที่ติดธุระหรือไม่สะดวกรับคิว
+                  ระบบจะปิดวันที่นั้นในปฏิทินของลูกค้าทันที</p>
               </div>
             </div>
             <div class="settings-card-body">
@@ -2963,9 +3217,11 @@
                   </div>
                   <div class="reason-input-field">
                     <label>เหตุผล/หมายเหตุ (ระบุหรือไม่ก็ได้):</label>
-                    <input type="text" id="adminNewBlockedReason" placeholder="เช่น ติดงานบุญ, เดินทางต่างจังหวัด" class="settings-text-input">
+                    <input type="text" id="adminNewBlockedReason" placeholder="เช่น ติดงานบุญ, เดินทางต่างจังหวัด"
+                      class="settings-text-input">
                   </div>
-                  <button type="button" class="btn-add-blocked-submit" onclick="window.BookingApp.adminAddBlockedDate()">
+                  <button type="button" class="btn-add-blocked-submit"
+                    onclick="window.BookingApp.adminAddBlockedDate()">
                     <i class="fa-solid fa-ban"></i> เพิ่มวันงดรับคิว
                   </button>
                 </div>
@@ -2975,10 +3231,12 @@
 
           <!-- Card 6: Action Save & Reset Bar -->
           <div class="admin-settings-actions-bar">
-            <button type="button" id="adminSaveSettingsBtn" class="btn-admin-save-settings" onclick="window.BookingApp.adminSaveScheduleSettings()">
+            <button type="button" id="adminSaveSettingsBtn" class="btn-admin-save-settings"
+              onclick="window.BookingApp.adminSaveScheduleSettings()">
               <i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่าทั้งหมด
             </button>
-            <button type="button" class="btn-admin-reset-settings" onclick="window.BookingApp.adminResetScheduleSettings()">
+            <button type="button" class="btn-admin-reset-settings"
+              onclick="window.BookingApp.adminResetScheduleSettings()">
               <i class="fa-solid fa-rotate-left"></i> คืนค่าเริ่มต้น (เสาร์-อาทิตย์ 14:00-20:00 น.)
             </button>
           </div>
@@ -2999,7 +3257,7 @@
       <p class="modal-success-subtitle">
         ระบบบันทึกคิวนัดหมายของคุณเรียบร้อยแล้ว รายละเอียดการจอง:
       </p>
-      
+
       <div id="bookingSuccessDetails"></div>
 
       <button type="button" id="bookingSuccessCloseBtn" class="modal-success-btn">
@@ -3022,9 +3280,11 @@
   <!-- Load Bumji cards data (Alias compatibility) -->
   <script src="data/bumji-cards.js?v=20261011_heal_theme"></script>
   <!-- Load Jiu Tian Arcana Database V2 (jiutian-arcana-database-v2.json client bundle) -->
-  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_8721"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_8106"></script>
+  <script src="data/jiutian-arcana-database-v2.js?v=20261115_v5_8106"></script>
   <!-- Load Jiu Tian Arcana cards data (ความหมายไพ่เทพเหมียว.xlsx) -->
-  <script src="data/jiutian-cards.js?v=20261115_v5_8721"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_8106"></script>
+  <script src="data/jiutian-cards.js?v=20261115_v5_8106"></script>
   <!-- Load Firebase SDK v10 (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -3035,27 +3295,32 @@
   <!-- Security & Anti-Theft Guard Engine (ระบบคุ้มครองลิขสิทธิ์และป้องกันการขโมยข้อมูล) -->
   <script src="security.js?v=20261116_sec_v1"></script>
   <!-- Load App scripts -->
-  <script src="auth.js?v=20261115_v5_8721"></script>
-  <script src="booking.js?v=20261115_v5_8721"></script>
-  <script src="app.js?v=20261115_v5_8721"></script>
+  <script src="auth.js?v=20261115_v5_8106"></script>
+  <script src="booking.js?v=20261115_v5_8106"></script>
+  <script src="app.js?v=20261115_v5_8106"></script>
+  <script src="auth.js?v=20261115_v5_8106"></script>
+  <script src="booking.js?v=20261115_v5_8106"></script>
+  <script src="app.js?v=20261115_v5_8106"></script>
   <!-- Load TongShu Almanac Engine & Controller -->
   <!-- Load 12 Day Officers Database (Jian Chu 12 Shen) -->
   <script src="data/12-day-officers.js?v=20261110_v1"></script>
   <script src="tongshu.js?v=20261030_tongshu_basic_v2"></script>
   <script src="qimen.js?v=20261106_career_business_v1"></script>
   <!-- Master BaZi Lineage Knowledge Database (คลังฐานข้อมูลโหราศาสตร์จีนปาจื่อ) -->
-  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_8721"></script>
-  <script src="data/bazi-knowledge/index.js?v=20261115_v5_8721"></script>
-  <script src="bazi.js?v=20261115_v5_8721"></script>
+  <script src="data/bazi-knowledge/bazi-ten-gods-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-elements-career-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-stars-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-classical-shensha-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-interactions-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-marriage-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-chart-patterns-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/bazi-annual-db.js?v=20261115_v5_8106"></script>
+  <script src="data/bazi-knowledge/index.js?v=20261115_v5_8106"></script>
+  <script src="bazi.js?v=20261115_v5_8106"></script>
   <!-- Load 60 Jia Zi Personality Archetypes & 10 Cat Profiles Mapping -->
   <script src="data/jiazi-profiles.js?v=20261012_jiazi_v1"></script>
   <script src="data/cat-profiles.js?v=20261012_cat_composite_v4"></script>
   <script src="personality.js?v=20261030_cat_structure_v1"></script>
 </body>
+
 </html>

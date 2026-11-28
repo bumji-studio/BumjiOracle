@@ -7577,6 +7577,7 @@
         }
         if (detailedInteractions.luckInteractions && detailedInteractions.luckInteractions.length > 0) {
           interactionsHtml += `
+... [truncated for diff preview]
             <div style="border-top: 1px dashed #e2e8f0; padding-top: 4px; margin-top: 4px;">
               <span style="font-size: 10px; font-weight: 700; color: #b45309;">วัยจร (Luck Pillar):</span>
               ${detailedInteractions.luckInteractions.map(it => {
