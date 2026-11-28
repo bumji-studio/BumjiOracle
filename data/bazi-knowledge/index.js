@@ -19,7 +19,8 @@ var BaziKnowledge = (function () {
           'BaziMarriageDB': './bazi-marriage-db.js',
           'BaziChartPatternsDB': './bazi-chart-patterns-db.js',
           'BaziAnnualDB': './bazi-annual-db.js',
-          'BaziClassicalShenShaDB': './bazi-classical-shensha-db.js'
+          'BaziClassicalShenShaDB': './bazi-classical-shensha-db.js',
+          'BaziHiddenStemsDB': './bazi-hidden-stems-db.js'
         };
         if (fileMap[name]) return require(fileMap[name]);
       }
@@ -35,6 +36,7 @@ var BaziKnowledge = (function () {
   const patterns = getGlobal('BaziChartPatternsDB');
   const annual = getGlobal('BaziAnnualDB');
   const classicalShenSha = getGlobal('BaziClassicalShenShaDB');
+  const hiddenStems = getGlobal('BaziHiddenStemsDB');
 
   return {
     version: '1.0.0-lineage-master',
@@ -43,6 +45,10 @@ var BaziKnowledge = (function () {
     stars: stars,
     interactions: interactions,
     marriage: marriage,
+    patterns: patterns,
+    annual: annual,
+    classicalShenSha: classicalShenSha,
+    hiddenStems: hiddenStems,
     patterns: patterns,
     annual: annual,
     classicalShenSha: classicalShenSha,
