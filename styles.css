@@ -22635,15 +22635,52 @@ img {
 }
 
 /* Navigation controls inside Da Yun & Annual */
+.bazi-annual-controls-right {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+.bazi-year-nav-btns {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
 .bazi-card-title-bar .bazi-nav-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.22) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+  line-height: 1.2 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.2s ease !important;
 }
 
 .bazi-card-title-bar .bazi-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.35) !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+}
+
+.bazi-card-title-bar .bazi-nav-btn.btn-current-year {
+  background: #ffffff !important;
+  color: #c2410c !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
 }
 
 .bazi-card-title-bar .bazi-dayun-current-pill {
@@ -22653,29 +22690,65 @@ img {
   border: none;
 }
 
+.bazi-year-chips {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+}
+
 .bazi-card-title-bar .bazi-year-chip {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
 }
 
 .bazi-card-title-bar .bazi-year-chip.active {
-  background: #ffffff;
-  color: #c2410c;
-  border-color: #ffffff;
-  font-weight: 800;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background: #ffffff !important;
+  color: #c2410c !important;
+  border-color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
 }
 
-.bazi-card-title-bar .bazi-year-select {
-  background: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+/* Year dropdown in card title bars - White capsule with DARK HIGH-CONTRAST TEXT */
+.bazi-card-title-bar .bazi-year-dropdown-wrap {
+  background: #ffffff !important;
+  border: 1.5px solid #ffffff !important;
+  border-radius: 20px !important;
+  padding: 3px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  flex-shrink: 0 !important;
 }
 
-.bazi-card-title-bar .bazi-year-select option {
-  color: #0f172a;
-  background: #ffffff;
+.bazi-card-title-bar .bazi-year-select,
+.bazi-card-title-bar .bazi-year-dropdown-wrap .bazi-year-select {
+  background: transparent !important;
+  color: #0f172a !important; /* CRITICAL: High-contrast Dark text! */
+  font-family: 'Prompt', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  border: none !important;
+  outline: none !important;
+  cursor: pointer !important;
+  padding: 3px 4px !important;
+}
+
+.bazi-card-title-bar .bazi-year-select option,
+.bazi-card-title-bar .bazi-year-dropdown-wrap .bazi-year-select option {
+  color: #0f172a !important;
+  background: #ffffff !important;
+  font-weight: 600 !important;
 }
 
 .bazi-card-title-bar .bazi-badge-purple {
