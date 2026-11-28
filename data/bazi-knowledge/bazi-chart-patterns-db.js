@@ -229,6 +229,7 @@ var BaziChartPatternsDB = (function () {
     branchElements: BRANCH_ELEMENTS,
     specialStructures: SPECIAL_STRUCTURES_CATALOG,
     yongShenPrinciples: YONG_SHEN_PRINCIPLES,
+    getStemNature: function (stem) { return STEM_NATURE_TH[stem] || ''; },
 
     /**
      * คำนวณเสาเดือนปฏิสนธิ (ทอง้วน 胎元 - Tai Yuan)

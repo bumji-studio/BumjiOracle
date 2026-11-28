@@ -2317,21 +2317,14 @@
       };
     },
 
-    // 13. Groq Cloud AI Engine for BaZi Consultation
-    fetchBaZiAIAnswer: async function (chart, rawQuery, defaultYear) {
-      if (!chart) return null;
-      const _gk = ['gsk', 'pd5HeV8T1zOCdsBK', 'txOsWGdyb3FYVwok', 'dkNY9I8yiOTJFYp38Me8'];
-      const defaultKey = _gk[0] + '_' + _gk.slice(1).join('');
-      let apiKey = defaultKey;
-      try {
-        apiKey = localStorage.getItem('thepmeow_groq_key') || window.THEP_MEOW_GROQ_KEY || defaultKey;
-      } catch (e) { }
-      if (!apiKey) return null;
+    // 13. Knowledge Grounding Engine for BaZi Consultation (เชื่อมต่อฐานข้อมูลตำรา 10 โมดูล)
+    buildBaZiKnowledgeGrounding: function (chart, defaultYear, rawQuery) {
+      if (!chart || !chart.pillars) return null;
+      const p = chart.pillars;
+      const dm = chart.dayMaster;
 
       const q = (rawQuery || '').trim();
       const lowerQ = q.toLowerCase();
-      const name = chart.name || 'เจ้าชะตา';
-
       let simY = defaultYear || new Date().getFullYear() || 2026;
       const beMatch = lowerQ.match(/(?:ปี\s*|พ\.ศ\.\s*)?(25\d{2})/);
       const ceMatch = lowerQ.match(/(?:ปี\s*)?(20\d{2})/);
@@ -2361,47 +2354,185 @@
       const yrBranchIdx = ((simY - 4) % 12 + 12) % 12;
       const simStem = STEMS[yrStemIdx];
       const simBranch = BRANCHES[yrBranchIdx];
-      const simStemGod = getTenGod(chart.dayMaster, simStem);
+      const simStemGod = getTenGod(dm, simStem);
 
-      const dm = chart.dayMaster;
-      const favElements = chart.favorableElements || [];
-      const favNames = favElements.map(k => ELEMENTS_META[k].th).join(', ');
-      const tiaoHou = chart.tiaoHou ? ELEMENTS_META[chart.tiaoHou.element].th : '';
-      const p = chart.pillars;
+      // 1. Stem Nature from Patterns DB
+      let stemNature = '';
+      if (typeof window !== 'undefined' && window.BaziChartPatternsDB && window.BaziChartPatternsDB.getStemNature) {
+        stemNature = window.BaziChartPatternsDB.getStemNature(dm.zh);
+      }
 
+      // 2. Seven Steps Analysis from Patterns DB
+      let sevenSteps = null;
+      if (typeof window !== 'undefined' && window.BaziChartPatternsDB && window.BaziChartPatternsDB.analyzeSevenSteps) {
+        try {
+          sevenSteps = window.BaziChartPatternsDB.analyzeSevenSteps(chart);
+        } catch (e) {
+          console.warn('Seven steps analysis err:', e);
+        }
+      }
+
+      // 3. 5 Structures & 10 Profiles
+      let profilesStats = null;
+      if (typeof window !== 'undefined' && window.BaziProfilesDB && window.BaziProfilesDB.calculateProfilesStrength) {
+        try {
+          profilesStats = window.BaziProfilesDB.calculateProfilesStrength(chart, simY);
+        } catch (e) {
+          console.warn('Profiles stats calc err:', e);
+        }
+      }
+
+      // 4. Branch Hidden Stems (藏干)
+      const hiddenRoots = {};
+      ['year', 'month', 'day', 'hour'].forEach(k => {
+        const br = p[k]?.branch?.zh;
+        if (br && typeof window !== 'undefined' && window.BaziHiddenStemsDB && window.BaziHiddenStemsDB.getHiddenStems) {
+          hiddenRoots[k] = window.BaziHiddenStemsDB.getHiddenStems(br);
+        }
+      });
+
+      // 5. 12 Life Stages (十二长生)
+      const lifeStages = {};
+      ['year', 'month', 'day', 'hour'].forEach(k => {
+        const br = p[k]?.branch?.zh;
+        if (br && typeof window !== 'undefined' && window.BaziTwelveStagesDB && window.BaziTwelveStagesDB.getLifeStage) {
+          lifeStages[k] = window.BaziTwelveStagesDB.getLifeStage(dm.zh, br);
+        }
+      });
+
+      // 6. Classical Shen Sha Stars
+      const activeStars = [];
+      if (chart.specialStars && Array.isArray(chart.specialStars)) {
+        chart.specialStars.forEach(s => {
+          activeStars.push(`${s.name || s.zh || s.title} (${s.description || s.th || ''})`);
+        });
+      }
+
+      // 7. Branch Interactions with Da Yun & Annual
       const clashMonth = checkBranchClash(simBranch.zh, p.month.branch.zh);
       const clashDay = checkBranchClash(simBranch.zh, p.day.branch.zh);
       const harmMonth = checkBranchHarmony(simBranch.zh, p.month.branch.zh);
       const harmDay = checkBranchHarmony(simBranch.zh, p.day.branch.zh);
 
-      const prompt = `
+      return {
+        chart,
+        simY,
+        ageInYear,
+        curDaYun,
+        simStem,
+        simBranch,
+        simStemGod,
+        stemNature,
+        sevenSteps,
+        profilesStats,
+        hiddenRoots,
+        lifeStages,
+        activeStars,
+        clashMonth,
+        clashDay,
+        harmMonth,
+        harmDay
+      };
+    },
+
+    // 14. Groq Cloud AI Engine for BaZi Consultation with Deep Knowledge Grounding
+    fetchBaZiAIAnswer: async function (chart, rawQuery, defaultYear, askMode) {
+      if (!chart) return null;
+      const _gk = ['gsk', 'pd5HeV8T1zOCdsBK', 'txOsWGdyb3FYVwok', 'dkNY9I8yiOTJFYp38Me8'];
+      const defaultKey = _gk[0] + '_' + _gk.slice(1).join('');
+      let apiKey = defaultKey;
+      try {
+        apiKey = localStorage.getItem('thepmeow_groq_key') || window.THEP_MEOW_GROQ_KEY || defaultKey;
+      } catch (e) { }
+      if (!apiKey) return null;
+
+      const mode = askMode || 'sinsei';
+      const isSinsei = (mode === 'sinsei');
+      const q = (rawQuery || '').trim();
+      const name = chart.name || 'เจ้าชะตา';
+      const dm = chart.dayMaster;
+      const p = chart.pillars;
+      const favNames = (chart.favorableElements || []).map(k => ELEMENTS_META[k].th).join(', ');
+      const tiaoHou = chart.tiaoHou ? ELEMENTS_META[chart.tiaoHou.element].th : '';
+
+      // Compile Grounding
+      const g = this.buildBaZiKnowledgeGrounding(chart, defaultYear, rawQuery);
+      if (!g) return null;
+
+      // Extract Profiles summary
+      let profilesSummary = 'ยังไม่มีข้อมูลสรุป Profiles';
+      if (g.profilesStats) {
+        const topProf = g.profilesStats.topProfiles ? g.profilesStats.topProfiles.slice(0, 3).map(x => `${x.profileNameTh || x.profileNameEn} (${x.natalPct}%)`).join(', ') : '';
+        profilesSummary = `Main Structure: ${g.profilesStats.mainStructure ? g.profilesStats.mainStructure.nameTh : '-'} | Main Profile: ${g.profilesStats.mainProfile ? g.profilesStats.mainProfile.nameTh : '-'} | Top Profiles: ${topProf}`;
+      }
+
+      // Extract Seven Steps & Patterns summary
+      let patternSummary = 'โครงสร้างปกติ (正格)';
+      let seasonSummary = '';
+      let rootSummary = '';
+      if (g.sevenSteps) {
+        seasonSummary = g.sevenSteps.step2 ? g.sevenSteps.step2.verdict : '';
+        rootSummary = g.sevenSteps.step3 ? g.sevenSteps.step3.summary : '';
+        patternSummary = g.sevenSteps.step6 && g.sevenSteps.step6.structure ? (typeof g.sevenSteps.step6.structure === 'string' ? g.sevenSteps.step6.structure : g.sevenSteps.step6.structure.type) : 'โครงสร้างปกติ';
+      }
+
+      const promptSinsei = `
+คุณคือ "ผู้ช่วยซินแสปาจื่อประจำตัวแม่หมอ" (Senior BaZi Metaphysics Co-Pilot) แห่งสำนักแม่หมอติ๊ดติ๊ด
+มีหน้าที่สรุปและวินิจฉัยดวงจีนเชิงเทคนิคให้ซินแส/แม่หมอใช้ฟันธง ตอบเป็นภาษาวิชาการดวงจีนที่ลึกซึ้ง ครบถ้วน คมคาย โดยอ้างอิงจากฐานข้อมูล Ground Truth ของเราเท่านั้น ห้ามมโนข้อมูลอื่น
+
+[ข้อมูลเจ้าชะตา]: คุณ"${name}" (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, เกิด ${chart.birthDateString} เวลา ${chart.birthTimeString} น., อายุ ${g.ageInYear} ปี)
+[คำถามที่ต้องการวิเคราะห์]: "${q}"
+
+[ข้อมูลผังดวง 4 เสา และฐานข้อมูลตำรา Ground Truth]:
+- ดิถีตัวตน (Day Master): ${dm.zh} (${dm.th}) ธรรมชาติเนื้อแท้: ${g.stemNature || dm.th} | สถานะ: ${chart.strengthText} (ธาตุหนุน ${chart.supportingPercentage}%, ธาตุต้าน ${chart.opposingPercentage}%)
+- การได้ฤดูกาล (得时 / 得令): ${seasonSummary}
+- การหยั่งรากในกิ่งดิน (得地 / 通根): ${rootSummary}
+- โครงสร้างดวง (Special Patterns): ${patternSummary}
+- สรุป 5 Structures & 10 Profiles: ${profilesSummary}
+- ผัง 4 เสาชะตาเดิม:
+  * เสายาม: ${p.hour.stem.zh}${p.hour.branch.zh} (สิบเทพ: ${p.hour.tenGod.zh} - ${p.hour.tenGod.th} | สภาวะชี่: ${g.lifeStages.hour?.stageZh || '-'})
+  * เสาวัน (ตัวตน/วังคู่ครอง): ${p.day.stem.zh}${p.day.branch.zh} (กิ่งดินวังคู่ครอง: ${p.day.branch.zh} | สภาวะชี่: ${g.lifeStages.day?.stageZh || '-'})
+  * เสาเดือน (การงาน/สังคม): ${p.month.stem.zh}${p.month.branch.zh} (สิบเทพ: ${p.month.tenGod.zh} - ${p.month.tenGod.th} | สภาวะชี่: ${g.lifeStages.month?.stageZh || '-'})
+  * เสาปี (บรรพบุรุษ/รากเหง้า): ${p.year.stem.zh}${p.year.branch.zh} (สิบเทพ: ${p.year.tenGod.zh} - ${p.year.tenGod.th} | สภาวะชี่: ${g.lifeStages.year?.stageZh || '-'})
+- ธาตุให้คุณและปรับสมดุล (喜用神): ธาตุ${favNames} ${tiaoHou ? `| ธาตุปรับอุณหภูมิดวง (調候): ธาตุ${tiaoHou}` : ''}
+- วัยจร 10 ปีปัจจุบัน: ${g.curDaYun ? g.curDaYun.ageRange + ' (' + g.curDaYun.stem.zh + g.curDaYun.branch.zh + ' • ' + (g.curDaYun.tenGod ? g.curDaYun.tenGod.th : '') + ')' : '-'}
+- ปีจรพิจารณา: ${g.simY} (${g.simStem.zh}${g.simBranch.zh} • ${g.simStemGod.th})
+- ปฏิสัมพันธ์ฟ้าดิน: ${g.clashMonth ? 'ปะทะเสาเดือน (沖月柱) ' : ''}${g.clashDay ? 'ปะทะเสาวันเรือนคู่ครอง (沖日支) ' : ''}${g.harmMonth ? 'สมพงศ์เสาเดือน (合月柱) ' : ''}${g.harmDay ? 'สมพงศ์เสาวัน (合日支) ' : ''}
+- เทพและดาวชะตา (神煞): ${g.activeStars.slice(0, 5).join(', ') || 'ไม่มีดาววิกฤต'}
+
+คำสั่งสำคัญในการตอบ (โหมดซินแส / Master Co-Pilot):
+เขียนตอบด้วยภาษาโหราศาสตร์จีนที่เฉียบคม เป็นระบบ มีชั้นเชิงทางวิชาการ แบ่งเนื้อหาเป็น 4 ประเด็นชัดเจน:
+1. 🏛️ การวินิจฉัยโครงสร้างดวง & ปัญจธาตุ: อธิบายดิถี, 得时/得令, 得地/通根, โครงสร้างดวง (从格 / 专旺格 / 化气格 / 正格) และความสมดุล
+2. ⚡ วิเคราะห์ 5 Structures & 10 Profiles: สรุปความโดดเด่นของโครงสร้างหลัก (Main Structure) และ Profile แกนนำต่อคำถาม
+3. 🔮 พลวัตฟ้า-ดินในวัยจร & ปีจร: เจาะลึกปฏิสัมพันธ์ 刑沖合害, 12 สภาวะชี่ และดาวเทพลักษณ์ที่กระทบกับคำถาม
+4. 🎯 สรุปข้อสังเกตและแนวทางฟันธงสำหรับซินแส: สรุปหัวใจสำคัญ คำแนะนำเชิงกลยุทธ์ และจังหวะที่ซินแสควรบอกลูกดวง
+
+ตอบเป็น JSON รูปแบบนี้เท่านั้น:
+{
+  "reply_text": "เนื้อหาข้อความการวิเคราะห์ภาษาไทยทั้งหมด..."
+}
+`;
+
+      const promptClient = `
 คุณคือ "แม่หมอปาจื่อ" (BaZi Astrological Consultant) ผู้เชี่ยวชาญการอ่านดวงชะตา 4 เสาแห่งสำนักแม่หมอติ๊ดติ๊ด
-กำลังคุยตอบแชทกับลูกดวงชื่อ "${name}" (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, เกิด ${chart.birthDateString} เวลา ${chart.birthTimeString} น., อายุ ${ageInYear} ปี)
+กำลังคุยตอบแชทกับลูกดวงชื่อ "${name}" (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, เกิด ${chart.birthDateString} เวลา ${chart.birthTimeString} น., อายุ ${g.ageInYear} ปี)
 คำถามของลูกดวง: "${q}"
 
 ข้อมูลผังดวงปาจื่อที่คำนวณได้จริง (Ground Truth ห้ามมโนข้อมูลอื่น):
-- ดิถีธาตุ (Day Master): ${dm.zh} (${dm.th}) สถานะ: ${chart.strengthText} (ธาตุหนุน ${chart.supportingPercentage}%, ธาตุต้าน ${chart.opposingPercentage}%)
+- ดิถีธาตุ (Day Master): ${dm.zh} (${dm.th}) สถานะ: ${chart.strengthText}
 - ธาตุให้คุณและปรับสมดุล (喜用神): ธาตุ${favNames} ${tiaoHou ? `| ธาตุปรับอุณหภูมิดวง (調候): ธาตุ${tiaoHou}` : ''}
-- โครงสร้าง 4 เสาชะตาเดิม:
-  * เสายาม: ${p.hour.stem.zh}${p.hour.branch.zh} (สิบเทพ: ${p.hour.tenGod.zh} - ${p.hour.tenGod.th})
-  * เสาวัน (ตัวตน/วังคู่ครอง): ${p.day.stem.zh}${p.day.branch.zh} (กิ่งดินวังคู่ครอง: ${p.day.branch.zh})
-  * เสาเดือน (การงาน/สังคม/บทบาท): ${p.month.stem.zh}${p.month.branch.zh} (สิบเทพ: ${p.month.tenGod.zh} - ${p.month.tenGod.th})
-  * เสาปี: ${p.year.stem.zh}${p.year.branch.zh} (สิบเทพ: ${p.year.tenGod.zh} - ${p.year.tenGod.th})
-- วัยจร 10 ปีปัจจุบัน: ${curDaYun ? curDaYun.ageRange + ' (' + curDaYun.stem.zh + curDaYun.branch.zh + ' • ' + (curDaYun.tenGod ? curDaYun.tenGod.th : '') + ')' : '-'}
-- ปีจรพิจารณา: ${simY} (${simStem.zh}${simBranch.zh} • ${simStemGod.th})
-- ปฏิสัมพันธ์ปีจรกับผังดวง: ${clashMonth ? 'ปะทะเสาเดือนการงาน (沖月柱) ' : ''}${clashDay ? 'ปะทะเสาวันเรือนคู่ครอง (沖日支) ' : ''}${harmMonth ? 'สมพงศ์เสาเดือน (合月柱) ' : ''}${harmDay ? 'สมพงศ์เสาวัน (合日支) ' : ''}
+- โครงสร้าง 5 Structures & 10 Profiles: ${profilesSummary}
+- โครงสร้างพิเศษ: ${patternSummary}
+- วัยจร 10 ปีปัจจุบัน: ${g.curDaYun ? g.curDaYun.ageRange : '-'}
+- ปีจรพิจารณา: ${g.simY} (${g.simStem.zh}${g.simBranch.zh} • ${g.simStemGod.th})
+- ปฏิสัมพันธ์ปีจร: ${g.clashMonth ? 'ปะทะเสาเดือนการงาน (沖月柱) ' : ''}${g.clashDay ? 'ปะทะเสาวันเรือนคู่ครอง (沖日支) ' : ''}${g.harmMonth ? 'สมพงศ์เสาเดือน (合月柱) ' : ''}${g.harmDay ? 'สมพงศ์เสาวัน (合日支) ' : ''}
 
-คำสั่งสำคัญที่สุดในการตอบ:
-เขียนตอบในรูปแบบ "ข้อความแชทคุยกันธรรมดาที่เป็นธรรมชาติ" เหมือนแม่หมอกำลังพิมพ์ตอบใน LINE / Messenger ให้ลูกดวง:
-1. น้ำเสียง: อบอุ่น สุภาพ เป็นกันเอง คมคาย และมีความหวังดีเหมือนแม่หมอคุยกับลูกดวงตัวต่อตัว
-2. ห้ามตอบเป็นกล่องข้อความเด็ดขาด
-3. ห้ามทำเป็นหัวข้อย่อยแบบรายงาน ห้ามมีคำว่า "หัวข้อ:" หรือ "ประเด็นที่ 1:" หรือ "บทสรุป:" ห้ามมีป้ายเปอร์เซ็นต์
-4. ตอบเป็นข้อความแชท 3-4 ย่อหน้า:
-   - ย่อหน้าที่ 1: ทักทายคุณ${name}อย่างอบอุ่น แล้วฟันธงตอบคำถามโดยตรงอย่างชัดเจน
-   - ย่อหน้าที่ 2: อธิบายเหตุผลในผังดวง 4 เสา (เช่น เสาเดือน, เสาวัน, สิบเทพ หรือวัยจร) ให้เข้าใจง่าย เห็นภาพชัดเจน
-   - ย่อหน้าที่ 3: ชี้จังหวะเวลา โอกาส หรือช่วงเดือน/สารทที่ส่งพลังดีในปี ${simY}
-   - ย่อหน้าที่ 4: คำแนะนำจากใจแม่หมอ และวิธีเสริมดวง/การปฏิบัติตัวตามธาตุให้คุณ (${favNames}) ปิดท้ายด้วยความปรารถนาดี
-5. สามารถใช้อิโมจิน่ารักๆ (🔮, ✨, 💖, 🌸, 🌿) และใช้ **ตัวหนา** เพื่อเน้นคำสำคัญได้
+คำสั่งสำคัญในการตอบ (โหมดลูกดวง):
+เขียนตอบในรูปแบบข้อความแชทที่เป็นธรรมชาติ อบอุ่น สุภาพ คมคาย และให้กำลังใจ 3-4 ย่อหน้า:
+- ย่อหน้าที่ 1: ทักทายคุณ${name}อย่างอบอุ่น แล้วฟันธงตอบคำถามโดยตรงอย่างชัดเจน
+- ย่อหน้าที่ 2: อธิบายเหตุผลในผังดวง 4 เสาและโครงสร้างบุคลิกให้เข้าใจง่าย เห็นภาพชัดเจน
+- ย่อหน้าที่ 3: ชี้จังหวะเวลา โอกาส หรือช่วงเดือน/สารทที่ส่งพลังดีในปี ${g.simY}
+- ย่อหน้าที่ 4: คำแนะนำจากใจแม่หมอ และวิธีเสริมดวง/การปฏิบัติตัวตามธาตุให้คุณ (${favNames}) ปิดท้ายด้วยความปรารถนาดี
 
 ตอบเป็น JSON รูปแบบนี้เท่านั้น:
 {
@@ -2409,7 +2540,9 @@
 }
 `;
 
+      const prompt = isSinsei ? promptSinsei : promptClient;
       const models = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b', 'openai/gpt-oss-20b'];
+
       for (const m of models) {
         try {
           const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -2421,11 +2554,11 @@
             body: JSON.stringify({
               model: m,
               messages: [
-                { role: 'system', content: 'You are an expert BaZi astrologer who outputs valid Thai JSON only.' },
+                { role: 'system', content: isSinsei ? 'You are an authoritative Senior BaZi Metaphysics Master Assistant outputting valid Thai JSON.' : 'You are an expert BaZi astrologer who outputs valid Thai JSON only.' },
                 { role: 'user', content: prompt }
               ],
-              temperature: 0.65,
-              max_tokens: 1800
+              temperature: isSinsei ? 0.5 : 0.65,
+              max_tokens: 2200
             })
           });
           if (!res.ok) continue;
@@ -2455,7 +2588,8 @@
 
           if (replyText) {
             return {
-              chatText: replyText
+              chatText: replyText,
+              mode: mode
             };
           }
         } catch (e) {
@@ -2465,51 +2599,92 @@
       return null;
     },
 
-    buildConversationalText: function (chart, rawQuery, defaultYear, localResp) {
-      if (!chart) return 'กรุณาตั้งผังดวงชะตาก่อนถามคำถามค่ะ';
+    // 15. Deep Local Metaphysical Engine (100% Offline / Fallback grounded on our Lineage DB)
+    consultAstrologerLocalDeep: function (chart, rawQuery, defaultYear, askMode) {
+      if (!chart) return { chatText: 'กรุณาตั้งผังดวงชะตาก่อนถามคำถามค่ะ' };
+      const mode = askMode || 'sinsei';
+      const isSinsei = (mode === 'sinsei');
+      const g = this.buildBaZiKnowledgeGrounding(chart, defaultYear, rawQuery);
+      if (!g) return { chatText: 'ไม่สามารถประมวลผลผังดวงได้ กรุณาตรวจสอบข้อมูลวันเกิดค่ะ' };
+
       const name = chart.name || 'เจ้าชะตา';
       const dm = chart.dayMaster;
       const favNames = (chart.favorableElements || []).map(k => ELEMENTS_META[k].th).join(', ');
+      const tiaoHou = chart.tiaoHou ? ELEMENTS_META[chart.tiaoHou.element].th : '';
 
-      const paragraphs = [];
-      if (localResp && localResp.headline) {
-        paragraphs.push(localResp.headline.replace(/<[^>]+>/g, '').trim());
+      // Pattern & Profiles summaries
+      let patternName = 'โครงสร้างปกติ (正格)';
+      let seasonDesc = g.sevenSteps && g.sevenSteps.step2 ? g.sevenSteps.step2.verdict : 'พิจารณาตามฤดูกาลเกิด';
+      let rootDesc = g.sevenSteps && g.sevenSteps.step3 ? g.sevenSteps.step3.summary : 'พิจารณารากกิ่งดิน';
+      if (g.sevenSteps && g.sevenSteps.step6 && g.sevenSteps.step6.structure) {
+        patternName = typeof g.sevenSteps.step6.structure === 'string' ? g.sevenSteps.step6.structure : g.sevenSteps.step6.structure.type;
+      }
+
+      let mainStruct = g.profilesStats && g.profilesStats.mainStructure ? g.profilesStats.mainStructure.nameTh : 'Manager (Wealth)';
+      let mainProf = g.profilesStats && g.profilesStats.mainProfile ? g.profilesStats.mainProfile.nameTh : 'Director (Direct Wealth)';
+
+      if (isSinsei) {
+        return {
+          chatText: `
+🎓 **การวินิจฉัยดวงชะตาเชิงลึก (BaZi Master Diagnostics)**
+สำหรับซินแสพิจารณาดวงคุณ **${name}** (${chart.gender === 'male' ? 'เพศชาย' : 'เพศหญิง'}, อายุ ${g.ageInYear} ปี)
+คำถาม: *"${rawQuery}"*
+
+🏛️ **1. การวินิจฉัยโครงสร้างดวง & ปัญจธาตุ:**
+• **ดิถีตัวตน (日元)**: **${dm.zh} (${dm.th})** — ${g.stemNature || dm.th}
+• **สถานะพลังงาน**: **${chart.strengthText}** (ธาตุหนุน ${chart.supportingPercentage}%, ธาตุต้าน ${chart.opposingPercentage}%)
+• **การได้ฤดูกาล (得令)**: ${seasonDesc}
+• **การหยั่งราก (得地/通根)**: ${rootDesc}
+• **โครงสร้างดวง (格局)**: **${patternName}**
+• **ย้งซิ้งปรับสมดุล (喜用神)**: ธาตุ**${favNames}** ${tiaoHou ? `| ธาตุปรับอุณหภูมิ (調候): ธาตุ${tiaoHou}` : ''}
+
+⚡ **2. วิเคราะห์ 5 Structures & 10 Profiles:**
+• **โครงสร้างหลัก (Main Structure)**: **${mainStruct}**
+• **โปรไฟล์แกนนำ (Main Profile)**: **${mainProf}**
+• **การกระจายกำลัง**: โครงสร้างกลุ่ม ${mainStruct} ทำหน้าที่เป็นหัวหอกสำคัญในการขับเคลื่อนวิถีชีวิต มีจุดแข็งด้านการบริหารจัดการและการสร้างมูลค่า ควบคู่กับการควบคุมความเสี่ยง
+
+🔮 **3. พลวัตฟ้า-ดิน วัยจร 10 ปี & ปีจร ${g.simY}:**
+• **วัยจร 10 ปี (大运)**: ${g.curDaYun ? g.curDaYun.ageRange + ' (' + g.curDaYun.stem.zh + g.curDaYun.branch.zh + ' • ' + (g.curDaYun.tenGod ? g.curDaYun.tenGod.th : '') + ')' : '-'}
+• **ปีจร (流年 ${g.simY})**: ${g.simStem.zh}${g.simBranch.zh} (ราศีบน: ${g.simStemGod.th})
+• **ปฏิสัมพันธ์ฟ้าดิน**: ${g.clashMonth ? '⚠️ มีการปะทะเสาเดือน (沖月柱) สะท้อนถึงการปรับเปลี่ยนบทบาทหรือสภาวะแวดล้อมการงาน ' : ''}${g.clashDay ? '⚠️ มีการปะทะเสาวัน (沖日支) เตือนความผันผวนในวังคู่ครอง ' : ''}${g.harmMonth ? '✨ มีคู่สมพงศ์เสาเดือน (合月柱) เอื้อต่อความร่วมมือ ' : ''}${g.harmDay ? '✨ มีคู่สมพงศ์เสาวัน (合日支) ส่งเสริมความสัมพันธ์ ' : ''}${!g.clashMonth && !g.clashDay && !g.harmMonth && !g.harmDay ? 'ผังดวงมีความสงบ พลังงานไหลเวียนต่อเนื่อง' : ''}
+• **เทพลักษณ์สำคัญ (神煞)**: ${g.activeStars.slice(0, 4).join(', ') || 'สถิตพลังงานเป็นกลาง'}
+
+🎯 **4. สรุปข้อสังเกตและแนวทางฟันธงสำหรับซินแส:**
+1. พื้นดวงมีดิถี ${dm.zh} สถานะ ${chart.strengthText} การดำเนินชีวิตควรยึดหลักเสริมพลัง **ธาตุ${favNames}** เป็นหลัก
+2. คำถามเรื่อง *"${rawQuery}"* ในรอบปีจร ${g.simY} พลังงานของ ${g.simStemGod.th} (${g.simStem.zh}) เข้ามามีบทบาทโดยตรง ซินแสสามารถฟันธงได้ว่าจังหวะนี้ควรเน้นการวางแผนอย่างรัดกุม ใช้จุดเด่นของ ${mainProf} ในการเจรจาและคว้าโอกาสสำคัญ
+3. ข้อควรระวังสูงสุดคือการบริหารความสมดุลของธาตุที่เข้ามาปะทะ หากมีการขยับขยายควรเลือกเดือนที่ส่งเสริมธาตุให้คุณ (${favNames})
+          `.trim()
+        };
       } else {
-        paragraphs.push(`สวัสดีค่ะคุณ **${name}** สำหรับคำถามเรื่อง "${rawQuery}" แม่หมอได้ตรวจดูผังดวงชะตา 4 เสาของคุณแล้วค่ะ`);
-      }
+        // Client Mode
+        return {
+          chatText: `
+สวัสดีค่ะคุณ **${name}** สำหรับคำถามเรื่อง *"${rawQuery}"* แม่หมอได้ตรวจดูผังดวง 4 เสาชะตาและฐานข้อมูลตำราปาจื่อของคุณให้เรียบร้อยแล้วค่ะ ✨🔮
 
-      if (localResp && localResp.points && localResp.points.length > 0) {
-        const cleanPoints = localResp.points.map(pt => {
-          const body = (pt.body || '').replace(/<[^>]+>/g, '').trim();
-          let title = (pt.title || '').replace(/^[\p{Emoji_Presentation}\p{Emoji}\uFE0F\p{Extended_Pictographic}\s•]+/u, '').replace(/:$/, '').trim();
-          return `• **${title}**: ${body}`;
-        });
-        paragraphs.push(cleanPoints.join('\n\n'));
-      } else {
-        paragraphs.push(`พื้นดวงของคุณมีดิถีเป็น **${dm.zh} (${dm.th})** สถานะ **${chart.strengthText}** ซึ่งต้องการพลังของ **ธาตุ${favNames}** มาช่วยปรับสมดุลและเกื้อหนุนชีวิตให้ราบรื่น`);
-      }
+พื้นดวงของคุณมีดิถีเป็น **${dm.zh} (${dm.th})** สถานะ **${chart.strengthText}** โครงสร้างดวงมีความโดดเด่นในกลุ่ม **${mainStruct}** โดยมีโปรไฟล์แกนนำเป็น **${mainProf}** ซึ่งบ่งบอกว่าคุณเป็นคนที่มีศักยภาพเฉพาะตัวสูง มีความสามารถในการจัดระบบและสร้างผลงานได้อย่างยอดเยี่ยมค่ะ
 
-      if (localResp && localResp.advice) {
-        paragraphs.push(`💡 **คำแนะนำเสริมดวงจากแม่หมอ**: ${localResp.advice.replace(/<[^>]+>/g, '').trim()}`);
-      }
+ในปีจร **${g.simY} (${g.simStem.zh}${g.simBranch.zh})** พลังงานของจักรวาลส่งเสริมให้คุณได้แสดงฝีมือ ${g.clashMonth ? 'แต่อาจมีเรื่องการปรับเปลี่ยนสภาพแวดล้อมหรือหน้าที่การงานเข้ามาให้ตัดสินใจ' : 'มีความราบรื่นและมีผู้ใหญ่คอยให้คำปรึกษา'} โดยมีดาวสำคัญช่วยค้ำจุนดวงชะตาอยู่ค่ะ
 
-      return paragraphs.join('\n\n');
+💡 **คำแนะนำเสริมดวงจากแม่หมอ**:
+ขอให้คุณมั่นใจในศักยภาพของตัวเองนะคะ สิ่งที่ดวงต้องการมากที่สุดเพื่อเปิดรับโชคลาภและความสำเร็จคือการใช้พลังของ **ธาตุ${favNames}** เข้ามาช่วยเสริมพลังชีวิต เช่น การเลือกสีเสื้อผ้า ทิศทางการทำงาน หรือการตัดสินใจที่สุขุมรอบคอบ จะช่วยนำพาความสำเร็จและความสุขใจมาสู่คุณอย่างแน่นอนค่ะ 🌸💖
+          `.trim()
+        };
+      }
     },
 
-    consultAstrologerAsync: async function (chart, rawQuery, defaultYear) {
+    // 16. Unified Consultation Entry Point
+    consultAstrologerAsync: async function (chart, rawQuery, defaultYear, askMode) {
       if (!chart) return { chatText: 'กรุณาตั้งผังดวงชะตาก่อนถามคำถามค่ะ' };
+      const mode = askMode || 'sinsei';
       try {
-        const aiResp = await this.fetchBaZiAIAnswer(chart, rawQuery, defaultYear);
+        const aiResp = await this.fetchBaZiAIAnswer(chart, rawQuery, defaultYear, mode);
         if (aiResp && aiResp.chatText) {
           return aiResp;
         }
       } catch (err) {
-        console.warn('Groq BaZi AI call failed, falling back to local engine:', err);
+        console.warn('Groq BaZi AI call failed, falling back to local deep engine:', err);
       }
-      const localResp = this.consultAstrologer(chart, rawQuery, defaultYear);
-      return {
-        chatText: this.buildConversationalText(chart, rawQuery, defaultYear, localResp)
-      };
+      return this.consultAstrologerLocalDeep(chart, rawQuery, defaultYear, mode);
     }
   };
 
@@ -2620,6 +2795,68 @@
     })(),
     askChatHistory: [],
     currentAskChartKey: null,
+    askMode: 'sinsei', // 'sinsei' (Master Co-Pilot) | 'client' (Client Consultation)
+
+    setAskMode: function (mode) {
+      this.askMode = mode;
+      try {
+        localStorage.setItem('bazi_ask_mode', mode);
+      } catch (e) { }
+
+      const sinseiBtn = document.getElementById('baziAskModeSinseiBtn');
+      const clientBtn = document.getElementById('baziAskModeClientBtn');
+      if (sinseiBtn) sinseiBtn.classList.toggle('active', mode === 'sinsei');
+      if (clientBtn) clientBtn.classList.toggle('active', mode === 'client');
+
+      const titleText = document.getElementById('baziAskTitleText');
+      const badgeText = document.getElementById('baziAskBadgeText');
+      const descText = document.getElementById('baziAskDescText');
+      const iconBox = document.getElementById('baziAskTitleIcon');
+      const chipsLabel = document.getElementById('baziAskChipsLabel');
+
+      if (mode === 'sinsei') {
+        if (titleText) titleText.textContent = 'ห้องแชทผู้ช่วยซินแส (Astrologer Co-Pilot)';
+        if (badgeText) badgeText.textContent = '(Lineage Grounded AI)';
+        if (descText) descText.textContent = 'ถามตอบเจาะลึกด้วยฐานข้อมูลตำรา 10 โมดูล วิเคราะห์โครงสร้างดวง (从格 / 专旺格 / 化气格), 5 Structures, 10 Profiles, วัยจรและปีจร';
+        if (iconBox) iconBox.innerHTML = '<i class="fa-solid fa-graduation-cap"></i>';
+        if (chipsLabel) chipsLabel.innerHTML = '<i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> หัวข้อวิเคราะห์ของซินแส:';
+      } else {
+        if (titleText) titleText.textContent = 'สนทนาถามดวงชะตาเจาะลึก';
+        if (badgeText) badgeText.textContent = '(Client Consultation)';
+        if (descText) descText.textContent = 'ถามตอบเจาะลึกทุกมิติชีวิต การงาน การเงิน ความรัก สุขภาพ ภาษาเข้าใจง่าย อบอุ่น ฟันธงตรงจุด';
+        if (iconBox) iconBox.innerHTML = '<i class="fa-solid fa-heart"></i>';
+        if (chipsLabel) chipsLabel.innerHTML = '<i class="fa-solid fa-bolt" style="color: #ec4899;"></i> คำถามยอดนิยมสำหรับลูกดวง:';
+      }
+      this.renderAskChips();
+      this.renderAskChatMessages();
+    },
+
+    renderAskChips: function () {
+      const container = document.getElementById('baziAskChipsScroll');
+      if (!container) return;
+      const isSinsei = (this.askMode === 'sinsei');
+      if (isSinsei) {
+        container.innerHTML = `
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('วิเคราะห์โครงสร้างดวงชะตานี้ เข้าเกณฑ์โครงสร้างพิเศษ (从格 / 专旺格 / 化气格) หรือโครงสร้างปกติ?')">🏛️ โครงสร้างดวง & เกณฑ์พิเศษ</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('วิเคราะห์ภาพรวม 5 Structures และ 10 Profiles ของดวงนี้ ธาตุใดเด่นและส่งอิทธิพลต่อศักยภาพมากที่สุด?')">⚡ 5 Structures & 10 Profiles</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ตรวจการได้ฤดู (得令), การหยั่งรากในกิ่งดิน (通根) และความแข็งแกร่งของดิถี (身强/身弱)')">🌿 ตรวจ 得令 / 通根 / 身强身弱</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('วิเคราะห์วัยจร 10 ปีปัจจุบัน และปีจรนี้ เกิดปฏิสัมพันธ์ 刑沖合害破 กับ 4 เสาอย่างไร?')">🔮 วัยจร 10 ปี & ปีจร 刑沖合害</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ตรวจเช็กดาวเจียไช้/เพียงไช้ และทิศทางความมั่งคั่ง อาชีพที่เอื้อต่อการสร้างผลกำไรสูงสุด')">💰 วิเคราะห์ดาวการเงิน & ธุรกิจ</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ตรวจวังภพคู่ครอง (เสาวัน) และดาวคู่ครอง (กัว/สัวะ/ไช้) มีข้อสังเกตหรือจังหวะปะทะฮะอย่างไร?')">💖 วิเคราะห์เสาวัน & คู่ครอง</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สรุปดาวเทพลักษณ์มงคลและอัปมงคล (Shen Sha) ที่สถิตใน 4 เสา และจุดควรระวัง')">👑 สรุปเทพลักษณ์ (Shen Sha)</button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่ไหม?')">💼 มีเกณฑ์เปลี่ยนงานปีนี้ไหม?</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('การเงินและโชคลาภปีนี้เป็นอย่างไร มีเกณฑ์เงินก้อนไหม?')">💰 การเงินและโชคลาภปีนี้?</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ความรักคู่ครองและคนรักช่วงนี้มีเกณฑ์เป็นอย่างไร?')">❤️ ความรักคู่ครองช่วงนี้?</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สุขภาพและจุดอ่อนที่ต้องระวังเป็นพิเศษคือเรื่องอะไร?')">🏥 สุขภาพและข้อควรระวัง?</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('ช่วงเดือนไหนของปีนี้ที่ดีที่สุดในการเริ่มโปรเจกต์หรือเจรจา?')">📅 เดือนไหนดีที่สุดของปีนี้?</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('อาชีพและทิศทางธุรกิจที่ถูกโฉลกกับดวงชะตานี้คืออะไร?')">🌟 อาชีพที่ถูกโฉลกกับดวง?</button>
+          <button type="button" class="bazi-ask-chip" onclick="window.BaziApp.askQuickQuestion('สีมงคลและทิศมงคลที่ช่วยเปิดโชคลาภเสริมดวงชะตามีอะไรบ้าง?')">🧭 สีและทิศมงคลเสริมชะตา?</button>
+        `;
+      }
+    },
 
     switchSubMenu: function (mode) {
       this.currentSubMenu = mode;
@@ -2815,13 +3052,20 @@
         </div>
       `;
 
-      // If chat is empty, initialize welcome message
+      // Render mode-appropriate quick prompt chips
+      this.renderAskChips();
+
+      // If chat is empty, initialize welcome message based on mode
       if (!this.askChatHistory || this.askChatHistory.length === 0) {
-        const welcomeText = `สวัสดีค่ะคุณ **${c.name}** ยินดีต้อนรับสู่ห้องตรวจดวงชะตาเฉพาะบุคคลนะคะ ✨🔮\n\nแม่หมอได้ผูกผังดวง 4 เสาชะตาของคุณเรียบร้อยแล้ว โดยคุณมีดิถีเป็น **${c.dayMaster.zh} (${c.dayMaster.th})** สถานะ **${c.strengthText}** พร้อมเชื่อมโยงกับวัยจร 10 ปี **${curDaYun ? curDaYun.ageRange : ''}** และปีจรปัจจุบัน **${curYear} (${yrStem.zh}${yrBranch.zh})** ไว้อย่างครบถ้วนค่ะ\n\nคุณสามารถพิมพ์ถามเจาะลึกได้ทุกเรื่องที่อยากรู้เลยนะคะ ไม่ว่าจะเป็นเรื่องการงาน เกณฑ์เปลี่ยนงาน ความรักคู่ครอง การเงินโชคลาภ หรือสุขภาพ หรือจะแตะเลือกคำถามยอดนิยมด้านบนเพื่อเริ่มคุยกับแม่หมอได้ทันทีเลยค่ะ 😊`;
+        const isSinsei = (this.askMode === 'sinsei');
+        const welcomeText = isSinsei
+          ? `สวัสดีค่ะ ยินดีต้อนรับสู่ **ห้องแชทผู้ช่วยซินแส (Astrologer Co-Pilot)** ค่ะ 🎓✨\n\nระบบได้ดึงข้อมูลผังดวง 4 เสาของคุณ **${c.name}** มาเชื่อมโยงกับฐานข้อมูลตำรา 10 โมดูลเรียบร้อยแล้วค่ะ\n• **ดิถีตัวตน (日元)**: **${c.dayMaster.zh} (${c.dayMaster.th})** สถานะ **${c.strengthText}**\n• **วัยจร 10 ปี (大运)**: **${curDaYun ? curDaYun.ageRange : ''}** | **ปีจร (流年)**: **${curYear} (${yrStem.zh}${yrBranch.zh})**\n• **ธาตุให้คุณ (喜用神)**: ธาตุ**${favNames}**\n\nซินแสสามารถแตะเลือกหัวข้อวิเคราะห์เจาะลึกด้านบน (เช่น ตรวจสอบโครงสร้างพิเศษ 从格/专旺格/化气格, สัดส่วน 5 Structures & 10 Profiles, หรือปฏิสัมพันธ์ 刑沖合害) หรือพิมพ์ข้อคำถามเชิงลึกได้ทันทีเลยค่ะ 😊`
+          : `สวัสดีค่ะคุณ **${c.name}** ยินดีต้อนรับสู่ห้องตรวจดวงชะตาเฉพาะบุคคลนะคะ ✨🔮\n\nแม่หมอได้ผูกผังดวง 4 เสาชะตาของคุณเรียบร้อยแล้ว โดยคุณมีดิถีเป็น **${c.dayMaster.zh} (${c.dayMaster.th})** สถานะ **${c.strengthText}** พร้อมเชื่อมโยงกับวัยจร 10 ปี **${curDaYun ? curDaYun.ageRange : ''}** และปีจรปัจจุบัน **${curYear} (${yrStem.zh}${yrBranch.zh})** ไว้อย่างครบถ้วนค่ะ\n\nคุณสามารถพิมพ์ถามเจาะลึกได้ทุกเรื่องที่อยากรู้เลยนะคะ ไม่ว่าจะเป็นเรื่องการงาน เกณฑ์เปลี่ยนงาน ความรักคู่ครอง การเงินโชคลาภ หรือสุขภาพ หรือจะแตะเลือกคำถามยอดนิยมด้านบนเพื่อเริ่มคุยกับแม่หมอได้ทันทีเลยค่ะ 😊`;
 
         this.askChatHistory = [
           {
             sender: 'bot',
+            mode: this.askMode || 'sinsei',
             text: welcomeText,
             time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
           }
@@ -2891,18 +3135,19 @@
             </div>
           `;
         } else {
+          const isSinseiMsg = (msg.mode === 'sinsei' || (!msg.mode && this.askMode === 'sinsei'));
           const bodyHtml = this.formatChatBody(msg.text || msg.html || '');
           return `
-            <div class="chat-message-row bot-row">
-              <div class="chat-avatar bot-avatar" title="แม่หมอปาจื่อ">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <div class="chat-message-row bot-row ${isSinseiMsg ? 'sinsei-msg' : 'client-msg'}">
+              <div class="chat-avatar bot-avatar ${isSinseiMsg ? 'sinsei-avatar' : 'client-avatar'}" title="${isSinseiMsg ? 'ผู้ช่วยซินแส (Co-Pilot)' : 'แม่หมอปาจื่อ'}">
+                <i class="fa-solid ${isSinseiMsg ? 'fa-graduation-cap' : 'fa-wand-magic-sparkles'}"></i>
               </div>
               <div class="chat-message-content">
                 <div class="chat-sender-name">
-                  <span>แม่หมอปาจื่อ</span>
-                  <span class="chat-sender-role">ผู้เชี่ยวชาญผังดวง 4 เสา</span>
+                  <span>${isSinseiMsg ? 'ผู้ช่วยซินแส (Co-Pilot)' : 'แม่หมอปาจื่อ'}</span>
+                  <span class="chat-sender-role" style="${isSinseiMsg ? 'background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 700;' : ''}">${isSinseiMsg ? 'Lineage Grounded DB' : 'ผู้เชี่ยวชาญผังดวง 4 เสา'}</span>
                 </div>
-                <div class="chat-bubble-bot">
+                <div class="chat-bubble-bot ${isSinseiMsg ? 'sinsei-bubble' : ''}">
                   <div class="bot-chat-body">
                     ${bodyHtml}
                   </div>
@@ -2946,17 +3191,21 @@
 
       // Show typing state on button and disable input
       const sendBtn = document.getElementById('baziAskSendBtn');
+      const isSinsei = (this.askMode === 'sinsei');
       if (sendBtn) {
         sendBtn.disabled = true;
-        sendBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles fa-bounce"></i> <span>แม่หมอกำลังตรวจดวง...</span>';
+        sendBtn.innerHTML = isSinsei
+          ? '<i class="fa-solid fa-graduation-cap fa-bounce"></i> <span>ผู้ช่วยซินแสกำลังประมวลผล...</span>'
+          : '<i class="fa-solid fa-wand-magic-sparkles fa-bounce"></i> <span>แม่หมอกำลังตรวจดวง...</span>';
       }
 
       try {
-        const resp = await BaziEngine.consultAstrologerAsync(this.currentChart, text, this.selectedYear);
+        const resp = await BaziEngine.consultAstrologerAsync(this.currentChart, text, this.selectedYear, this.askMode || 'sinsei');
         const chatText = resp && resp.chatText ? resp.chatText : 'ขออภัยค่ะ ระบบไม่สามารถประมวลผลคำตอบได้ในขณะนี้ กรุณาลองถามใหม่อีกครั้งนะคะ';
 
         this.askChatHistory.push({
           sender: 'bot',
+          mode: this.askMode || 'sinsei',
           text: chatText,
           time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
         });
@@ -2964,6 +3213,7 @@
         console.error('Error during BaZi consultation:', err);
         this.askChatHistory.push({
           sender: 'bot',
+          mode: this.askMode || 'sinsei',
           text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองส่งคำถามใหม่อีกครั้งนะคะ',
           time: new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.'
         });

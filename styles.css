@@ -22729,6 +22729,7 @@ img {
   align-items: center !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
   flex-shrink: 0 !important;
+  min-width: 230px !important;
 }
 
 .bazi-card-title-bar .bazi-year-select,
@@ -22742,6 +22743,8 @@ img {
   outline: none !important;
   cursor: pointer !important;
   padding: 3px 4px !important;
+  width: 100% !important;
+  min-width: 210px !important;
 }
 
 .bazi-card-title-bar .bazi-year-select option,
@@ -22749,6 +22752,116 @@ img {
   color: #0f172a !important;
   background: #ffffff !important;
   font-weight: 600 !important;
+}
+
+/* Astrologer Co-Pilot / Dual Mode Switcher */
+.bazi-ask-header-controls {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+}
+
+.bazi-ask-mode-toggle {
+  display: inline-flex !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  border-radius: 24px !important;
+  padding: 3px !important;
+  gap: 4px !important;
+}
+
+.bazi-mode-toggle-btn {
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  border: none !important;
+  outline: none !important;
+  padding: 5px 12px !important;
+  border-radius: 18px !important;
+  font-size: 12.5px !important;
+  font-weight: 600 !important;
+  font-family: 'Prompt', sans-serif !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.2s ease !important;
+}
+
+.bazi-mode-toggle-btn:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.bazi-mode-toggle-btn.mode-sinsei.active {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45) !important;
+}
+
+.bazi-mode-toggle-btn.mode-client.active {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 2px 8px rgba(219, 39, 119, 0.45) !important;
+}
+
+/* Astrologer Co-Pilot Rich Formatting Cards */
+.sinsei-diagnostic-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #6366f1;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.sinsei-diagnostic-card.gold-border {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+.sinsei-diagnostic-card.green-border {
+  border-left-color: #10b981;
+  background: #f0fdf4;
+}
+.sinsei-diagnostic-card.purple-border {
+  border-left-color: #8b5cf6;
+  background: #fbf7ff;
+}
+.sinsei-card-title {
+  font-weight: 700;
+  color: #1e1b4b;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sinsei-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: #e0e7ff;
+  color: #3730a3;
+  margin-right: 4px;
+}
+.sinsei-pill-tag.gold {
+  background: #fef3c7;
+  color: #92400e;
+}
+.sinsei-pill-tag.emerald {
+  background: #d1fae5;
+  color: #065f46;
+}
+.sinsei-pill-tag.rose {
+  background: #ffe4e6;
+  color: #9f1239;
 }
 
 .bazi-card-title-bar .bazi-badge-purple {
@@ -23080,6 +23193,18 @@ img {
   padding: 16px 20px;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
   word-break: break-word;
+}
+
+.chat-avatar.sinsei-avatar {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3) !important;
+}
+
+.chat-bubble-bot.sinsei-bubble {
+  border-left: 4px solid #f59e0b !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.08) !important;
 }
 
 /* Pure Natural Chat Content - No Boxes */

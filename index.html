@@ -1520,55 +1520,45 @@
           </div>
         </section>
 
-        <!-- 2. Chat Section Card with Solid Header -->
+        <!-- 2. Chat Section Card with Solid Header & Dual-Mode Controls -->
         <section class="bazi-section-card bazi-ask-chat-section">
           <div class="bazi-card-title-bar bar-solid-purple">
             <div class="title-left">
-              <div class="bazi-section-icon-box theme-purple">
-                <i class="fa-solid fa-comments"></i>
+              <div class="bazi-section-icon-box theme-purple" id="baziAskTitleIcon">
+                <i class="fa-solid fa-graduation-cap"></i>
               </div>
               <div class="bazi-section-title-wrap">
                 <div class="bazi-section-title-row">
                   <span class="bazi-section-num-pill purple">เมนู 3</span>
-                  <span class="bazi-section-title-text">สนทนาถามดวงชะตาเจาะลึก</span>
-                  <span class="bazi-section-en-badge">(Deep BaZi Consultation &amp; Q&amp;A)</span>
+                  <span class="bazi-section-title-text" id="baziAskTitleText">ห้องแชทผู้ช่วยซินแส (Astrologer Co-Pilot)</span>
+                  <span class="bazi-section-en-badge" id="baziAskBadgeText">(Lineage Grounded AI)</span>
                 </div>
-                <p class="bazi-section-desc-text">ถามตอบเจาะลึกทุกมิติชีวิต การงาน การเงิน ความรัก สุขภาพ
-                  วิเคราะห์เชื่อมโยงผัง 4 เสา วัยจร ปีจร และ 12 สารท</p>
+                <p class="bazi-section-desc-text" id="baziAskDescText">ถามตอบเจาะลึกด้วยฐานข้อมูลตำรา 10 โมดูล วิเคราะห์โครงสร้างดวง (从格 / 专旺格 / 化气格), 5 Structures, 10 Profiles, วัยจรและปีจร</p>
               </div>
             </div>
-            <button type="button" class="bazi-btn-clear-chat" onclick="window.BaziApp.clearAskChat()"
-              title="ล้างประวัติการสนทนาและเริ่มถามใหม่">
-              <i class="fa-solid fa-rotate-left"></i> ล้างการสนทนา
-            </button>
+            <div class="bazi-ask-header-controls">
+              <!-- Dual-Mode Switcher: Sinsei (Master Co-Pilot) vs Client (Client Mode) -->
+              <div class="bazi-ask-mode-toggle" id="baziAskModeToggle" title="เลือกโหมดการวิเคราะห์ของระบบ">
+                <button type="button" class="bazi-mode-toggle-btn mode-sinsei active" id="baziAskModeSinseiBtn" onclick="window.BaziApp.setAskMode('sinsei')">
+                  <i class="fa-solid fa-graduation-cap"></i> <span>โหมดซินแส (Co-Pilot)</span>
+                </button>
+                <button type="button" class="bazi-mode-toggle-btn mode-client" id="baziAskModeClientBtn" onclick="window.BaziApp.setAskMode('client')">
+                  <i class="fa-solid fa-heart"></i> <span>โหมดลูกดวง</span>
+                </button>
+              </div>
+              <button type="button" class="bazi-btn-clear-chat" onclick="window.BaziApp.clearAskChat()"
+                title="ล้างประวัติการสนทนาและเริ่มถามใหม่">
+                <i class="fa-solid fa-rotate-left"></i> ล้างการสนทนา
+              </button>
+            </div>
           </div>
 
-          <!-- Quick Suggestion Chips -->
+          <!-- Quick Suggestion Chips (Dynamically swapped by current mode) -->
           <div class="bazi-ask-chips-container">
-            <span class="bazi-ask-chips-label"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>
-              คำถามยอดนิยม:</span>
+            <span class="bazi-ask-chips-label" id="baziAskChipsLabel"><i class="fa-solid fa-bolt" style="color: #f59e0b;"></i>
+              หัวข้อวิเคราะห์ของซินแส:</span>
             <div class="bazi-ask-chips-scroll" id="baziAskChipsScroll">
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('ปีนี้มีเกณฑ์เปลี่ยนงานหรือโยกย้ายหน้าที่ไหม?')">💼
-                มีเกณฑ์เปลี่ยนงานปีนี้ไหม?</button>
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('การเงินและโชคลาภปีนี้เป็นอย่างไร มีเกณฑ์เงินก้อนไหม?')">💰
-                การเงินและโชคลาภปีนี้?</button>
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('ความรักคู่ครองและคนรักช่วงนี้มีเกณฑ์เป็นอย่างไร?')">❤️
-                ความรักคู่ครองช่วงนี้?</button>
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('สุขภาพและจุดอ่อนที่ต้องระวังเป็นพิเศษคือเรื่องอะไร?')">🏥
-                สุขภาพและข้อควรระวัง?</button>
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('ช่วงเดือนไหนของปีนี้ที่ดีที่สุดในการเริ่มโปรเจกต์หรือเจรจา?')">📅
-                เดือนไหนดีที่สุดของปีนี้?</button>
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('อาชีพและทิศทางธุรกิจที่ถูกโฉลกกับดวงชะตานี้คืออะไร?')">🌟
-                อาชีพที่ถูกโฉลกกับดวง?</button>
-              <button type="button" class="bazi-ask-chip"
-                onclick="window.BaziApp.askQuickQuestion('สีมงคลและทิศมงคลที่ช่วยเปิดโชคลาภเสริมดวงชะตามีอะไรบ้าง?')">🧭
-                สีและทิศมงคลเสริมชะตา?</button>
+              <!-- Dynamically populated by window.BaziApp.renderAskChips() -->
             </div>
           </div>
 
