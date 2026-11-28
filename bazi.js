@@ -4861,6 +4861,7 @@
       this.renderAdvanceMasterPillars(chart);
       this.renderBasicElementsPieChart(chart, 'baziAdvanceElementsPieCard');
       this.renderBasicAgeCallout(chart);
+      this.updateAdvanceYearBadges(this.selectedYear);
       this.renderStructuresAndProfiles(chart, this.selectedYear);
       this.renderBasicSpiderChart(chart);
       this.renderAdvanceDaYunMasterTable(chart);
@@ -6935,18 +6936,18 @@
         savedSearchInput.addEventListener('input', (e) => this.renderSavedProfilesList(e.target.value));
       }
 
-      // Populate Annual Year Dropdowns (1950 - 2040)
-      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect'].forEach(id => {
+      // Populate Annual Year Dropdowns (1930 - 2060)
+      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect', 'baziAdvanceUniversalYearSelect'].forEach(id => {
         const yearSelect = document.getElementById(id);
         if (yearSelect) {
           yearSelect.innerHTML = '';
           const curY = this.selectedYear || new Date().getFullYear();
-          for (let y = 2040; y >= 1950; y--) {
+          for (let y = 2060; y >= 1930; y--) {
             const sIdx = ((y - 4) % 10 + 10) % 10;
             const bIdx = ((y - 4) % 12 + 12) % 12;
             const opt = document.createElement('option');
             opt.value = y;
-            opt.textContent = `ปี ${y} (${STEMS[sIdx].zh}${BRANCHES[bIdx].zh} • ${BRANCHES[bIdx].zodiac.split(' ')[0]})`;
+            opt.textContent = `ค.ศ. ${y} / พ.ศ. ${y + 543} (${STEMS[sIdx].zh}${BRANCHES[bIdx].zh} • ${BRANCHES[bIdx].zodiac.split(' ')[0]})`;
             if (y === curY) opt.selected = true;
             yearSelect.appendChild(opt);
           }
@@ -7421,6 +7422,41 @@
       }
     },
 
+    shiftAdvanceYear: function (delta) {
+      const curY = this.selectedYear || (this.currentChart && this.currentChart.currentYear) || new Date().getFullYear();
+      this.selectAnnualYear(curY + delta);
+    },
+
+    resetAdvanceYearToNow: function () {
+      const nowY = new Date().getFullYear();
+      this.selectAnnualYear(nowY);
+    },
+
+    updateAdvanceYearBadges: function (year) {
+      const y = year || this.selectedYear || new Date().getFullYear();
+      const sIdx = ((y - 4) % 10 + 10) % 10;
+      const bIdx = ((y - 4) % 12 + 12) % 12;
+      const stemZh = STEMS[sIdx] ? STEMS[sIdx].zh : '';
+      const branchZh = BRANCHES[bIdx] ? BRANCHES[bIdx].zh : '';
+      const animal = BRANCHES[bIdx] ? BRANCHES[bIdx].zodiac.split(' ')[0] : '';
+
+      const ceEl = document.getElementById('baziAdvanceYearBadgeCE');
+      if (ceEl) ceEl.textContent = `ค.ศ. ${y}`;
+
+      const beEl = document.getElementById('baziAdvanceYearBadgeBE');
+      if (beEl) beEl.textContent = `พ.ศ. ${y + 543}`;
+
+      const pillEl = document.getElementById('baziAdvanceYearBadgePillar');
+      if (pillEl) pillEl.textContent = `(${stemZh}${branchZh} • ปี${animal})`;
+
+      const ageEl = document.getElementById('baziAdvanceYearBadgeAge');
+      if (ageEl && this.currentChart && this.currentChart.birthDateString) {
+        const bYear = parseInt(this.currentChart.birthDateString.split('-')[0], 10);
+        const age = y - bYear;
+        ageEl.textContent = `(อายุ ${age} ปี)`;
+      }
+    },
+
     selectAnnualYear: function (year) {
       this.selectedYear = year;
       // Update chips UI
@@ -7428,12 +7464,14 @@
         btn.classList.toggle('active', parseInt(btn.dataset.year, 10) === year);
       });
       // Update dropdown select UI
-      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect'].forEach(id => {
+      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect', 'baziAdvanceUniversalYearSelect'].forEach(id => {
         const yearSelect = document.getElementById(id);
         if (yearSelect && parseInt(yearSelect.value, 10) !== year) {
           yearSelect.value = year;
         }
       });
+
+      this.updateAdvanceYearBadges(year);
 
       // Automatically sync active Da Yun with target year
       if (this.currentChart && this.currentChart.daYunPillars) {

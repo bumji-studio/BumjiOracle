@@ -537,10 +537,10 @@ var BaziProfilesDB = (function () {
             ${s.elementZh} ${s.elementEn}
           </text>
           <!-- Structure Name -->
-          <text x="${textAnchor === 'middle' ? 0 : (textAnchor === 'end' ? 0 : 0)}" y="-2" text-anchor="${textAnchor}" fill="#334155" font-size="11" font-weight="700">
+          <text x="${textAnchor === 'middle' ? 0 : (textAnchor === 'end' ? 0 : 0)}" y="-1" text-anchor="${textAnchor}" fill="#0f172a" font-size="12" font-weight="800">
             ${s.nameZh}
           </text>
-          <text x="${textAnchor === 'middle' ? 0 : (textAnchor === 'end' ? 0 : 0)}" y="12" text-anchor="${textAnchor}" fill="#64748b" font-size="9.5" font-weight="600">
+          <text x="${textAnchor === 'middle' ? 0 : (textAnchor === 'end' ? 0 : 0)}" y="13" text-anchor="${textAnchor}" fill="#334155" font-size="10.5" font-weight="700">
             ${s.nameEn}
           </text>
         </g>
