@@ -3486,6 +3486,7 @@
       this.renderBasicFourPillars(chart);
       this.renderBasicElementsPieChart(chart);
       this.renderBasicAgeCallout(chart);
+      this.renderStructuresAndProfiles(chart, this.selectedYear);
       this.renderBasicSpiderChart(chart);
       this.renderBasicCurrentDaYun(chart);
       this.renderBasicCurrentAnnual(chart);
@@ -4838,11 +4839,29 @@
       });
     },
 
+    renderStructuresAndProfiles: function (chart, year) {
+      if (!chart) return;
+      const targetYear = year || this.selectedYear || (chart.currentYear || new Date().getFullYear());
+      const db = window.BaziProfilesDB || (typeof globalThis !== 'undefined' ? globalThis.BaziProfilesDB : null);
+      if (!db || typeof db.calculateProfilesAndStructures !== 'function') return;
+
+      const profData = db.calculateProfilesAndStructures(chart, targetYear);
+      if (!profData) return;
+
+      ['baziBasicStructuresProfilesWrap', 'baziAdvanceStructuresProfilesWrap'].forEach(id => {
+        const wrap = document.getElementById(id);
+        if (wrap) {
+          db.renderStructuresAndProfilesCard(wrap, profData);
+        }
+      });
+    },
+
     renderAdvanceSuite: function (chart) {
       if (!chart) return;
       this.renderAdvanceMasterPillars(chart);
       this.renderBasicElementsPieChart(chart, 'baziAdvanceElementsPieCard');
       this.renderBasicAgeCallout(chart);
+      this.renderStructuresAndProfiles(chart, this.selectedYear);
       this.renderBasicSpiderChart(chart);
       this.renderAdvanceDaYunMasterTable(chart);
       this.renderAdvanceAnnualMasterTable(chart, this.selectedYear);
@@ -7429,6 +7448,7 @@
 
       this.renderDaYunCards();
       this.renderAnnualAndMonthlyFortune();
+      this.renderStructuresAndProfiles(this.currentChart, this.selectedYear);
       if (this.currentChart) {
         this.renderAdvanceDaYunMasterTable(this.currentChart);
         this.renderAdvanceAnnualMasterTable(this.currentChart, this.selectedYear);

@@ -21,11 +21,12 @@ var BaziKnowledge = (function () {
           'BaziAnnualDB': './bazi-annual-db.js',
           'BaziClassicalShenShaDB': './bazi-classical-shensha-db.js',
           'BaziHiddenStemsDB': './bazi-hidden-stems-db.js',
-          'BaziTwelveStagesDB': './bazi-twelve-stages-db.js'
+          'BaziTwelveStagesDB': './bazi-twelve-stages-db.js',
+          'BaziProfilesDB': './bazi-profiles-db.js'
         };
         if (fileMap[name]) return require(fileMap[name]);
       }
-    } catch (e) {}
+    } catch (e) { }
     return null;
   }
 
@@ -39,6 +40,7 @@ var BaziKnowledge = (function () {
   const classicalShenSha = getGlobal('BaziClassicalShenShaDB');
   const hiddenStems = getGlobal('BaziHiddenStemsDB');
   const twelveStages = getGlobal('BaziTwelveStagesDB');
+  const profiles = getGlobal('BaziProfilesDB');
 
   return {
     version: '1.0.0-lineage-master',
@@ -52,6 +54,7 @@ var BaziKnowledge = (function () {
     classicalShenSha: classicalShenSha,
     hiddenStems: hiddenStems,
     twelveStages: twelveStages,
+    profiles: profiles,
 
     getCareerGuidance: function (dominantGods, favorableElements) {
       const guidance = [];
