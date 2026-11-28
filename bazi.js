@@ -2543,9 +2543,17 @@
         this.advanceAnnualStartYear = curY;
       }
       this.advanceAnnualStartYear += deltaYears;
-      if (this.currentChart) {
-        this.renderAdvanceAnnualMasterTable(this.currentChart, this.selectedYear);
-      }
+      const newY = (this.selectedYear || new Date().getFullYear()) + deltaYears;
+      this.selectAnnualYear(newY);
+    },
+
+    shiftAnnualRange: function (deltaYears) {
+      this.shiftAdvanceAnnual(deltaYears);
+    },
+
+    resetAnnualToCurrentYear: function () {
+      const nowY = new Date().getFullYear();
+      this.selectAnnualYear(nowY);
     },
 
     formatLuckTenGod: function (tg) {
@@ -5347,18 +5355,30 @@
 
       const birthYear = c.birthDateString ? parseInt(c.birthDateString.split('-')[0], 10) : new Date().getFullYear();
       const currentYear = new Date().getFullYear();
+      const selYr = parseInt(targetYear, 10) || this.selectedYear || currentYear;
+      const ageInYear = selYr - birthYear;
+
+      // Automatically sync Da Yun matching the target year
+      if (c.daYunPillars) {
+        const matchingIdx = c.daYunPillars.findIndex(p => ageInYear >= p.ageFrom && ageInYear <= p.ageTo);
+        if (matchingIdx !== -1 && this.selectedDaYunIndex !== matchingIdx) {
+          this.selectedDaYunIndex = matchingIdx;
+        }
+      }
+
       const curDaYun = (c.daYunPillars && c.daYunPillars[this.selectedDaYunIndex]) || (c.daYunPillars && c.daYunPillars.find(d => d.isCurrent)) || (c.daYunPillars && c.daYunPillars[0]);
       const luckPillar = curDaYun ? { stem: curDaYun.stem, branch: curDaYun.branch, label: `วัยจร ${curDaYun.ageRange}` } : null;
 
-      let startYear = this.advanceAnnualStartYear;
-      if (!startYear) {
-        if (curDaYun && curDaYun.yearFrom) {
-          startYear = curDaYun.yearFrom;
+      // Automatically adjust advanceAnnualStartYear so selYr is ALWAYS within the displayed 10-year decade
+      if (!this.advanceAnnualStartYear || selYr < this.advanceAnnualStartYear || selYr > this.advanceAnnualStartYear + 9) {
+        if (curDaYun && curDaYun.yearFrom && selYr >= curDaYun.yearFrom && selYr <= curDaYun.yearFrom + 9) {
+          this.advanceAnnualStartYear = curDaYun.yearFrom;
         } else {
-          startYear = (targetYear || currentYear) - 4;
+          this.advanceAnnualStartYear = Math.floor((selYr - 4) / 10) * 10 + 4;
         }
-        this.advanceAnnualStartYear = startYear;
       }
+
+      let startYear = this.advanceAnnualStartYear;
       const endYear = startYear + 9;
 
       const annualList = [];
@@ -7480,8 +7500,19 @@
         const matchingIdx = this.currentChart.daYunPillars.findIndex(p => ageInYear >= p.ageFrom && ageInYear <= p.ageTo);
         if (matchingIdx !== -1) {
           this.selectedDaYunIndex = matchingIdx;
+          const matchingDy = this.currentChart.daYunPillars[matchingIdx];
+          if (matchingDy && matchingDy.yearFrom) {
+            this.advanceAnnualStartYear = matchingDy.yearFrom;
+          }
           this.renderDaYunInterpretation();
+        } else {
+          this.advanceAnnualStartYear = Math.floor((year - 4) / 10) * 10 + 4;
         }
+      }
+
+      // Ensure advanceAnnualStartYear covers the selected year
+      if (!this.advanceAnnualStartYear || year < this.advanceAnnualStartYear || year > this.advanceAnnualStartYear + 9) {
+        this.advanceAnnualStartYear = Math.floor((year - 4) / 10) * 10 + 4;
       }
 
       this.renderDaYunCards();
@@ -7889,6 +7920,20 @@
       }
     },
 
+    renderDynamicYearChips: function (targetYear) {
+      const y = parseInt(targetYear, 10) || this.selectedYear || new Date().getFullYear();
+      const chipContainers = document.querySelectorAll('.bazi-year-chips');
+      chipContainers.forEach(container => {
+        const years = [y - 1, y, y + 1];
+        container.innerHTML = years.map(yr => {
+          const bIdx = ((yr - 4) % 12 + 12) % 12;
+          const animal = BRANCHES[bIdx] ? BRANCHES[bIdx].zodiac.split(' ')[0] : '';
+          const isActive = yr === y;
+          return `<button type="button" class="bazi-year-chip ${isActive ? 'active' : ''}" data-year="${yr}" onclick="window.BaziApp.selectAnnualYear(${yr})">${yr} (${animal})</button>`;
+        }).join('');
+      });
+    },
+
     renderAnnualAndMonthlyFortune: function () {
       if (!this.currentChart) return;
       const y = this.selectedYear || new Date().getFullYear();
@@ -7898,15 +7943,21 @@
       if (labelEl) labelEl.textContent = y;
       const advYearDisplay = document.getElementById('baziAdvanceAnnualYearDisplay');
       if (advYearDisplay) advYearDisplay.textContent = y;
+      const basicAnnualYear = document.getElementById('baziBasicAnnualYearTitle');
+      if (basicAnnualYear) basicAnnualYear.textContent = y;
+      const annualRadarYear = document.getElementById('baziAnnualRadarYearLabel');
+      if (annualRadarYear) annualRadarYear.textContent = y;
 
-      // Sync Year Chips in Advance
-      document.querySelectorAll('#baziAdvanceYearChips .bazi-year-chip').forEach(btn => {
-        btn.classList.toggle('active', parseInt(btn.dataset.year, 10) === y);
+      // Dynamic Year Chips
+      this.renderDynamicYearChips(y);
+
+      // Sync all Annual Year Selects
+      ['baziAnnualYearSelect', 'baziAdvanceAnnualYearSelect', 'baziAdvanceUniversalYearSelect'].forEach(id => {
+        const advYearSelect = document.getElementById(id);
+        if (advYearSelect && parseInt(advYearSelect.value, 10) !== y) {
+          advYearSelect.value = y;
+        }
       });
-      const advYearSelect = document.getElementById('baziAdvanceAnnualYearSelect');
-      if (advYearSelect && parseInt(advYearSelect.value, 10) !== y) {
-        advYearSelect.value = y;
-      }
 
       // 1. Annual Fortune
       const annual = BaziEngine.calculateAnnualFortune(this.currentChart, y);
